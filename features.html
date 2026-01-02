@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Features - CA-copilot</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        .features-hero {
+            padding: 8rem 2rem 4rem;
+            background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%);
+            text-align: center;
+        }
+
+        .features-hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            color: var(--gray-900);
+        }
+
+        .features-hero p {
+            font-size: 1.25rem;
+            color: var(--gray-600);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .features-section {
+            padding: 4rem 2rem;
+        }
+
+        .feature-category {
+            max-width: 1200px;
+            margin: 0 auto 6rem;
+        }
+
+        .category-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .category-header .icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .category-header h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--gray-900);
+        }
+
+        .category-header p {
+            font-size: 1.125rem;
+            color: var(--gray-600);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+            transition: all var(--transition-base);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .feature-card .icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: var(--gray-900);
+        }
+
+        .feature-card p {
+            color: var(--gray-600);
+            line-height: 1.7;
+        }
+
+        @media (max-width: 768px) {
+            .features-hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .category-header h2 {
+                font-size: 2rem;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="logo">
+                <div class="logo-icon">CA</div>
+                <span>CA-copilot</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="features.html">Features</a></li>
+                <li><a href="how-it-works.html">How It Works</a></li>
+                <li><a href="pricing.html">Pricing</a></li>
+                <li><a href="sign-in.html" class="btn btn-primary btn-small">Sign In</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Features Hero -->
+    <section class="features-hero">
+        <h1>Powerful Features for Modern CAs</h1>
+        <p>Everything you need to manage compliance, automate workflows, and deliver exceptional service to your clients
+        </p>
+    </section>
+
+    <!-- Features Sections -->
+    <section class="features-section">
+        <!-- AI-Powered Intelligence -->
+        <div class="feature-category">
+            <div class="category-header">
+                <div class="icon">🤖</div>
+                <h2>AI-Powered Intelligence</h2>
+                <p>Leverage cutting-edge AI to make smarter decisions and automate complex tasks</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="icon">📊</div>
+                    <h3>Predictive Risk Scoring</h3>
+                    <p>AI analyzes your client data to identify potential compliance risks before they become issues,
+                        helping you stay proactive.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">📄</div>
+                    <h3>Automated Document Analysis</h3>
+                    <p>Intelligent document processing extracts key information, validates data, and flags
+                        inconsistencies automatically.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">💡</div>
+                    <h3>Smart Recommendations</h3>
+                    <p>Get AI-powered suggestions for tax optimization, compliance strategies, and workflow
+                        improvements.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Comprehensive Compliance -->
+        <div class="feature-category">
+            <div class="category-header">
+                <div class="icon">✅</div>
+                <h2>Comprehensive Compliance</h2>
+                <p>Complete compliance management suite designed for Indian regulations</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="icon">📋</div>
+                    <h3>GST Filing Automation</h3>
+                    <p>Automated GSTR-1, GSTR-3B, and refund filing with built-in validation and error checking.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">🧮</div>
+                    <h3>Tax Computation</h3>
+                    <p>Accurate tax calculations for income tax, GST, and other compliance requirements with AI
+                        verification.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">📢</div>
+                    <h3>Regulatory Updates</h3>
+                    <p>Stay informed with real-time updates on tax law changes, compliance deadlines, and regulatory
+                        notifications.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">🗺️</div>
+                    <h3>Multi-State Compliance</h3>
+                    <p>Manage compliance across multiple states with automated tracking and state-specific requirements.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Real-time Workflow -->
+        <div class="feature-category">
+            <div class="category-header">
+                <div class="icon">⚡</div>
+                <h2>Real-time Workflow</h2>
+                <p>Collaborate seamlessly and track progress in real-time</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="icon">👥</div>
+                    <h3>Live Collaboration</h3>
+                    <p>Work together with your team in real-time, share notes, and coordinate tasks effortlessly.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">🔔</div>
+                    <h3>Instant Notifications</h3>
+                    <p>Get notified about deadlines, client updates, and important events via email, SMS, and in-app
+                        alerts.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">📈</div>
+                    <h3>Progress Tracking</h3>
+                    <p>Visual dashboards show real-time progress on all tasks, filings, and client work at a glance.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">🤝</div>
+                    <h3>Team Coordination</h3>
+                    <p>Assign tasks, set priorities, and manage workload distribution across your team efficiently.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Management Tools -->
+        <div class="feature-category">
+            <div class="category-header">
+                <div class="icon">🛠️</div>
+                <h2>Management Tools</h2>
+                <p>Comprehensive tools to manage clients, documents, and services</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="icon">📚</div>
+                    <h3>Service History</h3>
+                    <p>Complete audit trail of all services, communications, and actions for every client.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">🌐</div>
+                    <h3>Client Portals</h3>
+                    <p>Branded client portals where clients can view status, upload documents, and communicate securely.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">🔄</div>
+                    <h3>Version Control</h3>
+                    <p>Track all document versions, changes, and revisions with complete version history.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">📁</div>
+                    <h3>Document Management</h3>
+                    <p>Secure cloud storage with smart organization, search, and retrieval of all client documents.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer style="background: var(--gray-900); color: white; padding: 4rem 2rem 2rem;">
+        <div class="container">
+            <div
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 3rem; margin-bottom: 3rem;">
+                <div>
+                    <div class="logo" style="color: white; margin-bottom: 1rem;">
+                        <div class="logo-icon">CA</div>
+                        <span>CA-copilot</span>
+                    </div>
+                    <p style="color: var(--gray-400); line-height: 1.7;">Intelligent compliance decisions, powered by
+                        AI.</p>
+                </div>
+                <div>
+                    <h4 style="margin-bottom: 1rem; color: white;">Product</h4>
+                    <ul style="list-style: none;">
+                        <li style="margin-bottom: 0.75rem;"><a href="features.html"
+                                style="color: var(--gray-400);">Features</a></li>
+                        <li style="margin-bottom: 0.75rem;"><a href="pricing.html"
+                                style="color: var(--gray-400);">Pricing</a></li>
+                        <li style="margin-bottom: 0.75rem;"><a href="how-it-works.html"
+                                style="color: var(--gray-400);">How It Works</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 style="margin-bottom: 1rem; color: white;">Company</h4>
+                    <ul style="list-style: none;">
+                        <li style="margin-bottom: 0.75rem;"><a href="#" style="color: var(--gray-400);">About Us</a>
+                        </li>
+                        <li style="margin-bottom: 0.75rem;"><a href="#" style="color: var(--gray-400);">Contact</a></li>
+                        <li style="margin-bottom: 0.75rem;"><a href="#" style="color: var(--gray-400);">Support</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div
+                style="padding-top: 2rem; border-top: 1px solid var(--gray-800); text-align: center; color: var(--gray-400);">
+                <p>&copy; 2025 CA-copilot. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

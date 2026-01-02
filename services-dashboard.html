@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Services - CA-copilot</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 80px auto;
+            padding: 2rem;
+        }
+
+        .client-header-summary {
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-blue-dark));
+            color: white;
+            padding: 3rem;
+            border-radius: var(--radius-2xl);
+            margin-bottom: 4rem;
+            box-shadow: var(--shadow-xl);
+        }
+
+        .client-header-summary h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            color: white;
+        }
+
+        .client-header-summary .gstin {
+            font-family: monospace;
+            font-size: 1.125rem;
+            opacity: 0.9;
+        }
+
+        .services-section-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .service-box {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-xl);
+            padding: 2.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--transition-base);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 250px;
+        }
+
+        .service-box:hover {
+            border-color: var(--primary-blue);
+            box-shadow: var(--shadow-2xl);
+            transform: scale(1.02);
+        }
+
+        .service-box .icon {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .service-box h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--gray-900);
+        }
+
+        .service-box .status-pill {
+            font-size: 0.75rem;
+            padding: 0.4rem 1rem;
+            border-radius: var(--radius-full);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .status-active {
+            background: #E0F2FE;
+            color: #0369A1;
+        }
+
+        .status-completed {
+            background: #DCFCE7;
+            color: #15803D;
+        }
+
+        .status-pending {
+            background: #FEF3C7;
+            color: #92400E;
+        }
+
+        .add-service-box {
+            border: 2px dashed var(--gray-300);
+            background: var(--gray-50);
+            color: var(--gray-500);
+        }
+
+        .add-service-box:hover {
+            border-color: var(--primary-blue);
+            background: white;
+            color: var(--primary-blue);
+        }
+
+        /* Selection Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 3rem;
+            border-radius: var(--radius-2xl);
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        /* View Selection Modal */
+        .view-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .view-option {
+            border: 2px solid var(--gray-200);
+            padding: 2rem;
+            border-radius: var(--radius-xl);
+            cursor: pointer;
+            transition: all var(--transition-base);
+        }
+
+        .view-option:hover {
+            border-color: var(--primary-blue);
+            background: var(--gray-50);
+        }
+
+        .view-option .icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .view-option h4 {
+            margin-bottom: 0.5rem;
+            font-size: 1.25rem;
+        }
+
+        .view-option p {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+        }
+
+        /* Manage Services Modal */
+        .service-selection-list {
+            margin-top: 1.5rem;
+            text-align: left;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .service-selection-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-lg);
+            margin-bottom: 0.75rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .service-selection-item:hover {
+            background: var(--gray-50);
+        }
+
+        .service-selection-item input {
+            width: 20px;
+            height: 20px;
+        }
+
+        .service-info h4 {
+            margin: 0;
+            font-size: 1rem;
+        }
+
+        .service-info p {
+            margin: 0;
+            font-size: 0.8rem;
+            color: var(--gray-500);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="clients.html" class="logo">
+                <div class="logo-icon">CA</div>
+                <span>CA-copilot</span>
+            </a>
+            <div id="user-info" style="font-weight: 600; color: var(--gray-700);"></div>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <div id="client-banner" class="client-header-summary">
+            <h1 id="selected-client-name">Loading...</h1>
+            <div id="selected-client-gstin" class="gstin">XXXX-XXXX-XXXX</div>
+        </div>
+
+        <div class="services-section-title">
+            <h2>Active Services</h2>
+            <button class="btn btn-primary" onclick="showAddService()">+ Add New Service</button>
+        </div>
+
+        <div id="services-grid" class="services-grid">
+            <!-- Services loaded here -->
+        </div>
+    </div>
+
+    <!-- View Selection Modal -->
+    <div id="view-modal" class="modal">
+        <div class="modal-content">
+            <h2 id="view-modal-title">Select Your Workspace</h2>
+            <p>How would you like to process this service?</p>
+
+            <div class="view-options">
+                <div class="view-option" onclick="selectView('web')">
+                    <div class="icon">💼</div>
+                    <h4>Web View</h4>
+                    <p>Professional Mode: Structured checklists & panels</p>
+                </div>
+                <div class="view-option" onclick="selectView('chat')">
+                    <div class="icon">💬</div>
+                    <h4>Semi-Chat View</h4>
+                    <p>Guided Simplicity: Conversational AI assistance</p>
+                </div>
+            </div>
+
+            <button class="btn btn-secondary" style="margin-top: 2rem;"
+                onclick="closeModal('view-modal')">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Manage Services Modal -->
+    <div id="manage-services-modal" class="modal">
+        <div class="modal-content">
+            <h2>Add/Manage Services</h2>
+            <p>Select the services you want to activate for this client.</p>
+
+            <div id="available-services-list" class="service-selection-list">
+                <!-- Loaded via JS -->
+            </div>
+
+            <div class="modal-actions" style="margin-top: 2rem; display: flex; gap: 1rem; justify-content: flex-end;">
+                <button class="btn btn-secondary" onclick="closeModal('manage-services-modal')">Cancel</button>
+                <button class="btn btn-primary" onclick="saveServices()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="api_config.js"></script>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const clientId = urlParams.get('clientId');
+        let currentService = null;
+        let allServices = [];
+        let clientServices = [];
+        const user = JSON.parse(localStorage.getItem('user'));
+
+        if (!clientId) window.location.href = 'clients.html';
+        if (user) document.getElementById('user-info').textContent = `Welcome, ${user.full_name || user.name}`;
+
+        async function loadDashboard() {
+            await Promise.all([loadClientInfo(), loadAvailableServices()]);
+        }
+
+        async function loadClientInfo() {
+            try {
+                const response = await authFetch(`/clients/${clientId}`);
+                if (!response.ok) throw new Error('Failed to load client');
+
+                const client = await response.json();
+                document.getElementById('selected-client-name').textContent = client.name;
+
+                // Handle multiple GSTINs or PAN
+                const gstText = client.gstins && client.gstins.length > 0 ? client.gstins[0] : (client.pan || 'No Identifiers');
+                document.getElementById('selected-client-gstin').textContent = gstText;
+
+                clientServices = client.services || [];
+                renderActiveServices();
+            } catch (err) {
+                console.error(err);
+                alert('Could not load client details.');
+            }
+        }
+
+        async function loadAvailableServices() {
+            try {
+                const response = await authFetch('/services/');
+                if (response.ok) {
+                    allServices = await response.json();
+                }
+            } catch (err) {
+                console.error('Error fetching service templates:', err);
+            }
+        }
+
+        function renderActiveServices() {
+            const grid = document.getElementById('services-grid');
+            grid.innerHTML = '';
+
+            const iconMap = {
+                'GST Refund': '🧾',
+                'Income Tax': '💰',
+                'Audit': '🔍',
+                'Compliance': '⚖️'
+            };
+
+            clientServices.forEach(service => {
+                const box = document.createElement('div');
+                box.className = 'service-box';
+                box.onclick = () => openViewSelection(service);
+
+                box.innerHTML = `
+                    <div class="icon">${iconMap[service.name] || '📦'}</div>
+                    <h3>${service.name}</h3>
+                    <span class="status-pill status-active">Active</span>
+                `;
+                grid.appendChild(box);
+            });
+
+            // Add "Add Service" box
+            const addBox = document.createElement('div');
+            addBox.className = 'service-box add-service-box';
+            addBox.onclick = showAddService;
+            addBox.innerHTML = `
+                <div class="icon">+</div>
+                <h3>Add Service</h3>
+            `;
+            grid.appendChild(addBox);
+        }
+
+        function openViewSelection(service) {
+            currentService = service;
+            // Requirement 2: Show "Coming Soon" for non-GST Refund
+            if (service.name !== 'GST Refund') {
+                alert(`${service.name} is coming soon! Stay tuned.`);
+                return;
+            }
+            document.getElementById('view-modal-title').textContent = `GST Refund for ${document.getElementById('selected-client-name').textContent}`;
+            document.getElementById('view-modal').classList.add('active');
+        }
+
+        function showAddService() {
+            const list = document.getElementById('available-services-list');
+            list.innerHTML = '';
+
+            allServices.forEach(service => {
+                const isChecked = clientServices.some(s => s.id === service.id);
+                const item = document.createElement('div');
+                item.className = 'service-selection-item';
+                item.onclick = () => {
+                    const cb = item.querySelector('input');
+                    cb.checked = !cb.checked;
+                };
+
+                item.innerHTML = `
+                    <input type="checkbox" data-id="${service.id}" ${isChecked ? 'checked' : ''} onclick="event.stopPropagation()">
+                    <div class="service-info">
+                        <h4>${service.name}</h4>
+                        <p>${service.description || ''}</p>
+                    </div>
+                `;
+                list.appendChild(item);
+            });
+
+            document.getElementById('manage-services-modal').classList.add('active');
+        }
+
+        async function saveServices() {
+            const checkboxes = document.querySelectorAll('#available-services-list input[type="checkbox"]');
+            const selectedIds = Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.dataset.id);
+
+            try {
+                const response = await authFetch(`/clients/${clientId}/services`, {
+                    method: 'PUT',
+                    body: JSON.stringify({ service_ids: selectedIds })
+                });
+
+                if (response.ok) {
+                    closeModal('manage-services-modal');
+                    await loadClientInfo();
+                } else {
+                    alert('Failed to update services.');
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Connection error while updating services.');
+            }
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        function selectView(viewType) {
+            // Requirement 3: Web View or Semi Chat View
+            if (viewType === 'web') {
+                window.location.href = `service-gst-refund.html?clientId=${clientId}&view=web`;
+            } else {
+                window.location.href = `service-gst-refund.html?clientId=${clientId}&view=semi-chat`;
+            }
+        }
+
+        loadDashboard();
+    </script>
+</body>
+
+</html>

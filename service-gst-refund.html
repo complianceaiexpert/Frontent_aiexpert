@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GST Refund Service - CA-copilot</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        .service-page {
+            display: flex;
+            min-height: 100vh;
+            background: #f5f7fa;
+            padding-top: 70px;
+        }
+
+        .workflow-panel {
+            width: 50%;
+            background: white;
+            padding: 2rem;
+            border-right: 1px solid var(--gray-200);
+            overflow-y: auto;
+        }
+
+        .chatbot-panel {
+            width: 50%;
+            background: #f9fafb;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .service-header {
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid var(--gray-200);
+        }
+
+        .service-header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .service-header .subtitle {
+            color: var(--gray-600);
+            font-size: 1rem;
+        }
+
+        .workflow-steps {
+            margin-bottom: 2rem;
+        }
+
+        .workflow-step {
+            background: var(--gray-50);
+            border-radius: var(--radius-lg);
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--gray-300);
+            transition: all var(--transition-base);
+        }
+
+        .workflow-step.completed {
+            border-left-color: var(--accent-green);
+            background: #F0FDF4;
+        }
+
+        .workflow-step.error {
+            border-left-color: #EF4444;
+            background: #FEF2F2;
+        }
+
+        .workflow-step.in-progress {
+            border-left-color: var(--primary-blue);
+            background: #EFF6FF;
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+        }
+
+        .step-title {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--gray-900);
+        }
+
+        .step-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .status-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+        }
+
+        .status-icon.completed {
+            background: var(--accent-green);
+            color: white;
+        }
+
+        .status-icon.error {
+            background: #EF4444;
+            color: white;
+        }
+
+        .status-icon.pending {
+            background: var(--gray-300);
+            color: var(--gray-600);
+        }
+
+        .status-icon.in-progress {
+            background: var(--primary-blue);
+            color: white;
+            animation: pulse 2s infinite;
+        }
+
+        .step-description {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+            margin-bottom: 0.75rem;
+        }
+
+        .file-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            background: white;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--gray-200);
+        }
+
+        .file-icon {
+            font-size: 1.5rem;
+        }
+
+        .file-info {
+            flex: 1;
+        }
+
+        .file-name {
+            font-weight: 500;
+            font-size: 0.875rem;
+            color: var(--gray-900);
+        }
+
+        .file-size {
+            font-size: 0.75rem;
+            color: var(--gray-500);
+        }
+
+        .upload-section {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: white;
+            border-radius: var(--radius-lg);
+            border: 2px dashed var(--gray-300);
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .upload-section:hover {
+            border-color: var(--primary-blue);
+            background: var(--gray-50);
+        }
+
+        .upload-section input {
+            display: none;
+        }
+
+        .action-button-container {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--gray-200);
+        }
+
+        .primary-action-btn {
+            width: 100%;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-green-dark));
+            color: white;
+            border: none;
+            border-radius: var(--radius-lg);
+            font-size: 1.125rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all var(--transition-base);
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        .primary-action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .primary-action-btn:disabled {
+            background: var(--gray-300);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Chatbot Styles */
+        .chat-header {
+            background: white;
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--gray-200);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .chat-header h2 {
+            font-size: 1.25rem;
+            margin-bottom: 0.25rem;
+            color: var(--gray-900);
+        }
+
+        .chat-header p {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .chat-message {
+            display: flex;
+            gap: 1rem;
+            animation: fadeInUp 0.3s ease-out;
+        }
+
+        .chat-message.user {
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            font-size: 1.125rem;
+        }
+
+        .chat-message.assistant .message-avatar {
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-green-dark));
+        }
+
+        .chat-message.user .message-avatar {
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-blue-dark));
+        }
+
+        .message-bubble {
+            max-width: 75%;
+            background: white;
+            padding: 1rem 1.25rem;
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-sm);
+            line-height: 1.6;
+        }
+
+        .chat-message.user .message-bubble {
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-blue-dark));
+            color: white;
+        }
+
+        .message-bubble strong {
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .chat-input-area {
+            background: white;
+            padding: 1.5rem 2rem;
+            border-top: 1px solid var(--gray-200);
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .input-container {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-end;
+        }
+
+        .input-wrapper {
+            flex: 1;
+            position: relative;
+        }
+
+        .chat-input {
+            width: 100%;
+            padding: 1rem 3rem 1rem 1rem;
+            border: 2px solid var(--gray-300);
+            border-radius: var(--radius-lg);
+            font-size: 1rem;
+            font-family: var(--font-sans);
+            resize: none;
+            min-height: 50px;
+            max-height: 150px;
+            transition: border-color var(--transition-fast);
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+        }
+
+        .attachment-btn {
+            position: absolute;
+            right: 0.75rem;
+            bottom: 0.75rem;
+            background: none;
+            border: none;
+            color: var(--gray-500);
+            cursor: pointer;
+            font-size: 1.25rem;
+            padding: 0.25rem;
+            transition: color var(--transition-fast);
+        }
+
+        .attachment-btn:hover {
+            color: var(--primary-blue);
+        }
+
+        .send-btn {
+            padding: 1rem 2rem;
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            border-radius: var(--radius-lg);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .send-btn:hover {
+            background: var(--primary-blue-dark);
+            transform: translateY(-1px);
+        }
+
+        @media (max-width: 1024px) {
+            .service-page {
+                flex-direction: column;
+            }
+
+            .workflow-panel,
+            .chatbot-panel {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="logo">
+                <div class="logo-icon">CA</div>
+                <span>CA-copilot</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="web-view.html">← Back to Services</a></li>
+                <li><a href="index.html">Home</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Service Page Split Layout -->
+    <div class="service-page">
+        <!-- Left Panel: Workflow Steps -->
+        <div class="workflow-panel">
+            <div class="service-header">
+                <h1 id="service-title-display">
+                    <span>🧾</span>
+                    <span>GST Refund</span>
+                </h1>
+                <p id="client-info-display" class="subtitle">Loading client details...</p>
+            </div>
+
+            <!-- Workflow Steps -->
+            <div class="workflow-steps">
+                <!-- Step 1: Refund Files -->
+                <div class="workflow-step completed">
+                    <div class="step-header">
+                        <div class="step-title">
+                            <span>📁</span>
+                            <span>Processed Files</span>
+                        </div>
+                        <div class="step-status">
+                            <div class="status-icon completed">✓</div>
+                            <span style="color: var(--accent-green); font-weight: 600;">System Ready</span>
+                        </div>
+                    </div>
+                    <div class="step-description">Processed documents currently stored in the backend for this client
+                    </div>
+
+                    <div id="processed-file-list" class="file-list">
+                        <!-- Loaded via JS -->
+                        <div class="file-item" style="justify-content: center; color: var(--gray-500);">
+                            <span>Loading files...</span>
+                        </div>
+                    </div>
+
+                    <div class="upload-section" onclick="document.getElementById('file-upload').click()">
+                        <input type="file" id="file-upload" multiple>
+                        <p style="margin: 0; color: var(--gray-600);">
+                            <strong>📤 Upload New Source Files</strong><br>
+                            <span style="font-size: 0.875rem;">Click to browse or drag and drop</span>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Step 2: Generate Statement 3 -->
+                <div class="workflow-step in-progress">
+                    <div class="step-header">
+                        <div class="step-title">
+                            <span>📋</span>
+                            <span>Generate Statement 3</span>
+                        </div>
+                        <div class="step-status">
+                            <div class="status-icon in-progress">⟳</div>
+                            <span style="color: var(--primary-blue); font-weight: 600;">In Progress</span>
+                        </div>
+                    </div>
+                    <div class="step-description">Automatically generate Statement 3 for refund claim</div>
+                </div>
+
+                <!-- Step 3: Generate Annexure B -->
+                <div class="workflow-step">
+                    <div class="step-header">
+                        <div class="step-title">
+                            <span>📑</span>
+                            <span>Generate Annexure B</span>
+                        </div>
+                        <div class="step-status">
+                            <div class="status-icon pending">○</div>
+                            <span style="color: var(--gray-500); font-weight: 600;">Pending</span>
+                        </div>
+                    </div>
+                    <div class="step-description">Generate Annexure B with detailed calculations</div>
+                </div>
+
+                <!-- Step 4: Calculate GST Refund -->
+                <div class="workflow-step">
+                    <div class="step-header">
+                        <div class="step-title">
+                            <span>🧮</span>
+                            <span>Calculate GST Refund</span>
+                        </div>
+                        <div class="step-status">
+                            <div class="status-icon pending">○</div>
+                            <span style="color: var(--gray-500); font-weight: 600;">Pending</span>
+                        </div>
+                    </div>
+                    <div class="step-description">Calculate final refund amount with AI-powered accuracy</div>
+                </div>
+            </div>
+
+            <!-- Primary Action Button -->
+            <div class="action-button-container">
+                <button class="primary-action-btn" onclick="doGSTRefund()">
+                    <span>🚀</span>
+                    <span>Do GST Refund</span>
+                </button>
+                <p style="text-align: center; margin-top: 1rem; font-size: 0.875rem; color: var(--gray-600);">
+                    This will automatically process all pending steps
+                </p>
+            </div>
+        </div>
+
+        <!-- Right Panel: AI Chatbot -->
+        <div class="chatbot-panel">
+            <div class="chat-header">
+                <h2>🤖 Expert AI Assistant</h2>
+                <p>Get help with GST, taxation, compliance, and more</p>
+            </div>
+
+            <div class="chat-messages" id="chat-messages">
+                <div class="chat-message assistant">
+                    <div class="message-avatar">🤖</div>
+                    <div class="message-bubble">
+                        <strong>Hello! I'm your GST Refund expert.</strong>
+                        I can help you with:
+                        <ul style="margin: 0.5rem 0 0 1.25rem; padding: 0;">
+                            <li>GST refund calculations and documentation</li>
+                            <li>Tax compliance and regulations</li>
+                            <li>Company law and startup guidance</li>
+                            <li>Valuation and financial analysis</li>
+                        </ul>
+                        Feel free to upload documents or ask any questions!
+                    </div>
+                </div>
+            </div>
+
+            <div class="chat-input-area">
+                <div class="input-container">
+                    <div class="input-wrapper">
+                        <textarea class="chat-input" id="chat-input"
+                            placeholder="Ask me anything about GST refunds, taxation, compliance..." rows="1"
+                            onkeypress="handleKeyPress(event)"></textarea>
+                        <button class="attachment-btn" onclick="document.getElementById('chat-file-upload').click()"
+                            title="Attach file">
+                            📎
+                        </button>
+                        <input type="file" id="chat-file-upload" style="display: none;" multiple>
+                    </div>
+                    <button class="send-btn" onclick="sendMessage()">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="api_config.js"></script>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const clientId = urlParams.get('clientId');
+        const view = urlParams.get('view') || 'web'; // web or semi-chat
+        const user = JSON.parse(localStorage.getItem('user'));
+
+        let conversationId = null;
+
+        // Requirement 1: Load client and documents from backend
+        async function initPage() {
+            if (!clientId) {
+                window.location.href = 'clients.html';
+                return;
+            }
+            await Promise.all([
+                loadClientHeader(),
+                loadProcessedFiles(),
+                initConversation()
+            ]);
+        }
+
+        async function loadClientHeader() {
+            try {
+                const response = await authFetch(`/clients/${clientId}`);
+                if (response.ok) {
+                    const client = await response.json();
+                    document.title = `GST Refund: ${client.name} - CA-copilot`;
+                    const gstText = client.gstins && client.gstins.length > 0 ? client.gstins[0] : (client.pan || 'N/A');
+                    document.getElementById('client-info-display').textContent = `${client.name} • GSTIN/PAN: ${gstText}`;
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        async function loadProcessedFiles() {
+            try {
+                const response = await authFetch(`/clients/${clientId}/documents`);
+                const list = document.getElementById('processed-file-list');
+                list.innerHTML = '';
+
+                if (response.ok) {
+                    const docs = await response.json();
+                    if (docs.length === 0) {
+                        list.innerHTML = '<div class="file-item" style="justify-content: center; color: var(--gray-500);"><span>No processed files found.</span></div>';
+                        return;
+                    }
+
+                    docs.forEach(doc => {
+                        const item = document.createElement('div');
+                        item.className = 'file-item';
+                        const icon = doc.title.endsWith('.xlsx') || doc.title.endsWith('.csv') ? '📊' : '📄';
+                        const dateStr = new Date(doc.created_at).toLocaleDateString();
+
+                        item.innerHTML = `
+                            <span class="file-icon">${icon}</span>
+                            <div class="file-info">
+                                <div class="file-name">${doc.title}</div>
+                                <div class="file-size">Processed on ${dateStr} • ${doc.status}</div>
+                            </div>
+                        `;
+                        list.appendChild(item);
+                    });
+                }
+            } catch (e) {
+                console.error("Failed to load files", e);
+            }
+        }
+
+        async function initConversation() {
+            try {
+                const response = await authFetch('/conversations/', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        title: `GST Refund Consultation`,
+                        client_id: clientId
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    conversationId = data.id;
+                }
+            } catch (e) {
+                console.error("Failed to init conversation", e);
+            }
+        }
+
+        function doGSTRefund() {
+            alert('GST Refund logic initiated for processing...');
+            // Add your processing logic here
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+
+            if (message === '' || !conversationId) return;
+
+            const chatMessages = document.getElementById('chat-messages');
+            const userMessage = document.createElement('div');
+            userMessage.className = 'chat-message user';
+            userMessage.innerHTML = `
+                <div class="message-avatar">${user ? (user.full_name || user.name)[0] : 'U'}</div>
+                <div class="message-bubble">${message}</div>
+            `;
+            chatMessages.appendChild(userMessage);
+
+            input.value = '';
+            input.style.height = 'auto';
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            const typingIndicator = document.createElement('div');
+            typingIndicator.className = 'chat-message assistant';
+            typingIndicator.id = 'typing-indicator';
+            typingIndicator.innerHTML = `
+                <div class="message-avatar">🤖</div>
+                <div class="message-bubble">Analyzing client data and documents...</div>
+            `;
+            chatMessages.appendChild(typingIndicator);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            try {
+                const response = await authFetch(`/conversations/${conversationId}/chat`, {
+                    method: 'POST',
+                    body: JSON.stringify({ content: message })
+                });
+
+                document.getElementById('typing-indicator').remove();
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const aiMessage = document.createElement('div');
+                    aiMessage.className = 'chat-message assistant';
+
+                    let citationHtml = '';
+                    if (data.citations && data.citations.length > 0) {
+                        citationHtml = `
+                            <div style="margin-top: 1rem; padding-top: 0.5rem; border-top: 1px solid #eee; font-size: 0.75rem; color: #666;">
+                                <strong>Context Reference:</strong>
+                                <p style="margin: 0.2rem 0 0 0;">${data.citations[0].chunk_text}</p>
+                            </div>
+                        `;
+                    }
+
+                    aiMessage.innerHTML = `
+                        <div class="message-avatar">🤖</div>
+                        <div class="message-bubble">
+                            ${data.content.replace(/\n/g, '<br>')}
+                            ${citationHtml}
+                        </div>
+                    `;
+                    chatMessages.appendChild(aiMessage);
+                }
+            } catch (error) {
+                console.error("Chat error:", error);
+                if (document.getElementById('typing-indicator')) document.getElementById('typing-indicator').remove();
+            }
+
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendMessage();
+            }
+        }
+
+        document.getElementById('chat-input').addEventListener('input', function () {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 150) + 'px';
+        });
+
+        document.getElementById('file-upload').addEventListener('change', async function (e) {
+            if (e.target.files.length > 0) {
+                const file = e.target.files[0];
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('title', file.name);
+                formData.append('scope', 'CLIENT');
+                formData.append('client_id', clientId);
+
+                try {
+                    // Manual fetch for FormData
+                    const response = await fetch(`${API_BASE_URL}/documents/upload`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+                        },
+                        body: formData
+                    });
+
+                    if (response.ok) {
+                        alert('File uploaded successfully! It is now being analyzed.');
+                        await loadProcessedFiles();
+                    } else {
+                        alert('Upload failed. Please check your connection.');
+                    }
+                } catch (err) {
+                    console.error("Upload error", err);
+                }
+            }
+        });
+
+        initPage();
+    </script>
+</body>
+
+</html>

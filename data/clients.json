@@ -1,0 +1,39 @@
+[
+  {
+    "id": 1672531200000,
+    "name": "Primrose Industries",
+    "gstin": "27AAAAA0000A1Z5",
+    "services": [
+      {
+        "id": 1,
+        "name": "GST Refund",
+        "status": "In Progress",
+        "description": "Annual GST refund processing"
+      },
+      {
+        "id": 2,
+        "name": "Income Tax",
+        "status": "Completed",
+        "description": "FY 2024-25 Filing"
+      },
+      {
+        "id": 3,
+        "name": "Audit",
+        "status": "Pending",
+        "description": "Statutory Audit"
+      }
+    ]
+  },
+  {
+    "id": 1672531200001,
+    "name": "Acme Corp",
+    "gstin": "27BBBBB1111B1Z2",
+    "services": []
+  },
+  {
+    "id": 1767168189230,
+    "name": "PCP",
+    "gstin": "78798956",
+    "services": []
+  }
+]

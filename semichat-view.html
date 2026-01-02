@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Service - Semi-Chat View - CA-copilot</title>
+    <meta name="description" content="Choose a service to get started with guided AI assistance">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        .service-selection-container {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding-top: 70px;
+            padding-bottom: 3rem;
+        }
+
+        .selection-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        .selection-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .selection-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--gray-900);
+        }
+
+        .selection-header .subtitle {
+            font-size: 1.125rem;
+            color: var(--gray-600);
+            margin-bottom: 0.5rem;
+        }
+
+        .client-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: white;
+            padding: 0.5rem 1.25rem;
+            border-radius: var(--radius-full);
+            box-shadow: var(--shadow-md);
+            margin-top: 1rem;
+        }
+
+        .client-badge .icon {
+            font-size: 1.25rem;
+        }
+
+        .client-badge .name {
+            font-weight: 600;
+            color: var(--gray-900);
+        }
+
+        .client-badge .gstin {
+            font-size: 0.875rem;
+            color: var(--gray-500);
+            margin-left: 0.5rem;
+        }
+
+        .service-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .service-card {
+            background: white;
+            border-radius: var(--radius-2xl);
+            padding: 2rem;
+            box-shadow: var(--shadow-lg);
+            cursor: pointer;
+            transition: all var(--transition-base);
+            border: 3px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-blue), var(--accent-purple));
+            transform: scaleX(0);
+            transition: transform var(--transition-base);
+        }
+
+        .service-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-2xl);
+            border-color: var(--primary-blue);
+        }
+
+        .service-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .service-card-header {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .service-card-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: var(--radius-xl);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            flex-shrink: 0;
+        }
+
+        .service-card-icon.warning {
+            background: linear-gradient(135deg, #FEF3C7, #FDE68A);
+        }
+
+        .service-card-icon.success {
+            background: linear-gradient(135deg, #D1FAE5, #A7F3D0);
+        }
+
+        .service-card-icon.info {
+            background: linear-gradient(135deg, #E0E7FF, #C7D2FE);
+        }
+
+        .service-card-title {
+            flex: 1;
+        }
+
+        .service-card-title h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
+            color: var(--gray-900);
+        }
+
+        .service-card-status {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .service-card-status.action-required {
+            background: #FEF3C7;
+            color: #D97706;
+        }
+
+        .service-card-status.no-clear {
+            background: #D1FAE5;
+            color: #059669;
+        }
+
+        .service-card-status.pending {
+            background: #E0E7FF;
+            color: #4F46E5;
+        }
+
+        .service-card-description {
+            color: var(--gray-600);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .service-card-stats {
+            display: flex;
+            gap: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--gray-200);
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--gray-600);
+        }
+
+        .stat-item .icon {
+            font-size: 1rem;
+        }
+
+        .stat-item .value {
+            font-weight: 600;
+            color: var(--gray-900);
+        }
+
+        .service-card-action {
+            margin-top: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--gray-200);
+        }
+
+        .action-text {
+            font-weight: 600;
+            color: var(--primary-blue);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .arrow-icon {
+            transition: transform var(--transition-fast);
+        }
+
+        .service-card:hover .arrow-icon {
+            transform: translateX(4px);
+        }
+
+        @media (max-width: 768px) {
+            .service-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .selection-header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="logo">
+                <div class="logo-icon">CA</div>
+                <span>CA-copilot</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="features.html">Features</a></li>
+                <li><a href="how-it-works.html">How It Works</a></li>
+                <li><a href="pricing.html">Pricing</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Service Selection Container -->
+    <div class="service-selection-container">
+        <div class="selection-content">
+            <div class="selection-header">
+                <h1>Select a Service</h1>
+                <p class="subtitle">Choose a service to get started with AI-guided assistance</p>
+                <div class="client-badge">
+                    <span class="icon">🏭</span>
+                    <span class="name">Primrose Industries</span>
+                    <span class="gstin">GSTIN: 5124 95XX95124</span>
+                </div>
+            </div>
+
+            <div class="service-cards">
+                <!-- GST Refund Card -->
+                <div class="service-card" onclick="window.location.href='service-gst-refund.html'">
+                    <div class="service-card-header">
+                        <div class="service-card-icon warning">⚠️</div>
+                        <div class="service-card-title">
+                            <h3>GST Refund</h3>
+                            <span class="service-card-status action-required">Action Required</span>
+                        </div>
+                    </div>
+                    <p class="service-card-description">
+                        Process GST refund claims with automated calculations, document generation, and expert AI
+                        guidance throughout the entire workflow.
+                    </p>
+                    <div class="service-card-stats">
+                        <div class="stat-item">
+                            <span class="icon">📊</span>
+                            <span>Progress: <span class="value">82%</span></span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="icon">⚠️</span>
+                            <span><span class="value">2</span> Issues</span>
+                        </div>
+                    </div>
+                    <div class="service-card-action">
+                        <span class="action-text">
+                            <span>Get Started with AI Guidance</span>
+                            <span class="arrow-icon">→</span>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Income Tax Card -->
+                <div class="service-card" onclick="alert('Income Tax service page coming soon!')">
+                    <div class="service-card-header">
+                        <div class="service-card-icon success">✅</div>
+                        <div class="service-card-title">
+                            <h3>Income Tax</h3>
+                            <span class="service-card-status no-clear">No Clear</span>
+                        </div>
+                    </div>
+                    <p class="service-card-description">
+                        Complete income tax filing and compliance management with ITR preparation, tax planning, and
+                        regulatory updates.
+                    </p>
+                    <div class="service-card-stats">
+                        <div class="stat-item">
+                            <span class="icon">📄</span>
+                            <span>Status: <span class="value">ITR R5 Filed</span></span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="icon">✓</span>
+                            <span><span class="value">No Risk</span></span>
+                        </div>
+                    </div>
+                    <div class="service-card-action">
+                        <span class="action-text">
+                            <span>View Details</span>
+                            <span class="arrow-icon">→</span>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Audit Card -->
+                <div class="service-card" onclick="alert('Audit service page coming soon!')">
+                    <div class="service-card-header">
+                        <div class="service-card-icon info">📊</div>
+                        <div class="service-card-title">
+                            <h3>Audit</h3>
+                            <span class="service-card-status pending">Review Pending</span>
+                        </div>
+                    </div>
+                    <p class="service-card-description">
+                        Comprehensive audit services including statutory audit, internal audit, and compliance
+                        verification with detailed reporting.
+                    </p>
+                    <div class="service-card-stats">
+                        <div class="stat-item">
+                            <span class="icon">📋</span>
+                            <span>Status: <span class="value">Summary Ready</span></span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="icon">⏳</span>
+                            <span><span class="value">Pending Review</span></span>
+                        </div>
+                    </div>
+                    <div class="service-card-action">
+                        <span class="action-text">
+                            <span>Start Review</span>
+                            <span class="arrow-icon">→</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 3rem;">
+                <p style="color: var(--gray-600); margin-bottom: 1rem;">Need a different service?</p>
+                <a href="web-view.html" class="btn btn-secondary">
+                    View All Services
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

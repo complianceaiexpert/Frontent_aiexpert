@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ComplianceAIexpert - Your Professional Compliance Partner</title>
+  <meta name="description"
+    content="A comprehensive compliance management platform designed for finance and legal professionals. Reduce compliance time by 60% with AI-powered automation.">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@700;800&display=swap"
+    rel="stylesheet">
+  <style>
+    .hero-modern {
+      min-height: 90vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%);
+      padding: 6rem 2rem 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-modern::before {
+      content: '';
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(37, 99, 235, 0.1) 0%, transparent 70%);
+      top: -250px;
+      right: -250px;
+    }
+
+    .hero-content-modern {
+      max-width: 1200px;
+      width: 100%;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-content-modern h1 {
+      font-size: 4rem;
+      font-weight: 800;
+      margin-bottom: 1.5rem;
+      color: var(--gray-900);
+      line-height: 1.1;
+    }
+
+    .hero-content-modern .subtitle {
+      font-size: 1.5rem;
+      color: var(--gray-600);
+      margin-bottom: 3rem;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.6;
+    }
+
+    .hero-cta-buttons {
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+      margin-bottom: 4rem;
+    }
+
+    .trust-indicators {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .trust-item {
+      background: white;
+      padding: 2rem;
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-md);
+      text-align: center;
+      transition: transform var(--transition-base);
+    }
+
+    .trust-item:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .trust-item .icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    .trust-item .value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--primary-blue);
+      margin-bottom: 0.5rem;
+    }
+
+    .trust-item .label {
+      color: var(--gray-600);
+      font-size: 1rem;
+    }
+
+    .testimonials-section {
+      padding: 6rem 2rem;
+      background: white;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+
+    .section-header h2 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      color: var(--gray-900);
+    }
+
+    .section-header p {
+      font-size: 1.25rem;
+      color: var(--gray-600);
+    }
+
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .testimonial-card {
+      background: var(--gray-50);
+      padding: 2rem;
+      border-radius: var(--radius-xl);
+      border-left: 4px solid var(--primary-blue);
+    }
+
+    .testimonial-text {
+      font-size: 1.125rem;
+      color: var(--gray-700);
+      margin-bottom: 1.5rem;
+      line-height: 1.7;
+      font-style: italic;
+    }
+
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .author-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary-blue), var(--accent-purple));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: 1.25rem;
+    }
+
+    .author-info .name {
+      font-weight: 600;
+      color: var(--gray-900);
+      margin-bottom: 0.25rem;
+    }
+
+    .author-info .title {
+      font-size: 0.875rem;
+      color: var(--gray-600);
+    }
+
+    .faq-section {
+      padding: 6rem 2rem;
+      background: var(--gray-50);
+    }
+
+    .faq-container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .faq-item {
+      background: white;
+      border-radius: var(--radius-lg);
+      margin-bottom: 1rem;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .faq-question {
+      padding: 1.5rem;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 600;
+      color: var(--gray-900);
+      transition: background var(--transition-fast);
+    }
+
+    .faq-question:hover {
+      background: var(--gray-50);
+    }
+
+    .faq-question .icon {
+      font-size: 1.5rem;
+      color: var(--primary-blue);
+      transition: transform var(--transition-fast);
+    }
+
+    .faq-item.active .faq-question .icon {
+      transform: rotate(180deg);
+    }
+
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height var(--transition-base);
+    }
+
+    .faq-item.active .faq-answer {
+      max-height: 500px;
+    }
+
+    .faq-answer-content {
+      padding: 0 1.5rem 1.5rem;
+      color: var(--gray-600);
+      line-height: 1.7;
+    }
+
+    .final-cta-section {
+      padding: 6rem 2rem;
+      background: linear-gradient(135deg, var(--primary-blue), var(--primary-blue-dark));
+      color: white;
+      text-align: center;
+    }
+
+    .final-cta-section h2 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      color: white;
+    }
+
+    .final-cta-section p {
+      font-size: 1.25rem;
+      margin-bottom: 2rem;
+      opacity: 0.9;
+    }
+
+    @media (max-width: 768px) {
+      .hero-content-modern h1 {
+        font-size: 2.5rem;
+      }
+
+      .hero-content-modern .subtitle {
+        font-size: 1.125rem;
+      }
+
+      .hero-cta-buttons {
+        flex-direction: column;
+      }
+
+      .trust-indicators {
+        grid-template-columns: 1fr;
+      }
+
+      .section-header h2 {
+        font-size: 2rem;
+      }
+
+      .testimonials-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="navbar-container">
+      <a href="index.html" class="logo" style="text-decoration: none; display: flex; align-items: center; gap: 0.5rem;">
+        <div class="logo-icon" style="background: #1e3a8a;">CE</div>
+        <span style="font-weight: 700; font-size: 1.25rem; color: #1e3a8a;">ComplianceAIexpert</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="features.html">Features</a></li>
+        <li><a href="how-it-works.html">How It Works</a></li>
+        <li><a href="pricing.html">Pricing</a></li>
+        <li><a href="sign-in.html" class="btn btn-primary btn-small">Sign In</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero-modern">
+    <div class="hero-content-modern">
+      <h1>Smart Compliance for Professionals</h1>
+      <p class="subtitle">The all-in-one platform for tax consultants, legal experts, and business advisors.
+        Automate your work and save hours every day with our smart AI tools.</p>
+
+      <div class="hero-cta-buttons">
+        <a href="sign-in.html" class="btn btn-primary btn-large">Start Free Trial →</a>
+        <a href="how-it-works.html" class="btn btn-secondary btn-large">See How It Works</a>
+      </div>
+
+      <div class="trust-indicators">
+        <div class="trust-item">
+          <div class="icon">⚡</div>
+          <div class="value">Fast</div>
+          <div class="label">Save 60% Time</div>
+        </div>
+        <div class="trust-item">
+          <div class="icon">👥</div>
+          <div class="value">Easy</div>
+          <div class="label">Client Management</div>
+        </div>
+        <div class="trust-item">
+          <div class="icon">🤖</div>
+          <div class="value">Smart</div>
+          <div class="label">AI Assistance</div>
+        </div>
+        <div class="trust-item">
+          <div class="icon">🔒</div>
+          <div class="value">Safe</div>
+          <div class="label">Bank-Grade Security</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section class="testimonials-section">
+    <div class="section-header">
+      <h2>Trusted by Professionals Across India</h2>
+      <p>See how we are helping experts like you</p>
+    </div>
+
+    <div class="testimonials-grid">
+      <div class="testimonial-card">
+        <p class="testimonial-text">"ComplianceAIexpert has changed how I work. The automatic calculations save me so
+          much time, and the AI helps me give better advice to my clients."</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">RK</div>
+          <div class="author-info">
+            <div class="name">Rajesh Kumar</div>
+            <div class="title">Financial Consultant, Mumbai</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-card">
+        <p class="testimonial-text">"I love how simple it is. I use the Web View for detailed work and the Chat View for
+          quick questions. It's like having a smart assistant always ready to help."</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">PS</div>
+          <div class="author-info">
+            <div class="name">Priya Sharma</div>
+            <div class="title">Tax Advisor, Delhi</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-card">
+        <p class="testimonial-text">"Finally, a tool that understands what professionals need. Tracking compliance and
+          managing documents is now effortless. Highly recommended!"</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">AM</div>
+          <div class="author-info">
+            <div class="name">Amit Mehta</div>
+            <div class="title">Business Consultant, Bangalore</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="faq-section">
+    <div class="section-header">
+      <h2>Frequently Asked Questions</h2>
+      <p>Simple answers to your common questions</p>
+    </div>
+
+    <div class="faq-container">
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <span>Who is this platform for?</span>
+          <span class="icon">▼</span>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-content">
+            It's built for all finance and legal professionals in India. Whether you are a Tax Consultant, Business
+            Advisor, or part of a large firm, our tools help you manage your work easily.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <span>What services do you offer?</span>
+          <span class="icon">▼</span>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-content">
+            We help with GST refunds, tax filing, and general compliance tracking. Our smart system does the heavy
+            lifting so you can focus on your clients.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <span>Is my client data safe?</span>
+          <span class="icon">▼</span>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-content">
+            Yes, absolutely. We use bank-level security to protect all your data. Your client's information is safe,
+            private, and confidential.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <span>Does it work with Tally?</span>
+          <span class="icon">▼</span>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-content">
+            Yes! You can easily import your data from Tally. This makes moving your financial information quick and
+            error-free.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <span>What is the 'Semi-Chat' view?</span>
+          <span class="icon">▼</span>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-content">
+            It's a special feature where you can work by just chatting with our AI. It guides you step-by-step, making
+            complex tasks feel like a simple conversation.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA Section -->
+  <section class="final-cta-section">
+    <h2>Ready to Modernize Your Practice?</h2>
+    <p>Join hundreds of CAs who are already saving time and delivering better results</p>
+    <a href="sign-up.html" class="btn btn-large" style="background: white; color: var(--primary-blue);">Get Started
+      Today →</a>
+  </section>
+
+  <!-- Footer -->
+  <footer style="background: var(--gray-900); color: white; padding: 4rem 2rem 2rem;">
+    <div class="container">
+      <div
+        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 3rem; margin-bottom: 3rem;">
+        <div>
+          <div class="logo" style="color: white; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+            <div class="logo-icon" style="background: white; color: #0f172a;">CE</div>
+            <span style="font-weight: 700; font-size: 1.25rem;">ComplianceAIexpert</span>
+          </div>
+          <p style="color: var(--gray-400); line-height: 1.7;">Smart compliance decisions, powered by AI. Built for
+            modern professionals.</p>
+        </div>
+        <div>
+          <h4 style="margin-bottom: 1rem; color: white;">Product</h4>
+          <ul style="list-style: none;">
+            <li style="margin-bottom: 0.75rem;"><a href="features.html" style="color: var(--gray-400);">Features</a>
+            </li>
+            <li style="margin-bottom: 0.75rem;"><a href="pricing.html" style="color: var(--gray-400);">Pricing</a></li>
+            <li style="margin-bottom: 0.75rem;"><a href="how-it-works.html" style="color: var(--gray-400);">How It
+                Works</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 style="margin-bottom: 1rem; color: white;">Company</h4>
+          <ul style="list-style: none;">
+            <li style="margin-bottom: 0.75rem;"><a href="#" style="color: var(--gray-400);">About Us</a></li>
+            <li style="margin-bottom: 0.75rem;"><a href="#" style="color: var(--gray-400);">Contact</a></li>
+            <li style="margin-bottom: 0.75rem;"><a href="#" style="color: var(--gray-400);">Support</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 style="margin-bottom: 1rem; color: white;">Legal</h4>
+          <ul style="list-style: none;">
+            <li style="margin-bottom: 0.75rem;"><a href="#" style="color: var(--gray-400);">Privacy Policy</a></li>
+            <li style="margin-bottom: 0.75rem;"><a href="#" style="color: var(--gray-400);">Terms of Service</a></li>
+            <li style="margin-bottom: 0.75rem;"><a href="#" style="color: var(--gray-400);">Security</a></li>
+          </ul>
+        </div>
+      </div>
+      <div
+        style="padding-top: 2rem; border-top: 1px solid var(--gray-800); text-align: center; color: var(--gray-400);">
+        <p>&copy; 2025 ComplianceAIexpert. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function toggleFAQ(element) {
+      const faqItem = element.parentElement;
+      const isActive = faqItem.classList.contains('active');
+
+      // Close all FAQ items
+      document.querySelectorAll('.faq-item').forEach(item => {
+        item.classList.remove('active');
+      });
+
+      // Open clicked item if it wasn't active
+      if (!isActive) {
+        faqItem.classList.add('active');
+      }
+    }
+  </script>
+</body>
+
+</html>

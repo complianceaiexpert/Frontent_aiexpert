@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Selection - CA-copilot</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        .clients-container {
+            max-width: 1000px;
+            margin: 80px auto;
+            padding: 2rem;
+        }
+
+        .clients-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+        }
+
+        .clients-header h1 {
+            font-size: 2.5rem;
+            color: var(--gray-900);
+        }
+
+        .clients-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .client-card {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-xl);
+            padding: 2rem;
+            cursor: pointer;
+            transition: all var(--transition-base);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .client-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--primary-blue);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .client-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--gray-900);
+        }
+
+        .client-card .gstin {
+            color: var(--gray-600);
+            font-family: monospace;
+            font-size: 0.875rem;
+            background: var(--gray-50);
+            padding: 0.25rem 0.5rem;
+            border-radius: var(--radius-sm);
+        }
+
+        .client-card .services-count {
+            margin-top: 1.5rem;
+            font-size: 0.875rem;
+            color: var(--primary-blue);
+            font-weight: 600;
+        }
+
+        .add-client-card {
+            border: 2px dashed var(--gray-300);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: var(--gray-50);
+            color: var(--gray-600);
+            min-height: 200px;
+        }
+
+        .add-client-card:hover {
+            border-color: var(--primary-blue);
+            color: var(--primary-blue);
+            background: white;
+        }
+
+        .add-client-card .icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2.5rem;
+            border-radius: var(--radius-2xl);
+            width: 100%;
+            max-width: 500px;
+            box-shadow: var(--shadow-2xl);
+        }
+
+        .modal-header h2 {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius-lg);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="logo">
+                <div class="logo-icon">CA</div>
+                <span>CA-copilot</span>
+            </a>
+            <div id="user-info" style="font-weight: 600; color: var(--gray-700);"></div>
+        </div>
+    </nav>
+
+    <div class="clients-container">
+        <div class="clients-header">
+            <h1>Select Client</h1>
+            <button class="btn btn-primary" onclick="showModal()">+ Add Client</button>
+        </div>
+
+        <div id="clients-grid" class="clients-grid">
+            <!-- Clients will be loaded here -->
+        </div>
+    </div>
+
+    <!-- Add Client Modal -->
+    <div id="client-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add New Client</h2>
+            </div>
+            <form id="add-client-form" onsubmit="handleAddClient(event)">
+                <div class="form-group">
+                    <label for="client-name">Client Name</label>
+                    <input type="text" id="client-name" required placeholder="e.g. Acme Corp">
+                </div>
+                <div class="form-group">
+                    <label for="client-gstins">GSTINs (Comma separated)</label>
+                    <input type="text" id="client-gstins" placeholder="e.g. 27AAAAA0000A1Z5, 27BBBBB1111B2Z6">
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label for="client-pan">PAN</label>
+                        <input type="text" id="client-pan" placeholder="ABCDE1234F">
+                    </div>
+                    <div class="form-group">
+                        <label for="client-cin">CIN</label>
+                        <input type="text" id="client-cin" placeholder="L12345KA2024PLC000001">
+                    </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label for="client-tan">TAN No.</label>
+                        <input type="text" id="client-tan" placeholder="MUMW12345A">
+                    </div>
+                    <div class="form-group">
+                        <label for="client-iec">IEC No.</label>
+                        <input type="text" id="client-iec" placeholder="0123456789">
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="hideModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Create Client</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="api_config.js"></script>
+    <script>
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (!user) window.location.href = 'sign-in.html';
+
+        document.getElementById('user-info').textContent = `Welcome, ${user.full_name || user.name}`;
+
+        async function loadClients() {
+            try {
+                const response = await authFetch('/clients/');
+                if (!response.ok) throw new Error('Failed to load clients');
+
+                const clients = await response.json();
+
+                const grid = document.getElementById('clients-grid');
+                grid.innerHTML = '';
+
+                clients.forEach(client => {
+                    const card = document.createElement('div');
+                    card.className = 'client-card';
+                    card.onclick = () => {
+                        localStorage.setItem('selectedClient', JSON.stringify(client));
+                        window.location.href = `services-dashboard.html?clientId=${client.id}`;
+                    };
+
+                    card.innerHTML = `
+            <h3>${client.name}</h3>
+            <div class="client-meta" style="font-size: 0.85rem; color: var(--gray-500); margin-bottom: 0.5rem;">
+                ${client.pan ? `<span>PAN: ${client.pan}</span>` : ''}
+                ${client.cin ? `<br><span>CIN: ${client.cin}</span>` : ''}
+            </div>
+            <span class="gstin">${(client.gstins || []).join(', ') || 'No GSTIN'}</span>
+            <div class="services-count">${(client.services || []).length} Services Active</div>
+          `;
+                    grid.appendChild(card);
+                });
+
+                // Add "New Client" card at the end
+                const addCard = document.createElement('div');
+                addCard.className = 'client-card add-client-card';
+                addCard.onclick = showModal;
+                addCard.innerHTML = `
+          <div class="icon">+</div>
+          <span>Create New Account</span>
+        `;
+                grid.appendChild(addCard);
+
+            } catch (error) {
+                console.error('Error loading clients:', error);
+            }
+        }
+
+        function showModal() {
+            document.getElementById('client-modal').classList.add('active');
+        }
+
+        function hideModal() {
+            document.getElementById('client-modal').classList.remove('active');
+        }
+
+        async function handleAddClient(event) {
+            event.preventDefault();
+            const submitBtn = event.target.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Creating...';
+
+            const name = document.getElementById('client-name').value;
+            const gstinsStr = document.getElementById('client-gstins').value;
+            const gstins = gstinsStr ? gstinsStr.split(',').map(g => g.trim()).filter(g => g) : [];
+            const pan = document.getElementById('client-pan').value;
+            const cin = document.getElementById('client-cin').value;
+            const tan = document.getElementById('client-tan').value;
+            const iec = document.getElementById('client-iec').value;
+
+            try {
+                console.log('Adding client:', { name, gstins, pan, cin, tan, iec });
+                const response = await authFetch('/clients/', {
+                    method: 'POST',
+                    body: JSON.stringify({ name, gstins, pan, cin, tan, iec })
+                });
+
+                if (response.ok) {
+                    console.log('Client added successfully');
+                    hideModal();
+                    await loadClients();
+                } else {
+                    const error = await response.json();
+                    console.error('Server error details:', error);
+                    let errorMessage = 'Failed to add client';
+                    if (error.detail) {
+                        errorMessage = typeof error.detail === 'string' ? error.detail : JSON.stringify(error.detail);
+                    }
+                    alert('Error: ' + errorMessage);
+                }
+            } catch (error) {
+                console.error('Fetch error:', error);
+                const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+                if (isLocal) {
+                    alert('Connection Error: Could not connect to the local backend. Please ensure mock_server.py is running.');
+                } else {
+                    alert('Connection Error: The live backend is currently updating or offline. Please wait 2-3 minutes and try again.');
+                }
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Create Client';
+            }
+        }
+
+        loadClients();
+    </script>
+</body>
+
+</html>

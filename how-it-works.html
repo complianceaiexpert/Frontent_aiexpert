@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How It Works - CA-copilot</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        .how-hero {
+            padding: 8rem 2rem 4rem;
+            background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%);
+            text-align: center;
+        }
+
+        .how-hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            color: var(--gray-900);
+        }
+
+        .how-hero p {
+            font-size: 1.25rem;
+            color: var(--gray-600);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .steps-section {
+            padding: 6rem 2rem;
+            background: white;
+        }
+
+        .steps-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .step {
+            display: grid;
+            grid-template-columns: 100px 1fr;
+            gap: 3rem;
+            margin-bottom: 4rem;
+            position: relative;
+        }
+
+        .step:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            left: 50px;
+            top: 100px;
+            bottom: -4rem;
+            width: 2px;
+            background: var(--gray-200);
+        }
+
+        .step-number {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-blue-dark));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: 800;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            z-index: 1;
+        }
+
+        .step-content h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--gray-900);
+        }
+
+        .step-content p {
+            font-size: 1.125rem;
+            color: var(--gray-600);
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+
+        .step-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .step-feature {
+            background: var(--gray-50);
+            padding: 1rem;
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .step-feature .icon {
+            font-size: 1.5rem;
+        }
+
+        .views-section {
+            padding: 6rem 2rem;
+            background: var(--gray-50);
+        }
+
+        .views-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: var(--gray-900);
+        }
+
+        .views-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 3rem;
+        }
+
+        .view-card {
+            background: white;
+            border-radius: var(--radius-2xl);
+            padding: 3rem;
+            box-shadow: var(--shadow-xl);
+        }
+
+        .view-card .icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .view-card h3 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--gray-900);
+        }
+
+        .view-card .subtitle {
+            font-size: 1.125rem;
+            color: var(--primary-blue);
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+
+        .view-card p {
+            color: var(--gray-600);
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+
+        .view-card ul {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .view-card ul li {
+            padding: 0.75rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--gray-700);
+        }
+
+        .view-card ul li::before {
+            content: '✓';
+            color: var(--accent-green);
+            font-weight: bold;
+            font-size: 1.25rem;
+        }
+
+        @media (max-width: 768px) {
+            .how-hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .step {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .step:not(:last-child)::after {
+                display: none;
+            }
+
+            .step-number {
+                width: 80px;
+                height: 80px;
+                font-size: 2.5rem;
+                margin: 0 auto;
+            }
+
+            .views-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="logo">
+                <div class="logo-icon">CA</div>
+                <span>CA-copilot</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="features.html">Features</a></li>
+                <li><a href="how-it-works.html">How It Works</a></li>
+                <li><a href="pricing.html">Pricing</a></li>
+                <li><a href="sign-in.html" class="btn btn-primary btn-small">Sign In</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- How It Works Hero -->
+    <section class="how-hero">
+        <h1>How CA-copilot Works</h1>
+        <p>Get started in three simple steps and transform your practice with AI-powered automation</p>
+    </section>
+
+    <!-- Steps Section -->
+    <section class="steps-section">
+        <div class="steps-container">
+            <!-- Step 1 -->
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h2>Connect Your Data</h2>
+                    <p>Securely integrate your existing systems and import client data to get started. CA-copilot works
+                        seamlessly with your current tools.</p>
+                    <div class="step-features">
+                        <div class="step-feature">
+                            <span class="icon">🔗</span>
+                            <span>Tally Integration</span>
+                        </div>
+                        <div class="step-feature">
+                            <span class="icon">📤</span>
+                            <span>Document Upload</span>
+                        </div>
+                        <div class="step-feature">
+                            <span class="icon">👥</span>
+                            <span>Client Import</span>
+                        </div>
+                        <div class="step-feature">
+                            <span class="icon">🔒</span>
+                            <span>Secure Sync</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h2>Configure Your Workflow</h2>
+                    <p>Choose your preferred working style. Switch between Web View for structured tasks or Semi-Chat
+                        View for guided conversations. Customize settings to match your practice needs.</p>
+                    <div class="step-features">
+                        <div class="step-feature">
+                            <span class="icon">⚙️</span>
+                            <span>Workflow Setup</span>
+                        </div>
+                        <div class="step-feature">
+                            <span class="icon">🎯</span>
+                            <span>View Selection</span>
+                        </div>
+                        <div class="step-feature">
+                            <span class="icon">📋</span>
+                            <span>Templates</span>
+                        </div>
+                        <div class="step-feature">
+                            <span class="icon">🎨</span>
+                            <span>Customization</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h2>Start Working Smarter</h2>
+                    <p>Let AI handle the repetitive tasks while you focus on high-value advisory work. Get intelligent
+                        insights, automated calculations, and real-time compliance tracking.</p>
+                    <div class="step-features">
+                        <div class="step-feature">
+                            <span class="icon">🤖</span>
+                            <span>AI Automation</span>
+                        </div>
+                        <div class="step-feature">
+                            <span class="icon">📊</span>
+                            <span>Smart Insights</span>
+                        </div>
+                        <div class="step-feature">
+                            <span class="icon">⚡</span>
+                            <span>Quick Actions</span>
+                        </div>
+                        <div class="step-feature">
+                            <span class="icon">📈</span>
+                            <span>Progress Tracking</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Views Section -->
+    <section class="views-section">
+        <div class="views-container">
+            <h2 class="section-title">Choose Your Preferred View</h2>
+            <div class="views-grid">
+                <!-- Web View -->
+                <div class="view-card">
+                    <div class="icon">💼</div>
+                    <h3>Web View</h3>
+                    <p class="subtitle">Professional Mode</p>
+                    <p>A structured, checklist-driven interface perfect for complex compliance tasks and detailed
+                        workflow management.</p>
+                    <ul>
+                        <li>Structured checklists</li>
+                        <li>Professional task management</li>
+                        <li>Detailed service tracking</li>
+                        <li>Advanced reporting</li>
+                        <li>Team collaboration</li>
+                    </ul>
+                    <a href="web-view.html" class="btn btn-primary" style="width: 100%;">Try Web View</a>
+                </div>
+
+                <!-- Semi-Chat View -->
+                <div class="view-card">
+                    <div class="icon">💬</div>
+                    <h3>Semi-Chat View</h3>
+                    <p class="subtitle">Guided Simplicity</p>
+                    <p>A conversational AI interface that guides you through tasks with intelligent suggestions and
+                        natural language interactions.</p>
+                    <ul>
+                        <li>Guided conversations</li>
+                        <li>AI-powered assistance</li>
+                        <li>Quick consultations</li>
+                        <li>Natural language</li>
+                        <li>Contextual help</li>
+                    </ul>
+                    <a href="semichat-view.html" class="btn btn-primary" style="width: 100%;">Try Semi-Chat View</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer style="background: var(--gray-900); color: white; padding: 4rem 2rem 2rem;">
+        <div class="container">
+            <div
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 3rem; margin-bottom: 3rem;">
+                <div>
+                    <div class="logo" style="color: white; margin-bottom: 1rem;">
+                        <div class="logo-icon">CA</div>
+                        <span>CA-copilot</span>
+                    </div>
+                    <p style="color: var(--gray-400); line-height: 1.7;">Intelligent compliance decisions, powered by
+                        AI.</p>
+                </div>
+                <div>
+                    <h4 style="margin-bottom: 1rem; color: white;">Product</h4>
+                    <ul style="list-style: none;">
+                        <li style="margin-bottom: 0.75rem;"><a href="features.html"
+                                style="color: var(--gray-400);">Features</a></li>
+                        <li style="margin-bottom: 0.75rem;"><a href="pricing.html"
+                                style="color: var(--gray-400);">Pricing</a></li>
+                        <li style="margin-bottom: 0.75rem;"><a href="how-it-works.html"
+                                style="color: var(--gray-400);">How It Works</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 style="margin-bottom: 1rem; color: white;">Company</h4>
+                    <ul style="list-style: none;">
+                        <li style="margin-bottom: 0.75rem;"><a href="#" style="color: var(--gray-400);">About Us</a>
+                        </li>
+                        <li style="margin-bottom: 0.75rem;"><a href="#" style="color: var(--gray-400);">Contact</a></li>
+                        <li style="margin-bottom: 0.75rem;"><a href="#" style="color: var(--gray-400);">Support</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div
+                style="padding-top: 2rem; border-top: 1px solid var(--gray-800); text-align: center; color: var(--gray-400);">
+                <p>&copy; 2025 CA-copilot. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workview - CA-copilot</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            overflow: hidden;
+        }
+
+        .workview-layout {
+            display: flex;
+            height: 100vh;
+            padding-top: 70px;
+        }
+
+        /* Left Panel: Progress */
+        .progress-panel {
+            width: 35%;
+            background: var(--gray-50);
+            border-right: 1px solid var(--gray-200);
+            padding: 3rem;
+            overflow-y: auto;
+        }
+
+        .progress-header {
+            margin-bottom: 3rem;
+        }
+
+        .progress-header h2 {
+            font-size: 1.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .progress-summary {
+            background: white;
+            padding: 1.5rem;
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 2rem;
+        }
+
+        .progress-bar-container {
+            height: 12px;
+            background: var(--gray-200);
+            border-radius: var(--radius-full);
+            margin: 1.5rem 0;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: var(--primary-blue);
+            width: 65%;
+            /* Dummy progress */
+            border-radius: var(--radius-full);
+            transition: width 1s ease-out;
+        }
+
+        .step-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .step-item {
+            display: flex;
+            gap: 1.25rem;
+            position: relative;
+        }
+
+        .step-item:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            left: 12px;
+            top: 30px;
+            bottom: -20px;
+            width: 2px;
+            background: var(--gray-200);
+        }
+
+        .step-icon {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: white;
+            border: 2px solid var(--gray-300);
+            flex-shrink: 0;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        .step-item.completed .step-icon {
+            background: var(--accent-green);
+            border-color: var(--accent-green);
+            color: white;
+        }
+
+        .step-item.current .step-icon {
+            background: white;
+            border-color: var(--primary-blue);
+            color: var(--primary-blue);
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        }
+
+        .step-info h4 {
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .step-info p {
+            font-size: 0.875rem;
+            color: var(--gray-500);
+        }
+
+        /* Right Panel: Tabs */
+        .content-panel {
+            flex: 1;
+            padding: 3rem;
+            overflow-y: auto;
+            background: white;
+        }
+
+        .tabs-header {
+            display: flex;
+            gap: 2rem;
+            border-bottom: 2px solid var(--gray-100);
+            margin-bottom: 3rem;
+        }
+
+        .tab-btn {
+            padding: 1rem 0;
+            font-weight: 600;
+            color: var(--gray-500);
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all var(--transition-fast);
+            font-size: 1.125rem;
+        }
+
+        .tab-btn.active {
+            color: var(--primary-blue);
+            border-bottom-color: var(--primary-blue);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .data-card {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-xl);
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .file-upload-zone {
+            border: 2px dashed var(--gray-300);
+            padding: 3.5rem;
+            border-radius: var(--radius-xl);
+            text-align: center;
+            background: var(--gray-50);
+            transition: all var(--transition-base);
+            cursor: pointer;
+        }
+
+        .file-upload-zone:hover {
+            border-color: var(--primary-blue);
+            background: white;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div style="display: flex; align-items: center; gap: 2rem;">
+                <a href="services-dashboard.html" id="back-btn" class="logo">
+                    <div class="logo-icon">←</div>
+                    <span id="nav-client-name">CA-copilot</span>
+                </a>
+                <div style="height: 24px; width: 1px; background: var(--gray-300);"></div>
+                <h3 id="nav-service-name" style="color: var(--gray-900);">Service Name</h3>
+            </div>
+            <div id="user-info" style="font-weight: 600; color: var(--gray-700);"></div>
+        </div>
+    </nav>
+
+    <div class="workview-layout">
+        <!-- Left: Progress -->
+        <div class="progress-panel">
+            <div class="progress-header">
+                <h2>Progress So Far</h2>
+                <div class="progress-summary">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-weight: 600; color: var(--gray-700);">Completion Status</span>
+                        <span style="font-weight: 800; color: var(--primary-blue);">65%</span>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar-fill"></div>
+                    </div>
+                    <p style="font-size: 0.875rem; color: var(--gray-500);">4 of 6 steps completed</p>
+                </div>
+            </div>
+
+            <div class="step-list">
+                <div class="step-item completed">
+                    <div class="step-icon">✓</div>
+                    <div class="step-info">
+                        <h4>Initial Data Connection</h4>
+                        <p>Tally sync successful</p>
+                    </div>
+                </div>
+                <div class="step-item completed">
+                    <div class="step-icon">✓</div>
+                    <div class="step-info">
+                        <h4>Download JSON Files</h4>
+                        <p>Offline data retrieved</p>
+                    </div>
+                </div>
+                <div class="step-item completed">
+                    <div class="step-icon">✓</div>
+                    <div class="step-info">
+                        <h4>Generate Statement 3</h4>
+                        <p>Ready for validation</p>
+                    </div>
+                </div>
+                <div class="step-item current">
+                    <div class="step-icon">4</div>
+                    <div class="step-info">
+                        <h4>GST Reconciliation</h4>
+                        <p>Verifying input tax credits</p>
+                    </div>
+                </div>
+                <div class="step-item">
+                    <div class="step-icon">5</div>
+                    <div class="step-info">
+                        <h4>Calculate Refund</h4>
+                        <p>Determining final amount</p>
+                    </div>
+                </div>
+                <div class="step-item">
+                    <div class="step-icon">6</div>
+                    <div class="step-info">
+                        <h4>Final Validation</h4>
+                        <p>Ready for filing</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Tabs Content -->
+        <div class="content-panel">
+            <div class="tabs-header">
+                <div class="tab-btn active" onclick="switchTab('overview')">Overview</div>
+                <div class="tab-btn" onclick="switchTab('files')">Refund Files</div>
+                <div class="tab-btn" onclick="switchTab('calculate')">Calculate Refund</div>
+                <div class="tab-btn" onclick="switchTab('recon')">GST Recon</div>
+            </div>
+
+            <div id="overview" class="tab-content active">
+                <div class="data-card">
+                    <h2 style="margin-bottom: 2rem;">Service Overview</h2>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem;">
+                        <div>
+                            <p style="color: var(--gray-500); margin-bottom: 0.5rem;">Current Status</p>
+                            <h3 style="color: var(--primary-blue);">In Progress - GST Recon</h3>
+                        </div>
+                        <div>
+                            <p style="color: var(--gray-500); margin-bottom: 0.5rem;">Estimated Completion</p>
+                            <h3>Oct 24, 2025</h3>
+                        </div>
+                        <div>
+                            <p style="color: var(--gray-500); margin-bottom: 0.5rem;">Last Updated</p>
+                            <h3>2 hours ago</h3>
+                        </div>
+                        <div>
+                            <p style="color: var(--gray-500); margin-bottom: 0.5rem;">Assigned Professional</p>
+                            <h3>AI Assistant + CA Rajesh</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary btn-large">Do GST Refund Automation</button>
+            </div>
+
+            <div id="files" class="tab-content">
+                <div class="data-card">
+                    <h2 style="margin-bottom: 1.5rem;">Required Documents</h2>
+                    <p style="color: var(--gray-600); margin-bottom: 2.5rem;">Please upload the necessary JSON or CSV
+                        exports from the GST portal.</p>
+
+                    <div class="file-upload-zone">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">📁</div>
+                        <h3 style="margin-bottom: 0.5rem;">Click or Drag to Upload</h3>
+                        <p style="color: var(--gray-500);">Support GSTR-2A, 2B, and GSTR-1 files</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="calculate" class="tab-content">
+                <div class="data-card">
+                    <h2>Refund Calculation</h2>
+                    <p>The system is currently reconciling data to calculate the final refund amount.</p>
+                </div>
+            </div>
+
+            <div id="recon" class="tab-content">
+                <div class="data-card">
+                    <h2>Recolinciliation Status</h2>
+                    <p>Total ITC Matched: 95%</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const clientId = urlParams.get('clientId');
+        const serviceName = urlParams.get('service');
+        const user = JSON.parse(localStorage.getItem('user'));
+
+        document.getElementById('user-info').textContent = user ? user.name : '';
+        document.getElementById('nav-service-name').textContent = serviceName ? serviceName.toUpperCase().replace('-', ' ') : 'GST REFUND';
+        document.getElementById('back-btn').href = `services-dashboard.html?clientId=${clientId}`;
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+            event.target.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        }
+    </script>
+</body>
+
+</html>
