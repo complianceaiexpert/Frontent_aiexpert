@@ -178,6 +178,13 @@
 
     <script src="api_config.js"></script>
     <script>
+        // Check if already logged in
+        const existingUser = localStorage.getItem('user');
+        const existingToken = localStorage.getItem('access_token');
+        if (existingUser && existingToken) {
+            window.location.href = 'clients.html';
+        }
+
         async function handleSignIn(event) {
             event.preventDefault();
             const email = document.getElementById('email').value;

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - Compliance AI Expert</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@700;800&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="logo">
+                <div class="logo-icon">CA</div>
+                <span style="font-weight: 700; color: #1e3a8a;">ComplianceAIexpert</span>
+            </a>
+            <div class="navbar-profile" onclick="window.location.href='profile.html'">
+                <div class="user-avatar-small" id="nav-avatar">U</div>
+                <span id="user-info" class="user-name" style="font-weight: 600; color: var(--gray-700);"></span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="profile-container">
+        <!-- Profile Header -->
+        <div class="profile-header">
+            <div class="profile-avatar-wrapper">
+                <div class="profile-avatar" id="header-avatar-placeholder"
+                    style="display: flex; align-items: center; justify-content: center; font-size: 3rem; font-weight: bold; color: var(--gray-500); background: white;">
+                    U</div>
+            </div>
+            <h1 class="profile-name" id="profile-name">Loading...</h1>
+            <p class="profile-role" id="profile-role">Chartered Accountant</p>
+            <button class="btn btn-primary" onclick="alert('Edit Profile functionality coming soon!')">Edit
+                Profile</button>
+        </div>
+
+        <div class="profile-grid">
+            <!-- Subscription Card -->
+            <div class="profile-card">
+                <div class="profile-card-header">
+                    <h3 class="profile-card-title">Subscription: <span
+                            style="font-weight: 400; color: var(--gray-600);">Active - Pro Annual</span></h3>
+                    <a href="#" style="font-size: 0.875rem; font-weight: 600;">Manage ></a>
+                </div>
+
+                <div class="subscription-status">
+                    <div class="subscription-badge">
+                        <span>✓</span> Subscription: Active - Pro Annual
+                    </div>
+                </div>
+
+                <div style="margin-top: 2rem;">
+                    <div
+                        style="display: flex; justify-content: space-between; font-weight: 600; color: var(--gray-700); margin-bottom: 0.5rem;">
+                        <span>Active - Pro Annual</span>
+                        <span>8 / 10</span>
+                    </div>
+                    <div class="usage-bar-container">
+                        <div class="usage-bar-fill" style="width: 80%;"></div>
+                    </div>
+                    <p style="font-size: 0.875rem; color: var(--gray-500);">8 / 10 Client Slots Used</p>
+                </div>
+            </div>
+
+            <!-- Basic Details Card -->
+            <div class="profile-card">
+                <div class="profile-card-header">
+                    <h3 class="profile-card-title">Basic Details</h3>
+                </div>
+
+                <div class="info-row">
+                    <span class="info-label">Email</span>
+                    <span class="info-value" id="detail-email">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Phone</span>
+                    <span class="info-value" id="detail-phone">+91 9320 332 532</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Firm Name</span>
+                    <span class="info-value" id="detail-firm">Bhatia & Associates</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Team Role</span>
+                    <span class="info-value" id="detail-role">Admin</span>
+                </div>
+            </div>
+
+            <!-- Linked Apps Card -->
+            <div class="profile-card">
+                <div class="profile-card-header">
+                    <h3 class="profile-card-title">Linked Apps</h3>
+                </div>
+
+                <div class="linked-app">
+                    <span style="font-weight: 700; font-size: 1.25rem; font-style: italic; color: #8B5CF6;">Tally</span>
+                    <button class="btn btn-primary btn-small"
+                        style="background: linear-gradient(135deg, var(--primary-blue), var(--primary-blue-dark)); box-shadow: none;">+
+                        Disconnect</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="api_config.js"></script>
+    <script>
+        // Check Auth
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (!user) window.location.href = 'sign-in.html';
+
+        // Update UI
+        const name = user.full_name || user.name || 'User';
+        document.getElementById('profile-name').textContent = name;
+        document.getElementById('user-info').textContent = `Welcome, ${name}`;
+
+        const initials = name.charAt(0).toUpperCase();
+        document.getElementById('nav-avatar').textContent = initials;
+        document.getElementById('header-avatar-placeholder').textContent = initials;
+
+        // If we had an avatar_url, we would show the img tag, but for now just the placeholder as requested "Don't create the avatar"
+        // document.getElementById('header-avatar').src = ... 
+
+        document.getElementById('detail-email').textContent = user.id || user.username || user.email || '';
+        document.getElementById('detail-phone').textContent = user.phone_number || '';
+        document.getElementById('detail-firm').textContent = user.firm_name || ''; // Note: firm_name might be on user or fetched separately. Assuming user object has it for now based on /me schema.
+        document.getElementById('profile-role').textContent = user.job_title || user.role || 'Staff';
+        document.getElementById('detail-role').textContent = user.role || '';
+
+        // Subscription
+        const plan = user.subscription_plan || 'Free';
+        document.getElementById('sub-header-status').textContent = plan;
+        document.getElementById('sub-badge').innerHTML = `<span>✓</span> Subscription: ${plan}`;
+        document.getElementById('sub-details').textContent = `${plan} Plan`;
+    </script>
+</body>
+
+</html>
