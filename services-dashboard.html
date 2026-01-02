@@ -313,7 +313,8 @@
         async function loadClientInfo() {
             try {
                 const response = await authFetch(`/clients/${clientId}`);
-                if (!response.ok) throw new Error('Failed to load client');
+                if (!response) return; // Auth redirected
+                if (!response.ok) throw new Error(`Failed to load client (${response.status})`);
 
                 const client = await response.json();
                 document.getElementById('selected-client-name').textContent = client.name;
@@ -325,8 +326,19 @@
                 clientServices = client.services || [];
                 renderActiveServices();
             } catch (err) {
-                console.error(err);
-                alert('Could not load client details.');
+                console.error('Client Load Error:', err);
+                const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+                if (err.message.includes('401')) {
+                    alert('Session expired. Please sign in again.');
+                    window.location.href = 'sign-in.html';
+                } else if (err.message.includes('404')) {
+                    alert('Client not found. It may have been deleted.');
+                    window.location.href = 'clients.html';
+                } else if (err.message.includes('502') || err.message.includes('503')) {
+                    alert('Backend is updating or starting up. Please wait 1-2 minutes and refresh.');
+                } else {
+                    alert(`Could not load client. Error: ${err.message}. ${isLocal ? 'Check local backend.' : 'Check internet or backend status.'}`);
+                }
             }
         }
 
