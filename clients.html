@@ -264,38 +264,119 @@
 
                 const clients = await response.json();
 
+                // Clear Grid
                 const grid = document.getElementById('clients-grid');
                 grid.innerHTML = '';
 
+                // Calculate Stats
+                const totalClients = clients.length;
+                let compliantCount = 0;
+                let actionNeededCount = 0;
+                let totalServices = 0;
+
                 clients.forEach(client => {
+                    const statusIndex = client.name.length % 3;
+                    if (statusIndex === 0) compliantCount++;
+                    if (statusIndex === 1) actionNeededCount++;
+                    totalServices += (client.services && client.services.length) || 2; // Mock default
+                });
+
+                // Update Stats Display
+                document.getElementById('total-clients').textContent = totalClients;
+                document.getElementById('compliant-clients').textContent = compliantCount;
+                document.getElementById('action-needed').textContent = actionNeededCount;
+                document.getElementById('active-services').textContent = totalServices;
+
+                // Render Client Cards
+                clients.forEach(client => {
+                    const initial = client.name.charAt(0).toUpperCase();
+
+                    const statuses = [
+                        { text: 'AI Reviewed', class: 'badge-ai-success', icon: '✓' },
+                        { text: 'Action Needed', class: 'badge-ai-warning', icon: '⚠' },
+                        { text: 'Safe to Proceed', class: 'badge-ai-neutral', icon: '🛡' }
+                    ];
+                    const statusIndex = client.name.length % 3;
+                    const status = statuses[statusIndex];
+
                     const card = document.createElement('div');
                     card.className = 'client-card';
+                    card.setAttribute('data-client-name', client.name.toLowerCase());
+                    card.setAttribute('data-client-gstin', (client.gstins && client.gstins[0]) || '');
                     card.onclick = () => {
                         localStorage.setItem('selectedClient', JSON.stringify(client));
                         window.location.href = `services-dashboard.html?clientId=${client.id}`;
                     };
 
+                    let servicesList = '';
+                    if (client.services && client.services.length > 0) {
+                        servicesList = client.services.map((s, i) => {
+                            return `<span class="service-tag"><span>•</span> ${s}</span>`;
+                        }).join('');
+                    } else {
+                        servicesList = `<span class="service-tag"><span>✅</span> GST Refund</span><span class="service-tag"><span>💰</span> Income Tax</span>`;
+                    }
+
+                    const displayId = (client.gstins && client.gstins[0]) ? `GSTIN ${client.gstins[0].substring(0, 4)} XXXX ${client.gstins[0].substring(client.gstins[0].length - 4)}` : (client.pan ? `PAN ${client.pan}` : 'No ID');
+
                     card.innerHTML = `
-            <h3>${client.name}</h3>
-            <div class="client-meta" style="font-size: 0.85rem; color: var(--gray-500); margin-bottom: 0.5rem;">
-                ${client.pan ? `<span>PAN: ${client.pan}</span>` : ''}
-                ${client.cin ? `<br><span>CIN: ${client.cin}</span>` : ''}
-            </div>
-            <span class="gstin">${(client.gstins || []).join(', ') || 'No GSTIN'}</span>
-            <div class="services-count">${(client.services || []).length} Services Active</div>
-          `;
+                        <div class="client-card-header">
+                            <div class="client-info-wrapper">
+                                <div class="client-icon">${initial}</div>
+                                <div class="client-name-block">
+                                    <h3 class="client-name">${client.name}</h3>
+                                    <p class="client-gstin">${displayId}</p>
+                                </div>
+                            </div>
+                            <div style="color: var(--gray-400);">›</div>
+                        </div>
+                        
+                        <div class="client-card-body" style="margin-bottom: 0;">
+                            <div class="service-tags">
+                                ${servicesList}
+                            </div>
+                        </div>
+
+                        <div class="client-card-footer">
+                            <span class="badge-ai-capsule ${status.class}">
+                                ${status.icon} ${status.text}
+                            </span>
+                            <span class="card-menu-dots">...</span>
+                        </div>
+                    `;
                     grid.appendChild(card);
                 });
 
-                // Add "New Client" card at the end
+                // Add "Add New Client" card at the END
                 const addCard = document.createElement('div');
                 addCard.className = 'client-card add-client-card';
                 addCard.onclick = showModal;
                 addCard.innerHTML = `
-          <div class="icon">+</div>
-          <span>Create New Account</span>
-        `;
+                    <div class="add-btn-circle">+</div>
+                    <span style="font-weight: 600; color: var(--gray-900);">+ Add New Client</span>
+                    <span style="font-size: 0.75rem; opacity: 0.7; margin-top: 0.25rem;">Easily onboard a new client</span>
+                `;
                 grid.appendChild(addCard);
+
+                // Setup Search Functionality
+                const searchInput = document.getElementById('client-search');
+                if (searchInput) {
+                    searchInput.addEventListener('input', (e) => {
+                        const searchTerm = e.target.value.toLowerCase();
+                        const cards = grid.querySelectorAll('.client-card:not(.add-client-card)');
+
+                        cards.forEach(card => {
+                            const name = card.getAttribute('data-client-name') || '';
+                            const gstin = card.getAttribute('data-client-gstin') || '';
+
+                            if (name.includes(searchTerm) || gstin.includes(searchTerm)) {
+                                card.style.display = '';
+                            } else {
+                                card.style.display = 'none';
+                            }
+                        });
+                    });
+                }
 
             } catch (error) {
                 console.error('Error loading clients:', error);

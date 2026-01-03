@@ -799,168 +799,305 @@ img {
   margin-bottom: var(--space-md);
 }
 
+/* ===================================
+   Visual Match - Client Workspace
+   =================================== */
+
+body {
+  background: linear-gradient(135deg, #E0E7FF 0%, #F5F3FF 100%);
+  /* Soft purple/blue gradient */
+  min-height: 100vh;
+}
+
+.client-workspace-header {
+  margin-bottom: var(--space-2xl);
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.workspace-title-section {
+  margin-bottom: 2rem;
+}
+
+.client-workspace-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--gray-900);
+  margin-bottom: 0.75rem;
+  font-family: var(--font-display);
+}
+
+.client-workspace-subtitle {
+  font-size: 1rem;
+  color: var(--gray-600);
+  font-weight: 400;
+  line-height: 1.6;
+  max-width: 800px;
+}
+
+/* Stats Overview Cards */
+.workspace-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: 0 2px 8px -2px rgba(0, 0, 0, 0.08);
+  transition: all var(--transition-base);
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.12);
+}
+
+.stat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: white;
+  flex-shrink: 0;
+}
+
+.stat-content {
+  flex: 1;
+}
+
+.stat-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--gray-900);
+  line-height: 1;
+  margin-bottom: 0.25rem;
+}
+
+.stat-label {
+  font-size: 0.875rem;
+  color: var(--gray-500);
+  font-weight: 500;
+}
+
+/* Header Controls Row */
+.workspace-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.control-buttons {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.search-bar-container {
+  position: relative;
+  flex: 1;
+  max-width: 500px;
+  min-width: 280px;
+}
+
+.search-bar-input {
+  width: 100%;
+  padding: 0.75rem 1rem 0.75rem 2.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  background: white;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.05);
+  outline: none;
+  transition: all var(--transition-base);
+}
+
+.search-bar-input:focus {
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+  border-color: var(--primary-blue);
+}
+
+.search-icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--gray-400);
+  font-size: 1rem;
+}
+
 /* Profile Page Styles */
 .profile-container {
-    max-width: 1200px;
-    margin: 80px auto;
-    padding: 2rem;
+  max-width: 1200px;
+  margin: 80px auto;
+  padding: 2rem;
 }
 
 .profile-header {
-    background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%);
-    border-radius: var(--radius-2xl);
-    padding: 3rem;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-    margin-bottom: 2rem;
+  background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%);
+  border-radius: var(--radius-2xl);
+  padding: 3rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 2rem;
 }
 
 .profile-avatar-wrapper {
-    position: relative;
-    width: 120px;
-    height: 120px;
-    margin: 0 auto 1.5rem;
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 1.5rem;
 }
 
 .profile-avatar {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    border: 4px solid white;
-    box-shadow: var(--shadow-lg);
-    object-fit: cover;
-    background: var(--gray-200);
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 4px solid white;
+  box-shadow: var(--shadow-lg);
+  object-fit: cover;
+  background: var(--gray-200);
 }
 
 .profile-name {
-    font-size: 2rem;
-    font-weight: 700;
-    color: var(--gray-900);
-    margin-bottom: 0.5rem;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--gray-900);
+  margin-bottom: 0.5rem;
 }
 
 .profile-role {
-    font-size: 1.125rem;
-    color: var(--gray-600);
-    margin-bottom: 1.5rem;
+  font-size: 1.125rem;
+  color: var(--gray-600);
+  margin-bottom: 1.5rem;
 }
 
 .profile-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    gap: 2rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
 }
 
 .profile-card {
-    background: white;
-    border: 1px solid var(--gray-200);
-    border-radius: var(--radius-xl);
-    padding: 2rem;
-    box-shadow: var(--shadow-sm);
+  background: white;
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-xl);
+  padding: 2rem;
+  box-shadow: var(--shadow-sm);
 }
 
 .profile-card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.5rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid var(--gray-100);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--gray-100);
 }
 
 .profile-card-title {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: var(--gray-900);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--gray-900);
 }
 
 .info-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 1rem 0;
-    border-bottom: 1px solid var(--gray-50);
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--gray-50);
 }
 
 .info-row:last-child {
-    border-bottom: none;
+  border-bottom: none;
 }
 
 .info-label {
-    color: var(--gray-600);
-    font-weight: 500;
+  color: var(--gray-600);
+  font-weight: 500;
 }
 
 .info-value {
-    color: var(--gray-900);
-    font-weight: 600;
-    text-align: right;
+  color: var(--gray-900);
+  font-weight: 600;
+  text-align: right;
 }
 
 .subscription-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    background: #ECFDF5;
-    color: #059669;
-    border-radius: var(--radius-full);
-    font-weight: 600;
-    font-size: 0.875rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: #ECFDF5;
+  color: #059669;
+  border-radius: var(--radius-full);
+  font-weight: 600;
+  font-size: 0.875rem;
 }
 
 .usage-bar-container {
-    background: var(--gray-100);
-    border-radius: var(--radius-full);
-    height: 8px;
-    margin: 1rem 0 0.5rem;
-    overflow: hidden;
+  background: var(--gray-100);
+  border-radius: var(--radius-full);
+  height: 8px;
+  margin: 1rem 0 0.5rem;
+  overflow: hidden;
 }
 
 .usage-bar-fill {
-    background: var(--primary-blue);
-    height: 100%;
-    border-radius: var(--radius-full);
-    transition: width 0.3s ease;
+  background: var(--primary-blue);
+  height: 100%;
+  border-radius: var(--radius-full);
+  transition: width 0.3s ease;
 }
 
 .linked-app {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem;
-    background: var(--gray-50);
-    border-radius: var(--radius-lg);
-    margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: var(--gray-50);
+  border-radius: var(--radius-lg);
+  margin-bottom: 1rem;
 }
 
 .linked-app-logo {
-    height: 32px;
-    width: auto;
+  height: 32px;
+  width: auto;
 }
 
 .navbar-profile {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  cursor: pointer;
 }
 
 .navbar-profile:hover .user-name {
-    color: var(--primary-blue);
+  color: var(--primary-blue);
 }
 
 .navbar-profile .user-avatar-small {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: var(--primary-blue);
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 600;
-    font-size: 0.875rem;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--primary-blue);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.875rem;
 }
 
 .message-text:last-child {
