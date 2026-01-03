@@ -105,79 +105,38 @@
             margin-bottom: 1.5rem;
         }
 
-        .page-description {
-            background: linear-gradient(135deg, #F0F9FF, #EFF6FF);
-            padding: 1.5rem;
-            border-radius: 12px;
-            border-left: 4px solid var(--primary-blue);
+        .page-description-styled {
+            display: grid;
+            gap: 1.5rem;
             margin-top: 1.5rem;
         }
 
-        .page-description p {
-            font-size: 0.9375rem;
-            color: var(--gray-700);
-            line-height: 1.7;
-            margin-bottom: 0.75rem;
-        }
-
-        .page-description p:last-child {
-            margin-bottom: 0;
-        }
-
-        /* Client Overview Section */
-        .client-overview-section {
-            background: white;
-            border-radius: 16px;
-            padding: 2rem;
-            margin-bottom: 3rem;
-            box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.08);
-        }
-
-        .client-overview-section h3 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--gray-900);
-            margin-bottom: 1rem;
-        }
-
-        .overview-text {
-            font-size: 0.9375rem;
-            color: var(--gray-600);
-            line-height: 1.7;
-            margin-bottom: 2rem;
-        }
-
-        .overview-highlights {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .highlight-item {
+        .description-block {
             display: flex;
-            gap: 1rem;
-            padding: 1.25rem;
-            background: var(--gray-50);
+            gap: 1.25rem;
+            padding: 1.75rem;
+            background: white;
             border-radius: 12px;
-            border: 1px solid var(--gray-100);
+            border-left: 4px solid var(--primary-blue);
+            box-shadow: 0 2px 8px -2px rgba(0, 0, 0, 0.08);
         }
 
-        .highlight-icon {
+        .description-icon {
             font-size: 2rem;
             flex-shrink: 0;
         }
 
-        .highlight-item strong {
-            display: block;
-            font-size: 0.9375rem;
+        .description-block h4 {
+            font-size: 1.125rem;
+            font-weight: 700;
             color: var(--gray-900);
-            margin-bottom: 0.25rem;
+            margin-bottom: 0.5rem;
         }
 
-        .highlight-item p {
-            font-size: 0.8125rem;
+        .description-block p {
+            font-size: 0.9375rem;
             color: var(--gray-600);
-            line-height: 1.5;
+            line-height: 1.7;
             margin: 0;
         }
 
@@ -233,6 +192,14 @@
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.05em;
+        }
+
+        .client-overview-inline {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+            line-height: 1.6;
+            margin-top: 0.75rem;
+            max-width: 600px;
         }
 
         .client-details-body {
@@ -435,11 +402,6 @@
             border: 2px solid var(--gray-100);
             border-radius: 12px;
             transition: all var(--transition-base);
-        }
-
-        .view-mode-card:hover {
-            border-color: var(--primary-blue-light);
-            box-shadow: 0 8px 16px -4px rgba(0, 0, 0, 0.1);
         }
 
         .view-mode-icon {
@@ -661,6 +623,9 @@
                 <div class="client-main-info">
                     <h2 id="client-details-name">Loading...</h2>
                     <span class="client-entity-badge" id="client-entity-type">Individual</span>
+                    <p class="client-overview-inline">This client profile represents a unique business entity with
+                        specific compliance requirements and regulatory obligations. All services are tailored to meet
+                        the client's industry-specific needs, business structure, and jurisdictional requirements.</p>
                 </div>
                 <div class="client-compliance-badge" id="compliance-status">
                     <span class="badge-ai-capsule badge-ai-success">
@@ -699,43 +664,6 @@
                             <div class="stat-value-small" id="last-updated">Today</div>
                             <div class="stat-label-small">Last Updated</div>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Client Overview Section -->
-        <div class="client-overview-section">
-            <h3>📋 Client Overview</h3>
-            <p class="overview-text">
-                This client profile represents a unique business entity with specific compliance requirements and
-                regulatory obligations.
-                All services are tailored to meet the client's industry-specific needs, business structure, and
-                jurisdictional requirements.
-                Our AI-powered platform continuously monitors regulatory changes and proactively alerts you to upcoming
-                deadlines,
-                ensuring your client remains compliant across all active services.
-            </p>
-            <div class="overview-highlights">
-                <div class="highlight-item">
-                    <span class="highlight-icon">🔒</span>
-                    <div>
-                        <strong>Data Security</strong>
-                        <p>All client data is encrypted and stored securely with bank-level security protocols</p>
-                    </div>
-                </div>
-                <div class="highlight-item">
-                    <span class="highlight-icon">🤖</span>
-                    <div>
-                        <strong>AI-Powered Insights</strong>
-                        <p>Machine learning algorithms analyze patterns and provide intelligent recommendations</p>
-                    </div>
-                </div>
-                <div class="highlight-item">
-                    <span class="highlight-icon">📊</span>
-                    <div>
-                        <strong>Real-Time Tracking</strong>
-                        <p>Monitor service progress, compliance status, and pending actions in real-time</p>
                     </div>
                 </div>
             </div>
@@ -925,11 +853,19 @@
             const serviceData = {
                 'GST Refund': {
                     icon: '🧾',
-                    desc: 'Comprehensive GST return filing and refund management service. Includes GSTR-1, GSTR-3B, and annual return filing with automated input-output reconciliation, ITC claim optimization, and error detection. Our AI engine analyzes your transactions to identify maximum eligible refunds, flag potential mismatches, and ensure 100% compliance with GST regulations. Features include real-time GSTIN validation, automated late fee calculation, and intelligent suggestions for input tax credit optimization.'
+                    desc: 'GST return filing (GSTR-1, GSTR-3B) with automated reconciliation, ITC optimization, and AI-powered error detection for maximum refunds.'
                 },
                 'GST Filing': {
                     icon: '🧾',
-                    desc: 'Complete GST return filing and refund management service. Includes GSTR-1, GSTR-3B, and annual return filing with automated input-output reconciliation, ITC claim optimization, and error detection. Our AI engine analyzes your transactions to identify maximum eligible refunds, flag potential mismatches, and ensure 100% compliance with GST regulations. Features include real-time GSTIN validation, automated late fee calculation, and intelligent suggestions for input tax credit optimization.'
+                    desc: 'GST return filing (GSTR-1, GSTR-3B) with automated reconciliation, ITC optimization, and AI-powered error detection for maximum refunds.'
+                },
+                'Invoice': {
+                    icon: '📝',
+                    desc: 'Professional invoice generation and management system. Create GST-compliant invoices, track payments, manage receivables, and automate invoice delivery. Features include customizable templates, multi-currency support, recurring invoices, and real-time payment tracking with automated reminders.'
+                },
+                'Taxation': {
+                    icon: '📊',
+                    desc: 'Comprehensive tax planning and advisory services covering direct and indirect taxes. Includes tax structure optimization, investment planning for tax efficiency, capital gains management, and strategic tax advisory. Our AI-powered tax calculator provides scenario analysis and recommendations for minimizing tax liability while ensuring full compliance.'
                 },
                 'Income Tax': {
                     icon: '💰',
