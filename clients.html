@@ -189,20 +189,75 @@
     </nav>
 
     <div class="clients-container">
-        <div class="clients-header">
-            <div class="clients-header-top">
-                <h1>Select Client</h1>
-                <button class="btn btn-primary" onclick="showModal()">+ Add Client</button>
+        <!-- Enhanced Header -->
+        <div class="client-workspace-header">
+            <div class="workspace-title-section">
+                <h1 class="client-workspace-title">Client Workspace</h1>
+                <p class="client-workspace-subtitle">Centralized hub for managing all your clients with AI-powered
+                    compliance monitoring. Track status, manage services, and ensure regulatory adherence across your
+                    entire portfolio.</p>
             </div>
-            <p>Manage your client portfolio and services</p>
+
+            <!-- Stats Overview -->
+            <div class="workspace-stats">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #3B82F6, #2563EB);">👥</div>
+                    <div class="stat-content">
+                        <div class="stat-value" id="total-clients">0</div>
+                        <div class="stat-label">Total Clients</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #10B981, #059669);">✓</div>
+                    <div class="stat-content">
+                        <div class="stat-value" id="compliant-clients">0</div>
+                        <div class="stat-label">Compliant</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #F59E0B, #D97706);">⚠</div>
+                    <div class="stat-content">
+                        <div class="stat-value" id="action-needed">0</div>
+                        <div class="stat-label">Action Needed</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #8B5CF6, #7C3AED);">📊</div>
+                    <div class="stat-content">
+                        <div class="stat-value" id="active-services">0</div>
+                        <div class="stat-label">Active Services</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Controls Row -->
+            <div class="workspace-controls">
+                <div class="search-bar-container">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" class="search-bar-input" id="client-search"
+                        placeholder="Search by client name, GSTIN, or PAN...">
+                </div>
+                <div class="control-buttons">
+                    <button class="btn btn-secondary"
+                        style="border-radius: 9999px; padding: 0.625rem 1.25rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <span>🔽</span> Filter
+                    </button>
+                    <button class="btn btn-primary" onclick="showModal()"
+                        style="border-radius: 9999px; padding: 0.625rem 1.5rem;">+ Add New Client</button>
+                </div>
+            </div>
         </div>
 
         <div id="clients-grid" class="clients-grid">
             <!-- Clients will be loaded here -->
         </div>
 
-        <div style="margin-top: 4rem; text-align: center; border-top: 1px solid var(--gray-100); padding-top: 2rem;">
-            <p style="color: var(--gray-400); font-size: 0.875rem;">Client references available on request</p>
+        <div class="pagination-footer">
+            <span>Showing 1 – 9 of 12 clients</span>
+            <div class="pagination-controls">
+                <button class="page-btn">&lt;</button>
+                <button class="page-btn">&gt;</button>
+            </div>
         </div>
     </div>
 
