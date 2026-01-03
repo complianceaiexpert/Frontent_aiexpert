@@ -212,6 +212,7 @@
                     if (userResponse.ok) {
                         const userData = await userResponse.json();
                         localStorage.setItem('user', JSON.stringify(userData));
+                        localStorage.setItem('lastActivity', Date.now().toString());
                         window.location.href = 'clients.html';
                     }
                 } else {

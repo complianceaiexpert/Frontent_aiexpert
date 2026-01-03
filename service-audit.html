@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audit Service - Compliance AI Expert</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        .service-page {
+            display: flex;
+            min-height: 100vh;
+            background: #f5f7fa;
+            padding-top: 70px;
+        }
+
+        .workflow-panel {
+            width: 50%;
+            background: white;
+            padding: 2rem;
+            border-right: 1px solid var(--gray-200);
+            overflow-y: auto;
+        }
+
+        .chatbot-panel {
+            width: 50%;
+            background: #f9fafb;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .service-header {
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid var(--gray-200);
+        }
+
+        .service-header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .service-header .subtitle {
+            color: var(--gray-600);
+            font-size: 1rem;
+        }
+
+        .workflow-steps {
+            margin-bottom: 2rem;
+        }
+
+        .workflow-step {
+            background: var(--gray-50);
+            border-radius: var(--radius-lg);
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--gray-300);
+            transition: all var(--transition-base);
+        }
+
+        .workflow-step.completed {
+            border-left-color: var(--accent-green);
+            background: #F0FDF4;
+        }
+
+        .workflow-step.in-progress {
+            border-left-color: var(--primary-blue);
+            background: #EFF6FF;
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+        }
+
+        .step-title {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--gray-900);
+        }
+
+        .step-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .status-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+        }
+
+        .status-icon.completed {
+            background: var(--accent-green);
+            color: white;
+        }
+
+        .status-icon.pending {
+            background: var(--gray-300);
+            color: var(--gray-600);
+        }
+
+        .status-icon.in-progress {
+            background: var(--primary-blue);
+            color: white;
+            animation: pulse 2s infinite;
+        }
+
+        .step-description {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+            margin-bottom: 0.75rem;
+        }
+
+        .action-button-container {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--gray-200);
+        }
+
+        .primary-action-btn {
+            width: 100%;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-green-dark));
+            color: white;
+            border: none;
+            border-radius: var(--radius-lg);
+            font-size: 1.125rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all var(--transition-base);
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        /* Chatbot Styles */
+        .chat-header {
+            background: white;
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--gray-200);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .chat-header h2 {
+            font-size: 1.25rem;
+            margin-bottom: 0.25rem;
+            color: var(--gray-900);
+        }
+
+        .chat-header p {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .chat-message {
+            display: flex;
+            gap: 1rem;
+            animation: fadeInUp 0.3s ease-out;
+        }
+
+        .chat-message.user {
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            font-size: 1.125rem;
+        }
+
+        .chat-message.assistant .message-avatar {
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-green-dark));
+        }
+
+        .chat-message.user .message-avatar {
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-blue-dark));
+        }
+
+        .message-bubble {
+            max-width: 75%;
+            background: white;
+            padding: 1rem 1.25rem;
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-sm);
+            line-height: 1.6;
+        }
+
+        .chat-message.user .message-bubble {
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-blue-dark));
+            color: white;
+        }
+
+        .chat-input-area {
+            background: white;
+            padding: 1.5rem 2rem;
+            border-top: 1px solid var(--gray-200);
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .input-container {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-end;
+        }
+
+        .input-wrapper {
+            flex: 1;
+            position: relative;
+        }
+
+        .chat-input {
+            width: 100%;
+            padding: 1rem 3rem 1rem 1rem;
+            border: 2px solid var(--gray-300);
+            border-radius: var(--radius-lg);
+            font-size: 1rem;
+            font-family: var(--font-sans);
+            resize: none;
+            min-height: 50px;
+            max-height: 150px;
+            transition: border-color var(--transition-fast);
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+        }
+
+        .send-btn {
+            padding: 1rem 2rem;
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            border-radius: var(--radius-lg);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="logo">
+                <div class="logo-icon">CE</div>
+                <span style="font-weight: 700; color: #1e3a8a;">ComplianceAIexpert</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="web-view-audit.html" id="back-link">← Back to Services</a></li>
+                <li><a href="index.html">Home</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Service Page Split Layout -->
+    <div class="service-page">
+        <!-- Left Panel: Workflow Steps -->
+        <div class="workflow-panel">
+            <div class="service-header">
+                <h1 id="service-title-display">
+                    <span>🔍</span>
+                    <span>Audit Service</span>
+                </h1>
+                <p id="client-info-display" class="subtitle">Loading client details...</p>
+            </div>
+
+            <!-- Workflow Steps -->
+            <div class="workflow-steps">
+                <div class="workflow-step completed">
+                    <div class="step-header">
+                        <div class="step-title">
+                            <span>📋</span>
+                            <span>Engagement Letter</span>
+                        </div>
+                        <div class="step-status">
+                            <div class="status-icon completed">✓</div>
+                            <span style="color: var(--accent-green); font-weight: 600;">Completed</span>
+                        </div>
+                    </div>
+                    <div class="step-description">Engagement terms agreed and signed</div>
+                </div>
+
+                <div class="workflow-step" id="step-controls">
+                    <div class="step-header">
+                        <div class="step-title">
+                            <span>🛡️</span>
+                            <span>Internal Control Check</span>
+                        </div>
+                        <div class="step-status">
+                            <div class="status-icon pending" id="icon-controls">○</div>
+                            <span style="color: var(--gray-500); font-weight: 600;" id="text-controls">Pending</span>
+                        </div>
+                    </div>
+                    <div class="step-description">Evaluate internal financial controls</div>
+                </div>
+
+                <div class="workflow-step" id="step-testing">
+                    <div class="step-header">
+                        <div class="step-title">
+                            <span>🧪</span>
+                            <span>Substantive Testing</span>
+                        </div>
+                        <div class="step-status">
+                            <div class="status-icon pending" id="icon-testing">○</div>
+                            <span style="color: var(--gray-500); font-weight: 600;" id="text-testing">Pending</span>
+                        </div>
+                    </div>
+                    <div class="step-description">Verify transactions and balances</div>
+                </div>
+
+                <div class="workflow-step" id="step-report">
+                    <div class="step-header">
+                        <div class="step-title">
+                            <span>📝</span>
+                            <span>Generate Audit Report</span>
+                        </div>
+                        <div class="step-status">
+                            <div class="status-icon pending" id="icon-report">○</div>
+                            <span style="color: var(--gray-500); font-weight: 600;" id="text-report">Pending</span>
+                        </div>
+                    </div>
+                    <div class="step-description">Draft final audit report and opinion</div>
+                </div>
+            </div>
+
+            <!-- Primary Action Button -->
+            <div class="action-button-container">
+                <button class="primary-action-btn" onclick="doAudit()">
+                    <span>🚀</span>
+                    <span>Start Audit</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Right Panel: AI Chatbot -->
+        <div class="chatbot-panel">
+            <div class="chat-header">
+                <h2>🤖 Audit Assistant</h2>
+                <p>Help with standards, risks, and procedures</p>
+            </div>
+
+            <div class="chat-messages" id="chat-messages">
+                <div class="chat-message assistant">
+                    <div class="message-avatar">🤖</div>
+                    <div class="message-bubble">
+                        <strong>Hello! I'm your Audit expert.</strong>
+                        I can help with:
+                        <ul style="margin: 0.5rem 0 0 1.25rem; padding: 0;">
+                            <li>Audit Standards (SA)</li>
+                            <li>Risk Assessment</li>
+                            <li>Sampling methodologies</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chat-input-area">
+                <div class="input-container">
+                    <div class="input-wrapper">
+                        <textarea class="chat-input" id="chat-input"
+                            placeholder="Ask about audit procedures or risks..." rows="1"
+                            onkeypress="handleKeyPress(event)"></textarea>
+                    </div>
+                    <button class="send-btn" onclick="sendMessage()">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="api_config.js"></script>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const clientId = urlParams.get('clientId');
+        const user = JSON.parse(localStorage.getItem('user'));
+
+        document.getElementById('back-link').href = `web-view-audit.html?clientId=${clientId}`;
+
+        let conversationId = null;
+
+        async function initPage() {
+            if (!clientId) return;
+            await Promise.all([
+                loadClientHeader(),
+                initConversation()
+            ]);
+        }
+
+        async function loadClientHeader() {
+            try {
+                const response = await authFetch(`/clients/${clientId}`);
+                if (response.ok) {
+                    const client = await response.json();
+                    const displayName = client.name;
+                    const gstText = client.gstins && client.gstins.length > 0 ? client.gstins[0] : (client.pan || '4997999979');
+                    document.getElementById('client-info-display').textContent = `${displayName} • GSTIN/PAN: ${gstText}`;
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        async function initConversation() {
+            try {
+                const response = await authFetch('/conversations/', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        title: `Audit Consultation`,
+                        client_id: clientId
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    conversationId = data.id;
+                }
+            } catch (e) { console.error("Failed to init conversation", e); }
+        }
+
+        function updateStepStatus(stepId, status) {
+            const stepEl = document.getElementById(`step-${stepId}`);
+            const iconEl = document.getElementById(`icon-${stepId}`);
+            const textEl = document.getElementById(`text-${stepId}`);
+
+            stepEl.classList.remove('pending', 'in-progress', 'completed');
+            iconEl.classList.remove('pending', 'in-progress', 'completed');
+
+            if (status === 'in-progress') {
+                stepEl.classList.add('in-progress');
+                iconEl.classList.add('in-progress');
+                iconEl.textContent = '⟳';
+                textEl.textContent = 'In Progress';
+                textEl.style.color = 'var(--primary-blue)';
+            } else if (status === 'completed') {
+                stepEl.classList.add('completed');
+                iconEl.classList.add('completed');
+                iconEl.textContent = '✓';
+                textEl.textContent = 'Completed';
+                textEl.style.color = 'var(--accent-green)';
+            }
+        }
+
+        async function doAudit() {
+            const steps = [
+                { id: 'controls', name: 'Internal Control Check' },
+                { id: 'testing', name: 'Substantive Testing' },
+                { id: 'report', name: 'Generate Audit Report' }
+            ];
+
+            for (const step of steps) {
+                updateStepStatus(step.id, 'in-progress');
+                await new Promise(r => setTimeout(r, 1500));
+                updateStepStatus(step.id, 'completed');
+            }
+
+            alert('Audit completed successfully!');
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            if (message === '' || !conversationId) return;
+
+            const chatMessages = document.getElementById('chat-messages');
+            chatMessages.innerHTML += `
+                <div class="chat-message user">
+                    <div class="message-avatar">U</div>
+                    <div class="message-bubble">${message}</div>
+                </div>
+            `;
+            input.value = '';
+
+            try {
+                const response = await authFetch(`/conversations/${conversationId}/chat`, {
+                    method: 'POST',
+                    body: JSON.stringify({ content: message })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    chatMessages.innerHTML += `
+                        <div class="chat-message assistant">
+                            <div class="message-avatar">🤖</div>
+                            <div class="message-bubble">${data.content}</div>
+                        </div>
+                    `;
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                }
+            } catch (e) { }
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendMessage();
+            }
+        }
+
+        initPage();
+    </script>
+</body>
+
+</html>

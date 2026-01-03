@@ -2,7 +2,7 @@
 // Handles authentication, auto-redirect, and session timeout
 
 const SESSION_TIMEOUT = 60 * 60 * 1000; // 1 hour in milliseconds
-const TOKEN_KEY = 'token';
+const TOKEN_KEY = 'access_token';
 const LAST_ACTIVITY_KEY = 'lastActivity';
 
 // Check if user is logged in

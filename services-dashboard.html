@@ -735,12 +735,12 @@
             <p>How would you like to process this service?</p>
 
             <div class="view-options">
-                <div class="view-option" onclick="selectView('web')">
+                <div class="view-option" onclick="navigateToView('web')">
                     <div class="icon">💼</div>
                     <h4>Web View</h4>
                     <p>Professional Mode: Structured checklists & panels</p>
                 </div>
-                <div class="view-option" onclick="selectView('chat')">
+                <div class="view-option" onclick="navigateToView('chat')">
                     <div class="icon">💬</div>
                     <h4>AI Expert View</h4>
                     <p>Guided Simplicity: Conversational AI assistance</p>
@@ -844,6 +844,27 @@
             } catch (err) {
                 console.error('Error fetching service templates:', err);
             }
+        }
+
+        function navigateToView(viewType) {
+            if (!currentService) return;
+
+            let webPage = 'web-view.html';
+            let chatPage = 'service-gst-refund.html';
+
+            if (currentService.name.includes('Income Tax')) {
+                webPage = 'web-view-income-tax.html';
+                chatPage = 'service-income-tax.html';
+            } else if (currentService.name.includes('Audit')) {
+                webPage = 'web-view-audit.html';
+                chatPage = 'service-audit.html';
+            }
+
+            const page = viewType === 'web' ? webPage : chatPage;
+            // Add view param for chat just in case
+            const viewParam = viewType === 'chat' ? '&view=semi-chat' : '';
+
+            window.location.href = `${page}?clientId=${clientId}&serviceId=${currentService.id}${viewParam}`;
         }
 
         function renderActiveServices() {
