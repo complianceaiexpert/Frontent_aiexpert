@@ -3,9 +3,12 @@
    =================================== */
 
 :root {
-  /* Colors - Updated to match reference */
-  --primary-blue: #2563EB;
-  --primary-blue-dark: #1D4ED8;
+  /* Colors - New Orange & Blue Theme */
+  --primary-orange: #EB6711;
+  --primary-orange-dark: #C55410;
+  --primary-orange-light: #FF8534;
+  --primary-blue: #1E3A8A;
+  --primary-blue-dark: #1E40AF;
   --primary-blue-light: #3B82F6;
   --accent-green: #10B981;
   --accent-green-dark: #059669;
@@ -28,7 +31,7 @@
   --success: #10B981;
   --warning: #F59E0B;
   --error: #EF4444;
-  --info: #3B82F6;
+  --info: var(--primary-blue);
 
   /* Spacing */
   --space-xs: 0.25rem;
@@ -189,7 +192,7 @@ img {
 .logo-icon {
   width: 32px;
   height: 32px;
-  background: linear-gradient(135deg, var(--primary-blue), var(--accent-purple));
+  background: linear-gradient(135deg, var(--primary-orange), var(--primary-blue));
   border-radius: var(--radius-md);
   display: flex;
   align-items: center;
@@ -236,7 +239,7 @@ img {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--primary-blue), var(--primary-blue-dark));
+  background: linear-gradient(135deg, var(--primary-orange), var(--primary-orange-dark));
   color: white;
   box-shadow: var(--shadow-md);
 }
@@ -244,7 +247,7 @@ img {
 .btn-primary:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-lg);
-  background: linear-gradient(135deg, var(--primary-blue-dark), var(--primary-blue));
+  background: linear-gradient(135deg, var(--primary-orange-light), var(--primary-orange));
 }
 
 .btn-secondary {
