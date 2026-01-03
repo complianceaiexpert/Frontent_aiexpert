@@ -496,6 +496,24 @@
 
         loadClients();
     </script>
+
+    <!-- Footer -->
+    <footer
+        style="background: var(--gray-100); padding: 1.5rem 2rem; text-align: center; border-top: 1px solid var(--gray-200); margin-top: 4rem;">
+        <p style="color: var(--gray-600); font-size: 0.875rem; margin: 0;">
+            If you need more assistance, write an email to us at
+            <a href="mailto:complianceAIExpert@gmail.com"
+                style="color: var(--primary-orange); font-weight: 600; text-decoration: none;">complianceAIExpert@gmail.com</a>
+        </p>
+    </footer>
+
+    <script src="session-manager.js"></script>
+    <script>
+        // Require authentication for this page
+        if (!requireAuth()) {
+            // Will redirect to login if not authenticated
+        }
+    </script>
 </body>
 
 </html>
