@@ -320,6 +320,109 @@
             background: #F0F9FF;
         }
 
+        /* View Mode Information Section */
+        .view-mode-info-section {
+            margin-top: 4rem;
+            padding: 2.5rem;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.08);
+        }
+
+        .info-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .info-header h3 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 0.5rem;
+        }
+
+        .info-header p {
+            font-size: 1rem;
+            color: var(--gray-600);
+        }
+
+        .view-mode-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .view-mode-card {
+            padding: 2rem;
+            border: 2px solid var(--gray-100);
+            border-radius: 12px;
+            transition: all var(--transition-base);
+        }
+
+        .view-mode-card:hover {
+            border-color: var(--primary-blue-light);
+            box-shadow: 0 8px 16px -4px rgba(0, 0, 0, 0.1);
+        }
+
+        .view-mode-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .view-mode-card h4 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 1rem;
+        }
+
+        .view-mode-description {
+            font-size: 0.9375rem;
+            color: var(--gray-600);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .view-mode-features {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .view-mode-features li {
+            font-size: 0.875rem;
+            color: var(--gray-700);
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--gray-100);
+        }
+
+        .view-mode-features li:last-child {
+            border-bottom: none;
+        }
+
+        .view-mode-note {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #EFF6FF, #F0F9FF);
+            border-radius: 12px;
+            border-left: 4px solid var(--primary-blue);
+        }
+
+        .note-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .view-mode-note p {
+            margin: 0;
+            font-size: 0.9375rem;
+            color: var(--gray-700);
+            line-height: 1.6;
+        }
+
         /* Modal Styles */
         .modal {
             display: none;
@@ -523,6 +626,55 @@
         <div id="services-grid" class="services-grid">
             <!-- Services loaded here -->
         </div>
+
+        <!-- View Mode Information Section -->
+        <div class="view-mode-info-section">
+            <div class="info-header">
+                <h3>📱 Choose Your Workspace Experience</h3>
+                <p>Select the view that best suits your workflow when accessing any service</p>
+            </div>
+
+            <div class="view-mode-cards">
+                <div class="view-mode-card">
+                    <div class="view-mode-icon">💼</div>
+                    <h4>Web View (Professional Mode)</h4>
+                    <p class="view-mode-description">
+                        A structured, traditional interface designed for professionals who prefer organized checklists,
+                        detailed forms, and panel-based workflows. Perfect for accountants and compliance officers who
+                        need comprehensive control and visibility over every step of the process.
+                    </p>
+                    <ul class="view-mode-features">
+                        <li>✓ Structured checklists and step-by-step workflows</li>
+                        <li>✓ Multi-panel interface with detailed forms</li>
+                        <li>✓ Complete data visibility and control</li>
+                        <li>✓ Ideal for complex compliance tasks</li>
+                    </ul>
+                </div>
+
+                <div class="view-mode-card">
+                    <div class="view-mode-icon">💬</div>
+                    <h4>AI Expert Chat View (Guided Mode)</h4>
+                    <p class="view-mode-description">
+                        An intelligent, conversational interface powered by AI that guides you through compliance tasks
+                        with natural language interactions. The AI assistant asks relevant questions, provides
+                        contextual
+                        help, and simplifies complex processes into easy-to-understand conversations.
+                    </p>
+                    <ul class="view-mode-features">
+                        <li>✓ Conversational AI-guided assistance</li>
+                        <li>✓ Simplified, question-based workflow</li>
+                        <li>✓ Contextual help and smart suggestions</li>
+                        <li>✓ Perfect for quick tasks and beginners</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="view-mode-note">
+                <span class="note-icon">💡</span>
+                <p><strong>Pro Tip:</strong> You can switch between views at any time during your work. Choose Web View
+                    for detailed control or AI Expert Chat View for guided simplicity.</p>
+            </div>
+        </div>
     </div>
 
     <!-- View Selection Modal -->
@@ -648,14 +800,38 @@
             grid.innerHTML = '';
 
             const serviceData = {
-                'GST Refund': { icon: '🧾', desc: 'Manage GST returns, reconciliation, and compliance tracking' },
-                'GST Filing': { icon: '🧾', desc: 'Manage GST returns, reconciliation, and compliance tracking' },
-                'Income Tax': { icon: '💰', desc: 'ITR filing, tax planning, and assessment support' },
-                'Audit': { icon: '🔍', desc: 'Statutory audit, internal audit, and compliance verification' },
-                'Payroll': { icon: '👥', desc: 'Employee payroll processing and compliance management' },
-                'Company Law': { icon: '📋', desc: 'ROC filings, annual returns, and corporate compliance' },
-                'Accounting': { icon: '📊', desc: 'Bookkeeping, financial statements, and MIS reports' },
-                'Compliance': { icon: '⚖️', desc: 'Regulatory compliance and statutory requirements' }
+                'GST Refund': {
+                    icon: '🧾',
+                    desc: 'Complete GST return filing, input-output reconciliation, ITC claims, and real-time compliance tracking. Automated error detection and AI-powered suggestions for maximum refunds.'
+                },
+                'GST Filing': {
+                    icon: '🧾',
+                    desc: 'Complete GST return filing, input-output reconciliation, ITC claims, and real-time compliance tracking. Automated error detection and AI-powered suggestions for maximum refunds.'
+                },
+                'Income Tax': {
+                    icon: '💰',
+                    desc: 'Comprehensive ITR filing for individuals and businesses, tax planning strategies, advance tax calculations, TDS management, and assessment support. AI-driven deduction optimization.'
+                },
+                'Audit': {
+                    icon: '🔍',
+                    desc: 'Statutory audit, internal audit, tax audit, and compliance verification services. Detailed audit reports, risk assessment, and regulatory compliance checks with AI-powered anomaly detection.'
+                },
+                'Payroll': {
+                    icon: '👥',
+                    desc: 'End-to-end payroll processing, salary calculations, PF/ESI compliance, TDS deductions, Form 16 generation, and employee self-service portal. Automated compliance with labor laws.'
+                },
+                'Company Law': {
+                    icon: '📋',
+                    desc: 'ROC filings, annual returns (AOC-4, MGT-7), board resolutions, director appointments, share capital management, and complete corporate compliance under Companies Act 2013.'
+                },
+                'Accounting': {
+                    icon: '📊',
+                    desc: 'Professional bookkeeping, financial statement preparation, MIS reports, cash flow analysis, budgeting, and financial planning. Real-time dashboards and AI-powered insights.'
+                },
+                'Compliance': {
+                    icon: '⚖️',
+                    desc: 'Comprehensive regulatory compliance management, statutory filings, license renewals, compliance calendar, and automated alerts for upcoming deadlines. Multi-jurisdiction support.'
+                }
             };
 
             clientServices.forEach(service => {
