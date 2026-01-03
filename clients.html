@@ -170,6 +170,57 @@
             justify-content: flex-end;
             margin-top: 2rem;
         }
+
+        /* Dropdown Styles */
+        .navbar-profile {
+            position: relative;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-dropdown {
+            position: absolute;
+            top: 120%;
+            right: 0;
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            width: 200px;
+            display: none;
+            padding: 0.5rem 0;
+            z-index: 9999;
+            margin-top: 0.5rem;
+        }
+
+        .nav-dropdown.active {
+            display: block;
+        }
+
+        .dropdown-item {
+            padding: 0.75rem 1.5rem;
+            color: var(--gray-700);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            transition: background 0.2s;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .dropdown-item:hover {
+            background: var(--gray-50);
+            color: var(--primary-blue);
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            background: var(--gray-100);
+            margin: 0.5rem 0;
+        }
     </style>
 </head>
 
@@ -177,13 +228,25 @@
     <!-- Navigation -->
     <nav class="navbar">
         <div class="navbar-container">
-            <a href="index.html" class="logo">
+            <a href="clients.html" class="logo">
                 <div class="logo-icon">CE</div>
                 <span style="font-weight: 700; color: #1e3a8a;">ComplianceAIexpert</span>
             </a>
-            <div class="navbar-profile" onclick="window.location.href='profile.html'">
-                <div class="user-avatar-small" id="nav-avatar">U</div>
-                <span id="user-info" class="user-name" style="font-weight: 600; color: var(--gray-700);"></span>
+            <div class="navbar-profile" onclick="toggleProfileDropdown(event)">
+                <div style="display:flex; align-items:center; gap:0.75rem">
+                    <div class="user-avatar-small" id="nav-avatar">U</div>
+                    <span id="user-info" class="user-name" style="font-weight: 600; color: var(--gray-700);"></span>
+                </div>
+                <!-- Dropdown Menu -->
+                <div class="nav-dropdown" id="profile-dropdown">
+                    <a href="profile.html" class="dropdown-item">
+                        <span>👤</span> My Profile
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <div onclick="logout()" class="dropdown-item" style="color: #EF4444;">
+                        <span>🚪</span> Logout
+                    </div>
+                </div>
             </div>
         </div>
     </nav>
@@ -304,10 +367,28 @@
     <script src="api_config.js"></script>
     <script>
         const user = JSON.parse(localStorage.getItem('user'));
-        if (!user) window.location.href = 'sign-in.html';
+        if (!user) window.location.href = 'index.html'; // Changed to index.html as sign-in.html might not exist or be the main entry
 
         document.getElementById('user-info').textContent = `Welcome, ${user.full_name || user.name}`;
         document.getElementById('nav-avatar').textContent = (user.full_name || user.name || 'U').charAt(0).toUpperCase();
+
+        function toggleProfileDropdown(e) {
+            e.stopPropagation();
+            const dd = document.getElementById('profile-dropdown');
+            dd.classList.toggle('active');
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', () => {
+            const dd = document.getElementById('profile-dropdown');
+            if (dd) dd.classList.remove('active');
+        });
+
+        function logout() {
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('user');
+            window.location.href = 'index.html';
+        }
 
         async function loadClients() {
             try {
@@ -330,7 +411,7 @@
                     const statusIndex = client.name.length % 3;
                     if (statusIndex === 0) compliantCount++;
                     if (statusIndex === 1) actionNeededCount++;
-                    totalServices += (client.services && client.services.length) || 2; // Mock default
+                    totalServices += (client.services && client.services.length) || 0;
                 });
 
                 // Update Stats Display
@@ -363,10 +444,11 @@
                     let servicesList = '';
                     if (client.services && client.services.length > 0) {
                         servicesList = client.services.map((s, i) => {
-                            return `<span class="service-tag"><span>•</span> ${s}</span>`;
+                            const serviceName = typeof s === 'object' ? s.name : s;
+                            return `<span class="service-tag"><span>•</span> ${serviceName}</span>`;
                         }).join('');
                     } else {
-                        servicesList = `<span class="service-tag"><span>✅</span> GST Refund</span><span class="service-tag"><span>💰</span> Income Tax</span>`;
+                        servicesList = `<span class="service-tag" style="background:#F3F4F6; color:#6B7280;">No Active Services</span>`;
                     }
 
                     const displayId = (client.gstins && client.gstins[0]) ? `GSTIN ${client.gstins[0].substring(0, 4)} XXXX ${client.gstins[0].substring(client.gstins[0].length - 4)}` : (client.pan ? `PAN ${client.pan}` : 'No ID');
@@ -435,13 +517,38 @@
             }
         }
 
-        function showModal() {
+        // Initialize Global Functions
+        window.toggleProfileDropdown = function (e) {
+            e.stopPropagation();
+            console.log('Toggling profile dropdown');
+            const dd = document.getElementById('profile-dropdown');
+            if (dd) {
+                dd.classList.toggle('active');
+            } else {
+                console.error('Dropdown element not found!');
+                alert('Error: Dropdown element missing');
+            }
+        }
+
+        window.logout = function () {
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('user');
+            window.location.href = 'index.html';
+        }
+
+        window.showModal = function () {
             document.getElementById('client-modal').classList.add('active');
         }
 
-        function hideModal() {
+        window.hideModal = function () {
             document.getElementById('client-modal').classList.remove('active');
         }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', () => {
+            const dd = document.getElementById('profile-dropdown');
+            if (dd) dd.classList.remove('active');
+        });
 
         async function handleAddClient(event) {
             event.preventDefault();
