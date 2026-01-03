@@ -285,8 +285,10 @@
             <div class="tabs-header">
                 <div class="tab-btn active" onclick="switchTab('overview')">Overview</div>
                 <div class="tab-btn" onclick="switchTab('files')">Refund Files</div>
-                <div class="tab-btn" onclick="switchTab('calculate')">Calculate Refund</div>
-                <div class="tab-btn" onclick="switchTab('recon')">GST Recon</div>
+                <div class="tab-btn" onclick="switchTab('stmt3')">Statement 3</div>
+                <div class="tab-btn" onclick="switchTab('annexb')">Annexure B</div>
+                <div class="tab-btn" onclick="switchTab('verify')">GST Verify</div>
+                <div class="tab-btn" onclick="switchTab('recon')">GST Reconciliation</div>
             </div>
 
             <div id="overview" class="tab-content active">
@@ -329,38 +331,246 @@
                 </div>
             </div>
 
-            <div id="calculate" class="tab-content">
+            <div id="stmt3" class="tab-content">
                 <div class="data-card">
-                    <h2>Refund Calculation</h2>
-                    <p>The system is currently reconciling data to calculate the final refund amount.</p>
+                    <h2>Statement 3 Generation</h2>
+                    <p>Process Shipping Bills and BRC Documents to generate Statement 3.</p>
+                </div>
+            </div>
+
+            <div id="annexb" class="tab-content">
+                <div class="data-card">
+                    <h2>Annexure B Generator</h2>
+                    <p>Process GSTR-2B Excel files to generate Annexure B.</p>
+                </div>
+            </div>
+
+            <div id="verify" class="tab-content">
+                <div class="data-card">
+                    <h2>GST Verification</h2>
+                    <p>Verify GSTINs extracted from documents against Appyflow API.</p>
                 </div>
             </div>
 
             <div id="recon" class="tab-content">
                 <div class="data-card">
-                    <h2>Recolinciliation Status</h2>
-                    <p>Total ITC Matched: 95%</p>
+                    <h2>GST Reconciliation</h2>
+                    <p>Aggregate B2B data and reconcile tax values across multiple files.</p>
                 </div>
             </div>
         </div>
     </div>
 
+    <script src="api_config.js"></script>
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         const clientId = urlParams.get('clientId');
         const serviceName = urlParams.get('service');
         const user = JSON.parse(localStorage.getItem('user'));
+        let uploadedFiles = [];
+        let activeJobs = {};
 
+        // UI Initialization
         document.getElementById('user-info').textContent = user ? user.name : '';
         document.getElementById('nav-service-name').textContent = serviceName ? serviceName.toUpperCase().replace('-', ' ') : 'GST REFUND';
         document.getElementById('back-btn').href = `services-dashboard.html?clientId=${clientId}`;
 
+        // Initialize
+        loadFiles();
+        setInterval(loadFiles, 10000); // Poll files/jobs every 10s
+
+        // Tab Switching
         function switchTab(tabId) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-
             event.target.classList.add('active');
             document.getElementById(tabId).classList.add('active');
+            renderTabContent(tabId);
+        }
+
+        async function loadFiles() {
+            if (!clientId) return;
+            try {
+                // Fetch previous jobs to get output files and status
+                const res = await authFetch(`/jobs/?skip=0&limit=50&client_id=${clientId}`);
+                if (res.ok) {
+                    const jobs = await res.json();
+                    activeJobs = jobs; // Store for UI usage
+                    renderAllTabs(); // Refresh UI with job data
+                }
+            } catch (e) { console.error("Sync error", e); }
+        }
+
+        // --- Render Logic ---
+
+        function renderAllTabs() {
+            // Re-render currently active tab
+            const activeTab = document.querySelector('.tab-content.active');
+            if (activeTab) renderTabContent(activeTab.id);
+        }
+
+        function renderTabContent(tabId) {
+            if (tabId === 'files') renderFilesTab();
+            else if (tabId === 'stmt3') renderJobTab('stmt3', 'statement3', 'Generate Statement 3');
+            else if (tabId === 'annexb') renderJobTab('annexb', 'annexure_b', 'Generate Annexure B');
+            else if (tabId === 'verify') renderJobTab('verify', 'gst_verify', 'Verify GSTINs');
+            else if (tabId === 'recon') renderJobTab('recon', 'gst_recon', 'Run Reconciliation');
+        }
+
+        // 1. Files Tab
+        function renderFilesTab() {
+            // This could list raw uploads if we had a dedicated endpoint, 
+            // but for now we can show input files from jobs or just a clean upload interface.
+            // Using the upload zone as primary.
+        }
+
+        // Generic Job Render
+        function renderJobTab(elementId, jobType, buttonText) {
+            const container = document.getElementById(elementId).querySelector('.data-card');
+
+            // Find latest job of this type
+            const jobs = Array.isArray(activeJobs) ? activeJobs : [];
+            const job = jobs.find(j => j.job_type === jobType); // Api returns sorted DESC usually? Assumed.
+            // Actually jobs API might return oldest first? We should sort.
+            const sortedJobs = jobs.filter(j => j.job_type === jobType).sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+            const latestJob = sortedJobs[0];
+
+            let html = `<h2>${buttonText}</h2>`;
+
+            if (latestJob) {
+                const statusColor = latestJob.status === 'COMPLETED' ? 'green' : (latestJob.status === 'FAILED' ? 'red' : 'orange');
+                html += `
+                    <div style="margin: 1.5rem 0; padding: 1rem; background: #f8f9fa; border-radius: 8px;">
+                        <p><strong>Last Run:</strong> ${new Date(latestJob.created_at).toLocaleString()}</p>
+                        <p><strong>Status:</strong> <span style="color:${statusColor}; font-weight:bold">${latestJob.status}</span></p>
+                        ${latestJob.error_message ? `<p style="color:red">Error: ${latestJob.error_message}</p>` : ''}
+                    </div>
+                `;
+
+                if (latestJob.status === 'COMPLETED' && latestJob.output_files && latestJob.output_files.length > 0) {
+                    html += `<button onclick="downloadFile('${latestJob.id}')" class="btn btn-secondary" style="margin-right:1rem">⬇ Download Report</button>`;
+                }
+            }
+
+            html += `
+                <p style="margin-top:20px; color:#666">Upload required files to "Refund Files" or directly here (coming soon)</p>
+                <button class="btn btn-primary" onclick="triggerJob('${jobType}')">${latestJob && latestJob.status === 'PROCESSING' ? 'Processing...' : '▶ Run New Job'}</button>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        // --- Action Logic ---
+
+        async function triggerJob(jobType) {
+            if (!clientId) return alert("Client ID missing");
+
+            // Determine required files based on job type used to be strict, 
+            // but for now we'll assumes files are pre-uploaded or we prompt upload.
+            // Simplified: User must upload raw files first.
+
+            // Hardcoding file paths for demo/POC if real files not found? 
+            // Ideally we need a file picker for the Job Input. 
+            // For this implementation, we will assume "Auto-pick latest relevant files" or prompt user.
+
+            // PROMPT USER FOR FILE
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.multiple = true; // Most tools need multiple or zip
+            input.onchange = async (e) => {
+                if (e.target.files.length === 0) return;
+
+                const files = Array.from(e.target.files);
+                const fileKeys = [];
+
+                try {
+                    alert(`Uploading ${files.length} file(s) and starting ${jobType}...`);
+
+                    // Upload all files in parallel
+                    const uploadPromises = files.map(async (file) => {
+                        const formData = new FormData();
+                        formData.append('file', file);
+                        formData.append('title', file.name);
+                        formData.append('scope', 'CLIENT');
+                        formData.append('client_id', clientId);
+
+                        const uploadRes = await fetch(`${API_BASE_URL}/jobs/upload`, {
+                            method: 'POST',
+                            headers: { 'Authorization': `Bearer ${localStorage.getItem('access_token')}` },
+                            body: formData
+                        });
+
+                        if (!uploadRes.ok) throw new Error(`Upload failed for ${file.name}`);
+                        const uploadData = await uploadRes.json();
+                        return uploadData.file_key || uploadData.file_path;
+                    });
+
+                    fileKeys.push(...await Promise.all(uploadPromises));
+
+                    // 2. Create Job
+                    const jobPayload = {
+                        job_type: jobType,
+                        input_files: fileKeys,
+                        client_id: clientId
+                    };
+
+                    const jobRes = await authFetch('/jobs/', {
+                        method: 'POST',
+                        body: JSON.stringify(jobPayload)
+                    });
+
+                    if (jobRes.ok) {
+                        alert("Job Started Successfully! Check status in a few seconds.");
+                        loadFiles(); // Refresh
+                    } else {
+                        const err = await jobRes.json();
+                        alert("Failed to start job: " + err.detail);
+                    }
+
+                } catch (err) {
+                    console.error(err);
+                    alert("Error: " + err.message);
+                }
+            };
+            input.click();
+        }
+
+        // File Tab Upload
+        // We can expose a simple upload function that just puts file in system without job
+        document.querySelector('.file-upload-zone').onclick = () => {
+            alert("Please use the specific tool tabs to Upload & Run simultaneously for now.");
+        };
+
+        async function downloadFile(jobId) {
+            try {
+                const response = await authFetch(`/jobs/${jobId}/download`);
+                if (!response.ok) {
+                    alert('Download failed: ' + response.statusText);
+                    return;
+                }
+
+                // Get filename from header or default
+                const contentDisposition = response.headers.get('Content-Disposition');
+                let filename = 'report.xlsx';
+                if (contentDisposition) {
+                    const match = contentDisposition.match(/filename="?(.+)"?/);
+                    if (match && match[1]) filename = match[1];
+                }
+
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+
+            } catch (e) {
+                console.error('Download error:', e);
+                alert('Error downloading file');
+            }
         }
     </script>
 </body>
