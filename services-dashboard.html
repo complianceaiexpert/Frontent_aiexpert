@@ -102,6 +102,83 @@
         .page-subtitle {
             font-size: 1rem;
             color: var(--gray-600);
+            margin-bottom: 1.5rem;
+        }
+
+        .page-description {
+            background: linear-gradient(135deg, #F0F9FF, #EFF6FF);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-left: 4px solid var(--primary-blue);
+            margin-top: 1.5rem;
+        }
+
+        .page-description p {
+            font-size: 0.9375rem;
+            color: var(--gray-700);
+            line-height: 1.7;
+            margin-bottom: 0.75rem;
+        }
+
+        .page-description p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Client Overview Section */
+        .client-overview-section {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.08);
+        }
+
+        .client-overview-section h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 1rem;
+        }
+
+        .overview-text {
+            font-size: 0.9375rem;
+            color: var(--gray-600);
+            line-height: 1.7;
+            margin-bottom: 2rem;
+        }
+
+        .overview-highlights {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .highlight-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1.25rem;
+            background: var(--gray-50);
+            border-radius: 12px;
+            border: 1px solid var(--gray-100);
+        }
+
+        .highlight-icon {
+            font-size: 2rem;
+            flex-shrink: 0;
+        }
+
+        .highlight-item strong {
+            display: block;
+            font-size: 0.9375rem;
+            color: var(--gray-900);
+            margin-bottom: 0.25rem;
+        }
+
+        .highlight-item p {
+            font-size: 0.8125rem;
+            color: var(--gray-600);
+            line-height: 1.5;
+            margin: 0;
         }
 
         /* Client Details Card */
@@ -566,6 +643,15 @@
             <h1 class="page-title">Service Dashboard</h1>
             <p class="page-subtitle">Manage compliance services for <span id="subtitle-client-name">your client</span>
             </p>
+            <div class="page-description">
+                <p>Welcome to your centralized service management hub. This dashboard provides a comprehensive overview
+                    of all active compliance services for your client. Each service is powered by AI-driven automation,
+                    intelligent error detection, and real-time compliance monitoring to ensure accuracy and regulatory
+                    adherence.</p>
+                <p>Click on any service card below to access detailed workflows, upload documents, track progress, and
+                    receive AI-powered recommendations. Our platform combines professional-grade compliance tools with
+                    intelligent assistance to streamline your workflow and minimize compliance risks.</p>
+            </div>
         </div>
 
         <!-- Client Details Card -->
@@ -613,6 +699,43 @@
                             <div class="stat-value-small" id="last-updated">Today</div>
                             <div class="stat-label-small">Last Updated</div>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Client Overview Section -->
+        <div class="client-overview-section">
+            <h3>📋 Client Overview</h3>
+            <p class="overview-text">
+                This client profile represents a unique business entity with specific compliance requirements and
+                regulatory obligations.
+                All services are tailored to meet the client's industry-specific needs, business structure, and
+                jurisdictional requirements.
+                Our AI-powered platform continuously monitors regulatory changes and proactively alerts you to upcoming
+                deadlines,
+                ensuring your client remains compliant across all active services.
+            </p>
+            <div class="overview-highlights">
+                <div class="highlight-item">
+                    <span class="highlight-icon">🔒</span>
+                    <div>
+                        <strong>Data Security</strong>
+                        <p>All client data is encrypted and stored securely with bank-level security protocols</p>
+                    </div>
+                </div>
+                <div class="highlight-item">
+                    <span class="highlight-icon">🤖</span>
+                    <div>
+                        <strong>AI-Powered Insights</strong>
+                        <p>Machine learning algorithms analyze patterns and provide intelligent recommendations</p>
+                    </div>
+                </div>
+                <div class="highlight-item">
+                    <span class="highlight-icon">📊</span>
+                    <div>
+                        <strong>Real-Time Tracking</strong>
+                        <p>Monitor service progress, compliance status, and pending actions in real-time</p>
                     </div>
                 </div>
             </div>
@@ -802,35 +925,35 @@
             const serviceData = {
                 'GST Refund': {
                     icon: '🧾',
-                    desc: 'Complete GST return filing, input-output reconciliation, ITC claims, and real-time compliance tracking. Automated error detection and AI-powered suggestions for maximum refunds.'
+                    desc: 'Comprehensive GST return filing and refund management service. Includes GSTR-1, GSTR-3B, and annual return filing with automated input-output reconciliation, ITC claim optimization, and error detection. Our AI engine analyzes your transactions to identify maximum eligible refunds, flag potential mismatches, and ensure 100% compliance with GST regulations. Features include real-time GSTIN validation, automated late fee calculation, and intelligent suggestions for input tax credit optimization.'
                 },
                 'GST Filing': {
                     icon: '🧾',
-                    desc: 'Complete GST return filing, input-output reconciliation, ITC claims, and real-time compliance tracking. Automated error detection and AI-powered suggestions for maximum refunds.'
+                    desc: 'Complete GST return filing and refund management service. Includes GSTR-1, GSTR-3B, and annual return filing with automated input-output reconciliation, ITC claim optimization, and error detection. Our AI engine analyzes your transactions to identify maximum eligible refunds, flag potential mismatches, and ensure 100% compliance with GST regulations. Features include real-time GSTIN validation, automated late fee calculation, and intelligent suggestions for input tax credit optimization.'
                 },
                 'Income Tax': {
                     icon: '💰',
-                    desc: 'Comprehensive ITR filing for individuals and businesses, tax planning strategies, advance tax calculations, TDS management, and assessment support. AI-driven deduction optimization.'
+                    desc: 'End-to-end Income Tax Return (ITR) filing service for individuals, businesses, and corporations. Covers all ITR forms (ITR-1 to ITR-7) with intelligent tax planning strategies, advance tax calculations, TDS reconciliation, and Form 26AS verification. Our AI-powered deduction optimizer analyzes your financial data to identify all eligible deductions under Section 80C, 80D, and other provisions. Includes assessment support, notice handling, and tax-saving recommendations tailored to your income profile.'
                 },
                 'Audit': {
                     icon: '🔍',
-                    desc: 'Statutory audit, internal audit, tax audit, and compliance verification services. Detailed audit reports, risk assessment, and regulatory compliance checks with AI-powered anomaly detection.'
+                    desc: 'Professional audit services including Statutory Audit, Internal Audit, Tax Audit (44AB), GST Audit, and Stock Audit. Our comprehensive audit framework includes detailed financial statement verification, risk assessment, internal control evaluation, and regulatory compliance checks. AI-powered anomaly detection identifies unusual transactions, potential fraud indicators, and compliance gaps. Deliverables include detailed audit reports, management letters, and actionable recommendations for process improvements and risk mitigation.'
                 },
                 'Payroll': {
                     icon: '👥',
-                    desc: 'End-to-end payroll processing, salary calculations, PF/ESI compliance, TDS deductions, Form 16 generation, and employee self-service portal. Automated compliance with labor laws.'
+                    desc: 'Complete payroll processing and compliance management solution. Handles salary calculations, statutory deductions (PF, ESI, PT), TDS computation, Form 16 generation, and employee self-service portal access. Automated compliance with labor laws including minimum wages, overtime calculations, and leave management. Features include attendance integration, reimbursement processing, loan management, and real-time payroll reports. Our system ensures timely PF/ESI challans, TDS returns, and complete audit trail for all payroll transactions.'
                 },
                 'Company Law': {
                     icon: '📋',
-                    desc: 'ROC filings, annual returns (AOC-4, MGT-7), board resolutions, director appointments, share capital management, and complete corporate compliance under Companies Act 2013.'
+                    desc: 'Comprehensive corporate compliance services under the Companies Act 2013. Includes ROC filings (AOC-4, MGT-7, ADT-1), board meeting management, director appointments/resignations (DIR-12, DIR-11), share capital alterations, and annual compliance calendar. Our platform automates statutory registers, generates board resolutions, tracks filing deadlines, and ensures complete MCA compliance. Services cover incorporation, name changes, registered office shifts, winding up procedures, and all event-based filings with real-time status tracking.'
                 },
                 'Accounting': {
                     icon: '📊',
-                    desc: 'Professional bookkeeping, financial statement preparation, MIS reports, cash flow analysis, budgeting, and financial planning. Real-time dashboards and AI-powered insights.'
+                    desc: 'Professional bookkeeping and accounting services with real-time financial visibility. Includes day-to-day transaction recording, bank reconciliation, accounts payable/receivable management, and financial statement preparation (P&L, Balance Sheet, Cash Flow). Our platform generates comprehensive MIS reports, ratio analysis, budgeting tools, and variance analysis. AI-powered insights identify cost-saving opportunities, cash flow optimization strategies, and financial health indicators. Features include multi-currency support, inventory accounting, and automated financial dashboards.'
                 },
                 'Compliance': {
                     icon: '⚖️',
-                    desc: 'Comprehensive regulatory compliance management, statutory filings, license renewals, compliance calendar, and automated alerts for upcoming deadlines. Multi-jurisdiction support.'
+                    desc: 'Unified regulatory compliance management across all applicable laws and regulations. Covers labor law compliance, environmental clearances, FSSAI licenses, trade licenses, professional tax, and industry-specific regulations. Our intelligent compliance calendar tracks all statutory deadlines, sends proactive alerts, and maintains a complete audit trail of all filings. Multi-jurisdiction support ensures compliance across different states and regulatory bodies. Includes license renewal management, inspection readiness, and automated compliance reporting.'
                 }
             };
 
