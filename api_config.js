@@ -1,4 +1,4 @@
-const API_BASE_URL = 'https://ca-copilot-api.onrender.com/api/v1';
+const API_BASE_URL = 'http://localhost:8000/api/v1';// 'https://ca-copilot-api.onrender.com/api/v1';
 
 async function authFetch(endpoint, options = {}) {
     const user = JSON.parse(localStorage.getItem('user'));
@@ -22,7 +22,7 @@ async function authFetch(endpoint, options = {}) {
         // Token expired or invalid
         localStorage.removeItem('user');
         localStorage.removeItem('access_token');
-        window.location.href = 'sign-in.html';
+        window.location.href = 'index.html';
         return;
     }
 

@@ -464,8 +464,6 @@
                         <div class="user-avatar-small" id="nav-avatar"
                             style="width:32px; height:32px; background:var(--primary-blue); border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-size:14px;">
                             C</div>
-                        <span id="user-info-text"
-                            style="font-weight:600; font-size:0.9rem; color:#4B5563;">Loading...</span>
                     </div>
                     <!-- Dropdown Menu -->
                     <div class="nav-dropdown" id="profile-dropdown">
@@ -646,9 +644,8 @@
 
             // Set User Info
             if (user) {
-                const initial = (user.name || 'U').charAt(0).toUpperCase();
+                const initial = (user.firm_name || user.full_name || user.name || 'U').charAt(0).toUpperCase();
                 document.getElementById('nav-avatar').textContent = initial;
-                document.getElementById('user-info-text').textContent = user.name;
             }
 
             await Promise.all([

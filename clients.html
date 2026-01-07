@@ -235,7 +235,6 @@
             <div class="navbar-profile" onclick="toggleProfileDropdown(event)">
                 <div style="display:flex; align-items:center; gap:0.75rem">
                     <div class="user-avatar-small" id="nav-avatar">U</div>
-                    <span id="user-info" class="user-name" style="font-weight: 600; color: var(--gray-700);"></span>
                 </div>
                 <!-- Dropdown Menu -->
                 <div class="nav-dropdown" id="profile-dropdown">
@@ -270,20 +269,7 @@
                         <div class="stat-label">Total Clients</div>
                     </div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-icon" style="background: linear-gradient(135deg, #10B981, #059669);">✓</div>
-                    <div class="stat-content">
-                        <div class="stat-value" id="compliant-clients">0</div>
-                        <div class="stat-label">Compliant</div>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon" style="background: linear-gradient(135deg, #F59E0B, #D97706);">⚠</div>
-                    <div class="stat-content">
-                        <div class="stat-value" id="action-needed">0</div>
-                        <div class="stat-label">Action Needed</div>
-                    </div>
-                </div>
+                <!-- Stats Removed -->
                 <div class="stat-card">
                     <div class="stat-icon" style="background: linear-gradient(135deg, #8B5CF6, #7C3AED);">📊</div>
                     <div class="stat-content">
@@ -369,8 +355,7 @@
         const user = JSON.parse(localStorage.getItem('user'));
         if (!user) window.location.href = 'index.html'; // Changed to index.html as sign-in.html might not exist or be the main entry
 
-        document.getElementById('user-info').textContent = `Welcome, ${user.full_name || user.name}`;
-        document.getElementById('nav-avatar').textContent = (user.full_name || user.name || 'U').charAt(0).toUpperCase();
+        document.getElementById('nav-avatar').textContent = (user.firm_name || user.full_name || user.name || 'U').charAt(0).toUpperCase();
 
         function toggleProfileDropdown(e) {
             e.stopPropagation();
@@ -403,34 +388,21 @@
 
                 // Calculate Stats
                 const totalClients = clients.length;
-                let compliantCount = 0;
-                let actionNeededCount = 0;
                 let totalServices = 0;
 
                 clients.forEach(client => {
-                    const statusIndex = client.name.length % 3;
-                    if (statusIndex === 0) compliantCount++;
-                    if (statusIndex === 1) actionNeededCount++;
                     totalServices += (client.services && client.services.length) || 0;
                 });
 
                 // Update Stats Display
                 document.getElementById('total-clients').textContent = totalClients;
-                document.getElementById('compliant-clients').textContent = compliantCount;
-                document.getElementById('action-needed').textContent = actionNeededCount;
                 document.getElementById('active-services').textContent = totalServices;
 
                 // Render Client Cards
                 clients.forEach(client => {
                     const initial = client.name.charAt(0).toUpperCase();
 
-                    const statuses = [
-                        { text: 'AI Reviewed', class: 'badge-ai-success', icon: '✓' },
-                        { text: 'Action Needed', class: 'badge-ai-warning', icon: '⚠' },
-                        { text: 'Safe to Proceed', class: 'badge-ai-neutral', icon: '🛡' }
-                    ];
-                    const statusIndex = client.name.length % 3;
-                    const status = statuses[statusIndex];
+
 
                     const card = document.createElement('div');
                     card.className = 'client-card';
@@ -472,9 +444,6 @@
                         </div>
 
                         <div class="client-card-footer">
-                            <span class="badge-ai-capsule ${status.class}">
-                                ${status.icon} ${status.text}
-                            </span>
                             <span class="card-menu-dots">...</span>
                         </div>
                     `;
@@ -611,7 +580,7 @@
         </p>
     </footer>
 
-    <script src="session-manager.js"></script>
+    <script src="session-manager.js?v=2"></script>
     <script>
         // Require authentication for this page
         if (!requireAuth()) {

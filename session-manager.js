@@ -30,7 +30,7 @@ function logout() {
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(LAST_ACTIVITY_KEY);
     localStorage.removeItem('user');
-    window.location.href = 'sign-in.html';
+    window.location.href = 'index.html';
 }
 
 // Auto-redirect if logged in (for public pages)

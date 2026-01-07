@@ -187,7 +187,7 @@
     }
 
     .faq-container {
-      max-width: 800px;
+      max-width: 1000px;
       margin: 0 auto;
     }
 
@@ -283,6 +283,104 @@
       .testimonials-grid {
         grid-template-columns: 1fr;
       }
+
+      .feature-block,
+      .feature-block.reverse {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .feature-showcase-section {
+        padding: 2rem;
+      }
+
+      .feature-section-header {
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+    }
+
+    .feature-showcase-section {
+      width: 100%;
+      margin: 4rem 0 6rem;
+      display: flex;
+      flex-direction: column;
+      gap: 3rem;
+    }
+
+    .feature-section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 4rem;
+      margin-bottom: 2rem;
+      text-align: left;
+      background: linear-gradient(135deg, var(--primary-blue), var(--primary-blue-dark));
+      padding: 3rem;
+      border-radius: var(--radius-2xl);
+      color: white;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .feature-section-header h2 {
+      font-size: 2rem;
+      flex: 1;
+      line-height: 1.3;
+      color: white;
+      margin-bottom: 0;
+    }
+
+    .feature-section-header p {
+      flex: 1;
+      font-size: 1rem;
+      color: rgba(255, 255, 255, 0.95);
+      line-height: 1.6;
+      margin-bottom: 0;
+    }
+
+    .feature-block {
+      display: flex;
+      align-items: center;
+      gap: 4rem;
+      text-align: left;
+    }
+
+    .feature-block.reverse {
+      flex-direction: row-reverse;
+    }
+
+    .feature-text {
+      flex: 1;
+    }
+
+    .feature-text h3 {
+      font-size: 2.25rem;
+      font-weight: 700;
+      color: var(--gray-900);
+      margin-bottom: 1rem;
+    }
+
+    .feature-text p {
+      font-size: 1.125rem;
+      color: var(--gray-600);
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+
+    .feature-image {
+      flex: 1.2;
+    }
+
+    .feature-image img {
+      width: 100%;
+      border-radius: var(--radius-xl);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      border: 8px solid rgba(255, 255, 255, 0.5);
+      transition: transform var(--transition-base);
+    }
+
+    .feature-image img:hover {
+      transform: scale(1.02);
     }
   </style>
 </head>
@@ -317,76 +415,117 @@
         <a href="how-it-works.html" class="btn btn-secondary btn-large">See How It Works</a>
       </div>
 
+      <!-- Feature Showcase -->
+      <!-- Feature Showcase -->
+      <div class="feature-showcase-section">
+
+        <div class="feature-section-header">
+          <h2>Designed for Professionals Who Need Both Control and Clarity.</h2>
+          <p>Manage filings, reports, and compliance workflows in Web View, while AI Expert View acts as your on-demand
+            compliance expert—answering questions and highlighting risks instantly</p>
+        </div>
+
+        <!-- Feature 1: Web View (Left Text, Right Image) -->
+        <div class="feature-block">
+          <div class="feature-text">
+            <h3>Web View Dashboard</h3>
+            <p>Experience a comprehensive work environment designed for speed and clarity.
+              Manage clients, track compliance status, and handle documents in a structured,
+              professional interface built for power users.</p>
+            <ul style="list-style: none; margin: 0; padding: 0; color: var(--gray-600);">
+              <li style="margin-bottom: 0.5rem">✨ <b>Structured Data Tables</b></li>
+              <li style="margin-bottom: 0.5rem">⚡ <b>Quick Actions & Filters</b></li>
+              <li style="margin-bottom: 0.5rem">📂 <b>Integrated Document Management</b></li>
+            </ul>
+          </div>
+          <div class="feature-image">
+            <img src="assets/webview_refined.png" alt="Web View Dashboard Interface"
+              style="max-width: 90%; margin: 0 auto; display: block;">
+          </div>
+        </div>
+
+        <!-- Feature 2: AI View (Right Text, Left Image) -->
+        <div class="feature-block reverse">
+          <div class="feature-text">
+            <h3>AI Expert View</h3>
+            <p>Work naturally with your data using our intelligent conversational assistant.
+              Ask questions like "Who hasn't filed GST yet?" or "Summarize the tax liability for Acme"
+              and get instant, actionable answers.</p>
+            <ul style="list-style: none; margin: 0; padding: 0; color: var(--gray-600);">
+              <li style="margin-bottom: 0.5rem">💬 <b>Natural Language Queries</b></li>
+              <li style="margin-bottom: 0.5rem">🤖 <b>Instant Compliance Summaries</b></li>
+              <li style="margin-bottom: 0.5rem">🧬 <b>Context-Aware Assistance</b></li>
+            </ul>
+          </div>
+          <div class="feature-image">
+            <img src="assets/aiview_refined.png" alt="AI Expert Chat Interface"
+              style="max-width: 90%; margin: 0 auto; display: block;">
+          </div>
+        </div>
+      </div>
+
+      <div class="section-header" style="margin-top: 6rem; margin-bottom: 3rem;">
+        <h2>An AI Platform that Understands Your Firm and Clients</h2>
+        <p style="font-size: 1.125rem; max-width: 900px; margin: 0 auto; line-height: 1.6;">ComplianceAIexpert goes
+          beyond conversational AI by providing a structured, firm-centric platform. Firms can maintain multiple client
+          accounts while the AI Expert delivers context-aware, client-specific compliance insights based on relevant
+          data, regulations, and engagement scope.</p>
+      </div>
+
       <div class="trust-indicators">
         <div class="trust-item">
           <div class="icon">⚡</div>
           <div class="value">Fast</div>
-          <div class="label">Save 60% Time</div>
+          <div class="label" style="display: block;">
+            <span style="display: block; font-weight: 600; margin-bottom: 0.25rem;">Save 60% Time</span>
+            <span style="font-size: 0.9rem;">Automate routine data entry tasks</span>
+          </div>
         </div>
         <div class="trust-item">
           <div class="icon">👥</div>
           <div class="value">Easy</div>
-          <div class="label">Client Management</div>
+          <div class="label" style="display: block;">
+            <span style="display: block; font-weight: 600; margin-bottom: 0.25rem;">Client Management</span>
+            <span style="font-size: 0.9rem;">Organize all client files centrally</span>
+          </div>
         </div>
         <div class="trust-item">
           <div class="icon">🤖</div>
           <div class="value">Smart</div>
-          <div class="label">AI Assistance</div>
+          <div class="label" style="display: block;">
+            <span style="display: block; font-weight: 600; margin-bottom: 0.25rem;">AI Assistance</span>
+            <span style="font-size: 0.9rem;">Proactive compliance alerts</span>
+          </div>
         </div>
         <div class="trust-item">
           <div class="icon">🔒</div>
           <div class="value">Safe</div>
-          <div class="label">Bank-Grade Security</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Testimonials Section -->
-  <section class="testimonials-section">
-    <div class="section-header">
-      <h2>Trusted by Professionals Across India</h2>
-      <p>See how we are helping experts like you</p>
-    </div>
-
-    <div class="testimonials-grid">
-      <div class="testimonial-card">
-        <p class="testimonial-text">"ComplianceAIexpert has changed how I work. The automatic calculations save me so
-          much time, and the AI helps me give better advice to my clients."</p>
-        <div class="testimonial-author">
-          <div class="author-avatar">RK</div>
-          <div class="author-info">
-            <div class="name">Rajesh Kumar</div>
-            <div class="title">Financial Consultant, Mumbai</div>
+          <div class="label" style="display: block;">
+            <span style="display: block; font-weight: 600; margin-bottom: 0.25rem;">Bank-Grade Security</span>
+            <span style="font-size: 0.9rem;">End-to-end encrypted data</span>
           </div>
         </div>
-      </div>
-
-      <div class="testimonial-card">
-        <p class="testimonial-text">"I love how simple it is. I use the Web View for detailed work and the Chat View for
-          quick questions. It's like having a smart assistant always ready to help."</p>
-        <div class="testimonial-author">
-          <div class="author-avatar">PS</div>
-          <div class="author-info">
-            <div class="name">Priya Sharma</div>
-            <div class="title">Tax Advisor, Delhi</div>
+        <div class="trust-item">
+          <div class="icon">🎯</div>
+          <div class="value">Accurate</div>
+          <div class="label" style="display: block;">
+            <span style="display: block; font-weight: 600; margin-bottom: 0.25rem;">Zero Errors</span>
+            <span style="font-size: 0.9rem;">Precision in tax calculations</span>
           </div>
         </div>
-      </div>
-
-      <div class="testimonial-card">
-        <p class="testimonial-text">"Finally, a tool that understands what professionals need. Tracking compliance and
-          managing documents is now effortless. Highly recommended!"</p>
-        <div class="testimonial-author">
-          <div class="author-avatar">AM</div>
-          <div class="author-info">
-            <div class="name">Amit Mehta</div>
-            <div class="title">Business Consultant, Bangalore</div>
+        <div class="trust-item">
+          <div class="icon">🔄</div>
+          <div class="value">Integrated</div>
+          <div class="label" style="display: block;">
+            <span style="display: block; font-weight: 600; margin-bottom: 0.25rem;">Tally & Excel Sync</span>
+            <span style="font-size: 0.9rem;">Seamless one-click import</span>
           </div>
         </div>
       </div>
     </div>
   </section>
+
+
 
   <!-- FAQ Section -->
   <section class="faq-section">
