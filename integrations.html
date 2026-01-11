@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Services - Compliance AI Expert</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        /* Apply purple gradient background */
+        body {
+            background: linear-gradient(135deg, #E0E7FF 0%, #F5F3FF 100%);
+            min-height: 100vh;
+        }
+
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 80px auto;
+            padding: 2rem 32px;
+        }
+
+        /* Navigation Enhancements */
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--gray-700);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color var(--transition-base);
+        }
+
+        .nav-link:hover {
+            color: var(--primary-blue);
+        }
+
+        .client-info-nav {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .client-name-text {
+            font-weight: 600;
+            color: var(--gray-900);
+            font-size: 0.875rem;
+        }
+
+        .client-type-text {
+            font-size: 0.75rem;
+            color: var(--gray-500);
+        }
+
+        /* Dropdown Styles */
+        .navbar-profile {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .nav-dropdown {
+            position: absolute;
+            top: 120%;
+            right: 0;
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            width: 200px;
+            display: none;
+            padding: 0.5rem 0;
+            z-index: 9999;
+            margin-top: 0.5rem;
+        }
+
+        .nav-dropdown.active {
+            display: block;
+        }
+
+        .dropdown-item {
+            padding: 0.75rem 1.5rem;
+            color: var(--gray-700);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            transition: background 0.2s;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .dropdown-item:hover {
+            background: var(--gray-50);
+            color: var(--primary-blue);
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            background: var(--gray-100);
+            margin: 0.5rem 0;
+        }
+
+        /* Breadcrumb */
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            font-size: 0.875rem;
+            color: var(--gray-600);
+        }
+
+        .breadcrumb a {
+            color: var(--primary-blue);
+            text-decoration: none;
+            transition: color var(--transition-base);
+        }
+
+        .breadcrumb a:hover {
+            color: var(--primary-blue-dark);
+        }
+
+        .breadcrumb span:not(:has(a)) {
+            color: var(--gray-400);
+        }
+
+        /* Page Header */
+        .page-header-section {
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 0.5rem;
+            font-family: var(--font-display);
+        }
+
+        .page-subtitle {
+            font-size: 1rem;
+            color: var(--gray-600);
+            margin-bottom: 1.5rem;
+        }
+
+        .page-description-styled {
+            display: grid;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .description-block {
+            display: flex;
+            gap: 1.25rem;
+            padding: 1.75rem;
+            background: white;
+            border-radius: 12px;
+            border-left: 4px solid var(--primary-blue);
+            box-shadow: 0 2px 8px -2px rgba(0, 0, 0, 0.08);
+        }
+
+        .description-icon {
+            font-size: 2rem;
+            flex-shrink: 0;
+        }
+
+        .description-block h4 {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 0.5rem;
+        }
+
+        .description-block p {
+            font-size: 0.9375rem;
+            color: var(--gray-600);
+            line-height: 1.7;
+            margin: 0;
+        }
+
+        /* Client Details Card */
+        .client-details-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.08);
+        }
+
+        .client-details-header {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--gray-100);
+        }
+
+        .client-icon-large {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #3B82F6, #2563EB);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .client-main-info {
+            flex: 1;
+        }
+
+        .client-main-info h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 0.5rem;
+        }
+
+        .client-entity-badge {
+            display: inline-block;
+            background: var(--gray-100);
+            color: var(--gray-700);
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .client-overview-inline {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+            line-height: 1.6;
+            margin-top: 0.75rem;
+            max-width: 600px;
+        }
+
+        .client-details-body {
+            padding-top: 1.5rem;
+        }
+
+        .detail-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .detail-label {
+            font-size: 0.75rem;
+            color: var(--gray-500);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .detail-value {
+            font-size: 1rem;
+            color: var(--gray-900);
+            font-weight: 500;
+            font-family: monospace;
+        }
+
+        .client-stats-row {
+            display: flex;
+            gap: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--gray-100);
+        }
+
+        .stat-item-small {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .stat-icon-small {
+            font-size: 1.5rem;
+        }
+
+        .stat-value-small {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            line-height: 1;
+        }
+
+        .stat-label-small {
+            font-size: 0.75rem;
+            color: var(--gray-500);
+            margin-top: 0.25rem;
+        }
+
+        /* Services Section */
+        .services-section-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .services-section-title h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--gray-900);
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+
+        /* Enhanced Service Cards */
+        .service-box-enhanced {
+            background: white;
+            border: 1px solid var(--gray-100);
+            border-radius: 16px;
+            padding: 2rem;
+            cursor: pointer;
+            transition: all var(--transition-base);
+            display: flex;
+            flex-direction: column;
+            min-height: 240px;
+        }
+
+        .service-box-enhanced:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary-blue-light);
+        }
+
+        .service-icon-large {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .service-box-enhanced h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: var(--gray-900);
+        }
+
+        .service-description {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+            line-height: 1.6;
+            flex: 1;
+            margin-bottom: 1.5rem;
+        }
+
+        .service-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid var(--gray-100);
+        }
+
+        .service-action {
+            font-size: 0.875rem;
+            color: var(--primary-blue);
+            font-weight: 600;
+        }
+
+        .status-pill {
+            font-size: 0.75rem;
+            padding: 0.4rem 1rem;
+            border-radius: 9999px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .status-active {
+            background: #E0F2FE;
+            color: #0369A1;
+        }
+
+        .add-service-box {
+            border: 2px dashed var(--gray-200);
+            background: transparent;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .add-service-box:hover {
+            border-color: var(--primary-blue);
+            background: #F0F9FF;
+        }
+
+        /* View Mode Information Section */
+        .view-mode-info-section {
+            margin-top: 4rem;
+            padding: 2.5rem;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.08);
+        }
+
+        .info-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .info-header h3 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 0.5rem;
+        }
+
+        .info-header p {
+            font-size: 1rem;
+            color: var(--gray-600);
+        }
+
+        .view-mode-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .view-mode-card {
+            padding: 2rem;
+            border: 2px solid var(--gray-100);
+            border-radius: 12px;
+            transition: all var(--transition-base);
+        }
+
+        .view-mode-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .view-mode-card h4 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 1rem;
+        }
+
+        .view-mode-description {
+            font-size: 0.9375rem;
+            color: var(--gray-600);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .view-mode-features {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .view-mode-features li {
+            font-size: 0.875rem;
+            color: var(--gray-700);
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--gray-100);
+        }
+
+        .view-mode-features li:last-child {
+            border-bottom: none;
+        }
+
+        .view-mode-note {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #EFF6FF, #F0F9FF);
+            border-radius: 12px;
+            border-left: 4px solid var(--primary-blue);
+        }
+
+        .note-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .view-mode-note p {
+            margin: 0;
+            font-size: 0.9375rem;
+            color: var(--gray-700);
+            line-height: 1.6;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 3rem;
+            border-radius: var(--radius-2xl);
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        .view-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .view-option {
+            border: 2px solid var(--gray-200);
+            padding: 2rem;
+            border-radius: var(--radius-xl);
+            cursor: pointer;
+            transition: all var(--transition-base);
+        }
+
+        .view-option:hover {
+            border-color: var(--primary-blue);
+            background: var(--gray-50);
+        }
+
+        .view-option .icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .view-option h4 {
+            margin-bottom: 0.5rem;
+            font-size: 1.25rem;
+        }
+
+        .view-option p {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+        }
+
+        .service-selection-list {
+            margin-top: 1.5rem;
+            text-align: left;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .service-selection-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-lg);
+            margin-bottom: 0.75rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .service-selection-item:hover {
+            background: var(--gray-50);
+        }
+
+        .service-selection-item input {
+            width: 20px;
+            height: 20px;
+        }
+
+        .service-info h4 {
+            margin: 0;
+            font-size: 1rem;
+        }
+
+        .service-info p {
+            margin: 0;
+            font-size: 0.8rem;
+            color: var(--gray-500);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Enhanced Navigation -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="clients.html" class="logo">
+                <div class="logo-icon">CE</div>
+                <span style="font-weight: 700; color: #1e3a8a;">ComplianceAIexpert</span>
+            </a>
+
+            <!-- Center Links -->
+            <div style="display: flex; gap: 2rem; margin-left: auto; margin-right: 2rem; align-items: center;">
+                <a href="clients.html"
+                    style="color: #4B5563; text-decoration: none; font-weight: 500; font-size: 0.95rem;">Home</a>
+                <a href="clients.html"
+                    style="color: #4B5563; text-decoration: none; font-weight: 500; font-size: 0.95rem;">Clients</a>
+                <a href="ai-gpt.html"
+                    style="color: #4B5563; text-decoration: none; font-weight: 500; font-size: 0.95rem;">
+                    AI GPT <span
+                        style="background: #E0E7FF; color: #4338CA; padding: 0.1rem 0.4rem; border-radius: 4px; font-size: 0.7rem; font-weight: 700; margin-left: 0.25rem;">NEW</span>
+                </a>
+            </div>
+
+            <div class="navbar-profile" onclick="toggleProfileDropdown(event)">
+                <div style="display:flex; align-items:center; gap:0.75rem">
+                    <div class="user-avatar-small" id="nav-avatar">U</div>
+                </div>
+                <!-- Dropdown Menu -->
+                <div class="nav-dropdown" id="profile-dropdown">
+                    <a href="profile.html" class="dropdown-item">
+                        <span>👤</span> My Profile
+                    </a>
+                    <a href="integrations.html" class="dropdown-item">
+                        <span>🔌</span> Integrations
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <div onclick="logout()" class="dropdown-item" style="color: #EF4444;">
+                        <span>🚪</span> Logout
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <!-- Breadcrumb -->
+        <div class="breadcrumb">
+            <a href="clients.html">Home</a>
+            <span>›</span>
+            <span>Integrations</span>
+        </div>
+
+        <!-- Page Header -->
+        <div class="page-header-section">
+            <h1 class="page-title">Integrations & Data Sources</h1>
+            <p class="page-subtitle">Connect your accounting software to sync data automatically</p>
+        </div>
+
+        <!-- Integration Cards -->
+        <div style="display: grid; gap: 2rem;">
+
+            <!-- Tally Integration Card -->
+            <div class="client-details-card" style="border-left: 5px solid #166534;">
+                <div class="client-details-header"
+                    style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid var(--gray-100); padding-bottom: 1.5rem; margin-bottom: 1.5rem;">
+                    <div style="display: flex; gap: 1.5rem;">
+                        <div class="client-icon-large" style="background: #166534; font-size: 2rem;">T</div>
+                        <div class="client-main-info">
+                            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
+                                <h2 style="margin: 0; font-size: 1.5rem;">Tally Prime / ERP 9</h2>
+                                <span id="tally-status-pill" class="status-pill"
+                                    style="background: #F3F4F6; color: #6B7280; display: flex; align-items: center; gap: 0.5rem;">
+                                    <span id="tally-status-dot"
+                                        style="width: 8px; height: 8px; background: #9CA3AF; border-radius: 50%;"></span>
+                                    <span id="tally-status-text">Not Connected</span>
+                                </span>
+                            </div>
+                            <p class="client-overview-inline" style="max-width: 600px; margin-top: 0.5rem;">
+                                Sync ledgers, vouchers, and trial balances. Choose your preferred connection method
+                                below.
+                            </p>
+                        </div>
+                    </div>
+
+                    <button id="sync-btn" class="btn btn-primary" style="background: #166534; gap: 0.5rem;"
+                        onclick="syncTally()">
+                        <span id="sync-icon">🔄</span> <span id="sync-text">Sync Now</span>
+                    </button>
+                </div>
+
+                <!-- Connection Methods Grid -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+
+                    <!-- Method 1: Connector -->
+                    <div
+                        style="background: #F9FAFB; padding: 1.5rem; border-radius: 12px; border: 1px solid var(--gray-200);">
+                        <h3
+                            style="font-size: 1.125rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                            <span
+                                style="background: #E5E7EB; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem;">1</span>
+                            Browser + Connector
+                        </h3>
+                        <p
+                            style="font-size: 0.875rem; color: var(--gray-600); margin-bottom: 1.5rem; min-height: 40px;">
+                            Keep using this website. Install a small utility to bridge the connection.
+                        </p>
+                        <button class="btn btn-secondary"
+                            style="width: 100%; justify-content: center; margin-bottom: 1rem;"
+                            onclick="downloadConnector()">
+                            ⬇️ Download Connector (.exe)
+                        </button>
+
+                        <div
+                            style="background: white; padding: 1rem; border-radius: 8px; border: 1px dashed var(--gray-300);">
+                            <label
+                                style="display: block; font-size: 0.7rem; font-weight: 700; color: var(--gray-500); margin-bottom: 0.5rem; text-transform: uppercase;">Connection
+                                Token</label>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <input type="text" value="ca_live_tk_9982374823" readonly
+                                    style="width: 100%; padding: 0.25rem 0.5rem; border: 1px solid var(--gray-200); border-radius: 4px; font-family: monospace; font-size: 0.8rem; color: var(--gray-600);">
+                                <button onclick="copyToken()"
+                                    style="background: none; border: none; cursor: pointer;">📋</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Method 2: Desktop App (Unified) -->
+                    <div
+                        style="background: #F0FDF4; padding: 1.5rem; border-radius: 12px; border: 1px solid #166534; position: relative; overflow: hidden;">
+                        <div
+                            style="position: absolute; top: 0; right: 0; background: #166534; color: white; font-size: 0.7rem; padding: 0.25rem 0.75rem; border-bottom-left-radius: 8px; font-weight: 700;">
+                            RECOMMENDED</div>
+
+                        <h3
+                            style="font-size: 1.125rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; color: #166534;">
+                            <span
+                                style="background: #166534; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem;">2</span>
+                            Desktop App
+                        </h3>
+                        <p style="font-size: 0.875rem; color: #14532D; margin-bottom: 1.5rem; min-height: 40px;">
+                            Download the full Compliance AI app. <b>No setup required.</b> Sync works automatically.
+                        </p>
+
+                        <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                            <button class="btn btn-primary"
+                                style="background: #166534; flex: 1; justify-content: center;"
+                                onclick="downloadDesktop('win')">
+                                <span style="margin-right: 0.5rem;">🪟</span> Windows (.exe)
+                            </button>
+                        </div>
+                        <button class="btn btn-secondary"
+                            style="width: 100%; justify-content: center; border-color: #166534; color: #166534;"
+                            onclick="downloadDesktop('mac')">
+                            <span style="margin-right: 0.5rem;">🍎</span> macOS (.dmg)
+                        </button>
+
+                        <p style="font-size: 0.75rem; color: #166534; margin-top: 1rem; text-align: center;">
+                            ✅ Zero Configuration &nbsp; ✅ Enhanced Security
+                        </p>
+                    </div>
+
+                </div>
+
+                <!-- Detailed Setup Instructions -->
+                <div style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--gray-200);">
+                    <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--gray-900); margin-bottom: 1.5rem;">
+                        How to Connect
+                    </h3>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem;">
+
+                        <!-- Instructions for Method 1 -->
+                        <div>
+                            <h4
+                                style="font-size: 1rem; font-weight: 700; color: var(--gray-700); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                                <span
+                                    style="background: var(--gray-200); width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem;">1</span>
+                                Using the Connector
+                            </h4>
+                            <ol
+                                style="margin: 0; padding-left: 1.5rem; color: var(--gray-600); font-size: 0.9rem; line-height: 1.6;">
+                                <li style="margin-bottom: 0.5rem;">Open <b>Tally Prime</b> or <b>ERP 9</b> and ensure
+                                    your company is loaded.</li>
+                                <li style="margin-bottom: 0.5rem;">Run the <b>Compliance AI Connector</b> (.exe).</li>
+                                <li style="margin-bottom: 0.5rem;">Paste the <b>Connection Token</b> (below) when asked.
+                                </li>
+                                <li>The Connector will detect Tally and start syncing automatically.</li>
+                            </ol>
+                        </div>
+
+                        <!-- Instructions for Method 2 -->
+                        <div>
+                            <h4
+                                style="font-size: 1rem; font-weight: 700; color: #166534; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                                <span
+                                    style="background: #166534; color: white; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem;">2</span>
+                                Using the Desktop App (Better)
+                            </h4>
+                            <ol
+                                style="margin: 0; padding-left: 1.5rem; color: var(--gray-600); font-size: 0.9rem; line-height: 1.6;">
+                                <li style="margin-bottom: 0.5rem;">Download and install the <b>full Desktop App</b>.
+                                </li>
+                                <li style="margin-bottom: 0.5rem;">Log in with your email and password.</li>
+                                <li style="margin-bottom: 0.5rem;">Keep <b>Tally Open</b> in the background.</li>
+                                <li>Click the <b>"Sync Tally"</b> button inside the app dashboard. No token needed!</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+    <!-- View Selection Modal -->
+    <div id="view-modal" class="modal">
+        <div class="modal-content">
+            <h2 id="view-modal-title">Select Your Workspace</h2>
+            <p>How would you like to process this service?</p>
+
+            <div class="view-options">
+                <div class="view-option" onclick="navigateToView('web')">
+                    <div class="icon">💼</div>
+                    <h4>Web View</h4>
+                    <p>Professional Mode: Structured checklists & panels</p>
+                </div>
+                <div class="view-option" onclick="navigateToView('chat')">
+                    <div class="icon">💬</div>
+                    <h4>AI Expert View</h4>
+                    <p>Guided Simplicity: Conversational AI assistance</p>
+                </div>
+            </div>
+
+            <button class="btn btn-secondary" style="margin-top: 2rem;"
+                onclick="closeModal('view-modal')">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Manage Services Modal -->
+    <div id="manage-services-modal" class="modal">
+        <div class="modal-content">
+            <h2>Add/Manage Services</h2>
+            <p>Select the services you want to activate for this client.</p>
+
+            <div id="available-services-list" class="service-selection-list">
+                <!-- Loaded via JS -->
+            </div>
+
+            <div class="modal-actions" style="margin-top: 2rem; display: flex; gap: 1rem; justify-content: flex-end;">
+                <button class="btn btn-secondary" onclick="closeModal('manage-services-modal')">Cancel</button>
+                <button class="btn btn-primary" onclick="saveServices()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="api_config.js"></script>
+    <script>
+        // Initialize Integrations Page
+        async function initializePage() {
+            // Check auth
+            // This relies on api_config.js loaded before this script
+            const user = JSON.parse(localStorage.getItem('user'));
+            const token = localStorage.getItem('access_token');
+            if (!user || !token) {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            // Update Avatar
+            const userInitial = (user.firm_name || user.full_name || user.name || 'U').charAt(0).toUpperCase();
+            const avatarEl = document.getElementById('nav-avatar');
+            if (avatarEl) avatarEl.textContent = userInitial;
+        }
+
+        function downloadConnector() {
+            // Mock download
+            const link = document.createElement('a');
+            link.href = '#';
+            link.download = 'ComplianceAI-Connector-Setup.exe';
+            alert('Starting download for ComplianceAI-Connector-Setup.exe...');
+        }
+
+        function downloadDesktop(os) {
+            const ext = os === 'win' ? 'exe' : 'dmg';
+            const fileName = `ComplianceAI-Desktop-Setup.${ext}`;
+
+            // Create a temporary link to trigger download from the assets folder
+            const link = document.createElement('a');
+            link.href = `assets/downloads/${fileName}`;
+            link.download = fileName;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            // Optional: User feedback
+            // alert(`Downloading ${fileName}...`);
+        }
+
+        function copyToken() {
+            const tokenInput = document.querySelector('input[readonly]');
+            tokenInput.select();
+            document.execCommand('copy');
+
+            const btn = document.querySelector('button[onclick="copyToken()"]');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '✅ Copied!';
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+            }, 2000);
+        }
+
+        async function syncTally() {
+            const btn = document.getElementById('sync-btn');
+            const syncIcon = document.getElementById('sync-icon');
+            const syncText = document.getElementById('sync-text');
+            const pill = document.getElementById('tally-status-pill');
+            const dot = document.getElementById('tally-status-dot');
+            const statusText = document.getElementById('tally-status-text');
+
+            // 1. Connecting State
+            btn.disabled = true;
+            syncIcon.style.display = 'inline-block';
+            syncIcon.style.animation = 'spin 1s linear infinite';
+            syncText.textContent = 'Connecting...';
+
+            pill.style.background = '#FEF3C7'; // Yellow
+            pill.style.color = '#B45309';
+            dot.style.background = '#F59E0B';
+            statusText.textContent = 'Connecting...';
+
+            // 2. Real Network Check via Backend Proxy
+            try {
+                // Use relative path '/tally/status'
+                const response = await fetch('/tally/status');
+                const data = await response.json();
+
+                btn.disabled = false;
+                syncIcon.style.animation = 'none';
+                syncIcon.style.display = 'none';
+                syncText.textContent = 'Sync Now';
+
+                if (data.status === 'connected') {
+                    // 3. Connected State (Green)
+                    pill.style.background = '#DCFCE7'; // Green
+                    pill.style.color = '#166534';
+                    dot.style.background = '#166534';
+                    statusText.textContent = 'Connected';
+                } else {
+                    // 4. Disconnected State (Red)
+                    pill.style.background = '#FEE2E2'; // Red-100
+                    pill.style.color = '#991B1B';      // Red-800
+                    dot.style.background = '#EF4444';
+                    statusText.textContent = 'Not Connected';
+
+                    // Show error message from backend
+                    const msg = data.message || 'Could not connect to Tally. Please ensure Tally is running on port 9000.';
+                    alert(msg);
+                }
+            } catch (e) {
+                // Network/Server Error
+                btn.disabled = false;
+                syncIcon.style.animation = 'none';
+                syncIcon.style.display = 'none';
+                syncText.textContent = 'Sync Now';
+
+                pill.style.background = '#FEE2E2';
+                pill.style.color = '#991B1B';
+                dot.style.background = '#EF4444';
+                statusText.textContent = 'Error';
+                console.error(e);
+                alert('Connection Error: ' + e.message);
+            }
+        }
+
+        window.toggleProfileDropdown = function (e) {
+            e.stopPropagation();
+            const dd = document.getElementById('profile-dropdown');
+            if (dd) dd.classList.toggle('active');
+        }
+
+        window.logout = function () {
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('user');
+            window.location.href = 'index.html';
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', () => {
+            const dd = document.getElementById('profile-dropdown');
+            if (dd) dd.classList.remove('active');
+        });
+
+        initializePage();
+    </script>
+
+    <!-- Footer -->
+    <footer
+        style="background: var(--gray-100); padding: 1.5rem 2rem; text-align: center; border-top: 1px solid var(--gray-200); margin-top: 4rem;">
+        <p style="color: var(--gray-600); font-size: 0.875rem; margin: 0;">
+            If you need more assistance, write an email to us at
+            <a href="mailto:complianceAIExpert@gmail.com"
+                style="color: var(--primary-orange); font-weight: 600; text-decoration: none;">complianceAIExpert@gmail.com</a>
+        </p>
+    </footer>
+
+    <script src="session-manager.js?v=2"></script>
+    <script>
+        if (!requireAuth()) {
+            // Will redirect to login if not authenticated
+        }
+    </script>
+</body>
+
+</html>

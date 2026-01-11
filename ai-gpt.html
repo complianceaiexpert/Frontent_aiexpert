@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Compliance Assistants - Compliance AI Expert</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            /* Cloud-like gradient background */
+            background: linear-gradient(135deg, #E0E7FF 0%, #DBEAFE 50%, #F5F3FF 100%);
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Navbar Enhancements */
+        .navbar {
+            background: rgba(255, 255, 255, 0.7);
+            /* translucent */
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            margin-left: auto;
+            /* Push to right, before profile */
+            margin-right: 2rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: #4B5563;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.2s;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: #2563EB;
+            /* Blue */
+        }
+
+        .nav-link.active {
+            font-weight: 700;
+        }
+
+        .nav-link-badge {
+            background: #E0E7FF;
+            color: #4338CA;
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-left: 0.5rem;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            text-align: center;
+            padding: 4rem 1rem 2rem;
+        }
+
+        .hero-h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.5rem;
+            color: #312E81;
+            /* Indigo 900 */
+            margin-bottom: 0.5rem;
+        }
+
+        .hero-p {
+            font-size: 1.125rem;
+            color: #6B7280;
+        }
+
+        /* Cards Grid */
+        .gpt-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .gpt-card {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-radius: 16px;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .gpt-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            background: rgba(255, 255, 255, 0.85);
+        }
+
+        .gpt-image {
+            width: 180px;
+            height: 180px;
+            object-fit: contain;
+            margin-bottom: 1.5rem;
+            /* Enhance the cloud feel with a drop shadow on the robots */
+            filter: drop-shadow(0 10px 15px rgba(59, 130, 246, 0.15));
+        }
+
+        .gpt-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.25rem;
+            color: #3730A3;
+            /* Indigo 800 */
+            margin-bottom: 0.75rem;
+        }
+
+        .gpt-desc {
+            font-size: 0.9rem;
+            color: #4B5563;
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+            min-height: 2.7em;
+            /* Align buttons */
+        }
+
+        .gpt-btn {
+            background: linear-gradient(135deg, #818CF8, #6366F1);
+            color: white;
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            width: 100%;
+            display: block;
+            transition: opacity 0.2s;
+            box-shadow: 0 4px 6px rgba(99, 102, 241, 0.2);
+        }
+
+        .gpt-btn:hover {
+            opacity: 0.9;
+        }
+
+        /* Floating Clouds Background Animation (Simplified) */
+        .bg-clouds {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            /* Could implement SVG clouds later if needed, gradient is sufficient for now */
+        }
+
+        /* Profile Dropdown Styles */
+        .navbar-profile {
+            position: relative;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-dropdown {
+            position: absolute;
+            top: 120%;
+            right: 0;
+            background: white;
+            border: 1px solid #E5E7EB;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            width: 200px;
+            display: none;
+            padding: 0.5rem 0;
+            z-index: 9999;
+            margin-top: 0.5rem;
+        }
+
+        .dropdown-item {
+            padding: 0.75rem 1.5rem;
+            color: #374151;
+            /* gray-700 */
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            transition: background 0.2s;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .dropdown-item:hover {
+            background: #F9FAFB;
+            /* gray-50 */
+            color: #1E3A8A;
+            /* primary-blue */
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            background: #F3F4F6;
+            /* gray-100 */
+            margin: 0.5rem 0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="clients.html" class="logo">
+                <div class="logo-icon">CE</div>
+                <span style="font-weight: 700; color: #1e3a8a;">ComplianceAIexpert</span>
+            </a>
+
+            <!-- New Center Links -->
+            <div class="nav-links">
+                <a href="clients.html" class="nav-link">Home</a>
+                <a href="clients.html" class="nav-link">Clients</a>
+                <a href="ai-gpt.html" class="nav-link active">
+                    AI GPT <span class="nav-link-badge">NEW</span>
+                </a>
+            </div>
+
+            <div class="navbar-profile" onclick="toggleProfileDropdown(event)">
+                <div style="display:flex; align-items:center; gap:0.75rem">
+                    <div class="user-avatar-small" id="nav-avatar">U</div>
+                </div>
+                <!-- Dropdown Menu -->
+                <div class="nav-dropdown" id="profile-dropdown">
+                    <a href="profile.html" class="dropdown-item">
+                        <span>👤</span> My Profile
+                    </a>
+                    <a href="integrations.html" class="dropdown-item">
+                        <span>🔌</span> Integrations
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <div onclick="logout()" class="dropdown-item" style="color: #EF4444;">
+                        <span>🚪</span> Logout
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <section class="hero-section" style="padding-top: 6rem;">
+        <h1 class="hero-h1" style="color: #1e3a8a; text-shadow: 0 1px 2px rgba(255,255,255,0.8);">Your AI Compliance
+            Assistants</h1>
+        <p class="hero-p" style="max-width: 800px; margin: 0 auto; color: #4B5563;">
+            Four expert GPTs ready to elevate your financial and compliance work. Get instant answers, generate reports,
+            and navigate complex regulations with ease.
+        </p>
+    </section>
+
+    <div class="gpt-grid">
+
+        <!-- ONE: TaxPro GPT -->
+        <div class="gpt-card">
+            <img src="assets/icon-tax.png" alt="Tax Icon" class="gpt-image">
+            <h3 class="gpt-title">TaxPro GPT</h3>
+            <p class="gpt-desc">Navigate income tax to questions and filings with expert precision.</p>
+            <a href="https://chatgpt.com/g/g-69621be2d5488191ae2078658ab0113a-cai-taxation-expert" target="_blank"
+                class="gpt-btn">Chat Now ></a>
+        </div>
+
+        <!-- TWO: Audit Guide -->
+        <div class="gpt-card">
+            <img src="assets/icon-audit.png" alt="Audit Icon" class="gpt-image">
+            <h3 class="gpt-title">Audit Guide GPT</h3>
+            <p class="gpt-desc">Get audit guidance, checklists, and ensure regulatory compliance.</p>
+            <a href="https://chatgpt.com/g/g-69621e17476081919461beca0735097a-caie" target="_blank" class="gpt-btn">Chat
+                Now ></a>
+        </div>
+
+        <!-- THREE: GST Advisor -->
+        <div class="gpt-card">
+            <img src="assets/icon-gst.png" alt="GST Icon" class="gpt-image">
+            <h3 class="gpt-title">GST Advisor GPT</h3>
+            <p class="gpt-desc">Optimize GST refunds, filings, and reconcile incorrectly claimed ITC.</p>
+            <a href="https://chatgpt.com/g/g-69621e5cddb08191acc1592e903a4f63-caie-2" target="_blank"
+                class="gpt-btn">Chat Now ></a>
+        </div>
+
+        <!-- FOUR: Insolvency -->
+        <div class="gpt-card">
+            <img src="assets/icon-insolvency.png" alt="Insolvency Icon" class="gpt-image">
+            <h3 class="gpt-title">Insolvency GPT</h3>
+            <p class="gpt-desc">Manage insolvency cases and legal processes with expert guidance.</p>
+            <a href="https://chatgpt.com/g/g-69620643b1788191b31094fdbc007ffc-vp-expert-of-insolvency" target="_blank"
+                class="gpt-btn">Chat Now ></a>
+        </div>
+
+    </div>
+
+    <!-- Scripts -->
+    <script src="api_config.js?v=2"></script>
+    <script src="session-manager.js?v=2"></script>
+    <script>
+        // Init Check
+        document.addEventListener('DOMContentLoaded', () => {
+            // Use session-manager's auth check
+            if (!requireAuth()) return; // Will redirect if not logged in
+
+            // Get user from localStorage (as set by session-manager/login)
+            const userStr = localStorage.getItem('user');
+            if (userStr) {
+                const user = JSON.parse(userStr);
+                // Determine initial
+                const nameToUse = user.firm_name || user.full_name || user.email || 'U';
+                const initial = nameToUse.charAt(0).toUpperCase();
+
+                const navAvatar = document.getElementById('nav-avatar');
+                if (navAvatar) navAvatar.textContent = initial;
+            }
+        });
+
+        window.toggleProfileDropdown = function (e) {
+            e.stopPropagation();
+            const dd = document.getElementById('profile-dropdown');
+            if (dd.style.display === 'block') {
+                dd.style.display = 'none';
+            } else {
+                dd.style.display = 'block';
+            }
+        };
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function (event) {
+            const dropdown = document.getElementById('profile-dropdown');
+            const profile = document.querySelector('.navbar-profile');
+            if (dropdown && profile && !profile.contains(event.target)) {
+                dropdown.style.display = 'none';
+            }
+        });
+
+        // Remove duplicate logout() - use the one from session-manager.js
+    </script>
+</body>
+
+</html>

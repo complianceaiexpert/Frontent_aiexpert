@@ -204,6 +204,12 @@
             gap: 1.5rem;
             padding-bottom: 1.5rem;
             border-bottom: 1px solid var(--gray-100);
+            justify-content: space-between;
+        }
+
+        .client-header-actions {
+            display: flex;
+            gap: 1rem;
         }
 
         .client-icon-large {
@@ -615,30 +621,42 @@
 </head>
 
 <body>
-    <!-- Enhanced Navigation -->
+    <!-- Navigation -->
     <nav class="navbar">
         <div class="navbar-container">
             <a href="clients.html" class="logo">
                 <div class="logo-icon">CE</div>
                 <span style="font-weight: 700; color: #1e3a8a;">ComplianceAIexpert</span>
             </a>
-            <div class="nav-links">
-                <a href="clients.html" class="nav-link">
-                    <span>🏠</span> Home
+
+            <!-- Center Links -->
+            <div style="display: flex; gap: 2rem; margin-left: auto; margin-right: 2rem; align-items: center;">
+                <a href="clients.html"
+                    style="color: #4B5563; text-decoration: none; font-weight: 500; font-size: 0.95rem;">Home</a>
+                <a href="clients.html"
+                    style="color: #4B5563; text-decoration: none; font-weight: 500; font-size: 0.95rem;">Clients</a>
+                <a href="ai-gpt.html"
+                    style="color: #4B5563; text-decoration: none; font-weight: 500; font-size: 0.95rem;">
+                    AI GPT <span
+                        style="background: #E0E7FF; color: #4338CA; padding: 0.1rem 0.4rem; border-radius: 4px; font-size: 0.7rem; font-weight: 700; margin-left: 0.25rem;">NEW</span>
                 </a>
-                <div class="navbar-profile" onclick="toggleProfileDropdown(event)">
-                    <div style="display:flex; align-items:center; gap:0.75rem">
-                        <div class="user-avatar-small" id="nav-avatar">C</div>
-                    </div>
-                    <!-- Dropdown Menu -->
-                    <div class="nav-dropdown" id="profile-dropdown">
-                        <a href="profile.html" class="dropdown-item">
-                            <span>👤</span> My Profile
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <div onclick="logout()" class="dropdown-item" style="color: #EF4444;">
-                            <span>🚪</span> Logout
-                        </div>
+            </div>
+
+            <div class="navbar-profile" onclick="toggleProfileDropdown(event)">
+                <div style="display:flex; align-items:center; gap:0.75rem">
+                    <div class="user-avatar-small" id="nav-avatar">U</div>
+                </div>
+                <!-- Dropdown Menu -->
+                <div class="nav-dropdown" id="profile-dropdown">
+                    <a href="profile.html" class="dropdown-item">
+                        <span>👤</span> My Profile
+                    </a>
+                    <a href="integrations.html" class="dropdown-item">
+                        <span>🔌</span> Integrations
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <div onclick="logout()" class="dropdown-item" style="color: #EF4444;">
+                        <span>🚪</span> Logout
                     </div>
                 </div>
             </div>
@@ -680,14 +698,15 @@
                 <div class="client-main-info">
                     <h2 id="client-details-name">Loading...</h2>
                     <span class="client-entity-badge" id="client-entity-type">Individual</span>
-                    <p class="client-overview-inline">This client profile represents a unique business entity with
-                        specific compliance requirements and regulatory obligations. All services are tailored to meet
-                        the client's industry-specific needs, business structure, and jurisdictional requirements.</p>
+                    <p class="client-overview-inline">GSTIN: <span id="client-gstin">-</span> • PAN: <span
+                            id="client-pan">-</span> • CIN: <span id="client-cin">-</span></p>
                 </div>
-                <div class="client-compliance-badge" id="compliance-status">
-                    <span class="badge-ai-capsule badge-ai-success">
-                        <span>✓</span> Compliant
-                    </span>
+
+                <!-- Right: Actions -->
+                <div class="client-header-actions">
+                    <button class="btn btn-secondary" onclick="openSyncModal()">
+                        <span style="color: #F59E0B; font-weight: 900;">T</span> Sync Tally Data
+                    </button>
                 </div>
             </div>
 
@@ -826,6 +845,29 @@
         </div>
     </div>
 
+    <!-- Tally Sync Modal -->
+    <div id="tally-sync-modal" class="modal">
+        <div class="modal-content">
+            <h2 style="margin-bottom: 0.5rem;">Select Tally Company</h2>
+            <p style="color: var(--gray-600); margin-bottom: 1.5rem;">Which open company belongs to <strong><span
+                        id="tally-client-target">this client</span></strong>?</p>
+
+            <div id="company-loading" style="display:none; color: var(--primary-blue);">
+                Parsing open companies from Tally...
+            </div>
+
+            <div id="tally-company-list" class="company-list-container">
+                <!-- Items injected by JS -->
+            </div>
+
+            <div class="modal-actions" style="margin-top: 2rem; display: flex; gap: 1rem; justify-content: flex-end;">
+                <button class="btn btn-secondary" onclick="closeModal('tally-sync-modal')">Cancel</button>
+                <button class="btn btn-primary" id="btn-confirm-sync" disabled onclick="confirmSync()">Sync
+                    Selected</button>
+            </div>
+        </div>
+    </div>
+
     <script src="api_config.js"></script>
     <script>
         const urlParams = new URLSearchParams(window.location.search);
@@ -833,6 +875,7 @@
         let currentService = null;
         let allServices = [];
         let clientServices = [];
+        let currentClientData = null; // Store full client object
         const user = JSON.parse(localStorage.getItem('user'));
 
         if (!clientId) window.location.href = 'clients.html';
@@ -848,9 +891,15 @@
                 if (!response.ok) throw new Error(`Failed to load client (${response.status})`);
 
                 const client = await response.json();
+                currentClientData = client; // Store globally
 
                 // Update all client info displays
                 const clientName = client.name;
+
+                // Update Modal Text
+                const modalTarget = document.getElementById('tally-client-target');
+                if (modalTarget) modalTarget.textContent = clientName;
+
                 const initial = clientName.charAt(0).toUpperCase();
                 const isCompany = clientName.toLowerCase().includes('ltd') || clientName.toLowerCase().includes('inc');
                 const entityType = isCompany ? 'Private Limited' : 'Individual / Proprietor';
@@ -1098,6 +1147,85 @@
                 window.location.href = `service-gst-refund.html?clientId=${clientId}&view=web`;
             } else {
                 window.location.href = `service-gst-refund.html?clientId=${clientId}&view=semi-chat`;
+            }
+        }
+
+        // --- Tally Sync Functions ---
+        let selectedCompany = null;
+
+        async function openSyncModal() {
+            const modal = document.getElementById('tally-sync-modal');
+            modal.classList.add('active');
+
+            const listContainer = document.getElementById('tally-company-list');
+            const loading = document.getElementById('company-loading');
+
+            listContainer.innerHTML = '';
+            loading.style.display = 'block';
+
+            try {
+                // Fetch from Backend
+                const response = await fetch('/tally/companies'); // Relative path to frontend_server
+                const companies = await response.json();
+
+                loading.style.display = 'none';
+
+                if (!Array.isArray(companies) || companies.length === 0) {
+                    listContainer.innerHTML = '<div style="padding:1rem">No open companies found in Tally (Port 9000).</div>';
+                    return;
+                }
+
+                companies.forEach(comp => {
+                    const div = document.createElement('div');
+                    div.className = 'company-item';
+                    div.innerHTML = `<span class="company-icon">T</span> <span>${comp}</span>`;
+                    div.onclick = () => selectCompany(div, comp);
+                    listContainer.appendChild(div);
+                });
+
+            } catch (e) {
+                loading.style.display = 'none';
+                listContainer.innerHTML = '<div style="padding:1rem; color:red">Error connecting to Tally. Is it running?</div>';
+                console.error(e);
+            }
+        }
+
+        function selectCompany(el, name) {
+            // Deselect all
+            document.querySelectorAll('.company-item').forEach(i => i.classList.remove('selected'));
+            // Select this
+            el.classList.add('selected');
+            selectedCompany = name;
+            document.getElementById('btn-confirm-sync').disabled = false;
+        }
+
+        async function confirmSync() {
+            if (!selectedCompany) return;
+
+            const btn = document.getElementById('btn-confirm-sync');
+            const originalText = btn.textContent;
+            btn.textContent = 'Syncing...';
+            btn.disabled = true;
+
+            try {
+                const response = await fetch('/tally/sync', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        company_name: selectedCompany,
+                        client_id: clientId
+                    })
+                });
+                const res = await response.json();
+
+                closeModal('tally-sync-modal');
+                alert(`✅ Success: ${res.message}\nFile saved locally.`);
+                btn.textContent = originalText;
+
+            } catch (e) {
+                alert('Sync Failed: ' + e.message);
+                btn.textContent = originalText;
+                btn.disabled = false;
             }
         }
 

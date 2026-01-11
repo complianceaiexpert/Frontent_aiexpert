@@ -175,8 +175,8 @@ img {
   max-width: 1280px;
   margin: 0 auto;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: 2rem;
 }
 
 .logo {
@@ -187,6 +187,8 @@ img {
   font-weight: 700;
   color: var(--gray-900);
   font-family: var(--font-display);
+  margin-right: auto;
+  /* Pushes links and profile to the right */
 }
 
 .logo-icon {
@@ -1105,6 +1107,28 @@ body {
 
 .message-text:last-child {
   margin-bottom: 0;
+}
+
+/* Logo Styles */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  text-decoration: none;
+  font-family: var(--font-display);
+}
+
+.logo-icon {
+  width: 32px;
+  height: 32px;
+  background: var(--primary-blue);
+  color: white;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.875rem;
 }
 
 .choice-buttons {
