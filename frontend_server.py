@@ -120,6 +120,18 @@ def add_service(client_id: int, req: ServiceReq):
     
     raise HTTPException(status_code=404, detail="Client not found")
 
+# --- Tally Integration Logic ---
+
+def send_tally_request(xml_data):
+    url = "http://localhost:9000"
+    req = urllib.request.Request(url, data=xml_data.encode('utf-8'), headers={'Content-Type': 'application/xml'})
+    try:
+        with urllib.request.urlopen(req, timeout=5) as response:
+            return response.read().decode('utf-8')
+    except Exception as e:
+        print(f"Tally Request Error: {e}")
+        return None
+
 @app.get("/tally/status")
 def check_tally_status():
     xml_payload = """<ENVELOPE>
@@ -139,18 +151,6 @@ def check_tally_status():
     if resp:
         return {"status": "connected", "message": "Tally connected (XML OK)"}
     return {"status": "disconnected", "message": "Tally not responding on 9000"}
-
-# --- Tally Integration Logic ---
-
-def send_tally_request(xml_data):
-    url = "http://localhost:9000"
-    req = urllib.request.Request(url, data=xml_data.encode('utf-8'), headers={'Content-Type': 'application/xml'})
-    try:
-        with urllib.request.urlopen(req, timeout=5) as response:
-            return response.read().decode('utf-8')
-    except Exception as e:
-        print(f"Tally Request Error: {e}")
-        return None
 
 @app.get("/tally/companies")
 def get_tally_companies():
@@ -200,25 +200,50 @@ class SyncReq(BaseModel):
     company_name: str
     client_id: int
 
+class SyncReq(BaseModel):
+    company_name: str
+    client_id: int
+
 @app.post("/tally/sync")
 def sync_company_data(req: SyncReq):
-    
-    # 1. Construct Request for Trial Balance (Simplified)
-    # We use SVCOMPANYNAME to target the specific company
-    company_name = req.company_name
-    xml_payload = f"""<ENVELOPE>
-   <HEADER><TALLYREQUEST>Export Data</TALLYREQUEST></HEADER>
-      <BODY>
-        <EXPORTDATA>
-          <REQUESTDESC>
-            <REPORTNAME>List of Companies</REPORTNAME>
-            <STATICVARIABLES>
-              <SVEXPORTFORMAT>$$SysName:XML</SVEXPORTFORMAT>
-            </STATICVARIABLES>
-          </REQUESTDESC>
-        </EXPORTDATA>
-      </BODY>
+    # 1) fetch company list from Tally
+    xml_payload = """<ENVELOPE>
+      <HEADER><TALLYREQUEST>Export Data</TALLYREQUEST></HEADER>
+      <BODY><EXPORTDATA><REQUESTDESC>
+        <REPORTNAME>List of Companies</REPORTNAME>
+        <STATICVARIABLES><SVEXPORTFORMAT>$$SysName:XML</SVEXPORTFORMAT></STATICVARIABLES>
+      </REQUESTDESC></EXPORTDATA></BODY>
     </ENVELOPE>"""
+
+    response_xml = send_tally_request(xml_payload)
+    if not response_xml:
+        raise HTTPException(status_code=400, detail="Tally not responding on port 9000")
+
+    # 2) parse company names (simple + robust enough for now)
+    import re
+    companies = re.findall(r"<COMPANYNAME>(.*?)</COMPANYNAME>", response_xml)
+    if not companies:
+        companies = re.findall(r"<ListofCompanies>(.*?)</ListofCompanies>", response_xml)
+
+    if not companies:
+        raise HTTPException(status_code=400, detail="Could not parse company list from Tally")
+
+    # 3) validate selected company exists
+    if req.company_name not in companies:
+        raise HTTPException(status_code=400, detail=f"Company not found in Tally: {req.company_name}")
+
+    # 4) store mapping locally (client_id -> company_name) for next steps
+    state = read_data("tally_state.json")  # list of objects
+    if not isinstance(state, list):
+        state = []
+
+    # replace existing mapping for this client_id
+    state = [x for x in state if str(x.get("client_id")) != str(req.client_id)]
+    state.append({"client_id": req.client_id, "company_name": req.company_name, "updated_at": int(time.time())})
+    write_data("tally_state.json", state)
+
+    return {"success": True, "message": "Company linked successfully", "company_name": req.company_name}
+
     
     # 2. Fetch Data
     response_xml = send_tally_request(xml_payload)
