@@ -122,15 +122,23 @@ def add_service(client_id: int, req: ServiceReq):
 
 @app.get("/tally/status")
 def check_tally_status():
-    tally_url = "http://localhost:9000"
-    try:
-        # Tally usually responds to a GET with a message or 200 OK
-        with urllib.request.urlopen(tally_url, timeout=2) as response:
-            return {"status": "connected", "message": "Tally is running"}
-    except urllib.error.URLError:
-        return {"status": "disconnected", "message": "Tally is not reachable on port 9000"}
-    except Exception as e:
-        return {"status": "error", "message": str(e)}
+    xml_payload = """<ENVELOPE>
+      <HEADER><TALLYREQUEST>Export Data</TALLYREQUEST></HEADER>
+      <BODY>
+        <EXPORTDATA>
+          <REQUESTDESC>
+            <REPORTNAME>List of Companies</REPORTNAME>
+            <STATICVARIABLES>
+              <SVEXPORTFORMAT>$$SysName:XML</SVEXPORTFORMAT>
+            </STATICVARIABLES>
+          </REQUESTDESC>
+        </EXPORTDATA>
+      </BODY>
+    </ENVELOPE>"""
+    resp = send_tally_request(xml_payload)
+    if resp:
+        return {"status": "connected", "message": "Tally connected (XML OK)"}
+    return {"status": "disconnected", "message": "Tally not responding on 9000"}
 
 # --- Tally Integration Logic ---
 
@@ -194,22 +202,22 @@ class SyncReq(BaseModel):
 
 @app.post("/tally/sync")
 def sync_company_data(req: SyncReq):
+    
     # 1. Construct Request for Trial Balance (Simplified)
     # We use SVCOMPANYNAME to target the specific company
     company_name = req.company_name
     xml_payload = f"""<ENVELOPE>
-    <HEADER><TALLYREQUEST>Export Data</TALLYREQUEST></HEADER>
-    <BODY>
-    <EXPORTDATA>
-    <REQUESTDESC>
-    <REPORTNAME>Trial Balance</REPORTNAME>
-    <STATICVARIABLES>
-    <SVEXPORTFORMAT>$$SysName:XML</SVEXPORTFORMAT>
-    <SVCOMPANYNAME>{company_name}</SVCOMPANYNAME>
-    </STATICVARIABLES>
-    </REQUESTDESC>
-    </EXPORTDATA>
-    </BODY>
+   <HEADER><TALLYREQUEST>Export Data</TALLYREQUEST></HEADER>
+      <BODY>
+        <EXPORTDATA>
+          <REQUESTDESC>
+            <REPORTNAME>List of Companies</REPORTNAME>
+            <STATICVARIABLES>
+              <SVEXPORTFORMAT>$$SysName:XML</SVEXPORTFORMAT>
+            </STATICVARIABLES>
+          </REQUESTDESC>
+        </EXPORTDATA>
+      </BODY>
     </ENVELOPE>"""
     
     # 2. Fetch Data
