@@ -926,8 +926,11 @@
         }
 
         async function syncTally() {
-            if (location.protocol === 'https:') {
-                alert('Sync works via Desktop App. Please Download the Desktop App and click Sync there.');
+            const isDesktop = !!window.__TAURI__?.core;
+
+            // Browser mode: block sync
+            if (!isDesktop) {
+                alert('Sync works via Desktop App. Please download the Desktop App and click Sync there.');
                 return;
             }
 
@@ -938,47 +941,44 @@
             const dot = document.getElementById('tally-status-dot');
             const statusText = document.getElementById('tally-status-text');
 
-            // 1. Connecting State
+            // UI: Connecting
             btn.disabled = true;
             syncIcon.style.display = 'inline-block';
             syncIcon.style.animation = 'spin 1s linear infinite';
             syncText.textContent = 'Connecting...';
 
-            pill.style.background = '#FEF3C7'; // Yellow
+            pill.style.background = '#FEF3C7';
             pill.style.color = '#B45309';
             dot.style.background = '#F59E0B';
             statusText.textContent = 'Connecting...';
 
-            // 2. Real Network Check via Backend Proxy
             try {
-                // Use absolute path for local backend
-                const response = await fetch('http://localhost:3000/tally/status');
-                const data = await response.json();
+                // ✅ Tauri invoke (Rust will call http://localhost:9000)
+                const { invoke } = window.__TAURI__.core;
+                const data = await invoke('tally_status');
+                // expected: { status: "connected"|"disconnected", message?: string }
 
+                // UI: reset button
                 btn.disabled = false;
                 syncIcon.style.animation = 'none';
                 syncIcon.style.display = 'none';
                 syncText.textContent = 'Sync Now';
 
-                if (data.status === 'connected') {
-                    // 3. Connected State (Green)
-                    pill.style.background = '#DCFCE7'; // Green
+                if (data?.status === 'connected') {
+                    pill.style.background = '#DCFCE7';
                     pill.style.color = '#166534';
                     dot.style.background = '#166534';
                     statusText.textContent = 'Connected';
                 } else {
-                    // 4. Disconnected State (Red)
-                    pill.style.background = '#FEE2E2'; // Red-100
-                    pill.style.color = '#991B1B';      // Red-800
+                    pill.style.background = '#FEE2E2';
+                    pill.style.color = '#991B1B';
                     dot.style.background = '#EF4444';
                     statusText.textContent = 'Not Connected';
 
-                    // Show error message from backend
-                    const msg = data.message || 'Could not connect to Tally. Please ensure Tally is running on port 9000.';
-                    alert(msg);
+                    alert(data?.message || 'Could not connect to Tally. Ensure Tally is running on port 9000.');
                 }
             } catch (e) {
-                // Network/Server Error
+                // UI: error
                 btn.disabled = false;
                 syncIcon.style.animation = 'none';
                 syncIcon.style.display = 'none';
@@ -988,10 +988,12 @@
                 pill.style.color = '#991B1B';
                 dot.style.background = '#EF4444';
                 statusText.textContent = 'Error';
+
                 console.error(e);
-                alert('Connection Error: ' + e.message);
+                alert('Connection Error: ' + (e?.message || String(e)));
             }
         }
+
 
         window.toggleProfileDropdown = function (e) {
             e.stopPropagation();
