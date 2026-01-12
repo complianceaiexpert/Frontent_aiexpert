@@ -926,6 +926,11 @@
         }
 
         async function syncTally() {
+            if (location.protocol === 'https:') {
+                alert('Sync works via Desktop App. Please Download the Desktop App and click Sync there.');
+                return;
+            }
+
             const btn = document.getElementById('sync-btn');
             const syncIcon = document.getElementById('sync-icon');
             const syncText = document.getElementById('sync-text');
@@ -946,8 +951,8 @@
 
             // 2. Real Network Check via Backend Proxy
             try {
-                // Use relative path '/tally/status'
-                const response = await fetch('/tally/status');
+                // Use absolute path for local backend
+                const response = await fetch('http://localhost:3000/tally/status');
                 const data = await response.json();
 
                 btn.disabled = false;

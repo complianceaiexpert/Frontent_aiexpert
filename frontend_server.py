@@ -177,11 +177,10 @@ def get_tally_companies():
     
     response_xml = send_tally_request(xml_payload)
     
-    if not response_xml:
-        # Fallback/Mock for demo if Tally isn't actually running or fails
-        # In a real app we might return an empty list or error
-        return ["Rahul Enterprises", "Demo Company Pvt Ltd", "Test Corp"]
-        
+# in /tally/companies
+if not response_xml:
+    raise HTTPException(status_code=400, detail="Tally not responding on 9000")
+
     # Simple parsing logic (quick & dirty regex or string find for <ListofCompanies>...</ListofCompanies>)
     # In production, use xml.etree.ElementTree
     import re
@@ -200,44 +199,20 @@ class SyncReq(BaseModel):
     company_name: str
     client_id: int
 
-class SyncReq(BaseModel):
-    company_name: str
-    client_id: int
-
 @app.post("/tally/sync")
 def sync_company_data(req: SyncReq):
-    # 1) fetch company list from Tally
-    xml_payload = """<ENVELOPE>
-      <HEADER><TALLYREQUEST>Export Data</TALLYREQUEST></HEADER>
-      <BODY><EXPORTDATA><REQUESTDESC>
-        <REPORTNAME>List of Companies</REPORTNAME>
-        <STATICVARIABLES><SVEXPORTFORMAT>$$SysName:XML</SVEXPORTFORMAT></STATICVARIABLES>
-      </REQUESTDESC></EXPORTDATA></BODY>
-    </ENVELOPE>"""
+    companies = get_tally_companies()  # reuse the working logic
 
-    response_xml = send_tally_request(xml_payload)
-    if not response_xml:
-        raise HTTPException(status_code=400, detail="Tally not responding on port 9000")
+    if not companies or not isinstance(companies, list):
+        raise HTTPException(status_code=400, detail="Could not fetch companies from Tally")
 
-    # 2) parse company names (simple + robust enough for now)
-    import re
-    companies = re.findall(r"<COMPANYNAME>(.*?)</COMPANYNAME>", response_xml)
-    if not companies:
-        companies = re.findall(r"<ListofCompanies>(.*?)</ListofCompanies>", response_xml)
-
-    if not companies:
-        raise HTTPException(status_code=400, detail="Could not parse company list from Tally")
-
-    # 3) validate selected company exists
     if req.company_name not in companies:
         raise HTTPException(status_code=400, detail=f"Company not found in Tally: {req.company_name}")
 
-    # 4) store mapping locally (client_id -> company_name) for next steps
-    state = read_data("tally_state.json")  # list of objects
+    state = read_data("tally_state.json")
     if not isinstance(state, list):
         state = []
 
-    # replace existing mapping for this client_id
     state = [x for x in state if str(x.get("client_id")) != str(req.client_id)]
     state.append({"client_id": req.client_id, "company_name": req.company_name, "updated_at": int(time.time())})
     write_data("tally_state.json", state)
@@ -245,21 +220,6 @@ def sync_company_data(req: SyncReq):
     return {"success": True, "message": "Company linked successfully", "company_name": req.company_name}
 
     
-    # 2. Fetch Data
-    response_xml = send_tally_request(xml_payload)
-    
-    if not response_xml:
-        # Mock data for success
-        response_xml = f"<MockData>Successfully extracted data for {company_name}</MockData>"
-
-    # 3. Save Locally
-    filename = f"tally_data_client_{req.client_id}_{int(time.time())}.xml"
-    file_path = os.path.join(DATA_DIR, filename)
-    
-    with open(file_path, "w") as f:
-        f.write(response_xml)
-        
-    return {"success": True, "message": f"Data synced and saved to {filename}", "file": filename}
 
 
 # Serve Static Files (must be last to not shadow API)
@@ -271,4 +231,4 @@ if __name__ == "__main__":
         os.makedirs(DATA_DIR)
         
     print("Starting Python Frontend Server on port 3000...")
-    uvicorn.run(app, host="0.0.0.0", port=3000)
+    uvicorn.run(app, host="127.0.0.1", port=3000)
