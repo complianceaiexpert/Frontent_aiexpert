@@ -1,4 +1,5 @@
 const API_BASE_URL = 'https://ca-copilot-api.onrender.com/api/v1';
+const STATEMENT3_WEBHOOK_URL = 'https://rahul250192.app.n8n.cloud/webhook/Statement3-Generated';
 
 async function authFetch(endpoint, options = {}) {
     const user = JSON.parse(localStorage.getItem('user'));

@@ -757,6 +757,25 @@
 
                 // Set Completed
                 updateStepStatus(step.id, 'completed');
+
+                // Trigger Webhook for Statement 3
+                if (step.id === 'stmt3') {
+                    try {
+                        console.log('Triggering Statement 3 Webhook...');
+                        fetch(STATEMENT3_WEBHOOK_URL, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                clientId: clientId,
+                                timestamp: new Date().toISOString(),
+                                status: 'Generated'
+                            })
+                        }).then(res => console.log('Webhook sent:', res.status))
+                            .catch(err => console.error('Webhook failed:', err));
+                    } catch (e) {
+                        console.error('Error triggering webhook:', e);
+                    }
+                }
             }
 
             alert('GST Refund processing completed successfully!');

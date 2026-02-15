@@ -925,75 +925,270 @@
             }, 2000);
         }
 
+        // async function syncTally() {
+        //     const isDesktop = !!window.__TAURI__?.core;
+
+        //     // Browser mode: block sync
+        //     if (!isDesktop) {
+        //         alert('Sync works via Desktop App. Please download the Desktop App and click Sync there.');
+        //         return;
+        //     }
+
+        //     const btn = document.getElementById('sync-btn');
+        //     const syncIcon = document.getElementById('sync-icon');
+        //     const syncText = document.getElementById('sync-text');
+        //     const pill = document.getElementById('tally-status-pill');
+        //     const dot = document.getElementById('tally-status-dot');
+        //     const statusText = document.getElementById('tally-status-text');
+
+        //     // UI: Connecting
+        //     btn.disabled = true;
+        //     syncIcon.style.display = 'inline-block';
+        //     syncIcon.style.animation = 'spin 1s linear infinite';
+        //     syncText.textContent = 'Connecting...';
+
+        //     pill.style.background = '#FEF3C7';
+        //     pill.style.color = '#B45309';
+        //     dot.style.background = '#F59E0B';
+        //     statusText.textContent = 'Connecting...';
+
+        //     try {
+        //         // ✅ Tauri invoke (Rust will call http://localhost:9000)
+        //         const { invoke } = window.__TAURI__.core;
+        //         const data = await invoke('tally_status');
+        //         // expected: { status: "connected"|"disconnected", message?: string }
+
+        //         // UI: reset button
+        //         btn.disabled = false;
+        //         syncIcon.style.animation = 'none';
+        //         syncIcon.style.display = 'none';
+        //         syncText.textContent = 'Sync Now';
+
+        //         if (data?.status === 'connected') {
+        //             pill.style.background = '#DCFCE7';
+        //             pill.style.color = '#166534';
+        //             dot.style.background = '#166534';
+        //             statusText.textContent = 'Connected';
+        //         } else {
+        //             pill.style.background = '#FEE2E2';
+        //             pill.style.color = '#991B1B';
+        //             dot.style.background = '#EF4444';
+        //             statusText.textContent = 'Not Connected';
+
+        //             alert(data?.message || 'Could not connect to Tally. Ensure Tally is running on port 9000.');
+        //         }
+        //     } catch (e) {
+        //         // UI: error
+        //         btn.disabled = false;
+        //         syncIcon.style.animation = 'none';
+        //         syncIcon.style.display = 'none';
+        //         syncText.textContent = 'Sync Now';
+
+        //         pill.style.background = '#FEE2E2';
+        //         pill.style.color = '#991B1B';
+        //         dot.style.background = '#EF4444';
+        //         statusText.textContent = 'Error';
+
+        //         console.error(e);
+        //         alert('Connection Error: ' + (e?.message || String(e)));
+        //     }
+        // }
+
+        // async function syncTally() {
+        //     // ✅ Backup hints (NOT authoritative)
+        //     const hasCoreInvoke = !!window.__TAURI__?.core?.invoke;
+        //     const hasInternals = !!window.__TAURI__INTERNALS__;
+        //     const tauriHint = hasCoreInvoke || hasInternals;
+
+        //     // ✅ Authoritative desktop check (only this can enable sync)
+        //     let isDesktop = false;
+        //     if (hasCoreInvoke) {
+        //         try {
+        //             isDesktop = await window.__TAURI__.core.invoke('app_ping'); // add in Rust
+        //         } catch (_) {
+        //             isDesktop = false;
+        //         }
+        //     }
+
+        //     // Browser / not-real-desktop: block sync
+        //     if (!isDesktop) {
+        //         // Slightly better message if internals/tauri are detected but invoke isn't usable
+        //         alert(
+        //             tauriHint
+        //                 ? 'Desktop bridge not available here. Please open this inside the installed Desktop App and click Sync there.'
+        //                 : 'Sync works via Desktop App. Please download the Desktop App and click Sync there.'
+        //         );
+        //         return;
+        //     }
+
+        //     const btn = document.getElementById('sync-btn');
+        //     const syncIcon = document.getElementById('sync-icon');
+        //     const syncText = document.getElementById('sync-text');
+        //     const pill = document.getElementById('tally-status-pill');
+        //     const dot = document.getElementById('tally-status-dot');
+        //     const statusText = document.getElementById('tally-status-text');
+
+        //     // UI: Connecting
+        //     btn.disabled = true;
+        //     syncIcon.style.display = 'inline-block';
+        //     syncIcon.style.animation = 'spin 1s linear infinite';
+        //     syncText.textContent = 'Connecting...';
+
+        //     pill.style.background = '#FEF3C7';
+        //     pill.style.color = '#B45309';
+        //     dot.style.background = '#F59E0B';
+        //     statusText.textContent = 'Connecting...';
+
+        //     try {
+        //         // ✅ Tauri invoke (Rust will call http://localhost:9000)
+        //         const { invoke } = window.__TAURI__.core;
+        //         const data = await invoke('tally_status');
+        //         // expected: { status: "connected"|"disconnected", message?: string }
+
+        //         // UI: reset button
+        //         btn.disabled = false;
+        //         syncIcon.style.animation = 'none';
+        //         syncIcon.style.display = 'none';
+        //         syncText.textContent = 'Sync Now';
+
+        //         if (data?.status === 'connected') {
+        //             pill.style.background = '#DCFCE7';
+        //             pill.style.color = '#166534';
+        //             dot.style.background = '#166534';
+        //             statusText.textContent = 'Connected';
+        //         } else {
+        //             pill.style.background = '#FEE2E2';
+        //             pill.style.color = '#991B1B';
+        //             dot.style.background = '#EF4444';
+        //             statusText.textContent = 'Not Connected';
+
+        //             alert(data?.message || 'Could not connect to Tally. Ensure Tally is running on port 9000.');
+        //         }
+        //     } catch (e) {
+        //         // UI: error
+        //         btn.disabled = false;
+        //         syncIcon.style.animation = 'none';
+        //         syncIcon.style.display = 'none';
+        //         syncText.textContent = 'Sync Now';
+
+        //         pill.style.background = '#FEE2E2';
+        //         pill.style.color = '#991B1B';
+        //         dot.style.background = '#EF4444';
+        //         statusText.textContent = 'Error';
+
+        //         console.error(e);
+        //         alert('Connection Error: ' + (e?.message || String(e)));
+        //     }
+        // }
+
+        // async function syncTally() {
+        //     const btn = document.getElementById('sync-btn');
+        //     const statusText = document.getElementById('tally-status-text');
+
+        //     btn.disabled = true;
+        //     statusText.textContent = "Connecting...";
+
+        //     try {
+
+        //         const res = await fetch("http://127.0.0.1:17890/tally", {
+        //             method: "POST",
+        //             headers: { "Content-Type": "text/xml" },
+        //             body: `<ENVELOPE>
+        //     <HEADER>
+        //         <TALLYREQUEST>Export Data</TALLYREQUEST>
+        //     </HEADER>
+        //     <BODY>
+        //         <EXPORTDATA>
+        //         <REQUESTDESC>
+        //             <REPORTNAME>List of Companies</REPORTNAME>
+        //         </REQUESTDESC>
+        //         </EXPORTDATA>
+        //     </BODY>
+        //     </ENVELOPE>`
+        //         });
+
+        //         const text = await res.text();
+
+        //         if (res.ok && text.includes("<COMPANY")) {
+        //             statusText.textContent = "Connected";
+        //             alert("Connected to Tally");
+        //         } else {
+        //             statusText.textContent = "Not Connected";
+        //             alert("Tally not running on port 9000");
+        //         }
+
+        //     } catch (e) {
+        //         statusText.textContent = "Error";
+        //         alert("Bridge not running");
+        //     }
+
+        //     btn.disabled = false;
+        // }
+
         async function syncTally() {
-            const isDesktop = !!window.__TAURI__?.core;
+            const btn = document.getElementById("sync-btn");
+            const statusText = document.getElementById("tally-status-text");
 
-            // Browser mode: block sync
-            if (!isDesktop) {
-                alert('Sync works via Desktop App. Please download the Desktop App and click Sync there.');
-                return;
-            }
-
-            const btn = document.getElementById('sync-btn');
-            const syncIcon = document.getElementById('sync-icon');
-            const syncText = document.getElementById('sync-text');
-            const pill = document.getElementById('tally-status-pill');
-            const dot = document.getElementById('tally-status-dot');
-            const statusText = document.getElementById('tally-status-text');
-
-            // UI: Connecting
             btn.disabled = true;
-            syncIcon.style.display = 'inline-block';
-            syncIcon.style.animation = 'spin 1s linear infinite';
-            syncText.textContent = 'Connecting...';
-
-            pill.style.background = '#FEF3C7';
-            pill.style.color = '#B45309';
-            dot.style.background = '#F59E0B';
-            statusText.textContent = 'Connecting...';
+            statusText.textContent = "Connecting...";
 
             try {
-                // ✅ Tauri invoke (Rust will call http://localhost:9000)
-                const { invoke } = window.__TAURI__.core;
-                const data = await invoke('tally_status');
-                // expected: { status: "connected"|"disconnected", message?: string }
+                const res = await fetch("http://127.0.0.1:9000/tally", {
+                    method: "POST",
+                    headers: { "Content-Type": "text/xml" },
+                    body: `<ENVELOPE>
+                    <HEADER>
+                        <VERSION>1</VERSION>
+                        <TALLYREQUEST>Export Data</TALLYREQUEST>
+                        <TYPE>Data</TYPE>
+                        <ID>List of Companies</ID>
+                    </HEADER>
+                    <BODY>
+                        <DESC />
+                    </BODY>
+                    </ENVELOPE>`,
+                });
 
-                // UI: reset button
-                btn.disabled = false;
-                syncIcon.style.animation = 'none';
-                syncIcon.style.display = 'none';
-                syncText.textContent = 'Sync Now';
+                const text = await res.text();
 
-                if (data?.status === 'connected') {
-                    pill.style.background = '#DCFCE7';
-                    pill.style.color = '#166534';
-                    dot.style.background = '#166534';
-                    statusText.textContent = 'Connected';
+                // 1) Tally connected check (got an XML envelope back)
+                const connected = res.ok && /<ENVELOPE[\s>]/i.test(text);
+                if (!connected) {
+                    statusText.textContent = "Not Connected";
+                    alert("Not connected to Tally");
+                    return;
+                }
+
+                alert("Yeahh Connected ✅");
+
+                alert(text);
+
+                const tags = ["COMPANYNAME", "CMPNAME", "NAME"];
+                let companyName = null;
+
+                for (const t of tags) {
+                    const m = text.match(new RegExp(`<${t}>([\\s\\S]*?)<\\/${t}>`, "i"));
+                    if (m && m[1].trim()) { companyName = m[1].trim(); break; }
+                }
+
+                // 2) Company name check
+                // const m = text.match(/<COMPANYNAME>([\s\S]*?)<\/COMPANYNAME>/i);
+                // const companyName = m ? m[1].trim() : null;
+
+                if (companyName) {
+                    statusText.textContent = `Connected: ${companyName}`;
+                    alert(`Company: ${companyName}`);
                 } else {
-                    pill.style.background = '#FEE2E2';
-                    pill.style.color = '#991B1B';
-                    dot.style.background = '#EF4444';
-                    statusText.textContent = 'Not Connected';
-
-                    alert(data?.message || 'Could not connect to Tally. Ensure Tally is running on port 9000.');
+                    statusText.textContent = "Connected (no company name)";
+                    alert("Connected, but no company name found in response");
                 }
             } catch (e) {
-                // UI: error
+                statusText.textContent = "Error";
+                alert("Bridge not running");
+            } finally {
                 btn.disabled = false;
-                syncIcon.style.animation = 'none';
-                syncIcon.style.display = 'none';
-                syncText.textContent = 'Sync Now';
-
-                pill.style.background = '#FEE2E2';
-                pill.style.color = '#991B1B';
-                dot.style.background = '#EF4444';
-                statusText.textContent = 'Error';
-
-                console.error(e);
-                alert('Connection Error: ' + (e?.message || String(e)));
             }
         }
-
 
         window.toggleProfileDropdown = function (e) {
             e.stopPropagation();
