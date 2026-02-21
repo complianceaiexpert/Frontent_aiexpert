@@ -257,6 +257,38 @@
             }
         }
 
+        /* Status Styles */
+        .status-processing {
+            background: #e0f2fe;
+            color: #0369a1;
+        }
+
+        .status-completed {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-failed {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .btn-download {
+            background: #1E3A8A;
+            color: #fff;
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .btn-download:hover {
+            background: #1e40af;
+        }
+
         /* Bulk Upload */
         .upload-zone {
             border: 2px dashed #d1d5db;
@@ -347,6 +379,14 @@
                 <button class="btn-primary" id="bulk-validate-btn" onclick="triggerBulkValidation()" disabled>Validate
                     All</button>
                 <button class="btn-secondary" onclick="downloadTemplate()">Download Template</button>
+            </div>
+        </div>
+
+        <div class="recent-jobs-card" id="recent-jobs-container" style="display: none;">
+            <h3>Recent Generation Jobs</h3>
+            <p>Track the status of your bulk GSTIN verification reports.</p>
+            <div class="jobs-list" id="jobs-list">
+                <!-- Jobs will be loaded here -->
             </div>
         </div>
     </div>
@@ -440,14 +480,15 @@
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify({
-                            job_type: 'gstin_validate',
+                            job_type: 'gst_verify', // Correct job type
                             input_files: [uploadData.file_key || uploadData.file_path],
-                            client_id: parseInt(clientId)
+                            client_id: clientId // Send as string UUID
                         })
                     });
 
                     if (jobRes.ok) {
-                        alert('Bulk validation job started! Check your files section for results.');
+                        alert('Bulk validation job started!');
+                        loadJobs();
                     } else {
                         const err = await jobRes.json();
                         alert('Job failed: ' + (err.detail || 'Unknown error'));
@@ -462,9 +503,88 @@
             }
         }
 
+        // --- Recent Jobs Logic ---
+        let pollingInterval = null;
+
+        async function loadJobs() {
+            const params = new URLSearchParams(window.location.search);
+            const clientId = params.get('clientId');
+            if (!clientId) return;
+
+            try {
+                const res = await authFetch(`/jobs/?skip=0&limit=50&client_id=${clientId}`);
+                if (res.ok) {
+                    const jobs = await res.json();
+                    const verifyJobs = jobs.filter(j => j.job_type === 'gst_verify');
+
+                    if (verifyJobs.length > 0) {
+                        document.getElementById('recent-jobs-container').style.display = 'block';
+                        renderJobs(verifyJobs);
+
+                        const hasInProgress = verifyJobs.some(j => j.status === 'QUEUED' || j.status === 'PROCESSING');
+                        if (hasInProgress && !pollingInterval) {
+                            pollingInterval = setInterval(loadJobs, 5000);
+                        } else if (!hasInProgress && pollingInterval) {
+                            clearInterval(pollingInterval);
+                            pollingInterval = null;
+                        }
+                    }
+                }
+            } catch (e) { console.error("Failed to load jobs", e); }
+        }
+
+        function renderJobs(jobs) {
+            const list = document.getElementById('jobs-list');
+            list.innerHTML = jobs.map(job => {
+                const date = new Date(job.created_at).toLocaleString();
+                let statusClass = 'status-' + job.status.toLowerCase();
+                const jobName = job.job_type.toUpperCase().replace('_', ' ');
+
+                return `
+                    <div class="job-item">
+                        <div class="job-info">
+                            <span class="job-name">${jobName}</span>
+                            <span class="job-meta">Created: ${date}</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <span class="job-status ${statusClass}">${job.status}</span>
+                            ${job.status === 'COMPLETED' ?
+                        `<button class="btn-download" onclick="downloadJobFile('${job.id}')">⬇ Download</button>` :
+                        ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function downloadJobFile(jobId) {
+            try {
+                const response = await authFetch(`/jobs/${jobId}/download`);
+                if (!response.ok) {
+                    alert('Download failed: ' + response.statusText);
+                    return;
+                }
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `GST_Verify_${jobId.substring(0, 8)}.xlsx`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+            } catch (e) {
+                console.error('Download error:', e);
+                alert('Error downloading file');
+            }
+        }
+
         function downloadTemplate() {
             alert('Template download will be available soon.');
         }
+
+        // Initialize
+        loadJobs();
     </script>
 </body>
 

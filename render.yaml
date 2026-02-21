@@ -1,0 +1,9 @@
+services:
+  - type: static
+    name: ca-copilot-frontend
+    runtime: static
+    plan: free
+    region: singapore
+    buildCommand: "" # No build step for simple HTML/JS
+    publishPath: "."
+    autoDeploy: true

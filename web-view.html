@@ -423,11 +423,7 @@
             }
         }
 
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        }
+
 
         /* ===== SECTION HEADER ===== */
         .section-header {
@@ -1317,7 +1313,8 @@
                 <!-- All Tools Grid -->
                 <div class="cards-grid" id="tools-grid">
                     <!-- Refund Tools (Prioritized) -->
-                    <div class="tool-card" data-tool-name="arn status" onclick="navigateToTool('tool-arn-status.html')">
+                    <div class="tool-card coming-soon-card" data-tool-name="arn status">
+                        <div class="coming-soon-tag">Coming Soon</div>
                         <div class="card-top">
                             <div class="card-icon">📋</div>
                         </div>
@@ -1382,8 +1379,8 @@
                         <p class="card-desc">Identify and map HSN codes from your registers for compliance.</p>
                         <a class="card-action">Explore →</a>
                     </div>
-                    <div class="tool-card" data-tool-name="gstr-9 json generator"
-                        onclick="navigateToTool('tool-gstr9-json.html')">
+                    <div class="tool-card coming-soon-card" data-tool-name="gstr-9 json generator">
+                        <div class="coming-soon-tag">Coming Soon</div>
                         <div class="card-top">
                             <div class="card-icon">📄</div>
                         </div>
@@ -1549,8 +1546,36 @@
                 if (res.ok) {
                     const jobs = await res.json();
                     activeJobs = jobs;
+                    renderReportList(jobs);
                 }
             } catch (e) { console.error("Sync error", e); }
+        }
+
+        function renderReportList(jobs) {
+            const list = document.querySelector('.report-list');
+            if (!list) return;
+
+            if (jobs.length === 0) {
+                list.innerHTML = '<div class="notice-empty"><p>No reports generated yet.</p></div>';
+                return;
+            }
+
+            list.innerHTML = jobs.map(job => {
+                const date = new Date(job.created_at).toLocaleDateString();
+                const jobName = job.job_type.toUpperCase().replace('_', ' ');
+                const isCompleted = job.status === 'COMPLETED';
+
+                return `
+                    <div class="report-item" onclick="${isCompleted ? `downloadFile('${job.id}')` : `alert('Job is still ${job.status}')`}">
+                        <span class="report-icon">${isCompleted ? '📄' : '⏳'}</span>
+                        <div class="report-info">
+                            <div class="report-name">${jobName} (${job.status})</div>
+                            <div class="report-desc">Generated on ${date}</div>
+                        </div>
+                        <span class="report-arrow">${isCompleted ? '↓' : ''}</span>
+                    </div>
+                `;
+            }).join('');
         }
 
         async function triggerJob(jobType) {

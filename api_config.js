@@ -1,4 +1,5 @@
-const API_BASE_URL = 'https://ca-copilot-api.onrender.com/api/v1';
+const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+const API_BASE_URL = isLocal ? 'http://localhost:8000/api/v1' : 'https://ca-copilot-api.onrender.com/api/v1';
 const STATEMENT3_WEBHOOK_URL = 'https://rahul250192.app.n8n.cloud/webhook/Statement3-Generated';
 
 async function authFetch(endpoint, options = {}) {

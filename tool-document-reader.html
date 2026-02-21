@@ -252,6 +252,91 @@
                 transform: rotate(360deg);
             }
         }
+
+        /* Recent Jobs Styles */
+        .recent-jobs-card {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .jobs-list {
+            margin-top: 1rem;
+        }
+
+        .job-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            border: 1px solid #f3f4f6;
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            background: #fafafa;
+        }
+
+        .job-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .job-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #111827;
+        }
+
+        .job-meta {
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+
+        .job-status {
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 0.25rem 0.6rem;
+            border-radius: 9999px;
+            text-transform: uppercase;
+        }
+
+        .status-queued {
+            background: #f3f4f6;
+            color: #4b5563;
+        }
+
+        .status-processing {
+            background: #e0f2fe;
+            color: #0369a1;
+        }
+
+        .status-completed {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-failed {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .btn-download {
+            background: #1E3A8A;
+            color: #fff;
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .btn-download:hover {
+            background: #1e40af;
+        }
     </style>
 </head>
 
@@ -313,6 +398,14 @@
 
             <div style="margin-top:1.25rem; display:flex; gap:0.75rem;">
                 <button class="btn-primary" id="extract-btn" onclick="extractData()" disabled>📖 Extract Data</button>
+            </div>
+        </div>
+
+        <div class="recent-jobs-card" id="recent-jobs-container" style="display: none;">
+            <h3>Recent Reader Jobs</h3>
+            <p>Track the status of your document extraction tasks.</p>
+            <div class="jobs-list" id="jobs-list">
+                <!-- Jobs will be loaded here -->
             </div>
         </div>
     </div>
@@ -383,16 +476,108 @@
                     body: JSON.stringify({
                         job_type: 'document_reader',
                         input_files: fileKeys,
-                        client_id: parseInt(clientId),
+                        client_id: clientId, // Send as string UUID
                         metadata: { document_type: selectedType }
                     })
                 });
 
-                if (jobRes.ok) alert('Document extraction started! Check your files for the results.');
-                else { const err = await jobRes.json(); alert('Failed: ' + (err.detail || 'Error')); }
-            } catch (err) { console.error(err); alert('Error: ' + err.message); }
-            finally { btn.disabled = false; btn.textContent = '📖 Extract Data'; }
+                if (jobRes.ok) {
+                    alert('Document extraction started!');
+                    loadJobs();
+                } else {
+                    const err = await jobRes.json();
+                    alert('Failed: ' + (err.detail || 'Error'));
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Error: ' + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '📖 Extract Data';
+            }
         }
+
+        // --- Recent Jobs Logic ---
+        let pollingInterval = null;
+
+        async function loadJobs() {
+            const params = new URLSearchParams(window.location.search);
+            const clientId = params.get('clientId');
+            if (!clientId) return;
+
+            try {
+                const res = await authFetch(`/jobs/?skip=0&limit=50&client_id=${clientId}`);
+                if (res.ok) {
+                    const jobs = await res.json();
+                    const readerJobs = jobs.filter(j => j.job_type === 'document_reader');
+
+                    if (readerJobs.length > 0) {
+                        document.getElementById('recent-jobs-container').style.display = 'block';
+                        renderJobs(readerJobs);
+
+                        const hasInProgress = readerJobs.some(j => j.status === 'QUEUED' || j.status === 'PROCESSING');
+                        if (hasInProgress && !pollingInterval) {
+                            pollingInterval = setInterval(loadJobs, 5000);
+                        } else if (!hasInProgress && pollingInterval) {
+                            clearInterval(pollingInterval);
+                            pollingInterval = null;
+                        }
+                    }
+                }
+            } catch (e) {
+                console.error("Failed to load jobs", e);
+            }
+        }
+
+        function renderJobs(jobs) {
+            const list = document.getElementById('jobs-list');
+            list.innerHTML = jobs.map(job => {
+                const date = new Date(job.created_at).toLocaleString();
+                let statusClass = 'status-' + job.status.toLowerCase();
+                const docType = (job.metadata && job.metadata.document_type) ? job.metadata.document_type.toUpperCase() : 'UNKNOWN';
+                const jobName = `READER: ${docType}`;
+
+                return `
+                    <div class="job-item">
+                        <div class="job-info">
+                            <span class="job-name">${jobName}</span>
+                            <span class="job-meta">Created: ${date}</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <span class="job-status ${statusClass}">${job.status}</span>
+                            ${job.status === 'COMPLETED' ?
+                        `<button class="btn-download" onclick="downloadJobFile('${job.id}')">⬇ Download</button>` :
+                        ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function downloadJobFile(jobId) {
+            try {
+                const response = await authFetch(`/jobs/${jobId}/download`);
+                if (!response.ok) {
+                    alert('Download failed');
+                    return;
+                }
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `Extracted_Data_${jobId.substring(0, 8)}.xlsx`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+            } catch (e) {
+                console.error('Download error:', e);
+                alert('Error downloading file');
+            }
+        }
+
+        // Initialize
+        loadJobs();
     </script>
 </body>
 
