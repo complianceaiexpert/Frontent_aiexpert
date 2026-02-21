@@ -455,6 +455,7 @@
             const fileInput = document.getElementById('bulk-file');
             if (!fileInput.files.length) return;
             const btn = document.getElementById('bulk-validate-btn');
+            const originalText = btn.innerHTML;
             btn.disabled = true;
             btn.innerHTML = '<span class="loading-spinner"></span> Processing...';
 
@@ -486,20 +487,62 @@
                         })
                     });
 
-                    if (jobRes.ok) {
-                        alert('Bulk validation job started!');
-                        loadJobs();
-                    } else {
+                    if (!jobRes.ok) {
                         const err = await jobRes.json();
-                        alert('Job failed: ' + (err.detail || 'Unknown error'));
+                        throw new Error(err.detail || 'Failed to start job');
                     }
+
+                    if (typeof loadJobs === 'function') loadJobs();
+
+                    const jobData = await jobRes.json();
+                    const jobId = jobData.id;
+
+                    // Poll for Completion
+                    let completed = false;
+                    let attempts = 0;
+                    const maxAttempts = 60;
+
+                    while (!completed && attempts < maxAttempts) {
+                        attempts++;
+                        btn.innerHTML = `<span class="loading-spinner"></span> Processing... (${attempts}s)`;
+                        await new Promise(r => setTimeout(r, 2000));
+
+                        const pollRes = await fetch(`${API_BASE_URL}/jobs/${jobId}`, {
+                            headers: { 'Authorization': `Bearer ${token}` }
+                        });
+
+                        if (pollRes.ok) {
+                            const statusData = await pollRes.json();
+                            if (statusData.status === 'completed') {
+                                completed = true;
+                                btn.innerHTML = '<span class="loading-spinner"></span> Downloading...';
+
+                                const downloadUrl = `${API_BASE_URL}/jobs/${jobId}/download`;
+                                const dlFetch = await fetch(downloadUrl, {
+                                    headers: { 'Authorization': `Bearer ${token}` }
+                                });
+                                const blob = await dlFetch.blob();
+                                const url = window.URL.createObjectURL(blob);
+                                const a = document.createElement('a');
+                                a.href = url;
+                                a.download = `GSTIN_Validation_Report_${clientId}.xlsx`;
+                                document.body.appendChild(a);
+                                a.click();
+                                window.URL.revokeObjectURL(url);
+                                document.body.removeChild(a);
+                            } else if (statusData.status === 'failed') {
+                                throw new Error("Job failed: " + (statusData.error || "Unknown error"));
+                            }
+                        }
+                    }
+                    if (!completed) alert('Processing is taking longer than expected.');
                 }
             } catch (err) {
                 console.error(err);
                 alert('Error: ' + err.message);
             } finally {
                 btn.disabled = false;
-                btn.textContent = 'Validate All';
+                btn.innerHTML = originalText;
             }
         }
 

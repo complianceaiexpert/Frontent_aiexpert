@@ -1832,14 +1832,11 @@
 
                 if (jobRes.ok) {
                     const jobData = await jobRes.json();
-                    // Poll for job status or just show success msg
                     document.getElementById('result-title').textContent = "Calculation Started";
-                    document.getElementById('result-desc').textContent = "Your documents are being processed. Analysis will be available in the dashboard soon.";
+                    document.getElementById('result-desc').textContent = "Your documents are being processed. Analysis will be available shortly.";
 
-                    // Simulate completion for UI demo (since real polling depends on backend speed)
-                    setTimeout(() => {
-                        showDemoResult();
-                    }, 3000);
+                    // Start Polling for results
+                    pollJobStatus(jobData.id);
 
                 } else {
                     const err = await jobRes.json();
@@ -1855,16 +1852,48 @@
             }
         }
 
-        function showDemoResult() {
+        async function pollJobStatus(jobId) {
+            const pollInterval = setInterval(async () => {
+                try {
+                    const res = await authFetch(`/jobs/${jobId}`);
+                    if (res.ok) {
+                        const job = await res.json();
+                        if (job.status === 'completed') {
+                            clearInterval(pollInterval);
+                            displayJobResult(job);
+                        } else if (job.status === 'failed') {
+                            clearInterval(pollInterval);
+                            document.getElementById('result-loader').style.display = 'none';
+                            document.getElementById('result-content').style.display = 'block';
+                            document.getElementById('result-title').textContent = "Calculation Failed";
+                            document.getElementById('result-desc').textContent = "There was an error processing your documents.";
+                            document.getElementById('final-amount').textContent = "Error";
+                        }
+                    }
+                } catch (e) {
+                    console.error("Polling error", e);
+                }
+            }, 2000);
+        }
+
+        function displayJobResult(job) {
             document.getElementById('result-loader').style.display = 'none';
             document.getElementById('result-content').style.display = 'block';
             document.getElementById('result-title').textContent = "Calculation Complete";
-            document.getElementById('result-desc').textContent = "The maximum refund amount has been computed based on Rule 89.";
+            document.getElementById('result-desc').textContent = job.results?.message || "The maximum refund amount has been computed.";
 
-            // Random-ish realistic numbers for demo if not using real polling
-            document.getElementById('final-amount').textContent = "₹ 1,24,500.00";
-            document.getElementById('calc-summary').textContent = "Verified turnovers across all registers and reconciled with GSTR-2B ITC.";
-            document.getElementById('formula-display').textContent = currentCalcCategory === 'inverted' ? "Rule 89(5) applied" : "Rule 89(4) applied";
+            if (job.results && job.results.refund_amount !== undefined) {
+                const formattedAmount = new Intl.NumberFormat('en-IN', {
+                    style: 'currency',
+                    currency: 'INR'
+                }).format(job.results.refund_amount);
+
+                document.getElementById('final-amount').textContent = formattedAmount;
+                document.getElementById('calc-summary').textContent = `Export: ₹${job.results.export_turnover.toLocaleString()} | Total: ₹${job.results.adjusted_total_turnover.toLocaleString()} | ITC: ₹${job.results.net_itc.toLocaleString()}`;
+                document.getElementById('formula-display').textContent = `${job.results.formula} Applied`;
+            } else {
+                document.getElementById('final-amount').textContent = "Processing Done";
+            }
         }
 
         function resetCalculator() {
