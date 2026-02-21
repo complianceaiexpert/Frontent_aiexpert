@@ -17,7 +17,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%);
+            background: linear-gradient(135deg, #f8fafc 0%, #EBF0FF 100%);
             padding: 2rem;
         }
 
@@ -42,7 +42,16 @@
             margin-bottom: 1.5rem;
             font-size: 1.5rem;
             font-weight: 700;
-            color: var(--gray-900);
+            color: #1E3A8A;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            background: #1E3A8A;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: 800;
         }
 
         .auth-header h1 {
@@ -220,12 +229,7 @@
                 }
             } catch (error) {
                 console.error('Sign in error:', error);
-                const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-                if (isLocal) {
-                    alert('Connection Error: Could not connect to the local backend. Please ensure mock_server.py is running.');
-                } else {
-                    alert('Connection Error: The live backend is currently updating or offline. Please wait 2-3 minutes and try again.');
-                }
+                alert('Connection Error: The backend server is currently updating or offline. Please wait 2-3 minutes and try again.');
             }
         }
     </script>

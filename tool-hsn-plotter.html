@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HSN Plotter - Compliance AI Expert</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8fafc;
+            min-height: 100vh;
+        }
+
+        .tool-topbar {
+            background: #fff;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 0.875rem 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .tool-topbar .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #1E3A8A;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            padding: 0.4rem 0.75rem;
+            border-radius: 6px;
+            transition: background 0.2s;
+            cursor: pointer;
+        }
+
+        .tool-topbar .back-btn:hover {
+            background: #eff6ff;
+        }
+
+        .tool-topbar h1 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .tool-topbar .badge {
+            background: #dbeafe;
+            color: #1e40af;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+        }
+
+        .tool-container {
+            max-width: 900px;
+            margin: 2.5rem auto;
+            padding: 0 2rem;
+        }
+
+        .tool-hero {
+            background: linear-gradient(135deg, #1E3A8A 0%, #1E40AF 100%);
+            border-radius: 16px;
+            padding: 2.5rem;
+            color: #fff;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 12px rgba(30, 58, 138, 0.15);
+        }
+
+        .tool-hero h2 {
+            font-size: 1.75rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .tool-hero p {
+            opacity: 0.85;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .tool-form-card {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .tool-form-card h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 0.5rem;
+        }
+
+        .tool-form-card p {
+            font-size: 0.85rem;
+            color: #6b7280;
+            margin-bottom: 1.5rem;
+        }
+
+        .upload-zone {
+            border: 2px dashed #d1d5db;
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+        }
+
+        .upload-zone:hover {
+            border-color: #059669;
+            background: #ecfdf5;
+        }
+
+        .upload-zone .icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .upload-zone .text {
+            color: #6b7280;
+            font-size: 0.85rem;
+        }
+
+        .upload-zone .text strong {
+            color: #059669;
+        }
+
+        .btn-primary {
+            background: #EB6711;
+            color: #fff;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        .btn-primary:hover {
+            background: #d45a0f;
+            transform: translateY(-1px);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .feature-item {
+            background: #f9fafb;
+            border: 1px solid #f3f4f6;
+            border-radius: 10px;
+            padding: 1.25rem;
+            text-align: center;
+        }
+
+        .feature-item .icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-item .title {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #111827;
+            margin-bottom: 0.25rem;
+        }
+
+        .feature-item .desc {
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 1rem;
+            height: 1rem;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 0.6s linear infinite;
+            margin-right: 0.5rem;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="tool-topbar">
+        <a class="back-btn" onclick="goBack()">← Back to Tools</a>
+        <h1>📊 HSN Plotter</h1>
+        <span class="badge">RETURN TOOL</span>
+    </div>
+
+    <div class="tool-container">
+        <div class="tool-hero">
+            <h2>HSN Plotter</h2>
+            <p>Automatically identify and map HSN codes from your Purchase and Sales Registers. Ensure accurate HSN
+                classification for GST compliance and return filing.</p>
+        </div>
+
+        <div class="tool-form-card">
+            <h3>Upload Registers</h3>
+            <p>Upload your Purchase Register and/or Sales Register to plot HSN codes.</p>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div class="upload-zone" onclick="document.getElementById('pr-file').click()">
+                    <div class="icon">📥</div>
+                    <div class="text"><strong>Purchase Register</strong><br>Click to upload (.xlsx, .csv)</div>
+                </div>
+                <div class="upload-zone" onclick="document.getElementById('sr-file').click()">
+                    <div class="icon">📤</div>
+                    <div class="text"><strong>Sales Register</strong><br>Click to upload (.xlsx, .csv)</div>
+                </div>
+            </div>
+            <input type="file" id="pr-file" accept=".xlsx,.csv" style="display:none" onchange="updateFile('pr', this)">
+            <input type="file" id="sr-file" accept=".xlsx,.csv" style="display:none" onchange="updateFile('sr', this)">
+            <div id="file-names" style="margin-top:0.75rem; font-size:0.85rem; color:#6b7280;"></div>
+            <div style="margin-top:1.25rem;">
+                <button class="btn-primary" id="plot-btn" onclick="startPlotting()" disabled>📊 Plot HSN Codes</button>
+            </div>
+        </div>
+
+        <div class="tool-form-card">
+            <h3>Features</h3>
+            <div class="feature-grid">
+                <div class="feature-item">
+                    <div class="icon">🔍</div>
+                    <div class="title">Auto Detection</div>
+                    <div class="desc">Automatically identifies items & maps to HSN codes</div>
+                </div>
+                <div class="feature-item">
+                    <div class="icon">📈</div>
+                    <div class="title">Visual Reports</div>
+                    <div class="desc">HSN-wise summary with tax breakdowns</div>
+                </div>
+                <div class="feature-item">
+                    <div class="icon">⚡</div>
+                    <div class="title">Fast Processing</div>
+                    <div class="desc">Process thousands of entries in seconds</div>
+                </div>
+                <div class="feature-item">
+                    <div class="icon">📋</div>
+                    <div class="title">GSTR Ready</div>
+                    <div class="desc">Output formatted for direct GSTR filing</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="api_config.js?v=2"></script>
+    <script>
+        function goBack() {
+            const params = new URLSearchParams(window.location.search);
+            params.set('section', 'tools');
+            window.location.href = 'web-view.html?' + params.toString();
+        }
+
+        let files = { pr: null, sr: null };
+        function updateFile(type, input) {
+            if (input.files.length) {
+                files[type] = input.files[0];
+                let text = '';
+                if (files.pr) text += '📎 PR: ' + files.pr.name;
+                if (files.sr) text += (files.pr ? '  |  ' : '') + '📎 SR: ' + files.sr.name;
+                document.getElementById('file-names').textContent = text;
+                document.getElementById('plot-btn').disabled = !(files.pr || files.sr);
+            }
+        }
+
+        async function startPlotting() {
+            const btn = document.getElementById('plot-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading-spinner"></span> Processing...';
+            try {
+                const token = localStorage.getItem('access_token');
+                const params = new URLSearchParams(window.location.search);
+                const clientId = params.get('clientId');
+                const fileKeys = [];
+
+                for (const file of [files.pr, files.sr].filter(Boolean)) {
+                    const fd = new FormData();
+                    fd.append('file', file);
+                    const res = await fetch(`${API_BASE_URL}/jobs/upload`, {
+                        method: 'POST', headers: { 'Authorization': `Bearer ${token}` }, body: fd
+                    });
+                    if (res.ok) {
+                        const d = await res.json();
+                        fileKeys.push(d.file_key || d.file_path);
+                    }
+                }
+
+                const jobRes = await fetch(`${API_BASE_URL}/jobs/`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ job_type: 'hsn_plotter', input_files: fileKeys, client_id: parseInt(clientId) })
+                });
+
+                if (jobRes.ok) alert('HSN Plotter job started! Check your files section for the report.');
+                else { const err = await jobRes.json(); alert('Failed: ' + (err.detail || 'Unknown error')); }
+            } catch (err) { console.error(err); alert('Error: ' + err.message); }
+            finally { btn.disabled = false; btn.textContent = '📊 Plot HSN Codes'; }
+        }
+    </script>
+</body>
+
+</html>

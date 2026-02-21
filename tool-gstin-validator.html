@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GSTIN Validator - Compliance AI Expert</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8fafc;
+            min-height: 100vh;
+        }
+
+        /* Top Bar */
+        .tool-topbar {
+            background: #fff;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 0.875rem 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .tool-topbar .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #1e3a8a;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            padding: 0.4rem 0.75rem;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+
+        .tool-topbar .back-btn:hover {
+            background: #eff6ff;
+        }
+
+        .tool-topbar h1 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .tool-topbar .badge {
+            background: #dbeafe;
+            color: #1e40af;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+        }
+
+        /* Main Container */
+        .tool-container {
+            max-width: 900px;
+            margin: 2.5rem auto;
+            padding: 0 2rem;
+        }
+
+        .tool-hero {
+            background: linear-gradient(135deg, #1E3A8A 0%, #1E40AF 100%);
+            border-radius: 16px;
+            padding: 2.5rem;
+            color: #fff;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 12px rgba(30, 58, 138, 0.15);
+        }
+
+        .tool-hero h2 {
+            font-size: 1.75rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .tool-hero p {
+            opacity: 0.85;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* Form Section */
+        .tool-form-card {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .tool-form-card h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 0.5rem;
+        }
+
+        .tool-form-card p {
+            font-size: 0.85rem;
+            color: #6b7280;
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .input-group input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: 1.5px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-family: 'Inter', monospace;
+            letter-spacing: 0.5px;
+            transition: border-color 0.2s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #1e3a8a;
+            box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+        }
+
+        .input-group input::placeholder {
+            color: #9ca3af;
+        }
+
+        .btn-primary {
+            background: #EB6711;
+            color: #fff;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        .btn-primary:hover {
+            background: #d45a0f;
+            transform: translateY(-1px);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #374151;
+            border: 1px solid #e5e7eb;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-secondary:hover {
+            background: #e5e7eb;
+        }
+
+        /* Results Table */
+        .results-section {
+            margin-top: 1.5rem;
+            display: none;
+        }
+
+        .results-section.active {
+            display: block;
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+
+        .results-table th {
+            background: #f9fafb;
+            color: #374151;
+            font-weight: 600;
+            text-align: left;
+            padding: 0.75rem 1rem;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .results-table td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #f3f4f6;
+            color: #4b5563;
+        }
+
+        .status-valid {
+            color: #059669;
+            font-weight: 600;
+            background: #ecfdf5;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+        }
+
+        .status-invalid {
+            color: #dc2626;
+            font-weight: 600;
+            background: #fef2f2;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+        }
+
+        /* Loading */
+        .loading-spinner {
+            display: inline-block;
+            width: 1rem;
+            height: 1rem;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 0.6s linear infinite;
+            margin-right: 0.5rem;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Bulk Upload */
+        .upload-zone {
+            border: 2px dashed #d1d5db;
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+            margin-top: 1rem;
+        }
+
+        .upload-zone:hover {
+            border-color: #1e3a8a;
+            background: #eff6ff;
+        }
+
+        .upload-zone .icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .upload-zone .text {
+            color: #6b7280;
+            font-size: 0.85rem;
+        }
+
+        .upload-zone .text strong {
+            color: #1e3a8a;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Top Bar -->
+    <div class="tool-topbar">
+        <a class="back-btn" onclick="goBack()">← Back to Tools</a>
+        <h1>🔍 GSTIN Validator</h1>
+        <span class="badge">RETURN TOOL</span>
+    </div>
+
+    <!-- Main Content -->
+    <div class="tool-container">
+        <div class="tool-hero">
+            <h2>GSTIN Validator</h2>
+            <p>Quickly validate any GSTIN number to verify its authenticity, check registration status, and retrieve
+                taxpayer details. Supports single and bulk validation.</p>
+        </div>
+
+        <!-- Single Validation -->
+        <div class="tool-form-card">
+            <h3>Single GSTIN Validation</h3>
+            <p>Enter a 15-character GSTIN to validate against the government database.</p>
+            <div class="input-group">
+                <input type="text" id="gstin-input" placeholder="e.g. 27AAAAA0000A1Z5" maxlength="15"
+                    style="text-transform:uppercase;">
+                <button class="btn-primary" id="validate-btn" onclick="validateGSTIN()">Validate</button>
+            </div>
+            <div class="results-section" id="single-result">
+                <table class="results-table">
+                    <thead>
+                        <tr>
+                            <th>GSTIN</th>
+                            <th>Legal Name</th>
+                            <th>State</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="result-body"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Bulk Validation -->
+        <div class="tool-form-card">
+            <h3>Bulk Validation</h3>
+            <p>Upload an Excel or CSV file with GSTINs for batch validation.</p>
+            <div class="upload-zone" onclick="document.getElementById('bulk-file').click()">
+                <div class="icon">📁</div>
+                <div class="text">
+                    <strong>Click to upload</strong> or drag and drop<br>
+                    Excel (.xlsx) or CSV files supported
+                </div>
+            </div>
+            <input type="file" id="bulk-file" accept=".xlsx,.csv" style="display:none"
+                onchange="handleBulkUpload(this)">
+            <div id="bulk-file-name" style="margin-top:0.75rem; font-size:0.85rem; color:#6b7280;"></div>
+            <div style="margin-top:1rem; display:flex; gap:0.75rem;">
+                <button class="btn-primary" id="bulk-validate-btn" onclick="triggerBulkValidation()" disabled>Validate
+                    All</button>
+                <button class="btn-secondary" onclick="downloadTemplate()">Download Template</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="api_config.js?v=2"></script>
+    <script>
+        function goBack() {
+            const params = new URLSearchParams(window.location.search);
+            params.set('section', 'tools');
+            window.location.href = 'web-view.html?' + params.toString();
+        }
+
+        async function validateGSTIN() {
+            const input = document.getElementById('gstin-input');
+            const gstin = input.value.trim().toUpperCase();
+            if (gstin.length !== 15) {
+                alert('Please enter a valid 15-character GSTIN');
+                return;
+            }
+            const btn = document.getElementById('validate-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading-spinner"></span> Validating...';
+
+            try {
+                const token = localStorage.getItem('access_token');
+                const res = await fetch(`${API_BASE_URL}/tools/gstin-validate?gstin=${gstin}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await res.json();
+
+                const resultSection = document.getElementById('single-result');
+                const body = document.getElementById('result-body');
+                resultSection.classList.add('active');
+
+                if (res.ok && data) {
+                    body.innerHTML = `<tr>
+                        <td style="font-family:monospace;font-weight:600;">${gstin}</td>
+                        <td>${data.legal_name || data.trade_name || 'N/A'}</td>
+                        <td>${data.state || 'N/A'}</td>
+                        <td><span class="${data.status === 'Active' ? 'status-valid' : 'status-invalid'}">${data.status || 'Unknown'}</span></td>
+                    </tr>`;
+                } else {
+                    body.innerHTML = `<tr>
+                        <td style="font-family:monospace;font-weight:600;">${gstin}</td>
+                        <td colspan="2">${data.detail || 'Validation failed'}</td>
+                        <td><span class="status-invalid">Error</span></td>
+                    </tr>`;
+                }
+            } catch (err) {
+                alert('Error connecting to backend. Please try again.');
+                console.error(err);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Validate';
+            }
+        }
+
+        function handleBulkUpload(input) {
+            if (input.files.length > 0) {
+                document.getElementById('bulk-file-name').textContent = '📎 ' + input.files[0].name;
+                document.getElementById('bulk-validate-btn').disabled = false;
+            }
+        }
+
+        async function triggerBulkValidation() {
+            const fileInput = document.getElementById('bulk-file');
+            if (!fileInput.files.length) return;
+            const btn = document.getElementById('bulk-validate-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading-spinner"></span> Processing...';
+
+            try {
+                const formData = new FormData();
+                formData.append('file', fileInput.files[0]);
+                const token = localStorage.getItem('access_token');
+                const params = new URLSearchParams(window.location.search);
+                const clientId = params.get('clientId');
+
+                const uploadRes = await fetch(`${API_BASE_URL}/jobs/upload`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    body: formData
+                });
+
+                if (uploadRes.ok) {
+                    const uploadData = await uploadRes.json();
+                    const jobRes = await fetch(`${API_BASE_URL}/jobs/`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            job_type: 'gstin_validate',
+                            input_files: [uploadData.file_key || uploadData.file_path],
+                            client_id: parseInt(clientId)
+                        })
+                    });
+
+                    if (jobRes.ok) {
+                        alert('Bulk validation job started! Check your files section for results.');
+                    } else {
+                        const err = await jobRes.json();
+                        alert('Job failed: ' + (err.detail || 'Unknown error'));
+                    }
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Error: ' + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Validate All';
+            }
+        }
+
+        function downloadTemplate() {
+            alert('Template download will be available soon.');
+        }
+    </script>
+</body>
+
+</html>

@@ -228,9 +228,13 @@
     <!-- Navigation -->
     <nav class="navbar">
         <div class="navbar-container">
-            <a href="clients.html" class="logo">
-                <div class="logo-icon">CE</div>
-                <span style="font-weight: 700; color: #1e3a8a;">ComplianceAIexpert</span>
+            <a href="clients.html" class="logo"
+                style="text-decoration: none; display: flex; align-items: center; gap: 0.75rem;">
+                <div class="logo-icon"
+                    style="background: #1E3A8A; color: white; padding: 4px 10px; border-radius: 6px; font-weight: 800; display: flex; align-items: center; justify-content: center; width: 32px; height: 32px;">
+                    CE</div>
+                <span id="nav-client-name" style="font-weight: 700; color: #1E3A8A; font-size: 1.1rem;">Compliance AI
+                    Expert</span>
             </a>
 
             <!-- Center Links -->
@@ -572,12 +576,7 @@
                 }
             } catch (error) {
                 console.error('Fetch error:', error);
-                const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-                if (isLocal) {
-                    alert('Connection Error: Could not connect to the local backend. Please ensure mock_server.py is running.');
-                } else {
-                    alert('Connection Error: The live backend is currently updating or offline. Please wait 2-3 minutes and try again.');
-                }
+                alert('Connection Error: The backend server is currently updating or offline. Please wait 2-3 minutes and try again.');
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'Create Client';

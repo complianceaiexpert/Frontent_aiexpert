@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GSTR-9 JSON Generator - Compliance AI Expert</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8fafc;
+            min-height: 100vh;
+        }
+
+        .tool-topbar {
+            background: #fff;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 0.875rem 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .tool-topbar .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #1E3A8A;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            padding: 0.4rem 0.75rem;
+            border-radius: 6px;
+            transition: background 0.2s;
+            cursor: pointer;
+        }
+
+        .tool-topbar .back-btn:hover {
+            background: #eff6ff;
+        }
+
+        .tool-topbar h1 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .tool-topbar .badge {
+            background: #dbeafe;
+            color: #1e40af;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+        }
+
+        .tool-container {
+            max-width: 900px;
+            margin: 2.5rem auto;
+            padding: 0 2rem;
+        }
+
+        .tool-hero {
+            background: linear-gradient(135deg, #1E3A8A 0%, #1E40AF 100%);
+            border-radius: 16px;
+            padding: 2.5rem;
+            color: #fff;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 12px rgba(30, 58, 138, 0.15);
+        }
+
+        .tool-hero h2 {
+            font-size: 1.75rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .tool-hero p {
+            opacity: 0.85;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .tool-form-card {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .tool-form-card h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 0.5rem;
+        }
+
+        .tool-form-card p {
+            font-size: 0.85rem;
+            color: #6b7280;
+            margin-bottom: 1.5rem;
+        }
+
+        .upload-zone {
+            border: 2px dashed #d1d5db;
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+        }
+
+        .upload-zone:hover {
+            border-color: #dc2626;
+            background: #fef2f2;
+        }
+
+        .upload-zone .icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .upload-zone .text {
+            color: #6b7280;
+            font-size: 0.85rem;
+        }
+
+        .upload-zone .text strong {
+            color: #dc2626;
+        }
+
+        .btn-primary {
+            background: #EB6711;
+            color: #fff;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        .btn-primary:hover {
+            background: #d45a0f;
+            transform: translateY(-1px);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-field label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.375rem;
+        }
+
+        .form-field select,
+        .form-field input {
+            width: 100%;
+            padding: 0.65rem 0.875rem;
+            border: 1.5px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-family: inherit;
+        }
+
+        .form-field select:focus,
+        .form-field input:focus {
+            outline: none;
+            border-color: #dc2626;
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 1rem;
+            height: 1rem;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 0.6s linear infinite;
+            margin-right: 0.5rem;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="tool-topbar">
+        <a class="back-btn" onclick="goBack()">← Back to Tools</a>
+        <h1>📄 GSTR-9 JSON Generator</h1>
+        <span class="badge">RETURN TOOL</span>
+    </div>
+
+    <div class="tool-container">
+        <div class="tool-hero">
+            <h2>GSTR-9 JSON Generator</h2>
+            <p>Easily generate accurate GSTR-9 JSON files for seamless portal upload and faster annual return filing.
+                Upload your data and get a ready-to-upload JSON file in minutes.</p>
+        </div>
+
+        <div class="tool-form-card">
+            <h3>Filing Details</h3>
+            <p>Provide basic details for the GSTR-9 annual return.</p>
+            <div class="form-row">
+                <div class="form-field">
+                    <label>Financial Year</label>
+                    <select id="fy-select">
+                        <option value="2024-25">2024-25</option>
+                        <option value="2023-24" selected>2023-24</option>
+                        <option value="2022-23">2022-23</option>
+                        <option value="2021-22">2021-22</option>
+                    </select>
+                </div>
+                <div class="form-field">
+                    <label>GSTIN</label>
+                    <input type="text" id="gstin-input" placeholder="e.g. 27AAAAA0000A1Z5" maxlength="15"
+                        style="text-transform:uppercase;">
+                </div>
+            </div>
+        </div>
+
+        <div class="tool-form-card">
+            <h3>Upload Data Files</h3>
+            <p>Upload the required data files to generate the GSTR-9 JSON.</p>
+            <div class="upload-zone" onclick="document.getElementById('data-file').click()">
+                <div class="icon">📁</div>
+                <div class="text">
+                    <strong>Click to upload</strong> your data file<br>
+                    Excel (.xlsx) with GSTR-9 data
+                </div>
+            </div>
+            <input type="file" id="data-file" accept=".xlsx,.csv" style="display:none" onchange="handleFile(this)">
+            <div id="file-name" style="margin-top:0.75rem; font-size:0.85rem; color:#6b7280;"></div>
+            <div style="margin-top:1.25rem;">
+                <button class="btn-primary" id="generate-btn" onclick="generateJSON()" disabled>📄 Generate
+                    JSON</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="api_config.js?v=2"></script>
+    <script>
+        function goBack() {
+            const params = new URLSearchParams(window.location.search);
+            params.set('section', 'tools');
+            window.location.href = 'web-view.html?' + params.toString();
+        }
+
+        let uploadedFile = null;
+        function handleFile(input) {
+            if (input.files.length) {
+                uploadedFile = input.files[0];
+                document.getElementById('file-name').textContent = '📎 ' + uploadedFile.name;
+                document.getElementById('generate-btn').disabled = false;
+            }
+        }
+
+        async function generateJSON() {
+            if (!uploadedFile) return;
+            const btn = document.getElementById('generate-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading-spinner"></span> Generating...';
+            try {
+                const token = localStorage.getItem('access_token');
+                const params = new URLSearchParams(window.location.search);
+                const clientId = params.get('clientId');
+
+                const fd = new FormData();
+                fd.append('file', uploadedFile);
+                const uploadRes = await fetch(`${API_BASE_URL}/jobs/upload`, {
+                    method: 'POST', headers: { 'Authorization': `Bearer ${token}` }, body: fd
+                });
+
+                if (uploadRes.ok) {
+                    const d = await uploadRes.json();
+                    const jobRes = await fetch(`${API_BASE_URL}/jobs/`, {
+                        method: 'POST',
+                        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            job_type: 'gstr9_json',
+                            input_files: [d.file_key || d.file_path],
+                            client_id: parseInt(clientId),
+                            metadata: {
+                                fy: document.getElementById('fy-select').value,
+                                gstin: document.getElementById('gstin-input').value.toUpperCase()
+                            }
+                        })
+                    });
+                    if (jobRes.ok) alert('JSON generation started! Check your files for the output.');
+                    else { const err = await jobRes.json(); alert('Failed: ' + (err.detail || 'Error')); }
+                }
+            } catch (err) { console.error(err); alert('Error: ' + err.message); }
+            finally { btn.disabled = false; btn.textContent = '📄 Generate JSON'; }
+        }
+    </script>
+</body>
+
+</html>

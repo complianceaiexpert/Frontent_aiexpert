@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Reader - Compliance AI Expert</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8fafc;
+            min-height: 100vh;
+        }
+
+        .tool-topbar {
+            background: #fff;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 0.875rem 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .tool-topbar .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #1E3A8A;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            padding: 0.4rem 0.75rem;
+            border-radius: 6px;
+            transition: background 0.2s;
+            cursor: pointer;
+        }
+
+        .tool-topbar .back-btn:hover {
+            background: #eff6ff;
+        }
+
+        .tool-topbar h1 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .tool-topbar .badge {
+            background: #fef3c7;
+            color: #92400e;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+        }
+
+        .tool-container {
+            max-width: 900px;
+            margin: 2.5rem auto;
+            padding: 0 2rem;
+        }
+
+        .tool-hero {
+            background: linear-gradient(135deg, #1E3A8A 0%, #1E40AF 100%);
+            border-radius: 16px;
+            padding: 2.5rem;
+            color: #fff;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 12px rgba(30, 58, 138, 0.15);
+        }
+
+        .tool-hero h2 {
+            font-size: 1.75rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .tool-hero p {
+            opacity: 0.85;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .tool-form-card {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .tool-form-card h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 0.5rem;
+        }
+
+        .tool-form-card p {
+            font-size: 0.85rem;
+            color: #6b7280;
+            margin-bottom: 1.5rem;
+        }
+
+        .upload-zone {
+            border: 2px dashed #d1d5db;
+            border-radius: 10px;
+            padding: 2.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+        }
+
+        .upload-zone:hover {
+            border-color: #0f766e;
+            background: #f0fdfa;
+        }
+
+        .upload-zone .icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .upload-zone .text {
+            color: #6b7280;
+            font-size: 0.85rem;
+        }
+
+        .upload-zone .text strong {
+            color: #0f766e;
+        }
+
+        .btn-primary {
+            background: #EB6711;
+            color: #fff;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        .btn-primary:hover {
+            background: #d45a0f;
+            transform: translateY(-1px);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Document Type Selector */
+        .doc-types {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .doc-type-btn {
+            padding: 0.75rem;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 8px;
+            background: #fff;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .doc-type-btn:hover {
+            border-color: #0f766e;
+            background: #f0fdfa;
+        }
+
+        .doc-type-btn.active {
+            border-color: #0f766e;
+            background: #f0fdfa;
+            box-shadow: 0 0 0 2px rgba(15, 118, 110, 0.2);
+        }
+
+        .doc-type-btn .icon {
+            font-size: 1.25rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .doc-type-btn .label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .file-list {
+            margin-top: 0.75rem;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #f9fafb;
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            margin-bottom: 0.375rem;
+            font-size: 0.8rem;
+        }
+
+        .file-item .name {
+            color: #374151;
+            font-weight: 500;
+        }
+
+        .file-item .remove {
+            color: #ef4444;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 1rem;
+            height: 1rem;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 0.6s linear infinite;
+            margin-right: 0.5rem;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="tool-topbar">
+        <a class="back-btn" onclick="goBack()">← Back to Tools</a>
+        <h1>📖 Document Reader</h1>
+        <span class="badge">REFUND TOOL</span>
+    </div>
+
+    <div class="tool-container">
+        <div class="tool-hero">
+            <h2>Document Reader</h2>
+            <p>Easily read and extract data from your GST-related documents — including CSB, BRC, Invoice, Shipping
+                Bill, and FIRC — for faster, more accurate processing. AI-powered extraction ensures high accuracy.</p>
+        </div>
+
+        <div class="tool-form-card">
+            <h3>Select Document Type</h3>
+            <p>Choose what type of document you want to process.</p>
+            <div class="doc-types">
+                <button class="doc-type-btn active" onclick="selectDocType(this, 'csb')">
+                    <div class="icon">📦</div>
+                    <div class="label">CSB</div>
+                </button>
+                <button class="doc-type-btn" onclick="selectDocType(this, 'brc')">
+                    <div class="icon">🏦</div>
+                    <div class="label">BRC</div>
+                </button>
+                <button class="doc-type-btn" onclick="selectDocType(this, 'invoice')">
+                    <div class="icon">🧾</div>
+                    <div class="label">Invoice</div>
+                </button>
+                <button class="doc-type-btn" onclick="selectDocType(this, 'shipping_bill')">
+                    <div class="icon">🚢</div>
+                    <div class="label">Shipping Bill</div>
+                </button>
+                <button class="doc-type-btn" onclick="selectDocType(this, 'firc')">
+                    <div class="icon">💱</div>
+                    <div class="label">FIRC</div>
+                </button>
+            </div>
+        </div>
+
+        <div class="tool-form-card">
+            <h3>Upload Documents</h3>
+            <p>Upload one or more PDF / image / Excel files to extract data.</p>
+            <div class="upload-zone" onclick="document.getElementById('doc-files').click()">
+                <div class="icon">📄</div>
+                <div class="text">
+                    <strong>Click to upload</strong> or drag and drop<br>
+                    PDF, Images (JPG, PNG), or Excel files
+                </div>
+            </div>
+            <input type="file" id="doc-files" accept=".pdf,.jpg,.jpeg,.png,.xlsx,.csv" multiple style="display:none"
+                onchange="handleFiles(this)">
+
+            <div class="file-list" id="file-list"></div>
+
+            <div style="margin-top:1.25rem; display:flex; gap:0.75rem;">
+                <button class="btn-primary" id="extract-btn" onclick="extractData()" disabled>📖 Extract Data</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="api_config.js?v=2"></script>
+    <script>
+        function goBack() {
+            const params = new URLSearchParams(window.location.search);
+            params.set('section', 'tools');
+            window.location.href = 'web-view.html?' + params.toString();
+        }
+
+        let selectedType = 'csb';
+        let uploadedFiles = [];
+
+        function selectDocType(btn, type) {
+            document.querySelectorAll('.doc-type-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            selectedType = type;
+        }
+
+        function handleFiles(input) {
+            uploadedFiles = Array.from(input.files);
+            renderFileList();
+            document.getElementById('extract-btn').disabled = uploadedFiles.length === 0;
+        }
+
+        function removeFile(index) {
+            uploadedFiles.splice(index, 1);
+            renderFileList();
+            document.getElementById('extract-btn').disabled = uploadedFiles.length === 0;
+        }
+
+        function renderFileList() {
+            const list = document.getElementById('file-list');
+            list.innerHTML = uploadedFiles.map((f, i) =>
+                `<div class="file-item"><span class="name">📎 ${f.name}</span><span class="remove" onclick="removeFile(${i})">✕</span></div>`
+            ).join('');
+        }
+
+        async function extractData() {
+            if (!uploadedFiles.length) return;
+            const btn = document.getElementById('extract-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading-spinner"></span> Extracting...';
+
+            try {
+                const token = localStorage.getItem('access_token');
+                const params = new URLSearchParams(window.location.search);
+                const clientId = params.get('clientId');
+                const fileKeys = [];
+
+                for (const file of uploadedFiles) {
+                    const fd = new FormData();
+                    fd.append('file', file);
+                    const res = await fetch(`${API_BASE_URL}/jobs/upload`, {
+                        method: 'POST', headers: { 'Authorization': `Bearer ${token}` }, body: fd
+                    });
+                    if (res.ok) {
+                        const d = await res.json();
+                        fileKeys.push(d.file_key || d.file_path);
+                    }
+                }
+
+                const jobRes = await fetch(`${API_BASE_URL}/jobs/`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        job_type: 'document_reader',
+                        input_files: fileKeys,
+                        client_id: parseInt(clientId),
+                        metadata: { document_type: selectedType }
+                    })
+                });
+
+                if (jobRes.ok) alert('Document extraction started! Check your files for the results.');
+                else { const err = await jobRes.json(); alert('Failed: ' + (err.detail || 'Error')); }
+            } catch (err) { console.error(err); alert('Error: ' + err.message); }
+            finally { btn.disabled = false; btn.textContent = '📖 Extract Data'; }
+        }
+    </script>
+</body>
+
+</html>

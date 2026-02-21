@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARN Status - Compliance AI Expert</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8fafc;
+            min-height: 100vh;
+        }
+
+        .tool-topbar {
+            background: #fff;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 0.875rem 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .tool-topbar .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #1E3A8A;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            padding: 0.4rem 0.75rem;
+            border-radius: 6px;
+            transition: background 0.2s;
+            cursor: pointer;
+        }
+
+        .tool-topbar .back-btn:hover {
+            background: #eff6ff;
+        }
+
+        .tool-topbar h1 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .tool-topbar .badge {
+            background: #fef3c7;
+            color: #92400e;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+        }
+
+        .tool-container {
+            max-width: 900px;
+            margin: 2.5rem auto;
+            padding: 0 2rem;
+        }
+
+        .tool-hero {
+            background: linear-gradient(135deg, #1E3A8A 0%, #1E40AF 100%);
+            border-radius: 16px;
+            padding: 2.5rem;
+            color: #fff;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 12px rgba(30, 58, 138, 0.15);
+        }
+
+        .tool-hero h2 {
+            font-size: 1.75rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .tool-hero p {
+            opacity: 0.85;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .tool-form-card {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .tool-form-card h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 0.5rem;
+        }
+
+        .tool-form-card p {
+            font-size: 0.85rem;
+            color: #6b7280;
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .input-group input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: 1.5px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-family: 'Inter', monospace;
+            letter-spacing: 0.5px;
+            transition: border-color 0.2s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #EB6711;
+            box-shadow: 0 0 0 3px rgba(235, 103, 17, 0.1);
+        }
+
+        .input-group input::placeholder {
+            color: #9ca3af;
+        }
+
+        .btn-primary {
+            background: #EB6711;
+            color: #fff;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        .btn-primary:hover {
+            background: #d45a0f;
+            transform: translateY(-1px);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 1rem;
+            height: 1rem;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 0.6s linear infinite;
+            margin-right: 0.5rem;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Status Card */
+        .status-card {
+            display: none;
+            margin-top: 1.5rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .status-card.active {
+            display: block;
+        }
+
+        .status-card-header {
+            background: #f9fafb;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .status-card-header h4 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .status-badge.pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-badge.approved {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-badge.rejected {
+            background: #fecaca;
+            color: #991b1b;
+        }
+
+        .status-card-body {
+            padding: 1.5rem;
+        }
+
+        .status-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .status-row:last-child {
+            border-bottom: none;
+        }
+
+        .status-row .label {
+            font-size: 0.85rem;
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .status-row .value {
+            font-size: 0.85rem;
+            color: #111827;
+            font-weight: 600;
+        }
+
+        /* Timeline */
+        .timeline {
+            margin-top: 1rem;
+        }
+
+        .timeline-item {
+            display: flex;
+            gap: 1rem;
+            padding-bottom: 1.25rem;
+            position: relative;
+        }
+
+        .timeline-item:last-child {
+            padding-bottom: 0;
+        }
+
+        .timeline-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #EB6711;
+            margin-top: 0.3rem;
+            flex-shrink: 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .timeline-item:not(:last-child) .timeline-dot::after {
+            content: '';
+            position: absolute;
+            top: 12px;
+            left: 4px;
+            width: 2px;
+            height: calc(100% + 12px);
+            background: #e5e7eb;
+        }
+
+        .timeline-content .time {
+            font-size: 0.75rem;
+            color: #9ca3af;
+        }
+
+        .timeline-content .desc {
+            font-size: 0.85rem;
+            color: #374151;
+            font-weight: 500;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="tool-topbar">
+        <a class="back-btn" onclick="goBack()">← Back to Tools</a>
+        <h1>📋 ARN Status</h1>
+        <span class="badge">REFUND TOOL</span>
+    </div>
+
+    <div class="tool-container">
+        <div class="tool-hero">
+            <h2>ARN Status Checker</h2>
+            <p>Check the status of your GST refund Application Reference Number (ARN). Track where your refund
+                application stands in the processing pipeline.</p>
+        </div>
+
+        <div class="tool-form-card">
+            <h3>Check ARN Status</h3>
+            <p>Enter your Application Reference Number to check its current status.</p>
+            <div class="input-group">
+                <input type="text" id="arn-input" placeholder="e.g. AA2701241234567" maxlength="20"
+                    style="text-transform:uppercase;">
+                <button class="btn-primary" id="check-btn" onclick="checkARN()">Check Status</button>
+            </div>
+
+            <div class="status-card" id="arn-result">
+                <div class="status-card-header">
+                    <h4 id="arn-display">ARN: --</h4>
+                    <span class="status-badge pending" id="arn-status-badge">Pending</span>
+                </div>
+                <div class="status-card-body">
+                    <div class="status-row">
+                        <span class="label">Filing Date</span>
+                        <span class="value" id="filing-date">--</span>
+                    </div>
+                    <div class="status-row">
+                        <span class="label">Refund Type</span>
+                        <span class="value" id="refund-type">--</span>
+                    </div>
+                    <div class="status-row">
+                        <span class="label">Claimed Amount</span>
+                        <span class="value" id="claimed-amount">--</span>
+                    </div>
+                    <div class="status-row">
+                        <span class="label">Sanctioned Amount</span>
+                        <span class="value" id="sanctioned-amount">--</span>
+                    </div>
+
+                    <h4 style="margin-top:1.25rem; margin-bottom:0.5rem; font-size:0.9rem; color:#374151;">Processing
+                        Timeline</h4>
+                    <div class="timeline" id="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-content">
+                                <div class="desc">Application Submitted</div>
+                                <div class="time">Check status to see timeline</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="api_config.js?v=2"></script>
+    <script>
+        function goBack() {
+            const params = new URLSearchParams(window.location.search);
+            params.set('section', 'tools');
+            window.location.href = 'web-view.html?' + params.toString();
+        }
+
+        async function checkARN() {
+            const arn = document.getElementById('arn-input').value.trim().toUpperCase();
+            if (!arn) { alert('Please enter an ARN number'); return; }
+
+            const btn = document.getElementById('check-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading-spinner"></span> Checking...';
+
+            try {
+                const token = localStorage.getItem('access_token');
+                const res = await fetch(`${API_BASE_URL}/tools/arn-status?arn=${arn}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                const resultCard = document.getElementById('arn-result');
+                resultCard.classList.add('active');
+
+                if (res.ok) {
+                    const data = await res.json();
+                    document.getElementById('arn-display').textContent = 'ARN: ' + arn;
+                    document.getElementById('filing-date').textContent = data.filing_date || '--';
+                    document.getElementById('refund-type').textContent = data.refund_type || '--';
+                    document.getElementById('claimed-amount').textContent = data.claimed_amount ? '₹' + data.claimed_amount : '--';
+                    document.getElementById('sanctioned-amount').textContent = data.sanctioned_amount ? '₹' + data.sanctioned_amount : '--';
+
+                    const badge = document.getElementById('arn-status-badge');
+                    const status = (data.status || 'Pending').toLowerCase();
+                    badge.textContent = data.status || 'Pending';
+                    badge.className = 'status-badge ' + (status.includes('approv') || status.includes('sanction') ? 'approved' : status.includes('reject') ? 'rejected' : 'pending');
+                } else {
+                    document.getElementById('arn-display').textContent = 'ARN: ' + arn;
+                    document.getElementById('arn-status-badge').textContent = 'Not Found';
+                    document.getElementById('arn-status-badge').className = 'status-badge rejected';
+                }
+            } catch (err) {
+                alert('Error connecting to server. Please try again.');
+                console.error(err);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Check Status';
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -177,9 +177,9 @@ def get_tally_companies():
     
     response_xml = send_tally_request(xml_payload)
     
-# in /tally/companies
-if not response_xml:
-    raise HTTPException(status_code=400, detail="Tally not responding on 9000")
+    # in /tally/companies
+    if not response_xml:
+        raise HTTPException(status_code=400, detail="Tally not responding on 9000")
 
     # Simple parsing logic (quick & dirty regex or string find for <ListofCompanies>...</ListofCompanies>)
     # In production, use xml.etree.ElementTree
