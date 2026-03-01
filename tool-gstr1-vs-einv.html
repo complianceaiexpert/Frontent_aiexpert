@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GSTR-1 vs E-Invoice Reconciliation - Compliance AI Expert</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        /* Shared Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8fafc;
+            min-height: 100vh;
+        }
+
+        .tool-topbar {
+            background: #fff;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 0.875rem 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .tool-topbar .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #1E3A8A;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            padding: 0.4rem 0.75rem;
+            border-radius: 6px;
+            transition: background 0.2s;
+            cursor: pointer;
+        }
+
+        .tool-topbar .back-btn:hover {
+            background: #eff6ff;
+        }
+
+        .tool-topbar h1 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .tool-topbar .badge {
+            background: #dbeafe;
+            color: #1e40af;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+        }
+
+        .tool-container {
+            max-width: 900px;
+            margin: 2.5rem auto;
+            padding: 0 2rem;
+        }
+
+        .tool-hero {
+            background: linear-gradient(135deg, #1E3A8A 0%, #1E40AF 100%);
+            border-radius: 16px;
+            padding: 2.5rem;
+            color: #fff;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 12px rgba(30, 58, 138, 0.15);
+        }
+
+        .tool-hero h2 {
+            font-size: 1.75rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .tool-hero p {
+            opacity: 0.85;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .tool-form-card {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .tool-form-card h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 0.5rem;
+        }
+
+        .tool-form-card p {
+            font-size: 0.85rem;
+            color: #6b7280;
+            margin-bottom: 1.5rem;
+        }
+
+        .upload-zone {
+            border: 2px dashed #d1d5db;
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+        }
+
+        .upload-zone:hover {
+            border-color: #EB6711;
+            background: #fff7ed;
+        }
+
+        .upload-zone .icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .upload-zone .text {
+            color: #6b7280;
+            font-size: 0.85rem;
+        }
+
+        .upload-zone .text strong {
+            color: #EB6711;
+        }
+
+        .btn-primary {
+            background: #EB6711;
+            color: #fff;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        .btn-primary:hover {
+            background: #d45a0f;
+            transform: translateY(-1px);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 1rem;
+            height: 1rem;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 0.6s linear infinite;
+            margin-right: 0.5rem;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .recent-jobs-card {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .jobs-list {
+            margin-top: 1rem;
+        }
+
+        .job-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            border: 1px solid #f3f4f6;
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            background: #fafafa;
+        }
+
+        .job-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .job-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #111827;
+        }
+
+        .job-meta {
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+
+        .job-status {
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 0.25rem 0.6rem;
+            border-radius: 9999px;
+            text-transform: uppercase;
+        }
+
+        .status-queued {
+            background: #f3f4f6;
+            color: #4b5563;
+        }
+
+        .status-processing {
+            background: #e0f2fe;
+            color: #0369a1;
+        }
+
+        .status-completed {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-failed {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .btn-download {
+            background: #1E3A8A;
+            color: #fff;
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .btn-download:hover {
+            background: #1e40af;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="tool-topbar">
+        <a class="back-btn" onclick="goBack()">← Back to Reconciliations</a>
+        <h1>⚖️ GSTR-1 vs E-Invoice</h1>
+        <span class="badge">RECON TOOL</span>
+    </div>
+
+    <div class="tool-container">
+        <div class="tool-hero">
+            <h2>GSTR-1 vs E-Invoice Reconciliation</h2>
+            <p>Ensure that all generated E-Invoices are correctly reported in your GSTR-1 return. Identify missing IRNs
+                or value differences before final filing.</p>
+        </div>
+
+        <div class="tool-form-card">
+            <h3>Upload Data</h3>
+            <p>Upload your GSTR-1 data and E-Invoice portal export to begin matching.</p>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div class="upload-zone" onclick="document.getElementById('gstr1-file').click()">
+                    <div class="icon">📈</div>
+                    <div class="text"><strong>GSTR-1 Data</strong><br>Click to upload (.xlsx, .csv)</div>
+                </div>
+                <div class="upload-zone" onclick="document.getElementById('einv-file').click()">
+                    <div class="icon">🧾</div>
+                    <div class="text"><strong>E-Invoice Data</strong><br>Click to upload (.xlsx, .csv)</div>
+                </div>
+            </div>
+
+            <input type="file" id="gstr1-file" accept=".xlsx,.csv" style="display:none"
+                onchange="updateFileName('g1', this)">
+            <input type="file" id="einv-file" accept=".xlsx,.csv" style="display:none"
+                onchange="updateFileName('einv', this)">
+
+            <div id="file-names" style="margin-top:0.75rem; font-size:0.85rem; color:#6b7280;"></div>
+
+            <div style="margin-top:1.25rem;">
+                <button class="btn-primary" id="reconcile-btn" onclick="startReconciliation()" disabled>⚖️ Start
+                    Reconciliation</button>
+            </div>
+        </div>
+
+        <div class="recent-jobs-card" id="recent-jobs-container" style="display: none;">
+            <h3>Recent Reconciliation Jobs</h3>
+            <p>Track the status of your GSTR-1 vs E-Invoice matching tasks.</p>
+            <div class="jobs-list" id="jobs-list">
+                <!-- Jobs will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="api_config.js?v=2"></script>
+    <script src="session-manager.js"></script>
+    <script>
+        function goBack() {
+            const params = new URLSearchParams(window.location.search);
+            params.set('section', 'reconciliation');
+            window.location.href = 'web-view.html?' + params.toString();
+        }
+
+        let file1 = null, file2 = null;
+        function updateFileName(type, input) {
+            if (input.files.length) {
+                if (type === 'g1') file1 = input.files[0];
+                else file2 = input.files[0];
+                let text = '';
+                if (file1) text += '📎 GSTR-1: ' + file1.name;
+                if (file2) text += (file1 ? '  |  ' : '') + '📎 E-Invoice: ' + file2.name;
+                document.getElementById('file-names').textContent = text;
+                document.getElementById('reconcile-btn').disabled = !(file1 && file2);
+            }
+        }
+
+        async function startReconciliation() {
+            const btn = document.getElementById('reconcile-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading-spinner"></span> Processing...';
+            try {
+                const token = localStorage.getItem('access_token');
+                const params = new URLSearchParams(window.location.search);
+                const clientId = params.get('clientId');
+                const fileKeys = [];
+
+                for (const file of [file1, file2]) {
+                    const fd = new FormData();
+                    fd.append('file', file);
+                    const res = await fetch(`${API_BASE_URL}/jobs/upload`, {
+                        method: 'POST',
+                        headers: { 'Authorization': `Bearer ${token}` },
+                        body: fd
+                    });
+                    if (res.ok) {
+                        const d = await res.json();
+                        fileKeys.push(d.file_key || d.file_path);
+                    }
+                }
+
+                const jobRes = await fetch(`${API_BASE_URL}/jobs/`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        job_type: 'gstr1_vs_einv',
+                        input_files: fileKeys,
+                        client_id: clientId
+                    })
+                });
+
+                if (jobRes.ok) {
+                    alert('Reconciliation job started!');
+                    loadJobs();
+                } else {
+                    const err = await jobRes.json();
+                    alert('Failed: ' + (err.detail || 'Unknown error'));
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Error: ' + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '⚖️ Start Reconciliation';
+            }
+        }
+
+        let pollingInterval = null;
+        async function loadJobs() {
+            const params = new URLSearchParams(window.location.search);
+            const clientId = params.get('clientId');
+            if (!clientId) return;
+
+            try {
+                const res = await authFetch(`/jobs/?skip=0&limit=50&client_id=${clientId}`);
+                if (res.ok) {
+                    const jobs = await res.json();
+                    const taskJobs = jobs.filter(j => j.job_type === 'gstr1_vs_einv');
+
+                    if (taskJobs.length > 0) {
+                        document.getElementById('recent-jobs-container').style.display = 'block';
+                        renderJobs(taskJobs);
+
+                        const hasInProgress = taskJobs.some(j => j.status === 'QUEUED' || j.status === 'PROCESSING');
+                        if (hasInProgress && !pollingInterval) {
+                            pollingInterval = setInterval(loadJobs, 5000);
+                        } else if (!hasInProgress && pollingInterval) {
+                            clearInterval(pollingInterval);
+                            pollingInterval = null;
+                        }
+                    }
+                }
+            } catch (e) {
+                console.error("Failed to load jobs", e);
+            }
+        }
+
+        function renderJobs(jobs) {
+            const list = document.getElementById('jobs-list');
+            list.innerHTML = jobs.map(job => {
+                const date = new Date(job.created_at).toLocaleString();
+                let statusClass = 'status-' + job.status.toLowerCase();
+
+                return `
+                    <div class="job-item">
+                        <div class="job-info">
+                            <span class="job-name">GSTR-1 VS E-INVOICE RECONCILIATION</span>
+                            <span class="job-meta">Created: ${date}</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <span class="job-status ${statusClass}">${job.status}</span>
+                            ${job.status === 'COMPLETED' ?
+                        `<button class="btn-download" onclick="downloadJobFile('${job.id}')">⬇ Download</button>` :
+                        ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function downloadJobFile(jobId) {
+            try {
+                const response = await authFetch(`/jobs/${jobId}/download`);
+                if (!response.ok) {
+                    alert('Download failed');
+                    return;
+                }
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `GSTR1_vs_EInvoice_Report_${jobId.substring(0, 8)}.xlsx`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+            } catch (e) {
+                console.error('Download error:', e);
+                alert('Error downloading file');
+            }
+        }
+
+        loadJobs();
+    </script>
+</body>
+
+</html>
