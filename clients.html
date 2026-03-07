@@ -4,605 +4,1940 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Client Selection - Compliance AI Expert</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Firm Dashboard — ComplianceAI Expert</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@700;800&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap"
         rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
     <style>
-        .clients-container {
-            max-width: 1200px;
-            margin: 80px auto;
-            padding: 2rem 32px;
+        * {
+            box-sizing: border-box
         }
 
-        .clients-header {
+        body {
+            background: #f8fafc;
+            margin: 0;
+            min-height: 100vh
+        }
+
+        /* ══ LAYOUT ══ */
+        .firm-layout {
+            display: flex;
+            min-height: 100vh;
+            padding-top: 64px
+        }
+
+        /* ── Sidebar ── */
+        .firm-sidebar {
+            width: 240px;
+            background: #fff;
+            border-right: 1px solid #e5e7eb;
+            position: fixed;
+            top: 64px;
+            bottom: 0;
+            left: 0;
             display: flex;
             flex-direction: column;
-            align-items: flex-start;
-            margin-bottom: 3rem;
-            border-bottom: 1px solid var(--gray-200);
-            padding-bottom: 2rem;
+            z-index: 90;
+            overflow-y: auto
         }
 
-        .clients-header-top {
+        .sb-section {
+            padding: 0.75rem 1rem
+        }
+
+        .sb-section-label {
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #9ca3af;
+            padding: 0.5rem 0.75rem;
+            margin-bottom: 0.15rem
+        }
+
+        .sb-item {
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            gap: 0.65rem;
+            padding: 0.55rem 0.75rem;
+            border-radius: 8px;
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: #4b5563;
+            cursor: pointer;
+            transition: all .2s;
+            text-decoration: none;
+            margin-bottom: 2px
+        }
+
+        .sb-item:hover {
+            background: #f1f5f9;
+            color: #1e3a8a
+        }
+
+        .sb-item.active {
+            background: #eff6ff;
+            color: #1e3a8a;
+            font-weight: 600
+        }
+
+        .sb-item svg {
+            flex-shrink: 0;
+            width: 17px;
+            height: 17px
+        }
+
+        .sb-badge {
+            margin-left: auto;
+            font-size: 0.65rem;
+            font-weight: 700;
+            background: #dbeafe;
+            color: #1e3a8a;
+            padding: 1px 7px;
+            border-radius: 10px
+        }
+
+        .sb-divider {
+            height: 1px;
+            background: #f1f5f9;
+            margin: 0.5rem 1rem
+        }
+
+        /* ── Main ── */
+        .firm-main {
+            margin-left: 240px;
+            flex: 1;
+            padding: 1.5rem 2rem 3rem
+        }
+
+        /* ── Welcome ── */
+        .welcome-bar {
+            margin-bottom: 1.5rem
+        }
+
+        .welcome-bar h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.65rem;
+            font-weight: 800;
+            color: #111827;
+            margin: 0 0 0.2rem
+        }
+
+        .welcome-bar h1 span {
+            color: #eb6711
+        }
+
+        .welcome-bar p {
+            font-size: 0.85rem;
+            color: #6b7280;
+            margin: 0
+        }
+
+        /* ── Service Cards Row ── */
+        .svc-cards-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.75rem
+        }
+
+        .svc-card {
+            border-radius: 14px;
+            padding: 1.15rem 1.1rem;
+            color: #fff;
+            cursor: pointer;
+            transition: all .25s;
+            position: relative;
+            overflow: hidden
+        }
+
+        .svc-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, .12)
+        }
+
+        .svc-card .sc-icon {
+            font-size: 1.35rem;
+            margin-bottom: 0.6rem
+        }
+
+        .svc-card .sc-name {
+            font-size: 0.88rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem
+        }
+
+        .svc-card .sc-desc {
+            font-size: 0.72rem;
+            opacity: .85;
+            line-height: 1.45;
+            margin-bottom: 0.75rem
+        }
+
+        .svc-card .sc-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.4rem 1rem;
+            background: rgba(255, 255, 255, .25);
+            border: 1px solid rgba(255, 255, 255, .4);
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #fff;
+            cursor: pointer;
+            backdrop-filter: blur(4px);
+            transition: background .2s;
+            text-decoration: none
+        }
+
+        .svc-card .sc-btn:hover {
+            background: rgba(255, 255, 255, .4)
+        }
+
+        .bg-blue {
+            background: linear-gradient(135deg, #1e3a8a, #2563eb)
+        }
+
+        .bg-teal {
+            background: linear-gradient(135deg, #0f766e, #14b8a6)
+        }
+
+        .bg-orange {
+            background: linear-gradient(135deg, #c2410c, #f97316)
+        }
+
+        .bg-purple {
+            background: linear-gradient(135deg, #6d28d9, #8b5cf6)
+        }
+
+        /* ── Overview Section ── */
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 1rem
+        }
+
+        .section-title svg {
+            width: 20px;
+            height: 20px;
+            color: #6b7280
+        }
+
+        .overview-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.75rem
+        }
+
+        .ov-card {
+            background: #fff;
+            border-radius: 14px;
+            padding: 1.15rem 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, .04);
+            transition: all .25s;
+            border: 1px solid #f1f5f9
+        }
+
+        .ov-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, .06)
+        }
+
+        .ov-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.15rem;
+            flex-shrink: 0
+        }
+
+        .ov-num {
+            font-size: 1.5rem;
+            font-weight: 800;
+            font-family: 'Outfit', sans-serif;
+            color: #111827;
+            line-height: 1
+        }
+
+        .ov-label {
+            font-size: 0.72rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #9ca3af;
+            margin-top: 0.15rem
+        }
+
+        /* ── Client section ── */
+        .client-section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem
+        }
+
+        .workspace-toolbar {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem
+        }
+
+        .search-box {
+            position: relative;
+            flex: 1;
+            min-width: 200px;
+            max-width: 340px
+        }
+
+        .search-box input {
             width: 100%;
+            padding: 0.55rem 0.85rem 0.55rem 2.25rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            background: #fff;
+            font-size: 0.82rem;
+            font-family: inherit;
+            transition: all .2s
         }
 
-        .clients-header h1 {
-            font-size: 2.25rem;
-            color: var(--gray-900);
-            margin-bottom: 0.5rem;
+        .search-box input:focus {
+            outline: none;
+            border-color: #1e3a8a;
+            box-shadow: 0 0 0 3px rgba(30, 58, 138, .06)
         }
 
-        .clients-header p {
-            color: var(--gray-500);
-            font-size: 1.125rem;
+        .search-box .s-icon {
+            position: absolute;
+            left: 0.65rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+            pointer-events: none
         }
 
+        .filter-tabs {
+            display: flex;
+            gap: 2px;
+            background: #fff;
+            border-radius: 10px;
+            padding: 3px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, .04)
+        }
+
+        .filter-tab {
+            padding: 0.4rem 0.85rem;
+            font-size: 0.78rem;
+            font-weight: 500;
+            border: none;
+            background: none;
+            color: #6b7280;
+            border-radius: 7px;
+            cursor: pointer;
+            transition: all .15s;
+            font-family: inherit
+        }
+
+        .filter-tab.active {
+            background: #1e293b;
+            color: #fff;
+            font-weight: 600
+        }
+
+        .filter-tab:hover:not(.active) {
+            background: #f9fafb;
+            color: #374151
+        }
+
+        .toolbar-right {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-left: auto
+        }
+
+        .btn-add {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.5rem 1rem;
+            background: #1e293b;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all .2s;
+            font-family: inherit
+        }
+
+        .btn-add:hover {
+            background: #0f172a;
+            transform: translateY(-1px)
+        }
+
+        .view-toggle {
+            display: flex;
+            gap: 2px;
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 2px
+        }
+
+        .view-btn {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            background: none;
+            border-radius: 6px;
+            cursor: pointer;
+            color: #9ca3af;
+            transition: all .15s
+        }
+
+        .view-btn.active {
+            background: #f1f5f9;
+            color: #1f2937
+        }
+
+        /* ── Client cards ── */
         .clients-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 2rem;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+            transition: all .3s
+        }
+
+        .clients-grid.list-view {
+            grid-template-columns: 1fr;
+            gap: 0.5rem
         }
 
         .client-card {
-            background: white;
-            border: 1px solid var(--gray-200);
-            border-radius: 8px;
-            /* Reduced radius */
-            padding: 2rem;
+            background: #fff;
+            border: 1px solid #f1f5f9;
+            border-radius: 14px;
+            padding: 1.25rem 1.35rem;
             cursor: pointer;
-            transition: all var(--transition-base);
+            transition: all .25s;
+            display: flex;
+            flex-direction: column;
             position: relative;
-            overflow: hidden;
-            box-shadow: var(--shadow-sm);
-            /* Minimal shadow */
+            overflow: hidden
         }
 
         .client-card:hover {
-            border-color: var(--primary-blue);
-            box-shadow: var(--shadow-md);
-            transform: none;
-            /* Removed lift */
+            box-shadow: 0 8px 24px -8px rgba(30, 58, 138, .10);
+            transform: translateY(-2px)
         }
 
-        .client-card h3 {
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-            color: var(--gray-900);
+        .client-card.selected {
+            border-color: #1e3a8a;
+            background: #fafbff
         }
 
-        .client-card .gstin {
-            color: var(--gray-600);
-            font-family: monospace;
-            font-size: 0.875rem;
-            background: var(--gray-50);
-            padding: 0.25rem 0.5rem;
-            border-radius: var(--radius-sm);
+        .client-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 3px;
+            height: 100%;
+            background: linear-gradient(180deg, #1e3a8a, #3b82f6);
+            opacity: 0;
+            transition: opacity .25s
         }
 
-        .client-card .services-count {
-            margin-top: 1.5rem;
-            font-size: 0.875rem;
-            color: var(--primary-blue);
-            font-weight: 600;
+        .client-card:hover::before,
+        .client-card.selected::before {
+            opacity: 1
         }
 
-        .add-client-card {
-            border: 2px dashed var(--gray-300);
+        .clients-grid.list-view .client-card {
+            display: grid;
+            grid-template-columns: auto 1fr auto auto;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.85rem 1.25rem
+        }
+
+        .clients-grid.list-view .card-body {
+            display: none
+        }
+
+        .card-header {
             display: flex;
-            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.85rem;
+            margin-bottom: 0.85rem
+        }
+
+        .client-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
             align-items: center;
             justify-content: center;
-            background: var(--gray-50);
-            color: var(--gray-600);
-            min-height: 200px;
+            font-size: 1.15rem;
+            font-weight: 700;
+            font-family: 'Outfit', sans-serif;
+            flex-shrink: 0;
+            color: #fff
         }
 
-        .add-client-card:hover {
-            border-color: var(--primary-blue);
-            color: var(--primary-blue);
-            background: white;
+        .avatar-blue {
+            background: #1282a2
         }
 
-        .add-client-card .icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
+        .avatar-orange {
+            background: #db2777
         }
 
-        /* Modal Styles */
-        .modal {
-            display: none;
+        .avatar-purple {
+            background: #8b5cf6
+        }
+
+        .avatar-green {
+            background: #10b981
+        }
+
+        .avatar-pink {
+            background: #ec4899
+        }
+
+        .avatar-teal {
+            background: #14b8a6
+        }
+
+        .client-meta {
+            flex: 1;
+            min-width: 0
+        }
+
+        .client-meta h3 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0 0 0.15rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis
+        }
+
+        .client-meta-id {
+            font-size: 0.72rem;
+            color: #64748b;
+            background: #f1f5f9;
+            padding: 1px 7px;
+            border-radius: 5px;
+            display: inline-block
+        }
+
+        .card-body {
+            margin-bottom: 0.5rem
+        }
+
+        .pan-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1px
+        }
+
+        .info-label {
+            font-size: 0.68rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: #64748b;
+            font-weight: 600
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 2px
+        }
+
+        .info-value {
+            font-size: 0.85rem;
+            color: #0f172a;
+            font-weight: 500;
+            font-family: 'SF Mono', 'Consolas', monospace
+        }
+
+        .active-count {
+            font-size: 0.78rem;
+            color: #475569;
+            font-weight: 500
+        }
+
+        .card-services {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.35rem;
+            margin-bottom: 0.65rem
+        }
+
+        .svc-pill {
+            font-size: 0.68rem;
+            font-weight: 600;
+            padding: 2px 10px;
+            border-radius: 16px;
+            letter-spacing: 0.02em
+        }
+
+        .svc-blue {
+            background: #bae6fd;
+            color: #0284c7
+        }
+
+        .svc-green {
+            background: #bbf7d0;
+            color: #16a34a
+        }
+
+        .svc-purple {
+            background: #e9d5ff;
+            color: #9333ea
+        }
+
+        .svc-orange {
+            background: #fef08a;
+            color: #ca8a04
+        }
+
+        .svc-gray {
+            background: #f1f5f9;
+            color: #64748b
+        }
+
+        .card-divider {
+            height: 1px;
+            background: #f1f5f9;
+            margin: 0.35rem -1.35rem 0.65rem
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto
+        }
+
+        .footer-icons {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            color: #94a3b8
+        }
+
+        .card-btn-add {
+            background: #1e293b;
+            color: #fff;
+            border: none;
+            padding: 0.4rem 0.85rem;
+            border-radius: 7px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all .15s
+        }
+
+        .card-btn-add:hover {
+            background: #0f172a
+        }
+
+        /* ── Panel ── */
+        .detail-panel {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 420px;
+            height: 100vh;
+            background: #fff;
+            border-left: 1px solid #e5e7eb;
+            box-shadow: -8px 0 40px rgba(0, 0, 0, .08);
+            transform: translateX(100%);
+            transition: transform .4s cubic-bezier(.4, 0, .2, 1);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto
+        }
+
+        .detail-panel.open {
+            transform: translateX(0)
+        }
+
+        .panel-top {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            background: #fff;
+            z-index: 2
+        }
+
+        .panel-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #6b7280;
+            transition: all .2s
+        }
+
+        .panel-close:hover {
+            background: #f9fafb;
+            color: #111827
+        }
+
+        .panel-avatar-section {
+            padding: 1.5rem;
+            text-align: center;
+            border-bottom: 1px solid #f1f5f9
+        }
+
+        .panel-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 800;
+            font-family: 'Outfit', sans-serif;
+            color: #fff;
+            margin-bottom: 0.75rem
+        }
+
+        .panel-client-name {
+            font-size: 1.25rem;
+            font-weight: 800;
+            font-family: 'Outfit', sans-serif;
+            color: #111827;
+            margin-bottom: 0.35rem
+        }
+
+        .client-gstin-badge {
+            font-family: 'SF Mono', 'Consolas', monospace;
+            font-size: 0.68rem;
+            color: #6b7280;
+            background: #f9fafb;
+            padding: 2px 7px;
+            border-radius: 5px;
+            border: 1px solid #f1f5f9;
+            display: inline-block
+        }
+
+        .panel-section {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid #f1f5f9
+        }
+
+        .panel-section-title {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #9ca3af;
+            font-weight: 700;
+            margin-bottom: 0.75rem
+        }
+
+        .panel-info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem
+        }
+
+        .panel-info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 2px
+        }
+
+        .panel-info-label {
+            font-size: 0.7rem;
+            color: #9ca3af;
+            font-weight: 600
+        }
+
+        .panel-info-value {
+            font-size: 0.82rem;
+            color: #1f2937;
+            font-weight: 600;
+            font-family: 'SF Mono', 'Consolas', monospace
+        }
+
+        .panel-info-value.text {
+            font-family: inherit
+        }
+
+        .panel-services-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem
+        }
+
+        .panel-svc {
+            padding: 0.4rem 0.85rem;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 600
+        }
+
+        .panel-actions {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            margin-top: auto
+        }
+
+        .panel-action-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            padding: 0.7rem 1rem;
+            border-radius: 10px;
+            border: 1px solid #e5e7eb;
+            background: #fff;
+            color: #374151;
+            font-weight: 600;
+            font-size: 0.82rem;
+            cursor: pointer;
+            transition: all .2s;
+            font-family: inherit;
+            text-decoration: none
+        }
+
+        .panel-action-btn:hover {
+            background: #f9fafb;
+            border-color: #1e3a8a;
+            color: #1e3a8a
+        }
+
+        .panel-action-btn.primary {
+            background: #1e3a8a;
+            color: #fff;
+            border-color: #1e3a8a
+        }
+
+        .panel-action-btn.primary:hover {
+            background: #1e40af
+        }
+
+        /* ── Drawer ── */
+        .drawer-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
+            background: rgba(15, 23, 42, .3);
+            backdrop-filter: blur(2px);
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all .3s
         }
 
-        .modal.active {
+        .drawer-overlay.open {
+            opacity: 1;
+            visibility: visible
+        }
+
+        .drawer {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 480px;
+            height: 100vh;
+            background: #fff;
+            box-shadow: -12px 0 40px rgba(0, 0, 0, .12);
+            z-index: 2001;
+            transform: translateX(100%);
+            transition: transform .35s cubic-bezier(.4, 0, .2, 1);
             display: flex;
+            flex-direction: column
         }
 
-        .modal-content {
-            background: white;
-            padding: 2.5rem;
-            border-radius: var(--radius-2xl);
-            width: 100%;
-            max-width: 500px;
-            box-shadow: var(--shadow-2xl);
+        .drawer.open {
+            transform: translateX(0)
         }
 
-        .modal-header h2 {
-            margin-bottom: 1.5rem;
+        .drawer-header {
+            padding: 1.5rem 1.5rem 1rem;
+            border-bottom: 1px solid #f1f5f9
+        }
+
+        .drawer-header h2 {
+            font-size: 1.25rem;
+            font-weight: 800;
+            font-family: 'Outfit', sans-serif;
+            color: #111827;
+            margin: 0
+        }
+
+        .drawer-header p {
+            color: #6b7280;
+            font-size: 0.82rem;
+            margin: 0.15rem 0 0
+        }
+
+        .drawer-body {
+            padding: 1.5rem;
+            flex: 1;
+            overflow-y: auto
         }
 
         .form-group {
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.15rem
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #4b5563;
+            margin-bottom: 0.35rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em
         }
 
         .form-group input {
             width: 100%;
-            padding: 0.75rem;
-            border: 1px solid var(--gray-300);
-            border-radius: var(--radius-lg);
+            padding: 0.6rem 0.85rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-family: inherit;
+            transition: all .2s;
+            background: #f9fafb
         }
 
-        .modal-actions {
+        .form-group input:focus {
+            outline: none;
+            border-color: #1e3a8a;
+            box-shadow: 0 0 0 3px rgba(30, 58, 138, .06);
+            background: #fff
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.85rem
+        }
+
+        .drawer-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid #f1f5f9;
             display: flex;
-            gap: 1rem;
-            justify-content: flex-end;
-            margin-top: 2rem;
-        }
-
-        /* Dropdown Styles */
-        .navbar-profile {
-            position: relative;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-        }
-
-        .nav-dropdown {
-            position: absolute;
-            top: 120%;
-            right: 0;
-            background: white;
-            border: 1px solid var(--gray-200);
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-            width: 200px;
-            display: none;
-            padding: 0.5rem 0;
-            z-index: 9999;
-            margin-top: 0.5rem;
-        }
-
-        .nav-dropdown.active {
-            display: block;
-        }
-
-        .dropdown-item {
-            padding: 0.75rem 1.5rem;
-            color: var(--gray-700);
-            display: flex;
-            align-items: center;
             gap: 0.75rem;
-            text-decoration: none;
-            transition: background 0.2s;
+            justify-content: flex-end;
+            background: #f9fafb
+        }
+
+        .drawer-footer .btn-cancel {
+            padding: 0.55rem 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            background: #fff;
+            color: #374151;
+            font-weight: 600;
+            font-size: 0.82rem;
             cursor: pointer;
-            font-size: 0.875rem;
-            font-weight: 500;
+            font-family: inherit
         }
 
-        .dropdown-item:hover {
-            background: var(--gray-50);
-            color: var(--primary-blue);
+        .drawer-footer .btn-submit {
+            padding: 0.55rem 1.25rem;
+            border: none;
+            border-radius: 8px;
+            background: #1e3a8a;
+            color: #fff;
+            font-weight: 600;
+            font-size: 0.82rem;
+            cursor: pointer;
+            font-family: inherit;
+            box-shadow: 0 2px 8px rgba(30, 58, 138, .2)
         }
 
-        .dropdown-divider {
-            height: 1px;
-            background: var(--gray-100);
-            margin: 0.5rem 0;
+        .drawer-footer .btn-submit:hover {
+            background: #1e40af
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 2rem;
+            grid-column: 1/-1
+        }
+
+        .empty-state h3 {
+            font-size: 1.1rem;
+            font-family: 'Outfit', sans-serif;
+            color: #374151;
+            margin-bottom: 0.35rem
+        }
+
+        .empty-state p {
+            color: #9ca3af;
+            font-size: 0.82rem
+        }
+
+        /* ── Client List Panel ── */
+        .cl-panel-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, .2);
+            backdrop-filter: blur(2px);
+            z-index: 800;
+            opacity: 0;
+            visibility: hidden;
+            transition: all .3s
+        }
+
+        .cl-panel-overlay.open {
+            opacity: 1;
+            visibility: visible
+        }
+
+        .cl-panel {
+            position: fixed;
+            top: 64px;
+            left: 240px;
+            right: 0;
+            bottom: 0;
+            background: #fff;
+            z-index: 810;
+            transform: translateY(20px);
+            opacity: 0;
+            visibility: hidden;
+            transition: all .35s cubic-bezier(.4, 0, .2, 1);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 -4px 30px rgba(0, 0, 0, .08)
+        }
+
+        .cl-panel.open {
+            transform: translateY(0);
+            opacity: 1;
+            visibility: visible
+        }
+
+        .cl-panel-header {
+            padding: 1.25rem 2rem;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #fff;
+            flex-shrink: 0
+        }
+
+        .cl-panel-header h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #111827;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem
+        }
+
+        .cl-panel-header h2 .cl-count {
+            font-size: 0.75rem;
+            font-weight: 700;
+            background: #dbeafe;
+            color: #1e3a8a;
+            padding: 2px 10px;
+            border-radius: 12px
+        }
+
+        .cl-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem
+        }
+
+        .cl-search-wrap {
+            position: relative;
+            width: 260px
+        }
+
+        .cl-search-wrap input {
+            width: 100%;
+            padding: 0.5rem 0.85rem 0.5rem 2.2rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-family: inherit;
+            background: #f9fafb;
+            transition: all .2s
+        }
+
+        .cl-search-wrap input:focus {
+            outline: none;
+            border-color: #1e3a8a;
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(30, 58, 138, .05)
+        }
+
+        .cl-search-wrap .cl-s-icon {
+            position: absolute;
+            left: 0.6rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+            pointer-events: none
+        }
+
+        .cl-btn-add-sm {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.45rem 0.9rem;
+            background: #1e3a8a;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.78rem;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all .2s
+        }
+
+        .cl-btn-add-sm:hover {
+            background: #1e40af
+        }
+
+        .cl-btn-close {
+            width: 30px;
+            height: 30px;
+            border-radius: 7px;
+            border: 1px solid #e5e7eb;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #6b7280;
+            transition: all .15s
+        }
+
+        .cl-btn-close:hover {
+            background: #f1f5f9;
+            color: #111827
+        }
+
+        .cl-table-wrap {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0 2rem 2rem
+        }
+
+        .cl-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 0.5rem
+        }
+
+        .cl-table thead {
+            position: sticky;
+            top: 0;
+            z-index: 2
+        }
+
+        .cl-table th {
+            background: #f8fafc;
+            padding: 0.6rem 0.75rem;
+            font-size: 0.68rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #9ca3af;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+            cursor: pointer;
+            user-select: none;
+            white-space: nowrap;
+            transition: color .15s
+        }
+
+        .cl-table th:hover {
+            color: #1e3a8a
+        }
+
+        .cl-table th .sort-icon {
+            display: inline-block;
+            margin-left: 4px;
+            opacity: .4;
+            font-size: 0.6rem;
+            transition: opacity .15s
+        }
+
+        .cl-table th.sorted .sort-icon {
+            opacity: 1;
+            color: #1e3a8a
+        }
+
+        .cl-table td {
+            padding: 0.7rem 0.75rem;
+            font-size: 0.82rem;
+            color: #374151;
+            border-bottom: 1px solid #f8fafc;
+            vertical-align: middle
+        }
+
+        .cl-table tbody tr {
+            transition: background .15s
+        }
+
+        .cl-table tbody tr:hover {
+            background: #f8fafc
+        }
+
+        .cl-row-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 700;
+            font-family: 'Outfit', sans-serif;
+            color: #fff;
+            flex-shrink: 0
+        }
+
+        .cl-row-name-cell {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem
+        }
+
+        .cl-row-name {
+            font-weight: 600;
+            color: #1e293b
+        }
+
+        .cl-row-email {
+            font-size: 0.72rem;
+            color: #9ca3af;
+            margin-top: 1px
+        }
+
+        .cl-row-mono {
+            font-family: 'SF Mono', 'Consolas', monospace;
+            font-size: 0.78rem;
+            color: #6b7280;
+            letter-spacing: 0.01em
+        }
+
+        .cl-row-svc-count {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 24px;
+            height: 22px;
+            background: #eff6ff;
+            color: #1e3a8a;
+            font-size: 0.72rem;
+            font-weight: 700;
+            border-radius: 6px;
+            padding: 0 6px
+        }
+
+        .cl-row-action {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem
+        }
+
+        .cl-row-btn {
+            padding: 0.3rem 0.65rem;
+            border-radius: 6px;
+            border: 1px solid #e5e7eb;
+            background: #fff;
+            color: #374151;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all .15s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem
+        }
+
+        .cl-row-btn:hover {
+            border-color: #1e3a8a;
+            color: #1e3a8a;
+            background: #f8fafc
+        }
+
+        .cl-row-btn.primary {
+            background: #1e293b;
+            color: #fff;
+            border-color: #1e293b
+        }
+
+        .cl-row-btn.primary:hover {
+            background: #0f172a
+        }
+
+        .cl-empty {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: #9ca3af;
+            font-size: 0.85rem
+        }
+
+        @media(max-width:1100px) {
+            .svc-cards-row {
+                grid-template-columns: repeat(2, 1fr)
+            }
+
+            .overview-grid {
+                grid-template-columns: repeat(2, 1fr)
+            }
+        }
+
+        @media(max-width:768px) {
+            .firm-sidebar {
+                display: none
+            }
+
+            .firm-main {
+                margin-left: 0
+            }
+
+            .svc-cards-row {
+                grid-template-columns: 1fr
+            }
+
+            .overview-grid {
+                grid-template-columns: 1fr 1fr
+            }
+
+            .cl-panel {
+                left: 0
+            }
         }
     </style>
 </head>
 
 <body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="navbar-container">
-            <a href="clients.html" class="logo"
-                style="text-decoration: none; display: flex; align-items: center; gap: 0.75rem;">
-                <div class="logo-icon"
-                    style="background: #1E3A8A; color: white; padding: 4px 10px; border-radius: 6px; font-weight: 800; display: flex; align-items: center; justify-content: center; width: 32px; height: 32px;">
-                    CE</div>
-                <span id="nav-client-name" style="font-weight: 700; color: #1E3A8A; font-size: 1.1rem;">Compliance AI
-                    Expert</span>
-            </a>
+    <!-- Shared App Topbar -->
+    <div id="app-topbar" data-active="dashboard"></div>
+    <script src="app-topbar.js"></script>
 
-            <!-- Center Links -->
-            <div style="display: flex; gap: 2rem; margin-left: auto; margin-right: 2rem; align-items: center;">
-                <a href="clients.html"
-                    style="color: #4B5563; text-decoration: none; font-weight: 500; font-size: 0.95rem;">Home</a>
-                <a href="clients.html"
-                    style="color: #4B5563; text-decoration: none; font-weight: 500; font-size: 0.95rem;">Clients</a>
-                <a href="ai-gpt.html"
-                    style="color: #4B5563; text-decoration: none; font-weight: 500; font-size: 0.95rem;">
-                    AI GPT <span
-                        style="background: #E0E7FF; color: #4338CA; padding: 0.1rem 0.4rem; border-radius: 4px; font-size: 0.7rem; font-weight: 700; margin-left: 0.25rem;">NEW</span>
+    <div class="firm-layout">
+        <!-- ══ LEFT SIDEBAR ══ -->
+        <aside class="firm-sidebar">
+            <div class="sb-section">
+                <div class="sb-section-label">Main</div>
+                <a href="clients.html" class="sb-item active">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7" rx="1" />
+                        <rect x="14" y="3" width="7" height="7" rx="1" />
+                        <rect x="3" y="14" width="7" height="7" rx="1" />
+                        <rect x="14" y="14" width="7" height="7" rx="1" />
+                    </svg>
+                    Dashboard
+                </a>
+                <a href="#" class="sb-item" id="sb-clients-link"
+                    onclick="event.preventDefault();toggleClientListPanel()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                        <circle cx="9" cy="7" r="4" />
+                        <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                    </svg>
+                    Clients
+                    <span class="sb-badge" id="sb-client-count">0</span>
+                </a>
+                <a href="ai-agents.html" class="sb-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 8V4H8" />
+                        <rect x="2" y="2" width="20" height="8" rx="2" />
+                        <rect x="2" y="14" width="20" height="8" rx="2" />
+                        <path d="M6 18h.01" />
+                        <path d="M10 18h.01" />
+                        <path d="M6 6h.01" />
+                        <path d="M10 6h.01" />
+                    </svg>
+                    AI Agents
+                    <span class="sb-badge"
+                        style="background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff">NEW</span>
                 </a>
             </div>
-            <div class="navbar-profile" onclick="toggleProfileDropdown(event)">
-                <div style="display:flex; align-items:center; gap:0.75rem">
-                    <div class="user-avatar-small" id="nav-avatar">U</div>
-                </div>
-                <!-- Dropdown Menu -->
-                <div class="nav-dropdown" id="profile-dropdown">
-                    <a href="profile.html" class="dropdown-item">
-                        <span>👤</span> My Profile
-                    </a>
+            <div class="sb-divider"></div>
+            <div class="sb-section">
+                <div class="sb-section-label">Services</div>
+                <a href="ca-certificates.html" class="sb-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                        <polyline points="14 2 14 8 20 8" />
+                    </svg>
+                    CA Certificates
+                </a>
+                <a href="agreements.html" class="sb-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                        <polyline points="14 2 14 8 20 8" />
+                        <line x1="16" y1="13" x2="8" y2="13" />
+                        <line x1="16" y1="17" x2="8" y2="17" />
+                    </svg>
+                    Agreements
+                </a>
+                <a href="ai-gpt.html" class="sb-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2a3 3 0 0 0-3 3v4a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z" />
+                        <path d="M19 10v1a7 7 0 0 1-14 0v-1" />
+                        <line x1="12" y1="19" x2="12" y2="22" />
+                    </svg>
+                    AI GPT
+                </a>
+                <a href="tool-document-reader.html" class="sb-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+                        <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+                    </svg>
+                    Doc Reader
+                </a>
+                <a href="tool-hsn-locator.html" class="sb-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8" />
+                        <path d="m21 21-4.3-4.3" />
+                    </svg>
+                    HSN Lookup
+                </a>
+            </div>
+            <div class="sb-divider"></div>
+            <div class="sb-section">
+                <div class="sb-section-label">Other</div>
+                <a href="about-us.html" class="sb-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M12 16v-4" />
+                        <path d="M12 8h.01" />
+                    </svg>
+                    About Us
+                </a>
+                <a href="contact-us.html" class="sb-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                        <polyline points="22,6 12,13 2,6" />
+                    </svg>
+                    Contact
+                </a>
+                <a href="integrations.html" class="sb-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3" />
+                        <path
+                            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9v1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                    </svg>
+                    Settings
+                </a>
+            </div>
+        </aside>
 
-                    <a href="integrations.html" class="dropdown-item">
-                        <span>🔌</span> Integrations
-                    </a>
-                    <div class="dropdown-divider"></div>
-                    <div onclick="logout()" class="dropdown-item" style="color: #EF4444;">
-                        <span>🚪</span> Logout
+        <!-- ══ MAIN CONTENT ══ -->
+        <main class="firm-main" id="main-container">
+            <!-- Welcome -->
+            <div class="welcome-bar">
+                <h1>Welcome, <span id="firm-name">User</span></h1>
+                <p>Your firm's compliance command center — manage clients, certificates, and services.</p>
+            </div>
+
+            <!-- Service Cards -->
+            <div class="section-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="3" />
+                    <path
+                        d="M12 2v4m0 12v4m-7.07-14.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83" />
+                </svg>
+                Our Services
+            </div>
+            <div class="svc-cards-row">
+                <a href="ca-certificates.html" class="svc-card bg-blue" style="text-decoration:none">
+                    <div class="sc-icon">📝</div>
+                    <div class="sc-name">CA Certificates</div>
+                    <div class="sc-desc">Generate GST, Financial, Net Worth, and FEMA certificates from templates.</div>
+                    <span class="sc-btn">Proceed →</span>
+                </a>
+                <a href="agreements.html" class="svc-card bg-teal" style="text-decoration:none">
+                    <div class="sc-icon">📋</div>
+                    <div class="sc-name">Agreements</div>
+                    <div class="sc-desc">Create 30+ legal agreements with AI-powered clause selection.</div>
+                    <span class="sc-btn">Proceed →</span>
+                </a>
+                <a href="ai-gpt.html" class="svc-card bg-orange" style="text-decoration:none">
+                    <div class="sc-icon">🤖</div>
+                    <div class="sc-name">AI GPT Assistant</div>
+                    <div class="sc-desc">Chat with AI for tax queries, compliance guidance, and document analysis.</div>
+                    <span class="sc-btn">Proceed →</span>
+                </a>
+                <a href="tool-document-reader.html" class="svc-card bg-purple" style="text-decoration:none">
+                    <div class="sc-icon">📖</div>
+                    <div class="sc-name">Document Reader</div>
+                    <div class="sc-desc">Upload PDFs, invoices, or notices and extract key data using AI.</div>
+                    <span class="sc-btn">Proceed →</span>
+                </a>
+            </div>
+
+            <!-- Overview Stats -->
+            <div class="section-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 3v18h18" />
+                    <path d="M18 17V9" />
+                    <path d="M13 17V5" />
+                    <path d="M8 17v-3" />
+                </svg>
+                Overview
+            </div>
+            <div class="overview-grid">
+                <div class="ov-card">
+                    <div class="ov-icon" style="background:#eff6ff;color:#3b82f6">👥</div>
+                    <div>
+                        <div class="ov-num" id="stat-total">0</div>
+                        <div class="ov-label">Clients</div>
+                    </div>
+                </div>
+                <div class="ov-card">
+                    <div class="ov-icon" style="background:#fef3c7;color:#d97706">⚡</div>
+                    <div>
+                        <div class="ov-num" id="stat-services">0</div>
+                        <div class="ov-label">Active Services</div>
+                    </div>
+                </div>
+                <div class="ov-card">
+                    <div class="ov-icon" style="background:#ecfdf5;color:#10b981">📄</div>
+                    <div>
+                        <div class="ov-num" id="stat-gstins">0</div>
+                        <div class="ov-label">GSTINs</div>
+                    </div>
+                </div>
+                <div class="ov-card">
+                    <div class="ov-icon" style="background:#f5f3ff;color:#8b5cf6">🔑</div>
+                    <div>
+                        <div class="ov-num" id="stat-pans">0</div>
+                        <div class="ov-label">PANs</div>
                     </div>
                 </div>
             </div>
-        </div>
-    </nav>
 
-    <div class="clients-container">
-        <!-- Enhanced Header -->
-        <div class="client-workspace-header">
-            <div class="workspace-title-section">
-                <h1 class="client-workspace-title">Client Workspace</h1>
-                <p class="client-workspace-subtitle">Centralized hub for managing all your clients with AI-powered
-                    compliance monitoring. Track status, manage services, and ensure regulatory adherence across your
-                    entire portfolio.</p>
+            <!-- Client List -->
+            <div class="client-section-header">
+                <div class="section-title" style="margin-bottom:0">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                        <circle cx="9" cy="7" r="4" />
+                    </svg>
+                    Your Clients
+                </div>
             </div>
-
-            <!-- Stats Overview -->
-            <div class="workspace-stats">
-                <div class="stat-card">
-                    <div class="stat-icon" style="background: linear-gradient(135deg, #3B82F6, #2563EB);">👥</div>
-                    <div class="stat-content">
-                        <div class="stat-value" id="total-clients">0</div>
-                        <div class="stat-label">Total Clients</div>
+            <div class="workspace-toolbar">
+                <div class="search-box">
+                    <span class="s-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2.5">
+                            <circle cx="11" cy="11" r="8" />
+                            <path d="m21 21-4.3-4.3" />
+                        </svg></span>
+                    <input type="text" id="client-search" placeholder="Search clients, GSTINs, PAN…">
+                </div>
+                <div class="filter-tabs">
+                    <button class="filter-tab active" data-filter="all">All</button>
+                    <button class="filter-tab" data-filter="active">Active</button>
+                    <button class="filter-tab" data-filter="new">New</button>
+                </div>
+                <div class="toolbar-right">
+                    <div class="view-toggle">
+                        <button class="view-btn active" id="grid-btn" title="Grid view" onclick="setView('grid')"><svg
+                                width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <rect x="3" y="3" width="7" height="7" rx="1" />
+                                <rect x="14" y="3" width="7" height="7" rx="1" />
+                                <rect x="3" y="14" width="7" height="7" rx="1" />
+                                <rect x="14" y="14" width="7" height="7" rx="1" />
+                            </svg></button>
+                        <button class="view-btn" id="list-btn" title="List view" onclick="setView('list')"><svg
+                                width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <line x1="8" y1="6" x2="21" y2="6" />
+                                <line x1="8" y1="12" x2="21" y2="12" />
+                                <line x1="8" y1="18" x2="21" y2="18" />
+                                <line x1="3" y1="6" x2="3.01" y2="6" />
+                                <line x1="3" y1="12" x2="3.01" y2="12" />
+                                <line x1="3" y1="18" x2="3.01" y2="18" />
+                            </svg></button>
                     </div>
-                </div>
-                <!-- Stats Removed -->
-                <div class="stat-card">
-                    <div class="stat-icon" style="background: linear-gradient(135deg, #8B5CF6, #7C3AED);">📊</div>
-                    <div class="stat-content">
-                        <div class="stat-value" id="active-services">0</div>
-                        <div class="stat-label">Active Services</div>
-                    </div>
+                    <button class="btn-add" onclick="openDrawer()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5">
+                            <path d="M12 5v14" />
+                            <path d="M5 12h14" />
+                        </svg>
+                        Add Client
+                    </button>
                 </div>
             </div>
+            <div id="clients-grid" class="clients-grid"></div>
+        </main>
+    </div>
 
-            <!-- Controls Row -->
-            <div class="workspace-controls">
-                <div class="search-bar-container">
-                    <span class="search-icon">🔍</span>
-                    <input type="text" class="search-bar-input" id="client-search"
-                        placeholder="Search by client name, GSTIN, or PAN...">
-                </div>
-                <div class="control-buttons">
+    <!-- Detail Panel -->
+    <div class="detail-panel" id="detail-panel">
+        <div class="panel-top">
+            <span
+                style="font-size:0.72rem;font-weight:600;color:#9ca3af;text-transform:uppercase;letter-spacing:0.06em">Client
+                Details</span>
+            <button class="panel-close" onclick="closePanel()"><svg width="16" height="16" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M18 6 6 18" />
+                    <path d="m6 6 12 12" />
+                </svg></button>
+        </div>
+        <div class="panel-avatar-section" id="panel-avatar-section"></div>
+        <div class="panel-section">
+            <div class="panel-section-title">Registration Details</div>
+            <div class="panel-info-grid" id="panel-info-grid"></div>
+        </div>
+        <div class="panel-section">
+            <div class="panel-section-title">Active Services</div>
+            <div class="panel-services-list" id="panel-services"></div>
+        </div>
+        <div class="panel-actions" id="panel-actions"></div>
+    </div>
 
-                    <button class="btn btn-primary" onclick="showModal()"
-                        style="border-radius: 9999px; padding: 0.625rem 1.5rem;">+ Add New Client</button>
+    <!-- Client List Panel -->
+    <div class="cl-panel-overlay" id="cl-overlay" onclick="closeClientListPanel()"></div>
+    <div class="cl-panel" id="cl-panel">
+        <div class="cl-panel-header">
+            <h2>👥 All Clients <span class="cl-count" id="cl-panel-count">0</span></h2>
+            <div class="cl-header-actions">
+                <div class="cl-search-wrap">
+                    <span class="cl-s-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2.5">
+                            <circle cx="11" cy="11" r="8" />
+                            <path d="m21 21-4.3-4.3" />
+                        </svg></span>
+                    <input type="text" id="cl-panel-search" placeholder="Search by name, GSTIN, PAN…">
                 </div>
+                <button class="cl-btn-add-sm" onclick="closeClientListPanel();openDrawer()"><svg width="14" height="14"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path d="M12 5v14" />
+                        <path d="M5 12h14" />
+                    </svg> Add Client</button>
+                <button class="cl-btn-close" onclick="closeClientListPanel()"><svg width="14" height="14"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path d="M18 6 6 18" />
+                        <path d="m6 6 12 12" />
+                    </svg></button>
             </div>
         </div>
-
-        <div id="clients-grid" class="clients-grid">
-            <!-- Clients will be loaded here -->
-        </div>
-
-        <div class="pagination-footer">
-            <span>Showing 1 – 9 of 12 clients</span>
-            <div class="pagination-controls">
-                <button class="page-btn">&lt;</button>
-                <button class="page-btn">&gt;</button>
-            </div>
+        <div class="cl-table-wrap">
+            <table class="cl-table">
+                <thead>
+                    <tr>
+                        <th data-sort="index">Sr. <span class="sort-icon">▲</span></th>
+                        <th data-sort="name" class="sorted">Client Name <span class="sort-icon">▲</span></th>
+                        <th data-sort="gstin">GSTIN <span class="sort-icon">▲</span></th>
+                        <th data-sort="pan">PAN <span class="sort-icon">▲</span></th>
+                        <th data-sort="email">Email <span class="sort-icon">▲</span></th>
+                        <th data-sort="services">Services <span class="sort-icon">▲</span></th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="cl-table-body"></tbody>
+            </table>
         </div>
     </div>
 
-    <!-- Add Client Modal -->
-    <div id="client-modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Add New Client</h2>
-            </div>
-            <form id="add-client-form" onsubmit="handleAddClient(event)">
-                <div class="form-group">
-                    <label for="client-name">Client Name</label>
-                    <input type="text" id="client-name" required placeholder="e.g. Acme Corp">
-                </div>
-                <div class="form-group">
-                    <label for="client-gstins">GSTINs (Comma separated)</label>
-                    <input type="text" id="client-gstins" placeholder="e.g. 27AAAAA0000A1Z5, 27BBBBB1111B2Z6">
-                </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                    <div class="form-group">
-                        <label for="client-pan">PAN</label>
-                        <input type="text" id="client-pan" placeholder="ABCDE1234F">
-                    </div>
-                    <div class="form-group">
-                        <label for="client-cin">CIN</label>
-                        <input type="text" id="client-cin" placeholder="L12345KA2024PLC000001">
-                    </div>
-                </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                    <div class="form-group">
-                        <label for="client-tan">TAN No.</label>
-                        <input type="text" id="client-tan" placeholder="MUMW12345A">
-                    </div>
-                    <div class="form-group">
-                        <label for="client-iec">IEC No.</label>
-                        <input type="text" id="client-iec" placeholder="0123456789">
-                    </div>
-                </div>
-                <div class="modal-actions">
-                    <button type="button" class="btn btn-secondary" onclick="hideModal()">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Create Client</button>
-                </div>
-            </form>
+    <!-- Add Client Drawer -->
+    <div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
+    <div class="drawer" id="add-drawer">
+        <div class="drawer-header">
+            <h2>Onboard New Client</h2>
+            <p>Enter the entity details to start compliance tracking.</p>
         </div>
+        <form id="add-client-form" onsubmit="handleAddClient(event)">
+            <div class="drawer-body">
+                <div class="form-group"><label>Legal Entity Name *</label><input type="text" id="client-name" required
+                        placeholder="e.g. Acme Solutions Pvt Ltd"></div>
+                <div class="form-group"><label>Primary Contact Email *</label><input type="email" id="client-email"
+                        required placeholder="e.g. director@acmesolutions.com"></div>
+                <div class="form-group"><label>GSTINs (Comma separated)</label><input type="text" id="client-gstins"
+                        placeholder="e.g. 27AAAAA0000A1Z5, 29BBBBB1111B2Z6"></div>
+                <div class="form-row">
+                    <div class="form-group"><label>PAN</label><input type="text" id="client-pan" maxlength="10"
+                            placeholder="ABCDE1234F" style="text-transform:uppercase"></div>
+                    <div class="form-group"><label>CIN</label><input type="text" id="client-cin"
+                            placeholder="L12345KA2024PLC…"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>TAN No.</label><input type="text" id="client-tan"
+                            placeholder="MUMW12345A"></div>
+                    <div class="form-group"><label>IEC No.</label><input type="text" id="client-iec"
+                            placeholder="0123456789"></div>
+                </div>
+            </div>
+            <div class="drawer-footer">
+                <button type="button" class="btn-cancel" onclick="closeDrawer()">Cancel</button>
+                <button type="submit" class="btn-submit" id="submit-btn">Create Client Profile</button>
+            </div>
+        </form>
     </div>
 
     <script src="api_config.js"></script>
     <script>
+        // ====== AUTH & STATE ======
         const user = JSON.parse(localStorage.getItem('user'));
-        if (!user) window.location.href = 'index.html'; // Changed to index.html as sign-in.html might not exist or be the main entry
-
+        if (!user) window.location.href = 'index.html';
         document.getElementById('nav-avatar').textContent = (user.firm_name || user.full_name || user.name || 'U').charAt(0).toUpperCase();
+        document.getElementById('firm-name').textContent = user.firm_name || user.full_name || 'User';
 
-        function toggleProfileDropdown(e) {
-            e.stopPropagation();
-            const dd = document.getElementById('profile-dropdown');
-            dd.classList.toggle('active');
-        }
+        let allClients = [];
+        let selectedClientId = null;
+        const avatarColors = ['avatar-blue', 'avatar-orange', 'avatar-purple', 'avatar-green', 'avatar-pink', 'avatar-teal'];
+        const svcColors = ['svc-blue', 'svc-green', 'svc-purple', 'svc-orange'];
+        function getAvatarColor(name) { let h = 0; for (let i = 0; i < name.length; i++)h = name.charCodeAt(i) + ((h << 5) - h); return avatarColors[Math.abs(h) % avatarColors.length] }
+        function getSvcColor(i) { return svcColors[i % svcColors.length] }
 
-        // Close dropdown when clicking outside
-        document.addEventListener('click', () => {
-            const dd = document.getElementById('profile-dropdown');
-            if (dd) dd.classList.remove('active');
-        });
-
-        function logout() {
-            localStorage.removeItem('access_token');
-            localStorage.removeItem('user');
-            window.location.href = 'index.html';
-        }
-
+        // ====== LOAD CLIENTS ======
         async function loadClients() {
             try {
-                const response = await authFetch('/clients/');
-                if (!response.ok) throw new Error('Failed to load clients');
-
-                const clients = await response.json();
-
-                // Clear Grid
-                const grid = document.getElementById('clients-grid');
-                grid.innerHTML = '';
-
-                // Calculate Stats
-                const totalClients = clients.length;
-                let totalServices = 0;
-
-                clients.forEach(client => {
-                    totalServices += (client.services && client.services.length) || 0;
-                });
-
-                // Update Stats Display
-                document.getElementById('total-clients').textContent = totalClients;
-                document.getElementById('active-services').textContent = totalServices;
-
-                // Render Client Cards
-                clients.forEach(client => {
-                    const initial = client.name.charAt(0).toUpperCase();
-
-
-
-                    const card = document.createElement('div');
-                    card.className = 'client-card';
-                    card.setAttribute('data-client-name', client.name.toLowerCase());
-                    card.setAttribute('data-client-gstin', (client.gstins && client.gstins[0]) || '');
-                    card.onclick = () => {
-                        localStorage.setItem('selectedClient', JSON.stringify(client));
-                        window.location.href = `services-dashboard.html?clientId=${client.id}`;
-                    };
-
-                    let servicesList = '';
-                    if (client.services && client.services.length > 0) {
-                        servicesList = client.services.map((s, i) => {
-                            const serviceName = typeof s === 'object' ? s.name : s;
-                            return `<span class="service-tag"><span>•</span> ${serviceName}</span>`;
-                        }).join('');
-                    } else {
-                        servicesList = `<span class="service-tag" style="background:#F3F4F6; color:#6B7280;">No Active Services</span>`;
-                    }
-
-                    const displayId = (client.gstins && client.gstins[0]) ? `GSTIN ${client.gstins[0].substring(0, 4)} XXXX ${client.gstins[0].substring(client.gstins[0].length - 4)}` : (client.pan ? `PAN ${client.pan}` : 'No ID');
-
-                    card.innerHTML = `
-                        <div class="client-card-header">
-                            <div class="client-info-wrapper">
-                                <div class="client-icon">${initial}</div>
-                                <div class="client-name-block">
-                                    <h3 class="client-name">${client.name}</h3>
-                                    <p class="client-gstin">${displayId}</p>
-                                </div>
-                            </div>
-                            <div style="color: var(--gray-400);">›</div>
-                        </div>
-                        
-                        <div class="client-card-body" style="margin-bottom: 0;">
-                            <div class="service-tags">
-                                ${servicesList}
-                            </div>
-                        </div>
-
-                        <div class="client-card-footer">
-                            <span class="card-menu-dots">...</span>
-                        </div>
-                    `;
-                    grid.appendChild(card);
-                });
-
-                // Add "Add New Client" card at the END
-                const addCard = document.createElement('div');
-                addCard.className = 'client-card add-client-card';
-                addCard.onclick = showModal;
-                addCard.innerHTML = `
-                    <div class="add-btn-circle">+</div>
-                    <span style="font-weight: 600; color: var(--gray-900);">+ Add New Client</span>
-                    <span style="font-size: 0.75rem; opacity: 0.7; margin-top: 0.25rem;">Easily onboard a new client</span>
-                `;
-                grid.appendChild(addCard);
-
-                // Setup Search Functionality
-                const searchInput = document.getElementById('client-search');
-                if (searchInput) {
-                    searchInput.addEventListener('input', (e) => {
-                        const searchTerm = e.target.value.toLowerCase();
-                        const cards = grid.querySelectorAll('.client-card:not(.add-client-card)');
-
-                        cards.forEach(card => {
-                            const name = card.getAttribute('data-client-name') || '';
-                            const gstin = card.getAttribute('data-client-gstin') || '';
-
-                            if (name.includes(searchTerm) || gstin.includes(searchTerm)) {
-                                card.style.display = '';
-                            } else {
-                                card.style.display = 'none';
-                            }
-                        });
-                    });
-                }
-
-            } catch (error) {
-                console.error('Error loading clients:', error);
+                const r = await authFetch('/clients/'); if (!r.ok) throw new Error();
+                allClients = await r.json(); updateStats(); renderClients(allClients);
+            } catch (e) {
+                console.error(e);
+                document.getElementById('clients-grid').innerHTML = '<div class="empty-state"><div style="font-size:2.5rem;margin-bottom:0.75rem">📋</div><h3>No clients found</h3><p>Add your first client to get started.</p></div>';
             }
         }
 
-        // Initialize Global Functions
-        window.toggleProfileDropdown = function (e) {
-            e.stopPropagation();
-            console.log('Toggling profile dropdown');
-            const dd = document.getElementById('profile-dropdown');
-            if (dd) {
-                dd.classList.toggle('active');
-            } else {
-                console.error('Dropdown element not found!');
-                alert('Error: Dropdown element missing');
-            }
+        function updateStats() {
+            const total = allClients.length;
+            let services = 0, gstins = 0, pans = 0;
+            allClients.forEach(c => {
+                services += (c.services && c.services.length) || 0;
+                gstins += (c.gstins && c.gstins.length) || 0;
+                if (c.pan) pans++;
+            });
+            animateCounter('stat-total', total);
+            animateCounter('stat-services', services);
+            animateCounter('stat-gstins', gstins);
+            animateCounter('stat-pans', pans);
+            document.getElementById('sb-client-count').textContent = total;
         }
 
-        window.logout = function () {
-            localStorage.removeItem('access_token');
-            localStorage.removeItem('user');
-            window.location.href = 'index.html';
+        function animateCounter(id, target) {
+            const el = document.getElementById(id); const dur = 600; const start = parseInt(el.textContent) || 0; const st = performance.now();
+            function step(now) { const p = Math.min((now - st) / dur, 1); const e = 1 - Math.pow(1 - p, 3); el.textContent = Math.round(start + (target - start) * e); if (p < 1) requestAnimationFrame(step) }
+            requestAnimationFrame(step);
         }
 
-        window.showModal = function () {
-            document.getElementById('client-modal').classList.add('active');
+        function renderClients(clients) {
+            const grid = document.getElementById('clients-grid'); grid.innerHTML = '';
+            if (!clients.length) { grid.innerHTML = '<div class="empty-state"><div style="font-size:2.5rem;margin-bottom:0.75rem">📋</div><h3>No clients found</h3><p>Add your first client to get started with compliance tracking.</p></div>'; return }
+            clients.forEach(client => {
+                const initial = client.name.charAt(0).toUpperCase();
+                const colorClass = getAvatarColor(client.name);
+                const card = document.createElement('div');
+                card.className = `client-card${selectedClientId === client.id ? ' selected' : ''}`;
+                card.dataset.id = client.id;
+                card.dataset.clientName = client.name.toLowerCase();
+                card.dataset.clientGstin = (client.gstins && client.gstins[0]) || '';
+                card.dataset.services = (client.services && client.services.length > 0) ? 'active' : 'new';
+                card.onclick = () => openPanel(client);
+                const displayId = (client.gstins && client.gstins[0]) ? client.gstins[0] : (client.pan ? `PAN: ${client.pan}` : '—');
+                let svcHtml = '';
+                if (client.services && client.services.length > 0) {
+                    svcHtml = client.services.slice(0, 3).map((s, i) => { const n = typeof s === 'object' ? s.name : s; return `<span class="svc-pill ${getSvcColor(i)}">${n}</span>` }).join('');
+                    if (client.services.length > 3) svcHtml += `<span class="svc-pill svc-gray">+${client.services.length - 3}</span>`;
+                } else { svcHtml = '<span class="svc-pill svc-gray">No services</span>' }
+                card.innerHTML = `
+                    <div class="card-header"><div class="client-avatar ${colorClass}">${initial}</div><div class="client-meta"><h3>${client.name}</h3><span class="client-meta-id">${displayId}</span></div></div>
+                    <div class="card-body pan-section"><span class="info-label">PAN</span><div class="info-row"><span class="info-value">${client.pan || '—'}</span><span class="active-count">${(client.services && client.services.length) || 0} active</span></div></div>
+                    <div class="card-services">${svcHtml}</div>
+                    <div class="card-divider"></div>
+                    <div class="card-footer" onclick="event.stopPropagation()"><div class="footer-icons"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg></div><button class="card-btn-add" onclick="window.location.href='services-dashboard.html?clientId=${client.id}'">Open Workspace</button></div>`;
+                grid.appendChild(card);
+            });
         }
 
-        window.hideModal = function () {
-            document.getElementById('client-modal').classList.remove('active');
+        // ====== PANEL ======
+        function openPanel(client) {
+            selectedClientId = client.id;
+            document.querySelectorAll('.client-card').forEach(c => c.classList.toggle('selected', c.dataset.id === client.id));
+            const colorClass = getAvatarColor(client.name); const initial = client.name.charAt(0).toUpperCase();
+            document.getElementById('panel-avatar-section').innerHTML = `<div class="panel-avatar ${colorClass}">${initial}</div><div class="panel-client-name">${client.name}</div><span class="client-gstin-badge">${(client.gstins && client.gstins[0]) || 'No GSTIN'}</span>`;
+            const infos = [{ label: 'Email', value: client.email || '—' }, { label: 'PAN', value: client.pan || '—' }, { label: 'CIN', value: client.cin || '—' }, { label: 'TAN', value: client.tan || '—' }, { label: 'IEC', value: client.iec || '—' }];
+            if (client.gstins && client.gstins.length > 1) infos.push({ label: 'GSTINs', value: client.gstins.length + ' registered', isText: true });
+            document.getElementById('panel-info-grid').innerHTML = infos.map(i => `<div class="panel-info-item"><span class="panel-info-label">${i.label}</span><span class="panel-info-value${i.isText ? ' text' : ''}">${i.value}</span></div>`).join('');
+            let svcHtml = '';
+            if (client.services && client.services.length > 0) { svcHtml = client.services.map((s, i) => { const n = typeof s === 'object' ? s.name : s; return `<span class="panel-svc ${getSvcColor(i)}">${n}</span>` }).join('') }
+            else { svcHtml = '<span style="color:#9ca3af;font-size:0.82rem">No active services.</span>' }
+            document.getElementById('panel-services').innerHTML = svcHtml;
+            document.getElementById('panel-actions').innerHTML = `
+                <a href="services-dashboard.html?clientId=${client.id}" class="panel-action-btn primary" onclick="localStorage.setItem('selectedClient',JSON.stringify(${JSON.stringify(client).replace(/"/g, '&quot;')}))"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Open Workspace</a>
+                <button class="panel-action-btn" onclick="navigator.clipboard.writeText('${(client.gstins && client.gstins[0]) || client.pan || ''}');this.textContent='Copied!'"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy GSTIN/PAN</button>`;
+            document.getElementById('detail-panel').classList.add('open');
         }
+        function closePanel() { document.getElementById('detail-panel').classList.remove('open'); selectedClientId = null; document.querySelectorAll('.client-card.selected').forEach(c => c.classList.remove('selected')) }
 
-        // Close dropdown when clicking outside
-        document.addEventListener('click', () => {
-            const dd = document.getElementById('profile-dropdown');
-            if (dd) dd.classList.remove('active');
-        });
+        // ====== VIEW / SEARCH / FILTER ======
+        function setView(m) { const g = document.getElementById('clients-grid'); document.getElementById('grid-btn').classList.toggle('active', m === 'grid'); document.getElementById('list-btn').classList.toggle('active', m === 'list'); g.classList.toggle('list-view', m === 'list') }
+        document.getElementById('client-search').addEventListener('input', e => { const t = e.target.value.toLowerCase(); document.querySelectorAll('.client-card').forEach(c => { const n = c.dataset.clientName || ''; const g = c.dataset.clientGstin || ''; c.style.display = (n.includes(t) || g.toLowerCase().includes(t)) ? '' : 'none' }) });
+        document.querySelectorAll('.filter-tab').forEach(tab => { tab.addEventListener('click', () => { document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active')); tab.classList.add('active'); const f = tab.dataset.filter; document.querySelectorAll('.client-card').forEach(c => { c.style.display = f === 'all' ? '' : c.dataset.services === f ? '' : 'none' }) }) });
+
+        // ====== DRAWER ======
+        function openDrawer() { document.getElementById('add-drawer').classList.add('open'); document.getElementById('drawer-overlay').classList.add('open'); document.body.style.overflow = 'hidden' }
+        function closeDrawer() { document.getElementById('add-drawer').classList.remove('open'); document.getElementById('drawer-overlay').classList.remove('open'); document.body.style.overflow = '' }
 
         async function handleAddClient(event) {
-            event.preventDefault();
-            const submitBtn = event.target.querySelector('button[type="submit"]');
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Creating...';
-
-            const name = document.getElementById('client-name').value;
-            const gstinsStr = document.getElementById('client-gstins').value;
-            const gstins = gstinsStr ? gstinsStr.split(',').map(g => g.trim()).filter(g => g) : [];
-            const pan = document.getElementById('client-pan').value;
-            const cin = document.getElementById('client-cin').value;
-            const tan = document.getElementById('client-tan').value;
-            const iec = document.getElementById('client-iec').value;
-
+            event.preventDefault(); const btn = document.getElementById('submit-btn'); btn.disabled = true; btn.textContent = 'Creating…';
+            const name = document.getElementById('client-name').value; const email = document.getElementById('client-email').value;
+            const gstinsStr = document.getElementById('client-gstins').value; const gstins = gstinsStr ? gstinsStr.split(',').map(g => g.trim()).filter(g => g) : [];
+            const pan = document.getElementById('client-pan').value; const cin = document.getElementById('client-cin').value;
+            const tan = document.getElementById('client-tan').value; const iec = document.getElementById('client-iec').value;
             try {
-                console.log('Adding client:', { name, gstins, pan, cin, tan, iec });
-                const response = await authFetch('/clients/', {
-                    method: 'POST',
-                    body: JSON.stringify({ name, gstins, pan, cin, tan, iec })
-                });
+                const r = await authFetch('/clients/', { method: 'POST', body: JSON.stringify({ name, email, gstins, pan, cin, tan, iec }) });
+                if (r.ok) { closeDrawer(); document.getElementById('add-client-form').reset(); await loadClients() }
+                else { const e = await r.json(); alert('Error: ' + (typeof e.detail === 'string' ? e.detail : JSON.stringify(e.detail))) }
+            } catch (e) { alert('Connection error. Please try again.') }
+            finally { btn.disabled = false; btn.textContent = 'Create Client Profile' }
+        }
 
-                if (response.ok) {
-                    console.log('Client added successfully');
-                    hideModal();
-                    await loadClients();
-                } else {
-                    const error = await response.json();
-                    console.error('Server error details:', error);
-                    let errorMessage = 'Failed to add client';
-                    if (error.detail) {
-                        errorMessage = typeof error.detail === 'string' ? error.detail : JSON.stringify(error.detail);
-                    }
-                    alert('Error: ' + errorMessage);
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') { closePanel(); closeDrawer(); closeClientListPanel() } });
+
+        // ====== CLIENT LIST PANEL ======
+        let clSortCol = 'name', clSortAsc = true;
+
+        function toggleClientListPanel() {
+            const p = document.getElementById('cl-panel');
+            if (p.classList.contains('open')) { closeClientListPanel() } else { openClientListPanel() }
+        }
+        function openClientListPanel() {
+            document.getElementById('cl-panel').classList.add('open');
+            document.getElementById('cl-overlay').classList.add('open');
+            renderClientTable(allClients);
+        }
+        function closeClientListPanel() {
+            document.getElementById('cl-panel').classList.remove('open');
+            document.getElementById('cl-overlay').classList.remove('open');
+            document.getElementById('cl-panel-search').value = '';
+        }
+
+        function renderClientTable(clients) {
+            const tbody = document.getElementById('cl-table-body');
+            document.getElementById('cl-panel-count').textContent = clients.length;
+            if (!clients.length) { tbody.innerHTML = '<tr><td colspan="7" class="cl-empty">No clients found</td></tr>'; return }
+
+            const sorted = [...clients].sort((a, b) => {
+                let va, vb;
+                switch (clSortCol) {
+                    case 'name': va = a.name.toLowerCase(); vb = b.name.toLowerCase(); break;
+                    case 'gstin': va = (a.gstins && a.gstins[0]) || ''; vb = (b.gstins && b.gstins[0]) || ''; break;
+                    case 'pan': va = a.pan || ''; vb = b.pan || ''; break;
+                    case 'email': va = a.email || ''; vb = b.email || ''; break;
+                    case 'services': va = (a.services && a.services.length) || 0; vb = (b.services && b.services.length) || 0; break;
+                    default: va = 0; vb = 0;
                 }
-            } catch (error) {
-                console.error('Fetch error:', error);
-                alert('Connection Error: The backend server is currently updating or offline. Please wait 2-3 minutes and try again.');
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Create Client';
-            }
+                if (typeof va === 'number') return clSortAsc ? va - vb : vb - va;
+                return clSortAsc ? va.localeCompare(vb) : vb.localeCompare(va);
+            });
+
+            tbody.innerHTML = sorted.map((c, i) => {
+                const init = c.name.charAt(0).toUpperCase();
+                const col = getAvatarColor(c.name);
+                const gstin = (c.gstins && c.gstins[0]) || '—';
+                const svcCount = (c.services && c.services.length) || 0;
+                return `<tr>
+                    <td style="color:#9ca3af;font-size:0.75rem;font-weight:600">${i + 1}</td>
+                    <td><div class="cl-row-name-cell"><div class="cl-row-avatar ${col}">${init}</div><div><div class="cl-row-name">${c.name}</div><div class="cl-row-email">${c.email || '—'}</div></div></div></td>
+                    <td><span class="cl-row-mono">${gstin}</span></td>
+                    <td><span class="cl-row-mono">${c.pan || '—'}</span></td>
+                    <td style="font-size:0.78rem;color:#6b7280">${c.email || '—'}</td>
+                    <td><span class="cl-row-svc-count">${svcCount}</span></td>
+                    <td><div class="cl-row-action"><a href="services-dashboard.html?clientId=${c.id}" class="cl-row-btn primary">Open</a><button class="cl-row-btn" onclick="event.stopPropagation();closeClientListPanel();openPanel(allClients.find(x=>x.id==='${c.id}'))">Details</button></div></td>
+                </tr>`;
+            }).join('');
+        }
+
+        // Sort on header click
+        document.querySelectorAll('.cl-table th[data-sort]').forEach(th => {
+            th.addEventListener('click', () => {
+                const col = th.dataset.sort;
+                if (clSortCol === col) { clSortAsc = !clSortAsc } else { clSortCol = col; clSortAsc = true }
+                document.querySelectorAll('.cl-table th').forEach(h => { h.classList.remove('sorted'); const ic = h.querySelector('.sort-icon'); if (ic) ic.textContent = '▲' });
+                th.classList.add('sorted');
+                const ic = th.querySelector('.sort-icon'); if (ic) ic.textContent = clSortAsc ? '▲' : '▼';
+                renderClientTable(getFilteredCLClients());
+            });
+        });
+
+        // Search in panel
+        document.getElementById('cl-panel-search').addEventListener('input', e => {
+            renderClientTable(getFilteredCLClients());
+        });
+
+        function getFilteredCLClients() {
+            const t = (document.getElementById('cl-panel-search').value || '').toLowerCase();
+            if (!t) return allClients;
+            return allClients.filter(c => {
+                const name = c.name.toLowerCase();
+                const gstin = ((c.gstins && c.gstins[0]) || '').toLowerCase();
+                const pan = (c.pan || '').toLowerCase();
+                const email = (c.email || '').toLowerCase();
+                return name.includes(t) || gstin.includes(t) || pan.includes(t) || email.includes(t);
+            });
         }
 
         loadClients();
     </script>
-
-    <!-- Footer -->
-    <footer
-        style="background: var(--gray-100); padding: 1.5rem 2rem; text-align: center; border-top: 1px solid var(--gray-200); margin-top: 4rem;">
-        <p style="color: var(--gray-600); font-size: 0.875rem; margin: 0;">
-            If you need more assistance, write an email to us at
-            <a href="mailto:complianceAIExpert@gmail.com"
-                style="color: var(--primary-orange); font-weight: 600; text-decoration: none;">complianceAIExpert@gmail.com</a>
-        </p>
-    </footer>
-
     <script src="session-manager.js?v=2"></script>
-    <script>
-        // Require authentication for this page
-        if (!requireAuth()) {
-            // Will redirect to login if not authenticated
-        }
-    </script>
+    <script>if (!requireAuth()) { }</script>
 </body>
 
 </html>

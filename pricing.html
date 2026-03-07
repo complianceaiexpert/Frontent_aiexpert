@@ -4,307 +4,997 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pricing - Compliance AI Expert</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Pricing — ComplianceAI Expert | AI Compliance Software Pricing for CAs, Lawyers & Tax Professionals India
+    </title>
+    <meta name="description"
+        content="Simple, transparent pricing for ComplianceAI Expert — India's #1 AI compliance platform for Chartered Accountants, lawyers, and tax professionals. Free plan available. GST automation, income tax, audit, CA certificates & more.">
+    <meta name="keywords"
+        content="ComplianceAI pricing, AI compliance software price India, CA software pricing, GST automation cost, AI tool for Chartered Accountants price, free CA software India, AI tax software pricing, compliance platform plans, best AI tool for CA firms, affordable compliance software India, AI for lawyers pricing">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="ComplianceAI Expert">
+    <link rel="canonical" href="https://complianceaiexpert.com/pricing.html">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Pricing — ComplianceAI Expert | AI for CAs & Tax Professionals">
+    <meta property="og:description"
+        content="Free plan available. AI-powered compliance automation for Chartered Accountants, lawyers, and tax professionals in India. Plans starting at ₹0/month.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://complianceaiexpert.com/pricing.html">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="ComplianceAI Expert Pricing — Free Plan Available">
+    <meta name="twitter:description"
+        content="AI compliance software for CAs & lawyers in India. Free forever plan with GST tools, AI assistant, and document reader.">
+
+    <!-- Structured Data — Product with Offers -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "ComplianceAI Expert",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web",
+      "description": "AI-powered compliance automation platform for Chartered Accountants, lawyers, and tax professionals in India.",
+      "offers": [
+        {
+          "@type": "Offer",
+          "name": "Free Plan",
+          "price": "0",
+          "priceCurrency": "INR",
+          "description": "Free forever — 5 clients, basic GST tools, AI assistant, document reader"
+        },
+        {
+          "@type": "Offer",
+          "name": "Starter Plan",
+          "price": "999",
+          "priceCurrency": "INR",
+          "billingIncrement": "month",
+          "description": "Up to 25 clients, all GST reconciliation tools, Tally integration, 10GB storage"
+        },
+        {
+          "@type": "Offer",
+          "name": "Professional Plan",
+          "price": "2499",
+          "priceCurrency": "INR",
+          "billingIncrement": "month",
+          "description": "Up to 100 clients, AI Expert View, AI agents, team collaboration, unlimited tools, 50GB storage"
+        },
+        {
+          "@type": "Offer",
+          "name": "Enterprise Plan",
+          "price": "0",
+          "priceCurrency": "INR",
+          "description": "Custom pricing — unlimited clients, custom AI agents, white-label options, dedicated support"
+        }
+      ],
+      "audience": {
+        "@type": "Audience",
+        "audienceType": "Chartered Accountants, Tax Professionals, Lawyers, CA Firms, Accounting Firms"
+      }
+    }
+    </script>
+
+    <!-- FAQ Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {"@type": "Question", "name": "Does ComplianceAI Expert have a free plan?", "acceptedAnswer": {"@type": "Answer", "text": "Yes! Our Free plan is free forever and includes up to 5 clients, basic GST tools, AI GPT assistant, document reader, and 2GB cloud storage. No credit card required."}},
+        {"@type": "Question", "name": "Can I upgrade or downgrade my plan anytime?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, you can upgrade or downgrade anytime. Changes take effect immediately. If you downgrade, you'll retain access until the end of your billing cycle."}},
+        {"@type": "Question", "name": "Is there a discount for annual billing?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, annual billing saves you 20% compared to monthly billing on all paid plans."}},
+        {"@type": "Question", "name": "What payment methods do you accept?", "acceptedAnswer": {"@type": "Answer", "text": "We accept UPI, credit/debit cards, net banking, and bank transfers. All payments are processed securely through Razorpay."}},
+        {"@type": "Question", "name": "Do you offer discounts for CA firms?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, we offer volume discounts for firms with 50+ clients and special pricing for ICAI members. Contact our sales team for details."}}
+      ]
+    }
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@700;800&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap"
         rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
     <style>
-        .pricing-hero {
-            padding: 8rem 2rem 4rem;
-            background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%);
-            text-align: center;
+        * {
+            box-sizing: border-box
         }
 
-        .pricing-hero h1 {
-            font-size: 3.5rem;
-            margin-bottom: 1rem;
-            color: var(--gray-900);
+        body {
+            background: #fff;
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            color: #1e293b
         }
 
-        .pricing-hero p {
-            font-size: 1.25rem;
-            color: var(--gray-600);
-            max-width: 600px;
+        /* Hero */
+        .hero {
+            padding: 5.5rem 2rem 2rem;
+            text-align: center
+        }
+
+        .hero-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: .4rem;
+            padding: .3rem .9rem;
+            background: #eff6ff;
+            border: 1px solid #dbeafe;
+            border-radius: 999px;
+            font-size: .72rem;
+            font-weight: 600;
+            color: #1e3a8a;
+            margin-bottom: .85rem
+        }
+
+        .hero h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.4rem;
+            font-weight: 800;
+            margin: 0 0 .5rem;
+            letter-spacing: -.02em;
+            color: #111827
+        }
+
+        .hero h1 span {
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text
+        }
+
+        .hero p {
+            font-size: .95rem;
+            color: #6b7280;
+            max-width: 560px;
             margin: 0 auto;
+            line-height: 1.6
         }
 
+        /* Billing Toggle */
+        .toggle-wrap {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: .65rem;
+            margin: 1.5rem 0 .5rem
+        }
+
+        .toggle-label {
+            font-size: .82rem;
+            font-weight: 600;
+            color: #9ca3af;
+            transition: color .2s
+        }
+
+        .toggle-label.active {
+            color: #1e3a8a
+        }
+
+        .toggle-track {
+            width: 44px;
+            height: 24px;
+            background: #d1d5db;
+            border-radius: 999px;
+            cursor: pointer;
+            position: relative;
+            transition: background .2s
+        }
+
+        .toggle-track.annual {
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6)
+        }
+
+        .toggle-knob {
+            width: 20px;
+            height: 20px;
+            background: #fff;
+            border-radius: 50%;
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            transition: transform .2s;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, .15)
+        }
+
+        .toggle-track.annual .toggle-knob {
+            transform: translateX(20px)
+        }
+
+        .save-badge {
+            font-size: .62rem;
+            font-weight: 700;
+            color: #059669;
+            background: #ecfdf5;
+            padding: .15rem .5rem;
+            border-radius: 4px
+        }
+
+        /* Pricing Grid */
         .pricing-section {
-            padding: 4rem 2rem;
-            background: white;
+            padding: 1.5rem 2rem 2.5rem;
+            max-width: 1200px;
+            margin: 0 auto
         }
 
         .pricing-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.15rem;
+            align-items: start
         }
 
-        .pricing-card {
-            background: white;
-            border: 2px solid var(--gray-200);
-            border-radius: var(--radius-2xl);
-            padding: 2.5rem;
+        /* Card */
+        .p-card {
+            background: #fff;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 14px;
+            padding: 1.5rem;
             position: relative;
-            transition: all var(--transition-base);
+            transition: all .25s
         }
 
-        .pricing-card:hover {
-            transform: translateY(-8px);
-            box-shadow: var(--shadow-2xl);
-            border-color: var(--primary-blue);
+        .p-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 28px rgba(0, 0, 0, .06)
         }
 
-        .pricing-card.popular {
-            border-color: var(--primary-blue);
-            box-shadow: var(--shadow-xl);
+        .p-card.featured {
+            border-color: #1e3a8a;
+            box-shadow: 0 4px 20px rgba(30, 58, 138, .1)
         }
 
-        .popular-badge {
+        .p-badge {
             position: absolute;
-            top: -12px;
+            top: -11px;
             left: 50%;
             transform: translateX(-50%);
-            background: var(--primary-blue);
-            color: white;
-            padding: 0.5rem 1.5rem;
-            border-radius: var(--radius-full);
-            font-size: 0.875rem;
-            font-weight: 600;
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: #fff;
+            padding: .2rem .85rem;
+            border-radius: 999px;
+            font-size: .62rem;
+            font-weight: 700;
+            letter-spacing: .03em;
+            white-space: nowrap
         }
 
-        .pricing-card h3 {
-            font-size: 1.75rem;
-            margin-bottom: 0.5rem;
-            color: var(--gray-900);
+        .p-free-badge {
+            position: absolute;
+            top: -11px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #059669, #10b981);
+            color: #fff;
+            padding: .2rem .85rem;
+            border-radius: 999px;
+            font-size: .62rem;
+            font-weight: 700;
+            letter-spacing: .03em
         }
 
-        .pricing-card .description {
-            color: var(--gray-600);
-            margin-bottom: 2rem;
-            font-size: 1rem;
+        .p-name {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #111827;
+            margin: 0 0 .15rem
         }
 
-        .price {
+        .p-desc {
+            font-size: .73rem;
+            color: #6b7280;
+            margin: 0 0 1rem;
+            line-height: 1.4
+        }
+
+        /* Price */
+        .p-price {
             display: flex;
             align-items: baseline;
-            gap: 0.5rem;
-            margin-bottom: 2rem;
+            gap: .15rem;
+            margin-bottom: .75rem
         }
 
-        .price .currency {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: var(--gray-700);
-        }
-
-        .price .amount {
-            font-size: 3.5rem;
-            font-weight: 800;
-            color: var(--primary-blue);
-        }
-
-        .price .period {
+        .p-currency {
             font-size: 1rem;
-            color: var(--gray-600);
+            font-weight: 600;
+            color: #475569
         }
 
-        .price.custom {
+        .p-amount {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #1e3a8a;
+            font-family: 'Outfit', sans-serif;
+            letter-spacing: -.02em
+        }
+
+        .p-period {
+            font-size: .78rem;
+            color: #9ca3af;
+            font-weight: 500
+        }
+
+        .p-free-text {
             font-size: 2rem;
+            font-weight: 800;
+            color: #059669;
+            font-family: 'Outfit', sans-serif;
+            margin-bottom: .75rem
+        }
+
+        .p-custom {
+            font-size: 1.35rem;
             font-weight: 700;
-            color: var(--primary-blue);
+            color: #1e3a8a;
+            font-family: 'Outfit', sans-serif;
+            margin-bottom: .75rem
         }
 
-        .features-list {
+        .p-old {
+            font-size: .78rem;
+            color: #9ca3af;
+            text-decoration: line-through;
+            margin-left: .4rem
+        }
+
+        /* Features */
+        .p-features {
             list-style: none;
-            margin-bottom: 2rem;
+            padding: 0;
+            margin: 0 0 1.25rem
         }
 
-        .features-list li {
-            padding: 0.75rem 0;
+        .p-features li {
+            padding: .35rem 0;
             display: flex;
-            align-items: flex-start;
-            gap: 0.75rem;
-            color: var(--gray-700);
-            border-bottom: 1px solid var(--gray-100);
+            align-items: center;
+            gap: .5rem;
+            font-size: .75rem;
+            color: #374151;
+            border-bottom: 1px solid #f8fafc
         }
 
-        .features-list li:last-child {
-            border-bottom: none;
+        .p-features li:last-child {
+            border: none
         }
 
-        .features-list li::before {
-            content: '✓';
-            color: var(--accent-green);
-            font-weight: bold;
-            font-size: 1.25rem;
-            flex-shrink: 0;
+        .p-features .ck {
+            color: #059669;
+            font-weight: 700;
+            font-size: .85rem;
+            flex-shrink: 0
         }
 
-        @media (max-width: 768px) {
-            .pricing-hero h1 {
-                font-size: 2.5rem;
+        .p-features .x {
+            color: #d1d5db;
+            font-weight: 700;
+            font-size: .85rem;
+            flex-shrink: 0
+        }
+
+        .p-features .cat {
+            font-weight: 700;
+            color: #111827;
+            font-size: .68rem;
+            text-transform: uppercase;
+            letter-spacing: .04em;
+            padding-top: .65rem;
+            border: none
+        }
+
+        /* Buttons */
+        .p-btn {
+            display: block;
+            width: 100%;
+            padding: .6rem;
+            border-radius: 9px;
+            text-align: center;
+            font-weight: 700;
+            font-size: .82rem;
+            text-decoration: none;
+            transition: all .2s;
+            border: none;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif
+        }
+
+        .p-btn-primary {
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: #fff;
+            box-shadow: 0 2px 8px rgba(30, 58, 138, .15)
+        }
+
+        .p-btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 14px rgba(30, 58, 138, .25)
+        }
+
+        .p-btn-green {
+            background: linear-gradient(135deg, #059669, #10b981);
+            color: #fff
+        }
+
+        .p-btn-green:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 14px rgba(5, 150, 105, .25)
+        }
+
+        .p-btn-outline {
+            background: #fff;
+            color: #1e3a8a;
+            border: 1.5px solid #e5e7eb
+        }
+
+        .p-btn-outline:hover {
+            border-color: #1e3a8a;
+            background: #f8fafc
+        }
+
+        /* All Plans */
+        .all-plans {
+            max-width: 900px;
+            margin: 1.5rem auto 0;
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center
+        }
+
+        .all-plans h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #111827;
+            margin: 0 0 .85rem
+        }
+
+        .all-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: .5rem;
+            text-align: left
+        }
+
+        .all-item {
+            display: flex;
+            align-items: center;
+            gap: .4rem;
+            font-size: .78rem;
+            color: #475569
+        }
+
+        .all-item .ck {
+            color: #059669;
+            font-weight: 700
+        }
+
+        /* FAQ */
+        .faq-section {
+            padding: 2.5rem 2rem;
+            max-width: 800px;
+            margin: 0 auto
+        }
+
+        .faq-head {
+            text-align: center;
+            margin-bottom: 1.5rem
+        }
+
+        .faq-head h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #111827;
+            margin: 0 0 .25rem
+        }
+
+        .faq-head p {
+            font-size: .82rem;
+            color: #6b7280;
+            margin: 0
+        }
+
+        .faq-list {
+            display: flex;
+            flex-direction: column;
+            gap: .65rem
+        }
+
+        .faq {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            overflow: hidden;
+            transition: all .15s
+        }
+
+        .faq:hover {
+            border-color: #dbeafe
+        }
+
+        .faq-q {
+            padding: .85rem 1rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: .82rem;
+            font-weight: 600;
+            color: #1e293b
+        }
+
+        .faq-q svg {
+            width: 16px;
+            height: 16px;
+            color: #9ca3af;
+            transition: transform .2s;
+            flex-shrink: 0
+        }
+
+        .faq.open .faq-q svg {
+            transform: rotate(180deg)
+        }
+
+        .faq-a {
+            padding: 0 1rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: all .25s
+        }
+
+        .faq.open .faq-a {
+            max-height: 200px;
+            padding: 0 1rem .85rem
+        }
+
+        .faq-a p {
+            font-size: .78rem;
+            color: #6b7280;
+            line-height: 1.6;
+            margin: 0
+        }
+
+        /* CTA */
+        .cta-section {
+            padding: 2.5rem 2rem;
+            text-align: center;
+            background: linear-gradient(135deg, #1e3a8a, #1e40af);
+            color: #fff
+        }
+
+        .cta-section h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 800;
+            margin: 0 0 .4rem
+        }
+
+        .cta-section p {
+            font-size: .88rem;
+            opacity: .85;
+            margin: 0 0 1.25rem
+        }
+
+        .cta-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: .5rem;
+            padding: .65rem 1.5rem;
+            background: #fff;
+            color: #1e3a8a;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: .85rem;
+            text-decoration: none;
+            transition: all .2s;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, .15)
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, .2)
+        }
+
+        /* Footer */
+        .site-footer {
+            background: #0f172a;
+            color: #fff;
+            padding: 2.5rem 2rem 1.5rem
+        }
+
+        .footer-inner {
+            max-width: 1100px;
+            margin: 0 auto
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 1.5rem
+        }
+
+        .footer-brand a {
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: .5rem
+        }
+
+        .footer-brand .f-logo {
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center
+        }
+
+        .footer-brand .f-logo svg {
+            width: 14px;
+            height: 14px
+        }
+
+        .footer-brand .f-name {
+            font-weight: 700;
+            font-size: .9rem;
+            color: #fff
+        }
+
+        .footer-brand p {
+            color: #94a3b8;
+            font-size: .75rem;
+            line-height: 1.6;
+            margin: .6rem 0 0
+        }
+
+        .footer-col h4 {
+            font-size: .68rem;
+            font-weight: 700;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            margin: 0 0 .6rem
+        }
+
+        .footer-col a {
+            display: block;
+            color: #cbd5e1;
+            font-size: .75rem;
+            margin-bottom: .4rem;
+            text-decoration: none;
+            transition: color .15s
+        }
+
+        .footer-col a:hover {
+            color: #3b82f6
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, .06);
+            padding-top: 1rem;
+            text-align: center;
+            color: #64748b;
+            font-size: .7rem
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity .5s, transform .5s
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0)
+        }
+
+        @media(max-width:1024px) {
+            .pricing-grid {
+                grid-template-columns: 1fr 1fr
+            }
+        }
+
+        @media(max-width:768px) {
+            .pricing-grid {
+                grid-template-columns: 1fr
             }
 
-            .pricing-grid {
-                grid-template-columns: 1fr;
+            .hero h1 {
+                font-size: 1.85rem
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr 1fr
             }
         }
     </style>
 </head>
 
 <body>
-    <!-- Navigation -->
     <nav class="navbar">
         <div class="navbar-container">
-            <a href="index.html" class="logo">
-                <div class="logo-icon" style="background: #1e3a8a; padding: 4px 8px; border-radius: 4px; color: white;">
-                    CE</div>
-                <span style="font-weight: 700; color: #1e3a8a;">ComplianceAIexpert</span>
+            <a href="index.html" class="logo" style="text-decoration:none">
+                <div class="logo-icon">CE</div>
+                <span style="font-weight:700;font-size:1.15rem;color:var(--primary-blue)">ComplianceAI<span
+                        style="color:var(--primary-orange)">expert</span></span>
             </a>
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="features.html">Features</a></li>
                 <li><a href="how-it-works.html">How It Works</a></li>
-                <li><a href="pricing.html">Pricing</a></li>
+                <li><a href="pricing.html" style="color:var(--primary-blue);font-weight:600">Pricing</a></li>
                 <li><a href="sign-in.html" class="btn btn-primary btn-small">Sign In</a></li>
             </ul>
         </div>
     </nav>
 
-    <!-- Pricing Hero -->
-    <section class="pricing-hero">
-        <h1>Simple, Transparent Pricing</h1>
-        <p>Choose the plan that's right for your practice. All plans include core features.</p>
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-tag">💎 Simple, Transparent Pricing</div>
+        <h1>Plans for Every <span>Practice</span></h1>
+        <p>Start free, scale as you grow. No hidden fees, no lock-in contracts. Built for Indian CAs, lawyers, and tax
+            professionals.</p>
     </section>
 
-    <!-- Pricing Section -->
+    <!-- Toggle -->
+    <div class="toggle-wrap">
+        <span class="toggle-label active" id="lbl-monthly">Monthly</span>
+        <div class="toggle-track" id="billing-toggle" onclick="toggleBilling()">
+            <div class="toggle-knob"></div>
+        </div>
+        <span class="toggle-label" id="lbl-annual">Annual</span>
+        <span class="save-badge">Save 20%</span>
+    </div>
+
+    <!-- Pricing Cards -->
     <section class="pricing-section">
-        <div class="pricing-grid">
-            <!-- Starter Plan -->
-            <div class="pricing-card">
-                <h3>Starter</h3>
-                <p class="description">Perfect for individual practitioners</p>
-                <div class="price">
-                    <span class="currency">₹</span>
-                    <span class="amount">999</span>
-                    <span class="period">/month</span>
-                </div>
-                <ul class="features-list">
-                    <li>Up to 10 clients</li>
-                    <li>Basic GST filing</li>
-                    <li>Document storage (5GB)</li>
-                    <li>Email support</li>
-                    <li>Web View access</li>
-                    <li>Mobile app</li>
+        <div class="pricing-grid reveal">
+            <!-- Free -->
+            <div class="p-card">
+                <div class="p-free-badge">FREE FOREVER</div>
+                <div class="p-name">Free</div>
+                <p class="p-desc">Explore the platform — no credit card required</p>
+                <div class="p-free-text">₹0</div>
+                <ul class="p-features">
+                    <li class="cat">Clients & Storage</li>
+                    <li><span class="ck">✓</span> Up to 5 clients</li>
+                    <li><span class="ck">✓</span> 2GB cloud storage</li>
+                    <li class="cat">Core Features</li>
+                    <li><span class="ck">✓</span> Web View access</li>
+                    <li><span class="ck">✓</span> AI GPT assistant (limited)</li>
+                    <li><span class="ck">✓</span> Document reader (10/mo)</li>
+                    <li><span class="ck">✓</span> 3 GST tools</li>
+                    <li><span class="x">✗</span> AI Expert View</li>
+                    <li><span class="x">✗</span> AI Agents</li>
                 </ul>
-                <a href="sign-up.html" class="btn btn-secondary" style="width: 100%;">Get Started</a>
+                <a href="sign-up.html" class="p-btn p-btn-green">Start Free →</a>
             </div>
 
-            <!-- Professional Plan -->
-            <div class="pricing-card popular">
-                <div class="popular-badge">MOST POPULAR</div>
-                <h3>Professional</h3>
-                <p class="description">For growing practices</p>
-                <div class="price">
-                    <span class="currency">₹</span>
-                    <span class="amount">2,499</span>
-                    <span class="period">/month</span>
+            <!-- Starter -->
+            <div class="p-card">
+                <div class="p-name">Starter</div>
+                <p class="p-desc">For individual practitioners getting started</p>
+                <div class="p-price">
+                    <span class="p-currency">₹</span>
+                    <span class="p-amount" data-monthly="999" data-annual="799">999</span>
+                    <span class="p-period">/month</span>
                 </div>
-                <ul class="features-list">
-                    <li>Up to 50 clients</li>
-                    <li>AI-powered GST automation</li>
-                    <li>Document storage (50GB)</li>
-                    <li>Priority support</li>
-                    <li>Web View + Semi-Chat View</li>
-                    <li>Advanced analytics</li>
-                    <li>Team collaboration</li>
-                    <li>Tally integration</li>
-                    <li>API access</li>
+                <ul class="p-features">
+                    <li class="cat">Clients & Storage</li>
+                    <li><span class="ck">✓</span> Up to 25 clients</li>
+                    <li><span class="ck">✓</span> 10GB cloud storage</li>
+                    <li class="cat">Core Features</li>
+                    <li><span class="ck">✓</span> Web View access</li>
+                    <li><span class="ck">✓</span> AI GPT assistant</li>
+                    <li><span class="ck">✓</span> All 15 GST tools</li>
+                    <li><span class="ck">✓</span> Document reader (50/mo)</li>
+                    <li><span class="ck">✓</span> Tally integration</li>
+                    <li><span class="ck">✓</span> Email support</li>
                 </ul>
-                <a href="sign-up.html" class="btn btn-primary" style="width: 100%;">Get Started</a>
+                <a href="sign-up.html" class="p-btn p-btn-outline">Get Started →</a>
             </div>
 
-            <!-- Enterprise Plan -->
-            <div class="pricing-card">
-                <h3>Enterprise</h3>
-                <p class="description">For large firms and organizations</p>
-                <div class="price custom">Custom Pricing</div>
-                <ul class="features-list">
-                    <li>Unlimited clients</li>
-                    <li>Full AI suite</li>
-                    <li>Unlimited storage</li>
-                    <li>Dedicated support</li>
-                    <li>All views and features</li>
-                    <li>Custom integrations</li>
-                    <li>White-label options</li>
-                    <li>SLA guarantee</li>
-                    <li>Advanced security</li>
-                    <li>Training & onboarding</li>
+            <!-- Professional -->
+            <div class="p-card featured">
+                <div class="p-badge">MOST POPULAR</div>
+                <div class="p-name">Professional</div>
+                <p class="p-desc">For growing practices & small firms</p>
+                <div class="p-price">
+                    <span class="p-currency">₹</span>
+                    <span class="p-amount" data-monthly="2,499" data-annual="1,999">2,499</span>
+                    <span class="p-period">/month</span>
+                </div>
+                <ul class="p-features">
+                    <li class="cat">Clients & Storage</li>
+                    <li><span class="ck">✓</span> Up to 100 clients</li>
+                    <li><span class="ck">✓</span> 50GB cloud storage</li>
+                    <li class="cat">Everything in Starter, plus</li>
+                    <li><span class="ck">✓</span> AI Expert View</li>
+                    <li><span class="ck">✓</span> AI Agents (3 included)</li>
+                    <li><span class="ck">✓</span> Team collaboration (5 users)</li>
+                    <li><span class="ck">✓</span> CA Certificate generator</li>
+                    <li><span class="ck">✓</span> Advanced analytics</li>
+                    <li><span class="ck">✓</span> Priority support</li>
                 </ul>
-                <a href="#" class="btn btn-secondary" style="width: 100%;">Contact Sales</a>
+                <a href="sign-up.html" class="p-btn p-btn-primary">Get Started →</a>
+            </div>
+
+            <!-- Enterprise -->
+            <div class="p-card">
+                <div class="p-name">Enterprise</div>
+                <p class="p-desc">For large firms & organizations</p>
+                <div class="p-custom">Custom Pricing</div>
+                <ul class="p-features">
+                    <li class="cat">Scale</li>
+                    <li><span class="ck">✓</span> Unlimited clients</li>
+                    <li><span class="ck">✓</span> Unlimited storage</li>
+                    <li class="cat">Everything in Professional, plus</li>
+                    <li><span class="ck">✓</span> Unlimited AI Agents</li>
+                    <li><span class="ck">✓</span> Custom AI agent development</li>
+                    <li><span class="ck">✓</span> White-label options</li>
+                    <li><span class="ck">✓</span> Dedicated account manager</li>
+                    <li><span class="ck">✓</span> SLA guarantee</li>
+                    <li><span class="ck">✓</span> On-boarding & training</li>
+                </ul>
+                <a href="contact-us.html" class="p-btn p-btn-outline">Contact Sales →</a>
             </div>
         </div>
 
-        <div
-            style="text-align: center; margin-top: 4rem; padding: 3rem; background: var(--gray-50); border-radius: var(--radius-2xl); max-width: 800px; margin-left: auto; margin-right: auto;">
-            <h3 style="font-size: 1.5rem; margin-bottom: 1rem;">All plans include:</h3>
-            <div
-                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; text-align: left;">
-                <div>✓ Secure cloud storage</div>
-                <div>✓ Regular updates</div>
-                <div>✓ Data encryption</div>
-                <div>✓ Compliance tracking</div>
-                <div>✓ Client portal</div>
-                <div>✓ Mobile access</div>
+        <!-- All Plans Include -->
+        <div class="all-plans reveal">
+            <h3>All plans include</h3>
+            <div class="all-grid">
+                <div class="all-item"><span class="ck">✓</span> AES-256 encryption</div>
+                <div class="all-item"><span class="ck">✓</span> India data residency</div>
+                <div class="all-item"><span class="ck">✓</span> Regular platform updates</div>
+                <div class="all-item"><span class="ck">✓</span> Client document portal</div>
+                <div class="all-item"><span class="ck">✓</span> Mobile responsive access</div>
+                <div class="all-item"><span class="ck">✓</span> Compliance tracking</div>
+                <div class="all-item"><span class="ck">✓</span> GSTIN validation</div>
+                <div class="all-item"><span class="ck">✓</span> HSN code lookup</div>
             </div>
         </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="faq-section">
+        <div class="faq-head">
+            <h2>Frequently Asked Questions</h2>
+            <p>Everything you need to know about our pricing</p>
+        </div>
+        <div class="faq-list">
+            <div class="faq" onclick="toggleFaq(this)">
+                <div class="faq-q">Does ComplianceAI have a free plan?<svg viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2.5">
+                        <path d="m6 9 6 6 6-6" />
+                    </svg></div>
+                <div class="faq-a">
+                    <p>Yes! Our Free plan is free forever and includes up to 5 clients, basic GST tools, AI GPT
+                        assistant, document reader, and 2GB cloud storage. No credit card required to get started.</p>
+                </div>
+            </div>
+            <div class="faq" onclick="toggleFaq(this)">
+                <div class="faq-q">Can I upgrade or downgrade anytime?<svg viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2.5">
+                        <path d="m6 9 6 6 6-6" />
+                    </svg></div>
+                <div class="faq-a">
+                    <p>Absolutely. You can upgrade or downgrade at any time. Upgrades take effect immediately with
+                        prorated billing. Downgrades take effect at the end of your current billing cycle.</p>
+                </div>
+            </div>
+            <div class="faq" onclick="toggleFaq(this)">
+                <div class="faq-q">What payment methods do you accept?<svg viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2.5">
+                        <path d="m6 9 6 6 6-6" />
+                    </svg></div>
+                <div class="faq-a">
+                    <p>We accept UPI, credit/debit cards (Visa, Mastercard, RuPay), net banking, and bank transfers. All
+                        payments are securely processed through Razorpay with full encryption.</p>
+                </div>
+            </div>
+            <div class="faq" onclick="toggleFaq(this)">
+                <div class="faq-q">Is there a discount for annual billing?<svg viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2.5">
+                        <path d="m6 9 6 6 6-6" />
+                    </svg></div>
+                <div class="faq-a">
+                    <p>Yes! Annual billing saves you 20% on all paid plans. Toggle the billing switch above to see
+                        annual pricing.</p>
+                </div>
+            </div>
+            <div class="faq" onclick="toggleFaq(this)">
+                <div class="faq-q">Do you offer special pricing for ICAI members or CA firms?<svg viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path d="m6 9 6 6 6-6" />
+                    </svg></div>
+                <div class="faq-a">
+                    <p>Yes, we offer volume discounts for firms with 50+ clients and special pricing for ICAI members.
+                        Contact our sales team for a personalized quote.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section reveal">
+        <h2>Start Free Today — No Credit Card Required</h2>
+        <p>Join thousands of CAs, lawyers, and tax professionals already using ComplianceAI Expert.</p>
+        <a href="sign-up.html" class="cta-btn">Create Free Account →</a>
     </section>
 
     <!-- Footer -->
-    <footer style="background: var(--gray-900); color: white; padding: 4rem 2rem 2rem; margin-top: 4rem;">
-        <div class="container">
-            <div
-                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 3rem; margin-bottom: 3rem;">
-                <div>
-                    <div class="logo" style="color: white; margin-bottom: 1rem;">
-                        <div class="logo-icon">CE</div>
-                        <span style="font-weight: 700;">ComplianceAIexpert</span>
-                    </div>
-                    <p style="color: var(--gray-400); line-height: 1.7;">Intelligent compliance decisions, powered by
-                        AI.</p>
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="index.html">
+                        <div class="f-logo"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5">
+                                <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                                <path d="M2 17l10 5 10-5" />
+                                <path d="M2 12l10 5 10-5" />
+                            </svg></div>
+                        <span class="f-name">ComplianceAI Expert</span>
+                    </a>
+                    <p>India's most advanced AI-powered compliance platform for Chartered Accountants, lawyers, and tax
+                        professionals.</p>
                 </div>
-                <div>
-                    <h4 style="margin-bottom: 1rem; color: white;">Product</h4>
-                    <ul style="list-style: none;">
-                        <li style="margin-bottom: 0.75rem;"><a href="features.html"
-                                style="color: var(--gray-400);">Features</a></li>
-                        <li style="margin-bottom: 0.75rem;"><a href="pricing.html"
-                                style="color: var(--gray-400);">Pricing</a></li>
-                        <li style="margin-bottom: 0.75rem;"><a href="how-it-works.html"
-                                style="color: var(--gray-400);">How It Works</a></li>
-                    </ul>
+                <div class="footer-col">
+                    <h4>Product</h4>
+                    <a href="features.html">Features</a>
+                    <a href="pricing.html">Pricing</a>
+                    <a href="how-it-works.html">How It Works</a>
+                    <a href="ai-gpt.html">AI Assistant</a>
                 </div>
-                <div>
-                    <h4 style="margin-bottom: 1rem; color: white;">Company</h4>
-                    <ul style="list-style: none;">
-                        <li style="margin-bottom: 0.75rem;"><a href="#" style="color: var(--gray-400);">About Us</a>
-                        </li>
-                        <li style="margin-bottom: 0.75rem;"><a href="#" style="color: var(--gray-400);">Contact</a></li>
-                        <li style="margin-bottom: 0.75rem;"><a href="#" style="color: var(--gray-400);">Support</a></li>
-                    </ul>
+                <div class="footer-col">
+                    <h4>Company</h4>
+                    <a href="about-us.html">About Us</a>
+                    <a href="contact-us.html">Contact</a>
+                    <a href="contact-us.html">Custom AI Agent</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Legal</h4>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Security</a>
                 </div>
             </div>
-            <div
-                style="padding-top: 2rem; border-top: 1px solid var(--gray-800); text-align: center; color: var(--gray-400);">
-                <p>&copy; 2025 Compliance AI Expert. All rights reserved.</p>
+            <div class="footer-bottom">
+                <p>&copy; 2025 ComplianceAI Expert. All rights reserved. Made with ❤️ in India.</p>
             </div>
         </div>
     </footer>
+
+    <script>
+        // Reveal on scroll
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // Billing toggle
+        let isAnnual = false;
+        function toggleBilling() {
+            isAnnual = !isAnnual;
+            document.getElementById('billing-toggle').classList.toggle('annual', isAnnual);
+            document.getElementById('lbl-monthly').classList.toggle('active', !isAnnual);
+            document.getElementById('lbl-annual').classList.toggle('active', isAnnual);
+            document.querySelectorAll('.p-amount').forEach(el => {
+                el.textContent = isAnnual ? el.dataset.annual : el.dataset.monthly;
+            });
+        }
+
+        // FAQ toggle
+        function toggleFaq(el) {
+            el.classList.toggle('open');
+        }
+    </script>
 </body>
 
 </html>

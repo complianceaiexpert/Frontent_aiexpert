@@ -4,379 +4,133 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Annexure B - Compliance AI Expert</title>
+    <title>Annexure B — ComplianceAI Expert</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@700;800&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap"
         rel="stylesheet">
+    <link rel="stylesheet" href="tool-layout.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #f8fafc;
-            min-height: 100vh;
-        }
-
-        .tool-topbar {
-            background: #fff;
-            border-bottom: 1px solid #e5e7eb;
-            padding: 0.875rem 2rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .tool-topbar .back-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: #1E3A8A;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.9rem;
-            padding: 0.4rem 0.75rem;
-            border-radius: 6px;
-            transition: background 0.2s;
-            cursor: pointer;
-        }
-
-        .tool-topbar .back-btn:hover {
-            background: #eff6ff;
-        }
-
-        .tool-topbar h1 {
-            font-size: 1.15rem;
-            font-weight: 700;
-            color: #111827;
-        }
-
-        .tool-topbar .badge {
-            background: #fef3c7;
-            color: #92400e;
-            font-size: 0.7rem;
-            font-weight: 700;
-            padding: 0.2rem 0.5rem;
-            border-radius: 4px;
-        }
-
-        .tool-container {
-            max-width: 900px;
-            margin: 2.5rem auto;
-            padding: 0 2rem;
-        }
-
-        .tool-hero {
-            background: linear-gradient(135deg, #1E3A8A 0%, #1E40AF 100%);
-            border-radius: 16px;
-            padding: 2.5rem;
-            color: #fff;
-            margin-bottom: 2rem;
-            box-shadow: 0 4px 12px rgba(30, 58, 138, 0.15);
-        }
-
-        .tool-hero h2 {
-            font-size: 1.75rem;
-            font-weight: 800;
-            margin-bottom: 0.5rem;
-        }
-
-        .tool-hero p {
-            opacity: 0.85;
-            font-size: 0.95rem;
-            line-height: 1.6;
-        }
-
-        .tool-form-card {
-            background: #fff;
-            border: 1px solid #e5e7eb;
-            border-radius: 12px;
-            padding: 2rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .tool-form-card h3 {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #111827;
-            margin-bottom: 0.5rem;
-        }
-
-        .tool-form-card p {
-            font-size: 0.85rem;
-            color: #6b7280;
-            margin-bottom: 1.5rem;
-        }
-
-        .upload-zone {
-            border: 2px dashed #d1d5db;
-            border-radius: 10px;
-            padding: 2rem;
-            text-align: center;
-            cursor: pointer;
-            transition: border-color 0.2s, background 0.2s;
-        }
-
-        .upload-zone:hover {
-            border-color: #4f46e5;
-            background: #eef2ff;
-        }
-
-        .upload-zone .icon {
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .upload-zone .text {
-            color: #6b7280;
-            font-size: 0.85rem;
-        }
-
-        .upload-zone .text strong {
-            color: #4f46e5;
-        }
-
-        .btn-primary {
-            background: #EB6711;
-            color: #fff;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: background 0.2s, transform 0.1s;
-        }
-
-        .btn-primary:hover {
-            background: #d45a0f;
-            transform: translateY(-1px);
-        }
-
-        .btn-primary:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-
         .info-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-            margin-top: 1rem;
+            gap: .75rem;
+            margin-top: .75rem
         }
 
         .info-item {
-            background: #f9fafb;
-            border: 1px solid #f3f4f6;
+            background: #f8fafc;
+            border: 1px solid #f1f5f9;
             border-radius: 10px;
-            padding: 1.25rem;
+            padding: 1rem
         }
 
         .info-item h4 {
-            font-size: 0.85rem;
+            font-size: .82rem;
             font-weight: 700;
             color: #111827;
-            margin-bottom: 0.25rem;
+            margin-bottom: .2rem
         }
 
         .info-item p {
-            font-size: 0.78rem;
+            font-size: .74rem;
             color: #6b7280;
             margin: 0;
-        }
-
-        .loading-spinner {
-            display: inline-block;
-            width: 1rem;
-            height: 1rem;
-            border: 2px solid #fff;
-            border-radius: 50%;
-            border-top-color: transparent;
-            animation: spin 0.6s linear infinite;
-            margin-right: 0.5rem;
-            vertical-align: middle;
-        }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        /* Recent Jobs Styles */
-        .recent-jobs-card {
-            background: #fff;
-            border: 1px solid #e5e7eb;
-            border-radius: 12px;
-            padding: 2rem;
-            margin-top: 1.5rem;
-        }
-
-        .jobs-list {
-            margin-top: 1rem;
-        }
-
-        .job-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 1rem;
-            border: 1px solid #f3f4f6;
-            border-radius: 8px;
-            margin-bottom: 0.75rem;
-            background: #fafafa;
-        }
-
-        .job-info {
-            display: flex;
-            flex-direction: column;
-            gap: 0.25rem;
-        }
-
-        .job-name {
-            font-weight: 600;
-            font-size: 0.9rem;
-            color: #111827;
-        }
-
-        .job-meta {
-            font-size: 0.75rem;
-            color: #6b7280;
-        }
-
-        .job-status {
-            font-size: 0.7rem;
-            font-weight: 700;
-            padding: 0.25rem 0.6rem;
-            border-radius: 9999px;
-            text-transform: uppercase;
-        }
-
-        .status-queued {
-            background: #f3f4f6;
-            color: #4b5563;
-        }
-
-        .status-processing {
-            background: #e0f2fe;
-            color: #0369a1;
-        }
-
-        .status-completed {
-            background: #dcfce7;
-            color: #166534;
-        }
-
-        .status-failed {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-
-        .btn-download {
-            background: #1E3A8A;
-            color: #fff;
-            border: none;
-            padding: 0.4rem 0.8rem;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: none;
-        }
-
-        .btn-download:hover {
-            background: #1e40af;
+            line-height: 1.4
         }
     </style>
 </head>
 
 <body>
-    <div class="tool-topbar">
-        <a class="back-btn" onclick="goBack()">← Back to Tools</a>
-        <h1>📑 Annexure B</h1>
-        <span class="badge">REFUND TOOL</span>
+    <div id="app-topbar" data-active="dashboard"></div>
+    <script src="app-topbar.js"></script>
+
+    <div class="tool-layout">
+        <aside class="tool-sidebar" id="tool-sidebar"></aside>
+        <main class="tool-main">
+            <div class="tool-main-inner">
+                <div class="tool-bc">
+                    <a href="clients.html">Firm</a><span style="color:#d1d5db">›</span>
+                    <a href="javascript:goBackToWebView()">GST Workspace</a><span style="color:#d1d5db">›</span>
+                    <span style="color:#374151;font-weight:600">Annexure B</span>
+                </div>
+                <div class="tool-page-header">
+                    <h1>📎 Annexure B <span>Generator</span></h1>
+                    <p>Annexure-B helps streamline GST refund documentation with simplified processing. Upload your
+                        GSTR-2B data to automatically generate Annexure B with detailed ITC calculations.</p>
+                </div>
+
+                <div class="tool-card">
+                    <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                            <polyline points="17 8 12 3 7 8" />
+                            <line x1="12" y1="3" x2="12" y2="15" />
+                        </svg> Upload GSTR-2B Data</h3>
+                    <p>Upload your GSTR-2B Excel file downloaded from the GST portal.</p>
+                    <div class="tool-upload" onclick="document.getElementById('gstr2b-file').click()">
+                        <div class="t-icon">📁</div>
+                        <div class="t-title">Click to upload</div>
+                        <div class="t-sub">Supports <strong>.xlsx</strong> format from GST portal</div>
+                        <div class="t-file" id="file-name" style="display:none"></div>
+                    </div>
+                    <input type="file" id="gstr2b-file" accept=".xlsx,.csv" style="display:none"
+                        onchange="handleFile(this)">
+                    <div style="margin-top:1.25rem">
+                        <button class="tbtn tbtn-primary" id="generate-btn" onclick="generateAnnexureB()" disabled>📑
+                            Generate Annexure B</button>
+                    </div>
+                </div>
+
+                <div class="tool-card">
+                    <h3>What's Included</h3>
+                    <p style="margin-bottom:.5rem">The generated Annexure B report contains:</p>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <h4>📊 ITC Summary</h4>
+                            <p>Comprehensive ITC breakdown by category — IGST, CGST, SGST, and Cess</p>
+                        </div>
+                        <div class="info-item">
+                            <h4>🏢 Supplier Details</h4>
+                            <p>Complete supplier-wise listing with GSTINs and invoice details</p>
+                        </div>
+                        <div class="info-item">
+                            <h4>⚡ Auto Classification</h4>
+                            <p>Automatic classification into eligible and ineligible ITC categories</p>
+                        </div>
+                        <div class="info-item">
+                            <h4>📋 Refund Ready</h4>
+                            <p>Output formatted for direct attachment with refund applications</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tool-card" id="recent-jobs-container" style="display:none">
+                    <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            style="width:17px;height:17px;vertical-align:middle">
+                            <circle cx="12" cy="12" r="10" />
+                            <polyline points="12 6 12 12 16 14" />
+                        </svg> Recent Jobs</h3>
+                    <p>Track the status of your Annexure B reports and download the results.</p>
+                    <div class="tool-jobs" id="jobs-list"></div>
+                </div>
+            </div>
+        </main>
     </div>
 
-    <div class="tool-container">
-        <div class="tool-hero">
-            <h2>Annexure B Generator</h2>
-            <p>Annexure-B helps streamline GST refund documentation with simplified processing. Upload your GSTR-2B data
-                to automatically generate Annexure B with detailed ITC calculations.</p>
-        </div>
-
-        <div class="tool-form-card">
-            <h3>Upload GSTR-2B Data</h3>
-            <p>Upload your GSTR-2B Excel file downloaded from the GST portal.</p>
-            <div class="upload-zone" onclick="document.getElementById('gstr2b-file').click()">
-                <div class="icon">📁</div>
-                <div class="text">
-                    <strong>Click to upload</strong> GSTR-2B Excel file<br>
-                    Supports .xlsx format downloaded from GST portal
-                </div>
-            </div>
-            <input type="file" id="gstr2b-file" accept=".xlsx,.csv" style="display:none" onchange="handleFile(this)">
-            <div id="file-name" style="margin-top:0.75rem; font-size:0.85rem; color:#6b7280;"></div>
-            <div style="margin-top:1.25rem;">
-                <button class="btn-primary" id="generate-btn" onclick="generateAnnexureB()" disabled>📑 Generate
-                    Annexure B</button>
-            </div>
-        </div>
-
-        <div class="tool-form-card">
-            <h3>What's Included</h3>
-            <p style="margin-bottom: 0.75rem;">The generated Annexure B report contains:</p>
-            <div class="info-grid">
-                <div class="info-item">
-                    <h4>📊 ITC Summary</h4>
-                    <p>Comprehensive ITC breakdown by category — IGST, CGST, SGST, and Cess</p>
-                </div>
-                <div class="info-item">
-                    <h4>🏢 Supplier Details</h4>
-                    <p>Complete supplier-wise listing with GSTINs and invoice details</p>
-                </div>
-                <div class="info-item">
-                    <h4>⚡ Auto Classification</h4>
-                    <p>Automatic classification into eligible and ineligible ITC categories</p>
-                </div>
-                <div class="info-item">
-                    <h4>📋 Refund Ready</h4>
-                    <p>Output formatted for direct attachment with refund applications</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="recent-jobs-card" id="recent-jobs-container" style="display: none;">
-            <h3>Recent Generation Jobs</h3>
-            <p>Track the status of your Annexure B reports and download the results.</p>
-            <div class="jobs-list" id="jobs-list">
-                <!-- Jobs will be loaded here -->
-            </div>
-        </div>
-    </div>
-
+    <script src="tool-sidebar.js"></script>
     <script src="api_config.js?v=2"></script>
+    <script src="session-manager.js"></script>
     <script>
-        function goBack() {
-            const params = new URLSearchParams(window.location.search);
-            params.set('section', 'tools');
-            window.location.href = 'web-view.html?' + params.toString();
-        }
+        renderToolSidebar('annexure-b');
 
         let uploadedFile = null;
         function handleFile(input) {
             if (input.files.length) {
                 uploadedFile = input.files[0];
-                document.getElementById('file-name').textContent = '📎 ' + uploadedFile.name;
+                const el = document.getElementById('file-name'); el.textContent = '📎 ' + uploadedFile.name; el.style.display = '';
+                input.closest('.tool-upload').classList.add('has-file');
                 document.getElementById('generate-btn').disabled = false;
             }
         }
@@ -384,31 +138,26 @@
         async function generateAnnexureB() {
             if (!uploadedFile) return;
             const btn = document.getElementById('generate-btn');
+<<<<<<< HEAD
             const originalText = btn.innerHTML;
             btn.disabled = true;
             btn.innerHTML = '<span class="loading-spinner"></span> Generating...';
+=======
+            btn.disabled = true; btn.innerHTML = '<span class="tool-spinner"></span> Generating...';
+>>>>>>> ea8664237128fffa4ca00ea0ee0946ce90945ffa
             try {
                 const token = localStorage.getItem('access_token');
                 const params = new URLSearchParams(window.location.search);
                 const clientId = params.get('clientId');
-
-                const fd = new FormData();
-                fd.append('file', uploadedFile);
-                const uploadRes = await fetch(`${API_BASE_URL}/jobs/upload`, {
-                    method: 'POST', headers: { 'Authorization': `Bearer ${token}` }, body: fd
-                });
-
+                const fd = new FormData(); fd.append('file', uploadedFile);
+                const uploadRes = await fetch(`${API_BASE_URL}/jobs/upload`, { method: 'POST', headers: { 'Authorization': `Bearer ${token}` }, body: fd });
                 if (uploadRes.ok) {
                     const d = await uploadRes.json();
                     const jobRes = await fetch(`${API_BASE_URL}/jobs/`, {
-                        method: 'POST',
-                        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            job_type: 'annexure_b',
-                            input_files: [d.file_key || d.file_path],
-                            client_id: clientId // Use raw string UUID
-                        })
+                        method: 'POST', headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ job_type: 'annexure_b', input_files: [d.file_key || d.file_path], client_id: clientId })
                     });
+<<<<<<< HEAD
                     if (!jobRes.ok) {
                         const err = await jobRes.json();
                         throw new Error(err.detail || 'Failed to start job');
@@ -460,88 +209,40 @@
                         }
                     }
                     if (!completed) alert('Processing is taking longer than expected.');
+=======
+                    if (jobRes.ok) { alert('Annexure B generation started!'); loadJobs(); } else { const err = await jobRes.json(); alert('Failed: ' + (err.detail || 'Error')); }
+>>>>>>> ea8664237128fffa4ca00ea0ee0946ce90945ffa
                 }
             } catch (err) { console.error(err); alert('Error: ' + err.message); }
             finally { btn.disabled = false; btn.innerHTML = originalText; }
         }
 
-        // --- Recent Jobs Logic ---
         let pollingInterval = null;
-
         async function loadJobs() {
-            const params = new URLSearchParams(window.location.search);
-            const clientId = params.get('clientId');
-            if (!clientId) return;
-
+            const params = new URLSearchParams(window.location.search); const clientId = params.get('clientId'); if (!clientId) return;
             try {
-                const res = await authFetch(`/jobs/?skip=0&limit=50&client_id=${clientId}`);
-                if (res.ok) {
-                    const jobs = await res.json();
-                    const annexureJobs = jobs.filter(j => j.job_type === 'annexure_b');
-
-                    if (annexureJobs.length > 0) {
-                        document.getElementById('recent-jobs-container').style.display = 'block';
-                        renderJobs(annexureJobs);
-
-                        const hasInProgress = annexureJobs.some(j => j.status === 'QUEUED' || j.status === 'PROCESSING');
-                        if (hasInProgress && !pollingInterval) {
-                            pollingInterval = setInterval(loadJobs, 5000);
-                        } else if (!hasInProgress && pollingInterval) {
-                            clearInterval(pollingInterval);
-                            pollingInterval = null;
-                        }
+                const res = await authFetch(`/jobs/?skip=0&limit=50&client_id=${clientId}`); if (res.ok) {
+                    const jobs = await res.json(); const aJobs = jobs.filter(j => j.job_type === 'annexure_b');
+                    if (aJobs.length > 0) {
+                        document.getElementById('recent-jobs-container').style.display = 'block'; renderJobs(aJobs);
+                        const hasIP = aJobs.some(j => j.status === 'QUEUED' || j.status === 'PROCESSING');
+                        if (hasIP && !pollingInterval) pollingInterval = setInterval(loadJobs, 5000); else if (!hasIP && pollingInterval) { clearInterval(pollingInterval); pollingInterval = null; }
                     }
                 }
-            } catch (e) { console.error("Failed to load jobs", e); }
+            } catch (e) { console.error(e) }
         }
 
         function renderJobs(jobs) {
-            const list = document.getElementById('jobs-list');
-            list.innerHTML = jobs.map(job => {
-                const date = new Date(job.created_at).toLocaleString();
-                let statusClass = 'status-' + job.status.toLowerCase();
-                const jobName = job.job_type.toUpperCase().replace('_', ' ');
-
-                return `
-                    <div class="job-item">
-                        <div class="job-info">
-                            <span class="job-name">${jobName}</span>
-                            <span class="job-meta">Created: ${date}</span>
-                        </div>
-                        <div style="display: flex; align-items: center; gap: 1rem;">
-                            <span class="job-status ${statusClass}">${job.status}</span>
-                            ${job.status === 'COMPLETED' ?
-                        `<button class="btn-download" onclick="downloadJobFile('${job.id}')">⬇ Download</button>` :
-                        ''}
-                        </div>
-                    </div>
-                `;
+            document.getElementById('jobs-list').innerHTML = jobs.map(job => {
+                const date = new Date(job.created_at).toLocaleString(); const name = job.job_type.toUpperCase().replaceAll('_', ' ');
+                return `<div class="tool-job"><div class="tool-job-info"><span class="tool-job-name">${name}</span><span class="tool-job-meta">Created: ${date}</span></div><div style="display:flex;align-items:center;gap:.75rem"><span class="tool-job-status tj-${job.status.toLowerCase()}">${job.status}</span>${job.status === 'COMPLETED' ? `<button class="tbtn tbtn-download" onclick="downloadJobFile('${job.id}')">⬇ Download</button>` : ''}</div></div>`;
             }).join('');
         }
 
         async function downloadJobFile(jobId) {
-            try {
-                const response = await authFetch(`/jobs/${jobId}/download`);
-                if (!response.ok) {
-                    alert('Download failed: ' + response.statusText);
-                    return;
-                }
-                const blob = await response.blob();
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `AnnexureB_${jobId.substring(0, 8)}.xlsx`;
-                document.body.appendChild(a);
-                a.click();
-                window.URL.revokeObjectURL(url);
-                document.body.removeChild(a);
-            } catch (e) {
-                console.error('Download error:', e);
-                alert('Error downloading file');
-            }
+            try { const response = await authFetch(`/jobs/${jobId}/download`); if (!response.ok) { alert('Download failed'); return; } const blob = await response.blob(); const url = window.URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `AnnexureB_${jobId.substring(0, 8)}.xlsx`; document.body.appendChild(a); a.click(); window.URL.revokeObjectURL(url); document.body.removeChild(a); } catch (e) { console.error(e); alert('Error downloading file'); }
         }
 
-        // Initialize
         loadJobs();
     </script>
 </body>

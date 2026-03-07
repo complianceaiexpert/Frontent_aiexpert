@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Expert View — Data Entry — ComplianceAI Expert</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            background: #f8fafc;
+            margin: 0;
+            overflow: hidden;
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif
+        }
+
+        .ai-layout {
+            display: flex;
+            height: 100vh;
+            padding-top: 64px
+        }
+
+        /* Sidebar */
+        .ai-sidebar {
+            width: 260px;
+            background: #fff;
+            border-right: 1px solid #e5e7eb;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            overflow-y: auto
+        }
+
+        .ai-sb-header {
+            padding: 1.15rem 1.25rem;
+            border-bottom: 1px solid #f1f5f9
+        }
+
+        .ai-sb-header h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: .95rem;
+            font-weight: 800;
+            color: #111827;
+            margin: 0 0 .15rem;
+            display: flex;
+            align-items: center;
+            gap: .45rem
+        }
+
+        .ai-sb-header p {
+            font-size: .72rem;
+            color: #9ca3af;
+            margin: 0
+        }
+
+        .ai-sb-badge {
+            font-size: .55rem;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: #fff;
+            letter-spacing: .04em
+        }
+
+        .ai-sb-section {
+            padding: .85rem 1rem
+        }
+
+        .ai-sb-label {
+            font-size: .62rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            color: #9ca3af;
+            padding: 0 .5rem;
+            margin-bottom: .4rem
+        }
+
+        .ai-step {
+            display: flex;
+            align-items: center;
+            gap: .7rem;
+            padding: .55rem .65rem;
+            border-radius: 9px;
+            font-size: .8rem;
+            font-weight: 500;
+            color: #6b7280;
+            cursor: pointer;
+            transition: all .2s;
+            margin-bottom: 2px;
+            position: relative
+        }
+
+        .ai-step:hover {
+            background: #f8fafc;
+            color: #1e3a8a
+        }
+
+        .ai-step.active {
+            background: #eff6ff;
+            color: #1e3a8a;
+            font-weight: 600
+        }
+
+        .ai-step.completed {
+            color: #059669
+        }
+
+        .ai-step-num {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid #d1d5db;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .65rem;
+            font-weight: 700;
+            flex-shrink: 0;
+            transition: all .2s
+        }
+
+        .ai-step.active .ai-step-num {
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: #fff;
+            border-color: transparent
+        }
+
+        .ai-step.completed .ai-step-num {
+            background: #059669;
+            color: #fff;
+            border-color: transparent
+        }
+
+        .ai-step-connector {
+            position: absolute;
+            left: 22px;
+            top: 34px;
+            width: 2px;
+            height: 12px;
+            background: #e5e7eb
+        }
+
+        .ai-step.completed .ai-step-connector {
+            background: #059669
+        }
+
+        .ai-sb-divider {
+            height: 1px;
+            background: #f1f5f9;
+            margin: .4rem 1rem
+        }
+
+        .ai-sb-stats {
+            padding: .85rem 1.25rem
+        }
+
+        .ai-sb-stat {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            padding: .35rem 0;
+            font-size: .75rem
+        }
+
+        .ai-sb-stat-label {
+            color: #9ca3af;
+            font-weight: 500
+        }
+
+        .ai-sb-stat-val {
+            color: #111827;
+            font-weight: 700;
+            font-family: 'Outfit', sans-serif
+        }
+
+        .ai-sb-back {
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+            padding: .85rem 1.25rem;
+            border-top: 1px solid #f1f5f9;
+            font-size: .8rem;
+            font-weight: 600;
+            color: #6b7280;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all .2s;
+            margin-top: auto
+        }
+
+        .ai-sb-back:hover {
+            color: #1e3a8a;
+            background: #f8fafc
+        }
+
+        .ai-sb-back svg {
+            width: 16px;
+            height: 16px
+        }
+
+        /* Main */
+        .ai-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden
+        }
+
+        .ai-topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: .75rem 1.5rem;
+            border-bottom: 1px solid #f1f5f9;
+            background: #fff;
+            flex-shrink: 0
+        }
+
+        .ai-topbar-left {
+            display: flex;
+            align-items: center;
+            gap: .6rem
+        }
+
+        .ai-bc {
+            font-size: .75rem;
+            color: #9ca3af;
+            display: flex;
+            align-items: center;
+            gap: .35rem
+        }
+
+        .ai-bc a {
+            color: #6b7280;
+            text-decoration: none;
+            font-weight: 500
+        }
+
+        .ai-bc a:hover {
+            color: #1e3a8a
+        }
+
+        .view-switcher {
+            display: flex;
+            gap: 2px;
+            background: #f1f5f9;
+            border-radius: 9px;
+            padding: 3px
+        }
+
+        .view-sw-btn {
+            padding: .4rem .85rem;
+            font-size: .75rem;
+            font-weight: 600;
+            border: none;
+            background: none;
+            color: #6b7280;
+            border-radius: 7px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all .15s
+        }
+
+        .view-sw-btn.active {
+            background: #1e293b;
+            color: #fff
+        }
+
+        /* Content Area */
+        .ai-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem 2rem 3rem
+        }
+
+        .ai-content-inner {
+            max-width: 960px;
+            margin: 0 auto
+        }
+
+        /* Step Header */
+        .step-header {
+            margin-bottom: 1.5rem
+        }
+
+        .step-header h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #111827;
+            margin: 0 0 .25rem
+        }
+
+        .step-header h1 span {
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text
+        }
+
+        .step-header p {
+            font-size: .85rem;
+            color: #6b7280;
+            margin: 0;
+            line-height: 1.5
+        }
+
+        /* Upload Zone */
+        .upload-zone {
+            border: 2px dashed #d1d5db;
+            border-radius: 16px;
+            padding: 3rem 2rem;
+            text-align: center;
+            transition: all .25s;
+            cursor: pointer;
+            background: #fafbff;
+            position: relative
+        }
+
+        .upload-zone:hover,
+        .upload-zone.drag-over {
+            border-color: #3b82f6;
+            background: #eff6ff
+        }
+
+        .upload-zone-icon {
+            font-size: 2.5rem;
+            margin-bottom: .75rem
+        }
+
+        .upload-zone h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0 0 .3rem
+        }
+
+        .upload-zone p {
+            font-size: .82rem;
+            color: #9ca3af;
+            margin: 0
+        }
+
+        .upload-zone input {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer
+        }
+
+        .upload-formats {
+            display: flex;
+            justify-content: center;
+            gap: .4rem;
+            margin-top: .65rem
+        }
+
+        .upload-fmt {
+            font-size: .65rem;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 5px;
+            background: #f1f5f9;
+            color: #64748b
+        }
+
+        /* File Queue */
+        .file-queue {
+            margin-top: 1.25rem
+        }
+
+        .fq-item {
+            background: #fff;
+            border: 1px solid #f1f5f9;
+            border-radius: 12px;
+            padding: .85rem 1.15rem;
+            display: flex;
+            align-items: center;
+            gap: .85rem;
+            margin-bottom: .5rem;
+            transition: all .2s
+        }
+
+        .fq-item:hover {
+            border-color: #dbeafe
+        }
+
+        .fq-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0
+        }
+
+        .fq-info {
+            flex: 1;
+            min-width: 0
+        }
+
+        .fq-name {
+            font-size: .82rem;
+            font-weight: 600;
+            color: #1e293b;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis
+        }
+
+        .fq-meta {
+            font-size: .7rem;
+            color: #9ca3af;
+            margin-top: 1px
+        }
+
+        .fq-status {
+            font-size: .7rem;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 8px;
+            white-space: nowrap
+        }
+
+        .fq-status-pending {
+            background: #fef3c7;
+            color: #d97706
+        }
+
+        .fq-status-processing {
+            background: #eff6ff;
+            color: #1e3a8a
+        }
+
+        .fq-status-done {
+            background: #ecfdf5;
+            color: #059669
+        }
+
+        .fq-status-error {
+            background: #fef2f2;
+            color: #dc2626
+        }
+
+        .fq-remove {
+            width: 28px;
+            height: 28px;
+            border-radius: 7px;
+            border: none;
+            background: none;
+            color: #9ca3af;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .7rem;
+            transition: all .15s
+        }
+
+        .fq-remove:hover {
+            background: #fef2f2;
+            color: #dc2626
+        }
+
+        /* Processing Animation */
+        .ai-progress {
+            margin: 1.5rem 0
+        }
+
+        .ai-progress-bar {
+            height: 6px;
+            background: #f1f5f9;
+            border-radius: 6px;
+            overflow: hidden
+        }
+
+        .ai-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #1e3a8a, #3b82f6, #60a5fa);
+            border-radius: 6px;
+            transition: width .6s cubic-bezier(.4, 0, .2, 1);
+            width: 0%
+        }
+
+        .ai-progress-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: .5rem;
+            font-size: .75rem;
+            color: #6b7280
+        }
+
+        .ai-processing-steps {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: .75rem;
+            margin-top: 1.25rem
+        }
+
+        .ai-ps {
+            background: #fff;
+            border: 1px solid #f1f5f9;
+            border-radius: 10px;
+            padding: .85rem;
+            text-align: center;
+            transition: all .3s
+        }
+
+        .ai-ps.active {
+            border-color: #3b82f6;
+            background: #eff6ff
+        }
+
+        .ai-ps.done {
+            border-color: #059669;
+            background: #ecfdf5
+        }
+
+        .ai-ps-icon {
+            font-size: 1.2rem;
+            margin-bottom: .4rem
+        }
+
+        .ai-ps-name {
+            font-size: .72rem;
+            font-weight: 600;
+            color: #374151
+        }
+
+        .ai-ps.done .ai-ps-name {
+            color: #059669
+        }
+
+        /* Review Queue */
+        .review-card {
+            background: #fff;
+            border: 1px solid #f1f5f9;
+            border-radius: 14px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+            transition: all .2s
+        }
+
+        .review-card:hover {
+            border-color: #dbeafe;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, .04)
+        }
+
+        .rc-header {
+            display: flex;
+            align-items: center;
+            gap: .85rem;
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid #f8fafc;
+            cursor: pointer
+        }
+
+        .rc-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0
+        }
+
+        .rc-info {
+            flex: 1;
+            min-width: 0
+        }
+
+        .rc-title {
+            font-size: .88rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0
+        }
+
+        .rc-subtitle {
+            font-size: .72rem;
+            color: #9ca3af;
+            margin-top: 2px
+        }
+
+        .rc-confidence {
+            font-size: .68rem;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 8px
+        }
+
+        .conf-high {
+            background: #ecfdf5;
+            color: #059669
+        }
+
+        .conf-medium {
+            background: #fef3c7;
+            color: #d97706
+        }
+
+        .conf-low {
+            background: #fef2f2;
+            color: #dc2626
+        }
+
+        .rc-body {
+            padding: 1.15rem 1.25rem
+        }
+
+        .rc-fields {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: .75rem
+        }
+
+        .rc-field {
+            display: flex;
+            flex-direction: column;
+            gap: 2px
+        }
+
+        .rc-field-label {
+            font-size: .65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .04em;
+            color: #9ca3af
+        }
+
+        .rc-field-value {
+            font-size: .82rem;
+            font-weight: 600;
+            color: #1e293b;
+            padding: .35rem .55rem;
+            border-radius: 6px;
+            border: 1px solid transparent;
+            transition: all .15s
+        }
+
+        .rc-field-value.ai-filled {
+            background: #ecfdf5;
+            border-color: #bbf7d0
+        }
+
+        .rc-field-value.needs-review {
+            background: #fffbeb;
+            border-color: #fde68a
+        }
+
+        .rc-field-value input {
+            width: 100%;
+            border: none;
+            background: none;
+            font-size: .82rem;
+            font-weight: 600;
+            color: #1e293b;
+            font-family: inherit;
+            outline: none
+        }
+
+        .rc-items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: .75rem
+        }
+
+        .rc-items-table th {
+            font-size: .65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .04em;
+            color: #9ca3af;
+            text-align: left;
+            padding: .45rem .5rem;
+            border-bottom: 1px solid #e5e7eb
+        }
+
+        .rc-items-table td {
+            font-size: .78rem;
+            color: #374151;
+            padding: .5rem;
+            border-bottom: 1px solid #f8fafc
+        }
+
+        .rc-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: .85rem 1.25rem;
+            background: #f9fafb;
+            border-top: 1px solid #f1f5f9
+        }
+
+        .rc-category {
+            font-size: .72rem;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 7px;
+            background: #eff6ff;
+            color: #1e3a8a
+        }
+
+        .rc-actions {
+            display: flex;
+            gap: .4rem
+        }
+
+        .rc-btn {
+            padding: .4rem .85rem;
+            border-radius: 7px;
+            font-size: .72rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            border: 1px solid #e5e7eb;
+            background: #fff;
+            color: #374151;
+            transition: all .15s
+        }
+
+        .rc-btn:hover {
+            border-color: #1e3a8a;
+            color: #1e3a8a
+        }
+
+        .rc-btn-approve {
+            background: #059669;
+            color: #fff;
+            border-color: #059669
+        }
+
+        .rc-btn-approve:hover {
+            background: #047857
+        }
+
+        .rc-btn-reject {
+            color: #dc2626;
+            border-color: #fecaca
+        }
+
+        .rc-btn-reject:hover {
+            background: #fef2f2
+        }
+
+        /* Summary Cards */
+        .sum-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem
+        }
+
+        .sum-card {
+            background: #fff;
+            border: 1px solid #f1f5f9;
+            border-radius: 12px;
+            padding: 1.15rem;
+            text-align: center;
+            transition: all .2s
+        }
+
+        .sum-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 14px rgba(0, 0, 0, .04)
+        }
+
+        .sum-card-num {
+            font-size: 1.5rem;
+            font-weight: 800;
+            font-family: 'Outfit', sans-serif;
+            color: #111827
+        }
+
+        .sum-card-label {
+            font-size: .68rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            color: #9ca3af;
+            margin-top: .1rem
+        }
+
+        .sum-card-icon {
+            font-size: 1.3rem;
+            margin-bottom: .35rem
+        }
+
+        /* Buttons */
+        .btn-primary {
+            padding: .6rem 1.25rem;
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: .82rem;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all .2s
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 4px 14px rgba(30, 58, 138, .3);
+            transform: translateY(-1px)
+        }
+
+        .btn-secondary {
+            padding: .6rem 1.25rem;
+            background: #fff;
+            color: #374151;
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: .82rem;
+            cursor: pointer;
+            font-family: inherit
+        }
+
+        .btn-secondary:hover {
+            border-color: #1e3a8a;
+            color: #1e3a8a
+        }
+
+        .step-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: .65rem;
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid #f1f5f9
+        }
+
+        /* Bulk Bar */
+        .bulk-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #fff;
+            border: 1px solid #f1f5f9;
+            border-radius: 12px;
+            padding: .75rem 1.25rem;
+            margin-bottom: 1rem
+        }
+
+        .bulk-bar-left {
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+            font-size: .82rem;
+            font-weight: 600;
+            color: #374151
+        }
+
+        .bulk-bar-right {
+            display: flex;
+            gap: .5rem
+        }
+
+        /* Hidden steps */
+        .ai-step-content {
+            display: none
+        }
+
+        .ai-step-content.active {
+            display: block
+        }
+
+        /* AI Chat helper */
+        .ai-chat-float {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(30, 58, 138, .3);
+            transition: all .2s;
+            z-index: 100
+        }
+
+        .ai-chat-float:hover {
+            transform: scale(1.08);
+            box-shadow: 0 6px 20px rgba(30, 58, 138, .4)
+        }
+
+        @media(max-width:900px) {
+            .ai-sidebar {
+                display: none
+            }
+
+            .ai-content {
+                padding: 1rem
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app-topbar" data-active="dashboard"></div>
+    <script src="app-topbar.js"></script>
+
+    <div class="ai-layout">
+        <!-- Sidebar -->
+        <aside class="ai-sidebar">
+            <div class="ai-sb-header">
+                <h3>🤖 AI Expert View <span class="ai-sb-badge">AI</span></h3>
+                <p>Data Entry — Intelligent Processing</p>
+            </div>
+            <div class="ai-sb-section">
+                <div class="ai-sb-label">Workflow Steps</div>
+                <div class="ai-step active" onclick="goStep(1)">
+                    <span class="ai-step-num">1</span>Upload Documents<span class="ai-step-connector"></span>
+                </div>
+                <div class="ai-step" onclick="goStep(2)">
+                    <span class="ai-step-num">2</span>AI Processing<span class="ai-step-connector"></span>
+                </div>
+                <div class="ai-step" onclick="goStep(3)">
+                    <span class="ai-step-num">3</span>Review & Edit<span class="ai-step-connector"></span>
+                </div>
+                <div class="ai-step" onclick="goStep(4)">
+                    <span class="ai-step-num">4</span>Approve & Sync<span class="ai-step-connector"></span>
+                </div>
+                <div class="ai-step" onclick="goStep(5)">
+                    <span class="ai-step-num">5</span>Summary
+                </div>
+            </div>
+            <div class="ai-sb-divider"></div>
+            <div class="ai-sb-stats">
+                <div class="ai-sb-label" style="padding:0;margin-bottom:.5rem">Session Stats</div>
+                <div class="ai-sb-stat"><span class="ai-sb-stat-label">Uploaded</span><span class="ai-sb-stat-val"
+                        id="stat-uploaded">0</span></div>
+                <div class="ai-sb-stat"><span class="ai-sb-stat-label">Processed</span><span class="ai-sb-stat-val"
+                        id="stat-processed">0</span></div>
+                <div class="ai-sb-stat"><span class="ai-sb-stat-label">Approved</span><span class="ai-sb-stat-val"
+                        id="stat-approved">0</span></div>
+                <div class="ai-sb-stat"><span class="ai-sb-stat-label">Synced</span><span class="ai-sb-stat-val"
+                        id="stat-synced">0</span></div>
+            </div>
+            <a href="service-data-entry.html" class="ai-sb-back">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="m15 18-6-6 6-6" />
+                </svg>
+                Back to Web View
+            </a>
+        </aside>
+
+        <!-- Main -->
+        <div class="ai-main">
+            <div class="ai-topbar">
+                <div class="ai-topbar-left">
+                    <div class="ai-bc">
+                        <a href="clients.html">Firm</a><span style="color:#d1d5db">›</span>
+                        <a href="services-dashboard.html">Workspace</a><span style="color:#d1d5db">›</span>
+                        <span style="color:#374151;font-weight:600">Data Entry — AI Expert View</span>
+                    </div>
+                </div>
+                <div class="view-switcher">
+                    <a href="service-data-entry.html" class="view-sw-btn" style="text-decoration:none">Web View</a>
+                    <button class="view-sw-btn active">AI Expert</button>
+                </div>
+            </div>
+
+            <div class="ai-content">
+                <div class="ai-content-inner">
+
+                    <!-- ═══ STEP 1: UPLOAD ═══ -->
+                    <div class="ai-step-content active" id="step-1">
+                        <div class="step-header">
+                            <h1>📂 <span>Smart Upload</span></h1>
+                            <p>Drop your invoices, bank statements, and receipts. AI will automatically detect document
+                                types, extract data, and classify transactions.</p>
+                        </div>
+                        <div class="upload-zone" id="upload-zone"
+                            onclick="document.getElementById('file-input').click()">
+                            <input type="file" id="file-input" multiple accept=".pdf,.xlsx,.xls,.csv,.jpg,.jpeg,.png"
+                                onchange="handleFiles(this.files)">
+                            <div class="upload-zone-icon">📄</div>
+                            <h3>Drop files here or click to browse</h3>
+                            <p>Upload invoices, bank statements, or receipts for AI processing</p>
+                            <div class="upload-formats">
+                                <span class="upload-fmt">PDF</span><span class="upload-fmt">Excel</span><span
+                                    class="upload-fmt">CSV</span><span class="upload-fmt">JPG</span><span
+                                    class="upload-fmt">PNG</span>
+                            </div>
+                        </div>
+                        <div class="file-queue" id="file-queue"></div>
+                        <div class="step-actions">
+                            <button class="btn-primary" id="btn-process" onclick="goStep(2)"
+                                style="display:none">Process with AI →</button>
+                        </div>
+                    </div>
+
+                    <!-- ═══ STEP 2: AI PROCESSING ═══ -->
+                    <div class="ai-step-content" id="step-2">
+                        <div class="step-header">
+                            <h1>🤖 AI <span>Processing</span></h1>
+                            <p>Sit back while our AI engine reads, extracts data, and classifies your documents.</p>
+                        </div>
+                        <div class="ai-progress">
+                            <div class="ai-progress-bar">
+                                <div class="ai-progress-fill" id="progress-fill"></div>
+                            </div>
+                            <div class="ai-progress-label"><span id="progress-text">Initializing AI engine…</span><span
+                                    id="progress-pct">0%</span></div>
+                        </div>
+                        <div class="ai-processing-steps">
+                            <div class="ai-ps" id="ps-ocr">
+                                <div class="ai-ps-icon">🔍</div>
+                                <div class="ai-ps-name">OCR & Text Extraction</div>
+                            </div>
+                            <div class="ai-ps" id="ps-extract">
+                                <div class="ai-ps-icon">📋</div>
+                                <div class="ai-ps-name">Field Detection</div>
+                            </div>
+                            <div class="ai-ps" id="ps-classify">
+                                <div class="ai-ps-icon">🗂️</div>
+                                <div class="ai-ps-name">Classification</div>
+                            </div>
+                            <div class="ai-ps" id="ps-validate">
+                                <div class="ai-ps-icon">✅</div>
+                                <div class="ai-ps-name">Validation</div>
+                            </div>
+                        </div>
+                        <div class="step-actions">
+                            <button class="btn-secondary" onclick="goStep(1)">← Back</button>
+                            <button class="btn-primary" id="btn-review" onclick="goStep(3)" style="display:none">Review
+                                Results →</button>
+                        </div>
+                    </div>
+
+                    <!-- ═══ STEP 3: REVIEW ═══ -->
+                    <div class="ai-step-content" id="step-3">
+                        <div class="step-header">
+                            <h1>📋 Review & <span>Edit</span></h1>
+                            <p>AI has extracted and classified your documents. Review the data, make corrections if
+                                needed, and approve entries.</p>
+                        </div>
+                        <div class="bulk-bar">
+                            <div class="bulk-bar-left"><span id="review-count">3</span> entries ready for review</div>
+                            <div class="bulk-bar-right">
+                                <button class="btn-secondary" onclick="bulkApproveAll()"
+                                    style="font-size:.75rem;padding:.4rem .85rem">✅ Approve All</button>
+                            </div>
+                        </div>
+                        <div id="review-queue"></div>
+                        <div class="step-actions">
+                            <button class="btn-secondary" onclick="goStep(2)">← Back</button>
+                            <button class="btn-primary" onclick="goStep(4)">Approve & Sync →</button>
+                        </div>
+                    </div>
+
+                    <!-- ═══ STEP 4: APPROVE & SYNC ═══ -->
+                    <div class="ai-step-content" id="step-4">
+                        <div class="step-header">
+                            <h1>✅ Approve & <span>Sync</span></h1>
+                            <p>Approved entries are ready to be synced to your accounting system.</p>
+                        </div>
+                        <div id="sync-queue"></div>
+                        <div class="step-actions">
+                            <button class="btn-secondary" onclick="goStep(3)">← Back</button>
+                            <button class="btn-primary" onclick="simulateSync()">🔄 Sync to Tally</button>
+                            <button class="btn-primary" onclick="goStep(5)" id="btn-summary" style="display:none">View
+                                Summary →</button>
+                        </div>
+                    </div>
+
+                    <!-- ═══ STEP 5: SUMMARY ═══ -->
+                    <div class="ai-step-content" id="step-5">
+                        <div class="step-header">
+                            <h1>📊 Processing <span>Summary</span></h1>
+                            <p>Here's a recap of what was accomplished in this AI-powered data entry session.</p>
+                        </div>
+                        <div class="sum-grid">
+                            <div class="sum-card">
+                                <div class="sum-card-icon">📄</div>
+                                <div class="sum-card-num" id="sum-uploaded">0</div>
+                                <div class="sum-card-label">Uploaded</div>
+                            </div>
+                            <div class="sum-card">
+                                <div class="sum-card-icon">🤖</div>
+                                <div class="sum-card-num" id="sum-processed">0</div>
+                                <div class="sum-card-label">AI Processed</div>
+                            </div>
+                            <div class="sum-card">
+                                <div class="sum-card-icon">✅</div>
+                                <div class="sum-card-num" id="sum-approved">0</div>
+                                <div class="sum-card-label">Approved</div>
+                            </div>
+                            <div class="sum-card">
+                                <div class="sum-card-icon">🔄</div>
+                                <div class="sum-card-num" id="sum-synced">0</div>
+                                <div class="sum-card-label">Synced</div>
+                            </div>
+                        </div>
+                        <div class="review-card">
+                            <div class="rc-body" style="text-align:center;padding:2rem">
+                                <div style="font-size:2.5rem;margin-bottom:.75rem">🎉</div>
+                                <h3
+                                    style="font-family:'Outfit',sans-serif;font-weight:800;color:#111827;margin:0 0 .3rem">
+                                    All Done!</h3>
+                                <p style="color:#6b7280;font-size:.85rem;margin:0 0 1rem">Your AI-powered data entry
+                                    session is complete. All entries have been processed and synced.</p>
+                                <div style="display:flex;justify-content:center;gap:.5rem">
+                                    <button class="btn-primary" onclick="goStep(1);resetSession()">New Session</button>
+                                    <a href="service-data-entry.html" class="btn-secondary"
+                                        style="text-decoration:none;display:inline-flex;align-items:center">Open Web
+                                        View</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Chat Float -->
+    <button class="ai-chat-float" title="Ask AI about your data"
+        onclick="alert('AI Chat Assistant coming soon! Ask questions about your uploaded documents.')">💬</button>
+
+    <script src="api_config.js"></script>
+    <script src="session-manager.js?v=2"></script>
+    <script>
+        if (!requireAuth()) { }
+
+        // ═══ State ═══
+        let uploadedFiles = [];
+        let processedEntries = [];
+        let currentStep = 1;
+        const stats = { uploaded: 0, processed: 0, approved: 0, synced: 0 };
+
+        // Mock AI-extracted data
+        const MOCK_ENTRIES = [
+            { id: 1, type: 'Purchase', invoiceNo: 'INV-2026-0847', date: '2026-02-28', party: 'InfoTech Solutions Pvt Ltd', gstin: '27AABCI4321B1Z5', items: [{ desc: 'Cloud Hosting Annual', hsn: '998315', qty: 1, rate: 45000, gst: 18 }], confidence: 'high', total: 53100 },
+            { id: 2, type: 'Sales', invoiceNo: 'SA-2026-1234', date: '2026-03-01', party: 'GlobalTrade Exports', gstin: '29AADCG5678K1ZP', items: [{ desc: 'IT Consulting Services', hsn: '998314', qty: 40, rate: 2500, gst: 18 }], confidence: 'high', total: 118000 },
+            { id: 3, type: 'Purchase', invoiceNo: 'PO-5567', date: '2026-02-25', party: 'Office Mart Supplies', gstin: '27AAECO9876P1ZQ', items: [{ desc: 'Office Stationery', hsn: '4820', qty: 50, rate: 120, gst: 12 }, { desc: 'Printer Cartridges', hsn: '8443', qty: 5, rate: 1800, gst: 18 }], confidence: 'medium', total: 17100 }
+        ];
+
+        // ═══ Navigation ═══
+        function goStep(n) {
+            currentStep = n;
+            document.querySelectorAll('.ai-step-content').forEach(s => s.classList.remove('active'));
+            document.getElementById('step-' + n).classList.add('active');
+            document.querySelectorAll('.ai-step').forEach((s, i) => {
+                s.classList.remove('active');
+                if (i + 1 < n) s.classList.add('completed'); else s.classList.remove('completed');
+                if (i + 1 === n) s.classList.add('active');
+            });
+            if (n === 2) runProcessing();
+            if (n === 3) renderReviewQueue();
+            if (n === 4) renderSyncQueue();
+            if (n === 5) renderSummary();
+        }
+
+        // ═══ Step 1: Upload ═══
+        const uploadZone = document.getElementById('upload-zone');
+        uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('drag-over') });
+        uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag-over'));
+        uploadZone.addEventListener('drop', e => { e.preventDefault(); uploadZone.classList.remove('drag-over'); handleFiles(e.dataTransfer.files) });
+
+        function handleFiles(files) {
+            if (!files.length) return;
+            Array.from(files).forEach(f => {
+                uploadedFiles.push({ name: f.name, size: f.size, type: f.type, status: 'pending' });
+            });
+            stats.uploaded = uploadedFiles.length;
+            updateStats();
+            renderFileQueue();
+            document.getElementById('btn-process').style.display = '';
+        }
+
+        function renderFileQueue() {
+            const q = document.getElementById('file-queue');
+            q.innerHTML = uploadedFiles.map((f, i) => {
+                const ext = f.name.split('.').pop().toUpperCase();
+                const iconBg = ext === 'PDF' ? '#fef2f2' : ext === 'XLSX' || ext === 'XLS' || ext === 'CSV' ? '#ecfdf5' : '#eff6ff';
+                const icon = ext === 'PDF' ? '📄' : ext === 'XLSX' || ext === 'XLS' || ext === 'CSV' ? '📊' : '🖼️';
+                const size = (f.size / 1024).toFixed(1) + 'KB';
+                const statusCls = f.status === 'done' ? 'fq-status-done' : f.status === 'processing' ? 'fq-status-processing' : 'fq-status-pending';
+                const statusText = f.status === 'done' ? '✓ Processed' : f.status === 'processing' ? 'Processing…' : 'Pending';
+                return `<div class="fq-item"><div class="fq-icon" style="background:${iconBg}">${icon}</div><div class="fq-info"><div class="fq-name">${f.name}</div><div class="fq-meta">${ext} · ${size}</div></div><span class="fq-status ${statusCls}">${statusText}</span><button class="fq-remove" onclick="removeFile(${i})">✕</button></div>`;
+            }).join('');
+        }
+
+        function removeFile(i) { uploadedFiles.splice(i, 1); stats.uploaded = uploadedFiles.length; updateStats(); renderFileQueue(); if (!uploadedFiles.length) document.getElementById('btn-process').style.display = 'none' }
+
+        // ═══ Step 2: Processing ═══
+        function runProcessing() {
+            let pct = 0;
+            const fill = document.getElementById('progress-fill');
+            const text = document.getElementById('progress-text');
+            const pctEl = document.getElementById('progress-pct');
+            const steps = ['ps-ocr', 'ps-extract', 'ps-classify', 'ps-validate'];
+            const msgs = ['Running OCR & text extraction…', 'Detecting fields & line items…', 'Classifying transactions…', 'Validating data & checking duplicates…'];
+            steps.forEach(s => document.getElementById(s).classList.remove('active', 'done'));
+
+            const interval = setInterval(() => {
+                pct += 2;
+                if (pct > 100) pct = 100;
+                fill.style.width = pct + '%';
+                pctEl.textContent = pct + '%';
+                const phase = Math.floor(pct / 25);
+                if (phase < 4) { text.textContent = msgs[phase]; steps.forEach((s, i) => { if (i < phase) document.getElementById(s).classList.add('done'); if (i === phase) document.getElementById(s).classList.add('active') }) }
+                if (pct >= 100) {
+                    clearInterval(interval);
+                    steps.forEach(s => { document.getElementById(s).classList.remove('active'); document.getElementById(s).classList.add('done') });
+                    text.textContent = '✅ All documents processed successfully!';
+                    processedEntries = MOCK_ENTRIES.map(e => ({ ...e, approved: false, synced: false }));
+                    stats.processed = processedEntries.length;
+                    updateStats();
+                    document.getElementById('btn-review').style.display = '';
+                }
+            }, 60);
+        }
+
+        // ═══ Step 3: Review ═══
+        function renderReviewQueue() {
+            document.getElementById('review-count').textContent = processedEntries.length;
+            document.getElementById('review-queue').innerHTML = processedEntries.map(e => {
+                const confCls = e.confidence === 'high' ? 'conf-high' : e.confidence === 'medium' ? 'conf-medium' : 'conf-low';
+                const confLabel = e.confidence.charAt(0).toUpperCase() + e.confidence.slice(1) + ' Confidence';
+                const iconBg = e.type === 'Sales' ? '#ecfdf5' : '#eff6ff';
+                const icon = e.type === 'Sales' ? '📈' : '🛒';
+                const fieldCls = e.confidence === 'high' ? 'ai-filled' : 'needs-review';
+                const itemRows = e.items.map(it => `<tr><td>${it.desc}</td><td>${it.hsn}</td><td>${it.qty}</td><td>₹${it.rate.toLocaleString()}</td><td>${it.gst}%</td><td>₹${(it.qty * it.rate * (1 + it.gst / 100)).toLocaleString()}</td></tr>`).join('');
+                return `<div class="review-card" id="rc-${e.id}">
+                <div class="rc-header"><div class="rc-icon" style="background:${iconBg}">${icon}</div><div class="rc-info"><div class="rc-title">${e.party}</div><div class="rc-subtitle">${e.invoiceNo} · ${e.date}</div></div><span class="rc-confidence ${confCls}">${confLabel}</span></div>
+                <div class="rc-body"><div class="rc-fields"><div class="rc-field"><span class="rc-field-label">Type</span><div class="rc-field-value ${fieldCls}">${e.type}</div></div><div class="rc-field"><span class="rc-field-label">Invoice No</span><div class="rc-field-value ${fieldCls}">${e.invoiceNo}</div></div><div class="rc-field"><span class="rc-field-label">Date</span><div class="rc-field-value ${fieldCls}">${e.date}</div></div><div class="rc-field"><span class="rc-field-label">Party</span><div class="rc-field-value ${fieldCls}">${e.party}</div></div><div class="rc-field"><span class="rc-field-label">GSTIN</span><div class="rc-field-value ${fieldCls}" style="font-family:'SF Mono','Consolas',monospace;font-size:.75rem">${e.gstin}</div></div><div class="rc-field"><span class="rc-field-label">Total</span><div class="rc-field-value ${fieldCls}" style="font-weight:800">₹${e.total.toLocaleString()}</div></div></div>
+                <table class="rc-items-table"><thead><tr><th>Description</th><th>HSN</th><th>Qty</th><th>Rate</th><th>GST</th><th>Amount</th></tr></thead><tbody>${itemRows}</tbody></table></div>
+                <div class="rc-footer"><span class="rc-category">${e.type}</span><div class="rc-actions"><button class="rc-btn rc-btn-reject" onclick="rejectEntry(${e.id})">✕ Reject</button><button class="rc-btn rc-btn-approve" onclick="approveEntry(${e.id})">✓ Approve</button></div></div>
+            </div>`;
+            }).join('');
+        }
+
+        function approveEntry(id) {
+            const e = processedEntries.find(x => x.id === id); if (e) e.approved = true;
+            const el = document.getElementById('rc-' + id); if (el) { el.style.opacity = '.5'; el.querySelector('.rc-btn-approve').textContent = '✓ Approved'; el.querySelector('.rc-btn-approve').disabled = true }
+            stats.approved = processedEntries.filter(x => x.approved).length; updateStats();
+        }
+        function rejectEntry(id) { const el = document.getElementById('rc-' + id); if (el) el.remove(); processedEntries = processedEntries.filter(x => x.id !== id); document.getElementById('review-count').textContent = processedEntries.length }
+        function bulkApproveAll() { processedEntries.forEach(e => e.approved = true); stats.approved = processedEntries.length; updateStats(); renderReviewQueue(); document.querySelectorAll('.rc-btn-approve').forEach(b => { b.textContent = '✓ Approved'; b.disabled = true }) }
+
+        // ═══ Step 4: Sync ═══
+        function renderSyncQueue() {
+            const approved = processedEntries.filter(e => e.approved);
+            document.getElementById('sync-queue').innerHTML = approved.length ? approved.map(e => {
+                return `<div class="fq-item" id="sync-${e.id}"><div class="fq-icon" style="background:${e.type === 'Sales' ? '#ecfdf5' : '#eff6ff'}">${e.type === 'Sales' ? '📈' : '🛒'}</div><div class="fq-info"><div class="fq-name">${e.party} — ${e.invoiceNo}</div><div class="fq-meta">${e.type} · ₹${e.total.toLocaleString()}</div></div><span class="fq-status ${e.synced ? 'fq-status-done' : 'fq-status-pending'}" id="sync-status-${e.id}">${e.synced ? '✓ Synced' : 'Pending'}</span></div>`;
+            }).join('') : '<div style="text-align:center;padding:2rem;color:#9ca3af">No approved entries to sync. Go back and approve entries first.</div>';
+        }
+
+        function simulateSync() {
+            const approved = processedEntries.filter(e => e.approved && !e.synced);
+            let i = 0;
+            const interval = setInterval(() => {
+                if (i >= approved.length) { clearInterval(interval); document.getElementById('btn-summary').style.display = ''; return }
+                const e = approved[i]; e.synced = true;
+                const el = document.getElementById('sync-status-' + e.id);
+                if (el) { el.className = 'fq-status fq-status-done'; el.textContent = '✓ Synced' }
+                stats.synced++; updateStats(); i++;
+            }, 600);
+        }
+
+        // ═══ Step 5: Summary ═══
+        function renderSummary() {
+            document.getElementById('sum-uploaded').textContent = stats.uploaded;
+            document.getElementById('sum-processed').textContent = stats.processed;
+            document.getElementById('sum-approved').textContent = stats.approved;
+            document.getElementById('sum-synced').textContent = stats.synced;
+        }
+
+        function resetSession() { uploadedFiles = []; processedEntries = []; stats.uploaded = stats.processed = stats.approved = stats.synced = 0; updateStats(); renderFileQueue(); document.getElementById('btn-process').style.display = 'none' }
+        function updateStats() {
+            document.getElementById('stat-uploaded').textContent = stats.uploaded;
+            document.getElementById('stat-processed').textContent = stats.processed;
+            document.getElementById('stat-approved').textContent = stats.approved;
+            document.getElementById('stat-synced').textContent = stats.synced;
+        }
+    </script>
+</body>
+
+</html>

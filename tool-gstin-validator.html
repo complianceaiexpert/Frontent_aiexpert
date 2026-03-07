@@ -4,449 +4,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GSTIN Validator - Compliance AI Expert</title>
+    <title>GSTIN Validator — ComplianceAI Expert</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@700;800&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap"
         rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #f8fafc;
-            min-height: 100vh;
-        }
-
-        /* Top Bar */
-        .tool-topbar {
-            background: #fff;
-            border-bottom: 1px solid #e5e7eb;
-            padding: 0.875rem 2rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .tool-topbar .back-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: #1e3a8a;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.9rem;
-            padding: 0.4rem 0.75rem;
-            border-radius: 6px;
-            transition: background 0.2s;
-        }
-
-        .tool-topbar .back-btn:hover {
-            background: #eff6ff;
-        }
-
-        .tool-topbar h1 {
-            font-size: 1.15rem;
-            font-weight: 700;
-            color: #111827;
-        }
-
-        .tool-topbar .badge {
-            background: #dbeafe;
-            color: #1e40af;
-            font-size: 0.7rem;
-            font-weight: 700;
-            padding: 0.2rem 0.5rem;
-            border-radius: 4px;
-        }
-
-        /* Main Container */
-        .tool-container {
-            max-width: 900px;
-            margin: 2.5rem auto;
-            padding: 0 2rem;
-        }
-
-        .tool-hero {
-            background: linear-gradient(135deg, #1E3A8A 0%, #1E40AF 100%);
-            border-radius: 16px;
-            padding: 2.5rem;
-            color: #fff;
-            margin-bottom: 2rem;
-            box-shadow: 0 4px 12px rgba(30, 58, 138, 0.15);
-        }
-
-        .tool-hero h2 {
-            font-size: 1.75rem;
-            font-weight: 800;
-            margin-bottom: 0.5rem;
-        }
-
-        .tool-hero p {
-            opacity: 0.85;
-            font-size: 0.95rem;
-            line-height: 1.6;
-        }
-
-        /* Form Section */
-        .tool-form-card {
-            background: #fff;
-            border: 1px solid #e5e7eb;
-            border-radius: 12px;
-            padding: 2rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .tool-form-card h3 {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #111827;
-            margin-bottom: 0.5rem;
-        }
-
-        .tool-form-card p {
-            font-size: 0.85rem;
-            color: #6b7280;
-            margin-bottom: 1.5rem;
-        }
-
-        .input-group {
-            display: flex;
-            gap: 0.75rem;
-            margin-bottom: 1rem;
-        }
-
-        .input-group input {
-            flex: 1;
-            padding: 0.75rem 1rem;
-            border: 1.5px solid #d1d5db;
-            border-radius: 8px;
-            font-size: 0.95rem;
-            font-family: 'Inter', monospace;
-            letter-spacing: 0.5px;
-            transition: border-color 0.2s;
-        }
-
-        .input-group input:focus {
-            outline: none;
-            border-color: #1e3a8a;
-            box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
-        }
-
-        .input-group input::placeholder {
-            color: #9ca3af;
-        }
-
-        .btn-primary {
-            background: #EB6711;
-            color: #fff;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: background 0.2s, transform 0.1s;
-        }
-
-        .btn-primary:hover {
-            background: #d45a0f;
-            transform: translateY(-1px);
-        }
-
-        .btn-primary:active {
-            transform: translateY(0);
-        }
-
-        .btn-primary:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .btn-secondary {
-            background: #f3f4f6;
-            color: #374151;
-            border: 1px solid #e5e7eb;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .btn-secondary:hover {
-            background: #e5e7eb;
-        }
-
-        /* Results Table */
-        .results-section {
-            margin-top: 1.5rem;
-            display: none;
-        }
-
-        .results-section.active {
-            display: block;
-        }
-
-        .results-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.85rem;
-        }
-
-        .results-table th {
-            background: #f9fafb;
-            color: #374151;
-            font-weight: 600;
-            text-align: left;
-            padding: 0.75rem 1rem;
-            border-bottom: 2px solid #e5e7eb;
-        }
-
-        .results-table td {
-            padding: 0.75rem 1rem;
-            border-bottom: 1px solid #f3f4f6;
-            color: #4b5563;
-        }
-
-        .status-valid {
-            color: #059669;
-            font-weight: 600;
-            background: #ecfdf5;
-            padding: 0.2rem 0.5rem;
-            border-radius: 4px;
-            font-size: 0.75rem;
-        }
-
-        .status-invalid {
-            color: #dc2626;
-            font-weight: 600;
-            background: #fef2f2;
-            padding: 0.2rem 0.5rem;
-            border-radius: 4px;
-            font-size: 0.75rem;
-        }
-
-        /* Loading */
-        .loading-spinner {
-            display: inline-block;
-            width: 1rem;
-            height: 1rem;
-            border: 2px solid #fff;
-            border-radius: 50%;
-            border-top-color: transparent;
-            animation: spin 0.6s linear infinite;
-            margin-right: 0.5rem;
-            vertical-align: middle;
-        }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        /* Status Styles */
-        .status-processing {
-            background: #e0f2fe;
-            color: #0369a1;
-        }
-
-        .status-completed {
-            background: #dcfce7;
-            color: #166534;
-        }
-
-        .status-failed {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-
-        .btn-download {
-            background: #1E3A8A;
-            color: #fff;
-            border: none;
-            padding: 0.4rem 0.8rem;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: none;
-        }
-
-        .btn-download:hover {
-            background: #1e40af;
-        }
-
-        /* Bulk Upload */
-        .upload-zone {
-            border: 2px dashed #d1d5db;
-            border-radius: 10px;
-            padding: 2rem;
-            text-align: center;
-            cursor: pointer;
-            transition: border-color 0.2s, background 0.2s;
-            margin-top: 1rem;
-        }
-
-        .upload-zone:hover {
-            border-color: #1e3a8a;
-            background: #eff6ff;
-        }
-
-        .upload-zone .icon {
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .upload-zone .text {
-            color: #6b7280;
-            font-size: 0.85rem;
-        }
-
-        .upload-zone .text strong {
-            color: #1e3a8a;
-        }
-    </style>
+    <link rel="stylesheet" href="tool-layout.css">
 </head>
 
 <body>
-    <!-- Top Bar -->
-    <div class="tool-topbar">
-        <a class="back-btn" onclick="goBack()">← Back to Tools</a>
-        <h1>🔍 GSTIN Validator</h1>
-        <span class="badge">RETURN TOOL</span>
-    </div>
+    <div id="app-topbar" data-active="dashboard"></div>
+    <script src="app-topbar.js"></script>
 
-    <!-- Main Content -->
-    <div class="tool-container">
-        <div class="tool-hero">
-            <h2>GSTIN Validator</h2>
-            <p>Quickly validate any GSTIN number to verify its authenticity, check registration status, and retrieve
-                taxpayer details. Supports single and bulk validation.</p>
-        </div>
+    <div class="tool-layout">
+        <aside class="tool-sidebar" id="tool-sidebar"></aside>
+        <main class="tool-main">
+            <div class="tool-main-inner">
+                <div class="tool-bc">
+                    <a href="clients.html">Firm</a><span style="color:#d1d5db">›</span>
+                    <a href="javascript:goBackToWebView()">GST Workspace</a><span style="color:#d1d5db">›</span>
+                    <span style="color:#374151;font-weight:600">GSTIN Validator</span>
+                </div>
 
-        <!-- Single Validation -->
-        <div class="tool-form-card">
-            <h3>Single GSTIN Validation</h3>
-            <p>Enter a 15-character GSTIN to validate against the government database.</p>
-            <div class="input-group">
-                <input type="text" id="gstin-input" placeholder="e.g. 27AAAAA0000A1Z5" maxlength="15"
-                    style="text-transform:uppercase;">
-                <button class="btn-primary" id="validate-btn" onclick="validateGSTIN()">Validate</button>
-            </div>
-            <div class="results-section" id="single-result">
-                <table class="results-table">
-                    <thead>
-                        <tr>
-                            <th>GSTIN</th>
-                            <th>Legal Name</th>
-                            <th>State</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody id="result-body"></tbody>
-                </table>
-            </div>
-        </div>
+                <div class="tool-page-header">
+                    <h1>🔍 GSTIN <span>Validator</span></h1>
+                    <p>Quickly validate any GSTIN number to verify its authenticity, check registration status, and
+                        retrieve taxpayer details. Supports single and bulk validation.</p>
+                </div>
 
-        <!-- Bulk Validation -->
-        <div class="tool-form-card">
-            <h3>Bulk Validation</h3>
-            <p>Upload an Excel or CSV file with GSTINs for batch validation.</p>
-            <div class="upload-zone" onclick="document.getElementById('bulk-file').click()">
-                <div class="icon">📁</div>
-                <div class="text">
-                    <strong>Click to upload</strong> or drag and drop<br>
-                    Excel (.xlsx) or CSV files supported
+                <!-- Single Validation -->
+                <div class="tool-card">
+                    <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8" />
+                            <path d="m21 21-4.3-4.3" />
+                        </svg> Single GSTIN Validation</h3>
+                    <p>Enter a 15-character GSTIN to validate against the government database.</p>
+                    <div class="tool-input-row">
+                        <input type="text" class="tool-input" id="gstin-input" placeholder="e.g. 27AAAAA0000A1Z5"
+                            maxlength="15"
+                            style="text-transform:uppercase;font-family:'SF Mono','Consolas',monospace;letter-spacing:0.5px"
+                            onkeydown="if(event.key==='Enter')validateGSTIN()">
+                        <button class="tbtn tbtn-primary" id="validate-btn" onclick="validateGSTIN()">Validate</button>
+                    </div>
+                    <div id="single-result" style="display:none;margin-top:1rem">
+                        <table class="tool-table">
+                            <thead>
+                                <tr>
+                                    <th>GSTIN</th>
+                                    <th>Legal Name</th>
+                                    <th>State</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="result-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Bulk Validation -->
+                <div class="tool-card">
+                    <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                            <polyline points="14 2 14 8 20 8" />
+                        </svg> Bulk Validation</h3>
+                    <p>Upload an Excel or CSV file with GSTINs for batch validation.</p>
+                    <div class="tool-upload" onclick="document.getElementById('bulk-file').click()">
+                        <div class="t-icon">📁</div>
+                        <div class="t-title">Click to upload</div>
+                        <div class="t-sub">Excel (.xlsx) or CSV files supported</div>
+                        <div class="t-file" id="bulk-file-name" style="display:none"></div>
+                    </div>
+                    <input type="file" id="bulk-file" accept=".xlsx,.csv" style="display:none"
+                        onchange="handleBulkUpload(this)">
+                    <div style="margin-top:1rem;display:flex;gap:0.65rem">
+                        <button class="tbtn tbtn-primary" id="bulk-validate-btn" onclick="triggerBulkValidation()"
+                            disabled>Validate All</button>
+                        <button class="tbtn tbtn-secondary" onclick="downloadTemplate()">Download Template</button>
+                    </div>
+                </div>
+
+                <!-- Recent Jobs -->
+                <div class="tool-card" id="recent-jobs-container" style="display:none">
+                    <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10" />
+                            <polyline points="12 6 12 12 16 14" />
+                        </svg> Recent Jobs</h3>
+                    <p>Track the status of your bulk GSTIN verification reports.</p>
+                    <div class="tool-jobs" id="jobs-list"></div>
                 </div>
             </div>
-            <input type="file" id="bulk-file" accept=".xlsx,.csv" style="display:none"
-                onchange="handleBulkUpload(this)">
-            <div id="bulk-file-name" style="margin-top:0.75rem; font-size:0.85rem; color:#6b7280;"></div>
-            <div style="margin-top:1rem; display:flex; gap:0.75rem;">
-                <button class="btn-primary" id="bulk-validate-btn" onclick="triggerBulkValidation()" disabled>Validate
-                    All</button>
-                <button class="btn-secondary" onclick="downloadTemplate()">Download Template</button>
-            </div>
-        </div>
-
-        <div class="recent-jobs-card" id="recent-jobs-container" style="display: none;">
-            <h3>Recent Generation Jobs</h3>
-            <p>Track the status of your bulk GSTIN verification reports.</p>
-            <div class="jobs-list" id="jobs-list">
-                <!-- Jobs will be loaded here -->
-            </div>
-        </div>
+        </main>
     </div>
 
+    <script src="tool-sidebar.js"></script>
     <script src="api_config.js?v=2"></script>
+    <script src="session-manager.js?v=2"></script>
     <script>
-        function goBack() {
-            const params = new URLSearchParams(window.location.search);
-            params.set('section', 'tools');
-            window.location.href = 'web-view.html?' + params.toString();
-        }
+        renderToolSidebar('gstin-validator');
 
         async function validateGSTIN() {
             const input = document.getElementById('gstin-input');
             const gstin = input.value.trim().toUpperCase();
-            if (gstin.length !== 15) {
-                alert('Please enter a valid 15-character GSTIN');
-                return;
-            }
+            if (gstin.length !== 15) { alert('Please enter a valid 15-character GSTIN'); return; }
             const btn = document.getElementById('validate-btn');
-            btn.disabled = true;
-            btn.innerHTML = '<span class="loading-spinner"></span> Validating...';
-
+            btn.disabled = true; btn.innerHTML = '<span class="tool-spinner"></span> Validating...';
             try {
                 const token = localStorage.getItem('access_token');
-                const res = await fetch(`${API_BASE_URL}/tools/gstin-validate?gstin=${gstin}`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
+                const res = await fetch(`${API_BASE_URL}/tools/gstin-validate?gstin=${gstin}`, { headers: { 'Authorization': `Bearer ${token}` } });
                 const data = await res.json();
-
                 const resultSection = document.getElementById('single-result');
                 const body = document.getElementById('result-body');
-                resultSection.classList.add('active');
-
+                resultSection.style.display = 'block';
                 if (res.ok && data) {
-                    body.innerHTML = `<tr>
-                        <td style="font-family:monospace;font-weight:600;">${gstin}</td>
-                        <td>${data.legal_name || data.trade_name || 'N/A'}</td>
-                        <td>${data.state || 'N/A'}</td>
-                        <td><span class="${data.status === 'Active' ? 'status-valid' : 'status-invalid'}">${data.status || 'Unknown'}</span></td>
-                    </tr>`;
+                    body.innerHTML = `<tr><td style="font-family:monospace;font-weight:600">${gstin}</td><td>${data.legal_name || data.trade_name || 'N/A'}</td><td>${data.state || 'N/A'}</td><td><span class="${data.status === 'Active' ? 'tool-status-valid' : 'tool-status-invalid'}">${data.status || 'Unknown'}</span></td></tr>`;
                 } else {
-                    body.innerHTML = `<tr>
-                        <td style="font-family:monospace;font-weight:600;">${gstin}</td>
-                        <td colspan="2">${data.detail || 'Validation failed'}</td>
-                        <td><span class="status-invalid">Error</span></td>
-                    </tr>`;
+                    body.innerHTML = `<tr><td style="font-family:monospace;font-weight:600">${gstin}</td><td colspan="2">${data.detail || 'Validation failed'}</td><td><span class="tool-status-invalid">Error</span></td></tr>`;
                 }
-            } catch (err) {
-                alert('Error connecting to backend. Please try again.');
-                console.error(err);
-            } finally {
-                btn.disabled = false;
-                btn.textContent = 'Validate';
-            }
+            } catch (err) { alert('Error connecting to backend.'); console.error(err); }
+            finally { btn.disabled = false; btn.textContent = 'Validate'; }
         }
 
         function handleBulkUpload(input) {
             if (input.files.length > 0) {
-                document.getElementById('bulk-file-name').textContent = '📎 ' + input.files[0].name;
+                const el = document.getElementById('bulk-file-name'); el.textContent = '📎 ' + input.files[0].name; el.style.display = '';
+                input.closest('.tool-upload').classList.add('has-file');
                 document.getElementById('bulk-validate-btn').disabled = false;
             }
         }
@@ -455,37 +138,27 @@
             const fileInput = document.getElementById('bulk-file');
             if (!fileInput.files.length) return;
             const btn = document.getElementById('bulk-validate-btn');
+<<<<<<< HEAD
             const originalText = btn.innerHTML;
             btn.disabled = true;
             btn.innerHTML = '<span class="loading-spinner"></span> Processing...';
 
+=======
+            btn.disabled = true; btn.innerHTML = '<span class="tool-spinner"></span> Processing...';
+>>>>>>> ea8664237128fffa4ca00ea0ee0946ce90945ffa
             try {
-                const formData = new FormData();
-                formData.append('file', fileInput.files[0]);
+                const formData = new FormData(); formData.append('file', fileInput.files[0]);
                 const token = localStorage.getItem('access_token');
                 const params = new URLSearchParams(window.location.search);
                 const clientId = params.get('clientId');
-
-                const uploadRes = await fetch(`${API_BASE_URL}/jobs/upload`, {
-                    method: 'POST',
-                    headers: { 'Authorization': `Bearer ${token}` },
-                    body: formData
-                });
-
+                const uploadRes = await fetch(`${API_BASE_URL}/jobs/upload`, { method: 'POST', headers: { 'Authorization': `Bearer ${token}` }, body: formData });
                 if (uploadRes.ok) {
                     const uploadData = await uploadRes.json();
                     const jobRes = await fetch(`${API_BASE_URL}/jobs/`, {
-                        method: 'POST',
-                        headers: {
-                            'Authorization': `Bearer ${token}`,
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            job_type: 'gst_verify', // Correct job type
-                            input_files: [uploadData.file_key || uploadData.file_path],
-                            client_id: clientId // Send as string UUID
-                        })
+                        method: 'POST', headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ job_type: 'gst_verify', input_files: [uploadData.file_key || uploadData.file_path], client_id: clientId })
                     });
+<<<<<<< HEAD
 
                     if (!jobRes.ok) {
                         const err = await jobRes.json();
@@ -544,89 +217,55 @@
                 btn.disabled = false;
                 btn.innerHTML = originalText;
             }
+=======
+                    if (jobRes.ok) { alert('Bulk validation job started!'); loadJobs(); }
+                    else { const err = await jobRes.json(); alert('Job failed: ' + (err.detail || 'Unknown error')); }
+                }
+            } catch (err) { console.error(err); alert('Error: ' + err.message); }
+            finally { btn.disabled = false; btn.textContent = 'Validate All'; }
+>>>>>>> ea8664237128fffa4ca00ea0ee0946ce90945ffa
         }
 
-        // --- Recent Jobs Logic ---
-        let pollingInterval = null;
+        function downloadTemplate() { alert('Template download will be available soon.'); }
 
+        let pollingInterval = null;
         async function loadJobs() {
             const params = new URLSearchParams(window.location.search);
-            const clientId = params.get('clientId');
-            if (!clientId) return;
-
+            const clientId = params.get('clientId'); if (!clientId) return;
             try {
                 const res = await authFetch(`/jobs/?skip=0&limit=50&client_id=${clientId}`);
                 if (res.ok) {
                     const jobs = await res.json();
                     const verifyJobs = jobs.filter(j => j.job_type === 'gst_verify');
-
                     if (verifyJobs.length > 0) {
                         document.getElementById('recent-jobs-container').style.display = 'block';
                         renderJobs(verifyJobs);
-
-                        const hasInProgress = verifyJobs.some(j => j.status === 'QUEUED' || j.status === 'PROCESSING');
-                        if (hasInProgress && !pollingInterval) {
-                            pollingInterval = setInterval(loadJobs, 5000);
-                        } else if (!hasInProgress && pollingInterval) {
-                            clearInterval(pollingInterval);
-                            pollingInterval = null;
-                        }
+                        const hasIP = verifyJobs.some(j => j.status === 'QUEUED' || j.status === 'PROCESSING');
+                        if (hasIP && !pollingInterval) pollingInterval = setInterval(loadJobs, 5000);
+                        else if (!hasIP && pollingInterval) { clearInterval(pollingInterval); pollingInterval = null; }
                     }
                 }
-            } catch (e) { console.error("Failed to load jobs", e); }
+            } catch (e) { console.error(e) }
         }
 
         function renderJobs(jobs) {
-            const list = document.getElementById('jobs-list');
-            list.innerHTML = jobs.map(job => {
+            document.getElementById('jobs-list').innerHTML = jobs.map(job => {
                 const date = new Date(job.created_at).toLocaleString();
-                let statusClass = 'status-' + job.status.toLowerCase();
-                const jobName = job.job_type.toUpperCase().replace('_', ' ');
-
-                return `
-                    <div class="job-item">
-                        <div class="job-info">
-                            <span class="job-name">${jobName}</span>
-                            <span class="job-meta">Created: ${date}</span>
-                        </div>
-                        <div style="display: flex; align-items: center; gap: 1rem;">
-                            <span class="job-status ${statusClass}">${job.status}</span>
-                            ${job.status === 'COMPLETED' ?
-                        `<button class="btn-download" onclick="downloadJobFile('${job.id}')">⬇ Download</button>` :
-                        ''}
-                        </div>
-                    </div>
-                `;
+                return `<div class="tool-job"><div class="tool-job-info"><span class="tool-job-name">GSTIN Bulk Verification</span><span class="tool-job-meta">Created: ${date}</span></div><div style="display:flex;align-items:center;gap:.75rem"><span class="tool-job-status tj-${job.status.toLowerCase()}">${job.status}</span>${job.status === 'COMPLETED' ? `<button class="tbtn tbtn-download" onclick="downloadJobFile('${job.id}')">⬇ Download</button>` : ''}</div></div>`;
             }).join('');
         }
 
         async function downloadJobFile(jobId) {
             try {
                 const response = await authFetch(`/jobs/${jobId}/download`);
-                if (!response.ok) {
-                    alert('Download failed: ' + response.statusText);
-                    return;
-                }
+                if (!response.ok) { alert('Download failed'); return; }
                 const blob = await response.blob();
                 const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `GST_Verify_${jobId.substring(0, 8)}.xlsx`;
-                document.body.appendChild(a);
-                a.click();
-                window.URL.revokeObjectURL(url);
-                document.body.removeChild(a);
-            } catch (e) {
-                console.error('Download error:', e);
-                alert('Error downloading file');
-            }
+                const a = document.createElement('a'); a.href = url; a.download = `GST_Verify_${jobId.substring(0, 8)}.xlsx`;
+                document.body.appendChild(a); a.click(); window.URL.revokeObjectURL(url); document.body.removeChild(a);
+            } catch (e) { console.error(e); alert('Error downloading file'); }
         }
 
-        function downloadTemplate() {
-            alert('Template download will be available soon.');
-        }
-
-        // Initialize
         loadJobs();
     </script>
 </body>

@@ -4,520 +4,579 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Services - Compliance AI Expert</title>
+    <title>Client Workspace — ComplianceAI Expert</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@700;800&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap"
         rel="stylesheet">
     <style>
-        /* Apply purple gradient background */
+        * {
+            box-sizing: border-box
+        }
+
         body {
-            background: linear-gradient(135deg, #E0E7FF 0%, #F5F3FF 100%);
+            background: #f8fafc;
+            margin: 0;
+            min-height: 100vh
+        }
+
+        /* ══ LAYOUT ══ */
+        .ws-layout {
+            display: flex;
             min-height: 100vh;
+            padding-top: 64px
         }
 
-        .dashboard-container {
-            max-width: 1200px;
-            margin: 80px auto;
-            padding: 2rem 32px;
-        }
-
-        /* Navigation Enhancements */
-        .nav-links {
-            display: flex;
-            align-items: center;
-            gap: 2rem;
-        }
-
-        .nav-link {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: var(--gray-700);
-            text-decoration: none;
-            font-weight: 500;
-            transition: color var(--transition-base);
-        }
-
-        .nav-link:hover {
-            color: var(--primary-blue);
-        }
-
-        .client-info-nav {
+        /* ── Sidebar ── */
+        .ws-sidebar {
+            width: 240px;
+            background: #fff;
+            border-right: 1px solid #e5e7eb;
+            position: fixed;
+            top: 64px;
+            bottom: 0;
+            left: 0;
             display: flex;
             flex-direction: column;
-            align-items: flex-start;
+            z-index: 90;
+            overflow-y: auto
         }
 
-        .client-name-text {
-            font-weight: 600;
-            color: var(--gray-900);
-            font-size: 0.875rem;
-        }
-
-        .client-type-text {
-            font-size: 0.75rem;
-            color: var(--gray-500);
-        }
-
-        /* Dropdown Styles */
-        .navbar-profile {
-            position: relative;
-            cursor: pointer;
-        }
-
-        .nav-dropdown {
-            position: absolute;
-            top: 120%;
-            right: 0;
-            background: white;
-            border: 1px solid var(--gray-200);
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-            width: 200px;
-            display: none;
-            padding: 0.5rem 0;
-            z-index: 9999;
-            margin-top: 0.5rem;
-        }
-
-        .nav-dropdown.active {
-            display: block;
-        }
-
-        .dropdown-item {
-            padding: 0.75rem 1.5rem;
-            color: var(--gray-700);
+        .sb-client-card {
+            padding: 1.15rem 1rem;
+            border-bottom: 1px solid #f1f5f9;
             display: flex;
             align-items: center;
-            gap: 0.75rem;
-            text-decoration: none;
-            transition: background 0.2s;
-            cursor: pointer;
-            font-size: 0.875rem;
-            font-weight: 500;
+            gap: 0.75rem
         }
 
-        .dropdown-item:hover {
-            background: var(--gray-50);
-            color: var(--primary-blue);
-        }
-
-        .dropdown-divider {
-            height: 1px;
-            background: var(--gray-100);
-            margin: 0.5rem 0;
-        }
-
-        /* Breadcrumb */
-        .breadcrumb {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-bottom: 2rem;
-            font-size: 0.875rem;
-            color: var(--gray-600);
-        }
-
-        .breadcrumb a {
-            color: var(--primary-blue);
-            text-decoration: none;
-            transition: color var(--transition-base);
-        }
-
-        .breadcrumb a:hover {
-            color: var(--primary-blue-dark);
-        }
-
-        .breadcrumb span:not(:has(a)) {
-            color: var(--gray-400);
-        }
-
-        /* Page Header */
-        .page-header-section {
-            margin-bottom: 2rem;
-        }
-
-        .page-title {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--gray-900);
-            margin-bottom: 0.5rem;
-            font-family: var(--font-display);
-        }
-
-        .page-subtitle {
-            font-size: 1rem;
-            color: var(--gray-600);
-            margin-bottom: 1.5rem;
-        }
-
-        .page-description-styled {
-            display: grid;
-            gap: 1.5rem;
-            margin-top: 1.5rem;
-        }
-
-        .description-block {
-            display: flex;
-            gap: 1.25rem;
-            padding: 1.75rem;
-            background: white;
+        .sb-avatar {
+            width: 40px;
+            height: 40px;
             border-radius: 12px;
-            border-left: 4px solid var(--primary-blue);
-            box-shadow: 0 2px 8px -2px rgba(0, 0, 0, 0.08);
-        }
-
-        .description-icon {
-            font-size: 2rem;
-            flex-shrink: 0;
-        }
-
-        .description-block h4 {
-            font-size: 1.125rem;
-            font-weight: 700;
-            color: var(--gray-900);
-            margin-bottom: 0.5rem;
-        }
-
-        .description-block p {
-            font-size: 0.9375rem;
-            color: var(--gray-600);
-            line-height: 1.7;
-            margin: 0;
-        }
-
-        /* Client Details Card */
-        .client-details-card {
-            background: white;
-            border-radius: 16px;
-            padding: 2rem;
-            margin-bottom: 3rem;
-            box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.08);
-        }
-
-        .client-details-header {
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-            padding-bottom: 1.5rem;
-            border-bottom: 1px solid var(--gray-100);
-            justify-content: space-between;
-        }
-
-        .client-header-actions {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .client-icon-large {
-            width: 64px;
-            height: 64px;
-            background: linear-gradient(135deg, #1E3A8A, #1E40AF);
-            border-radius: 12px;
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
-            font-size: 2rem;
-            font-weight: 700;
-            flex-shrink: 0;
+            font-size: 1.1rem;
+            font-weight: 800;
+            font-family: 'Outfit', sans-serif;
+            color: #fff;
+            flex-shrink: 0
         }
 
-        .client-main-info {
+        .sb-client-info {
             flex: 1;
+            min-width: 0
         }
 
-        .client-main-info h2 {
-            font-size: 1.75rem;
+        .sb-client-name {
+            font-size: 0.85rem;
             font-weight: 700;
-            color: var(--gray-900);
-            margin-bottom: 0.5rem;
+            color: #111827;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis
         }
 
-        .client-entity-badge {
-            display: inline-block;
-            background: var(--gray-100);
-            color: var(--gray-700);
-            padding: 0.25rem 0.75rem;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            font-weight: 600;
+        .sb-client-type {
+            font-size: 0.65rem;
+            color: #9ca3af;
+            font-weight: 500
+        }
+
+        .sb-section {
+            padding: 0.75rem 1rem
+        }
+
+        .sb-section-label {
+            font-size: 0.62rem;
+            font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.08em;
+            color: #9ca3af;
+            padding: 0.5rem 0.75rem;
+            margin-bottom: 0.1rem
         }
 
-        .client-overview-inline {
-            font-size: 0.875rem;
-            color: var(--gray-600);
-            line-height: 1.6;
-            margin-top: 0.75rem;
-            max-width: 600px;
-        }
-
-        .client-details-body {
-            padding-top: 1.5rem;
-        }
-
-        .detail-row {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .detail-item {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .detail-label {
-            font-size: 0.75rem;
-            color: var(--gray-500);
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .detail-value {
-            font-size: 1rem;
-            color: var(--gray-900);
-            font-weight: 500;
-            font-family: monospace;
-        }
-
-        .client-stats-row {
-            display: flex;
-            gap: 2rem;
-            padding-top: 1rem;
-            border-top: 1px solid var(--gray-100);
-        }
-
-        .stat-item-small {
+        .sb-item {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
+            gap: 0.6rem;
+            padding: 0.5rem 0.75rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #4b5563;
+            cursor: pointer;
+            transition: all .2s;
+            text-decoration: none;
+            margin-bottom: 1px
         }
 
-        .stat-icon-small {
-            font-size: 1.5rem;
+        .sb-item:hover {
+            background: #f1f5f9;
+            color: #1e3a8a
         }
 
-        .stat-value-small {
-            font-size: 1.5rem;
+        .sb-item.active {
+            background: #eff6ff;
+            color: #1e3a8a;
+            font-weight: 600
+        }
+
+        .sb-item svg {
+            flex-shrink: 0;
+            width: 16px;
+            height: 16px
+        }
+
+        .sb-badge {
+            margin-left: auto;
+            font-size: 0.6rem;
             font-weight: 700;
-            color: var(--gray-900);
-            line-height: 1;
+            background: #dbeafe;
+            color: #1e3a8a;
+            padding: 1px 6px;
+            border-radius: 10px
         }
 
-        .stat-label-small {
+        .sb-badge.green {
+            background: #dcfce7;
+            color: #16a34a
+        }
+
+        .sb-divider {
+            height: 1px;
+            background: #f1f5f9;
+            margin: 0.4rem 1rem
+        }
+
+        .sb-back {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.85rem 1rem;
+            border-top: 1px solid #f1f5f9;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #6b7280;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all .2s;
+            margin-top: auto
+        }
+
+        .sb-back:hover {
+            color: #1e3a8a;
+            background: #f8fafc
+        }
+
+        .sb-back svg {
+            width: 16px;
+            height: 16px
+        }
+
+        /* ── Main ── */
+        .ws-main {
+            margin-left: 240px;
+            flex: 1;
+            padding: 1.5rem 2rem 3rem
+        }
+
+        /* ── Breadcrumb ── */
+        .ws-breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
             font-size: 0.75rem;
-            color: var(--gray-500);
-            margin-top: 0.25rem;
+            color: #9ca3af;
+            margin-bottom: 1rem
         }
 
-        /* Services Section */
-        .services-section-title {
+        .ws-breadcrumb a {
+            color: #6b7280;
+            text-decoration: none;
+            font-weight: 500
+        }
+
+        .ws-breadcrumb a:hover {
+            color: #1e3a8a
+        }
+
+        .ws-breadcrumb .sep {
+            font-size: 0.65rem
+        }
+
+        /* ── Client Header ── */
+        .ws-client-header {
+            background: #fff;
+            border: 1px solid #f1f5f9;
+            border-radius: 14px;
+            padding: 1.35rem 1.5rem;
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, .03)
+        }
+
+        .ws-hero-avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #1e3a8a, #2563eb);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 800;
+            font-family: 'Outfit', sans-serif;
+            color: #fff;
+            flex-shrink: 0
+        }
+
+        .ws-hero-info {
+            flex: 1;
+            min-width: 0
+        }
+
+        .ws-hero-info h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: #111827;
+            margin: 0 0 0.15rem;
+            letter-spacing: -0.01em
+        }
+
+        .ws-hero-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.2rem 0.65rem;
+            background: rgba(30, 58, 138, .06);
+            border: 1px solid rgba(30, 58, 138, .12);
+            border-radius: 999px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: #1e3a8a;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-bottom: 0.5rem
+        }
+
+        .ws-hero-ids {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-top: 0.4rem
+        }
+
+        .ws-id-item {
+            display: flex;
+            flex-direction: column;
+            gap: 1px
+        }
+
+        .ws-id-label {
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #9ca3af;
+            font-weight: 700
+        }
+
+        .ws-id-value {
+            font-size: 0.8rem;
+            color: #374151;
+            font-weight: 600
+        }
+
+        .ws-hero-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-shrink: 0
+        }
+
+        .btn-ws {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.5rem 0.9rem;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+            background: #fff;
+            color: #374151;
+            font-weight: 600;
+            font-size: 0.78rem;
+            cursor: pointer;
+            transition: all .2s;
+            font-family: inherit;
+            text-decoration: none
+        }
+
+        .btn-ws:hover {
+            background: #f9fafb;
+            border-color: #1e3a8a;
+            color: #1e3a8a
+        }
+
+        .btn-ws.primary {
+            background: #1e3a8a;
+            color: #fff;
+            border-color: #1e3a8a;
+            box-shadow: 0 2px 6px rgba(30, 58, 138, .15)
+        }
+
+        .btn-ws.primary:hover {
+            background: #1e40af
+        }
+
+        /* ── Stats ── */
+        .ws-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem
+        }
+
+        .ws-stat {
+            background: #fff;
+            border: 1px solid #f1f5f9;
+            border-radius: 12px;
+            padding: 1rem 1.15rem;
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            transition: all .2s
+        }
+
+        .ws-stat:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 14px rgba(0, 0, 0, .05)
+        }
+
+        .ws-stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0
+        }
+
+        .ws-stat-num {
+            font-size: 1.35rem;
+            font-weight: 800;
+            font-family: 'Outfit', sans-serif;
+            color: #111827;
+            line-height: 1
+        }
+
+        .ws-stat-label {
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #9ca3af;
+            margin-top: 0.1rem
+        }
+
+        /* ── Services Section ── */
+        .ws-section-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 2rem;
+            margin-bottom: 1rem
         }
 
-        .services-section-title h2 {
-            font-size: 1.5rem;
+        .ws-section-header h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
             font-weight: 700;
-            color: var(--gray-900);
+            color: #111827;
+            margin: 0
+        }
+
+        .ws-section-header p {
+            font-size: 0.78rem;
+            color: #6b7280;
+            margin: 0.15rem 0 0
+        }
+
+        .btn-add-svc {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.45rem 0.9rem;
+            background: #1e3a8a;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.78rem;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all .2s;
+            box-shadow: 0 2px 6px rgba(30, 58, 138, .15)
+        }
+
+        .btn-add-svc:hover {
+            background: #1e40af;
+            transform: translateY(-1px)
         }
 
         .services-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem
         }
 
-        /* Enhanced Service Cards */
-        .service-box-enhanced {
-            background: white;
-            border: 1px solid var(--gray-100);
-            border-radius: 16px;
-            padding: 2rem;
+        .service-card {
+            background: #fff;
+            border: 1px solid #f1f5f9;
+            border-radius: 14px;
+            padding: 1.35rem;
+            position: relative;
+            overflow: hidden;
             cursor: pointer;
-            transition: all var(--transition-base);
+            transition: all .3s cubic-bezier(.4, 0, .2, 1);
             display: flex;
             flex-direction: column;
-            min-height: 240px;
+            min-height: 180px
         }
 
-        .service-box-enhanced:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-            border-color: var(--primary-blue-light);
+        .service-card:hover {
+            border-color: #1e3a8a;
+            box-shadow: 0 8px 24px -8px rgba(30, 58, 138, .10);
+            transform: translateY(-3px)
         }
 
-        .service-icon-large {
-            font-size: 3rem;
-            margin-bottom: 1rem;
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            opacity: 0;
+            transition: opacity .25s
         }
 
-        .service-box-enhanced h3 {
-            font-size: 1.25rem;
-            font-weight: 700;
-            margin-bottom: 0.75rem;
-            color: var(--gray-900);
+        .service-card:hover::before {
+            opacity: 1
         }
 
-        .service-description {
-            font-size: 0.875rem;
-            color: var(--gray-600);
-            line-height: 1.6;
-            flex: 1;
-            margin-bottom: 1.5rem;
+        .service-card[data-color="blue"]::before {
+            background: linear-gradient(90deg, #3b82f6, #60a5fa)
         }
 
-        .service-footer {
+        .service-card[data-color="green"]::before {
+            background: linear-gradient(90deg, #10b981, #34d399)
+        }
+
+        .service-card[data-color="purple"]::before {
+            background: linear-gradient(90deg, #8b5cf6, #a78bfa)
+        }
+
+        .service-card[data-color="orange"]::before {
+            background: linear-gradient(90deg, #f59e0b, #fbbf24)
+        }
+
+        .service-card[data-color="pink"]::before {
+            background: linear-gradient(90deg, #ec4899, #f472b6)
+        }
+
+        .service-card[data-color="teal"]::before {
+            background: linear-gradient(90deg, #14b8a6, #2dd4bf)
+        }
+
+        .svc-card-top {
             display: flex;
-            justify-content: space-between;
+            align-items: flex-start;
+            gap: 0.85rem;
+            margin-bottom: 0.65rem
+        }
+
+        .svc-icon-box {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
             align-items: center;
-            padding-top: 1rem;
-            border-top: 1px solid var(--gray-100);
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0
         }
 
-        .service-action {
-            font-size: 0.875rem;
-            color: var(--primary-blue);
-            font-weight: 600;
-        }
-
-        .status-pill {
-            font-size: 0.75rem;
-            padding: 0.4rem 1rem;
-            border-radius: 9999px;
+        .svc-card-title {
+            font-size: 0.92rem;
             font-weight: 700;
+            color: #111827;
+            margin-bottom: 0.1rem
+        }
+
+        .svc-card-status {
+            font-size: 0.62rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 16px;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.04em
         }
 
         .status-active {
-            background: #E0F2FE;
-            color: #0369A1;
+            background: #ecfdf5;
+            color: #065f46
         }
 
-        .add-service-box {
-            border: 2px dashed var(--gray-200);
-            background: transparent;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
+        .svc-card-desc {
+            font-size: 0.78rem;
+            color: #6b7280;
+            line-height: 1.55;
+            flex: 1;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden
         }
 
-        .add-service-box:hover {
-            border-color: var(--primary-blue);
-            background: #F0F9FF;
-        }
-
-        /* View Mode Information Section */
-        .view-mode-info-section {
-            margin-top: 4rem;
-            padding: 2.5rem;
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.08);
-        }
-
-        .info-header {
-            text-align: center;
-            margin-bottom: 2.5rem;
-        }
-
-        .info-header h3 {
-            font-size: 1.75rem;
-            font-weight: 700;
-            color: var(--gray-900);
-            margin-bottom: 0.5rem;
-        }
-
-        .info-header p {
-            font-size: 1rem;
-            color: var(--gray-600);
-        }
-
-        .view-mode-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        .view-mode-card {
-            padding: 2rem;
-            border: 2px solid var(--gray-100);
-            border-radius: 12px;
-            transition: all var(--transition-base);
-        }
-
-        .view-mode-icon {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .view-mode-card h4 {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: var(--gray-900);
-            margin-bottom: 1rem;
-        }
-
-        .view-mode-description {
-            font-size: 0.9375rem;
-            color: var(--gray-600);
-            line-height: 1.6;
-            margin-bottom: 1.5rem;
-        }
-
-        .view-mode-features {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .view-mode-features li {
-            font-size: 0.875rem;
-            color: var(--gray-700);
-            padding: 0.5rem 0;
-            border-bottom: 1px solid var(--gray-100);
-        }
-
-        .view-mode-features li:last-child {
-            border-bottom: none;
-        }
-
-        .view-mode-note {
+        .svc-card-footer {
             display: flex;
-            align-items: flex-start;
-            gap: 1rem;
-            padding: 1.5rem;
-            background: linear-gradient(135deg, #EFF6FF, #F0F9FF);
-            border-radius: 12px;
-            border-left: 4px solid var(--primary-blue);
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 0.65rem;
+            margin-top: auto;
+            border-top: 1px solid #f8fafc
         }
 
-        .note-icon {
-            font-size: 1.5rem;
-            flex-shrink: 0;
+        .svc-open-link {
+            font-size: 0.78rem;
+            color: #1e3a8a;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.2rem;
+            transition: gap .2s
         }
 
-        .view-mode-note p {
-            margin: 0;
-            font-size: 0.9375rem;
-            color: var(--gray-700);
-            line-height: 1.6;
+        .service-card:hover .svc-open-link {
+            gap: 0.4rem
         }
 
-        /* Modal Styles */
+        .svc-card-meta {
+            font-size: 0.68rem;
+            color: #9ca3af
+        }
+
+        /* ── Modals ── */
         .modal {
             display: none;
             position: fixed;
@@ -525,347 +584,508 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
+            background: rgba(15, 23, 42, .3);
+            backdrop-filter: blur(2px);
+            z-index: 2000;
             align-items: center;
             justify-content: center;
+            padding: 1rem
         }
 
         .modal.active {
             display: flex;
+            animation: modalIn .2s ease-out
+        }
+
+        @keyframes modalIn {
+            from {
+                opacity: 0
+            }
+
+            to {
+                opacity: 1
+            }
         }
 
         .modal-content {
-            background: white;
-            padding: 3rem;
-            border-radius: var(--radius-2xl);
+            background: #fff;
+            border-radius: 16px;
             width: 100%;
-            max-width: 600px;
-            text-align: center;
+            max-width: 520px;
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, .2);
+            overflow: hidden
+        }
+
+        .modal-top {
+            padding: 1.5rem 1.5rem 1rem;
+            border-bottom: 1px solid #f1f5f9
+        }
+
+        .modal-top h2 {
+            font-size: 1.15rem;
+            font-weight: 800;
+            font-family: 'Outfit', sans-serif;
+            color: #111827;
+            margin: 0
+        }
+
+        .modal-top p {
+            font-size: 0.8rem;
+            color: #6b7280;
+            margin: 0.15rem 0 0
+        }
+
+        .modal-body-content {
+            padding: 1.25rem 1.5rem;
+            max-height: 50vh;
+            overflow-y: auto
+        }
+
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            background: #f9fafb;
+            border-top: 1px solid #f1f5f9;
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.65rem
+        }
+
+        .btn-modal {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all .2s
+        }
+
+        .btn-modal.secondary {
+            background: #fff;
+            border: 1px solid #d1d5db;
+            color: #374151
+        }
+
+        .btn-modal.primary {
+            background: #1e3a8a;
+            color: #fff;
+            border: none;
+            box-shadow: 0 2px 6px rgba(30, 58, 138, .15)
+        }
+
+        .btn-modal.primary:hover {
+            background: #1e40af
+        }
+
+        .btn-modal.primary:disabled {
+            opacity: .5;
+            cursor: not-allowed
         }
 
         .view-options {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-            margin-top: 2rem;
+            gap: 1rem;
+            margin: 1rem 0
         }
 
         .view-option {
-            border: 2px solid var(--gray-200);
-            padding: 2rem;
-            border-radius: var(--radius-xl);
+            border: 2px solid #e5e7eb;
+            padding: 1.25rem;
+            border-radius: 12px;
             cursor: pointer;
-            transition: all var(--transition-base);
+            transition: all .2s;
+            text-align: center
         }
 
         .view-option:hover {
-            border-color: var(--primary-blue);
-            background: var(--gray-50);
+            border-color: #1e3a8a;
+            background: #fafbff;
+            transform: translateY(-2px)
         }
 
-        .view-option .icon {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
+        .view-option .vo-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            margin-bottom: 0.65rem
         }
 
         .view-option h4 {
-            margin-bottom: 0.5rem;
-            font-size: 1.25rem;
+            font-size: 0.9rem;
+            font-weight: 700;
+            margin: 0 0 0.2rem;
+            color: #111827
         }
 
         .view-option p {
-            font-size: 0.875rem;
-            color: var(--gray-600);
+            font-size: 0.72rem;
+            color: #6b7280;
+            line-height: 1.45;
+            margin: 0
         }
 
-        .service-selection-list {
-            margin-top: 1.5rem;
-            text-align: left;
-            max-height: 400px;
-            overflow-y: auto;
-        }
-
-        .service-selection-item {
+        .svc-select-item {
             display: flex;
             align-items: center;
-            gap: 1rem;
-            padding: 1rem;
-            border: 1px solid var(--gray-200);
-            border-radius: var(--radius-lg);
-            margin-bottom: 0.75rem;
+            gap: 0.85rem;
+            padding: 0.85rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            margin-bottom: 0.6rem;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: all .15s
         }
 
-        .service-selection-item:hover {
-            background: var(--gray-50);
+        .svc-select-item:hover {
+            background: #f9fafb
         }
 
-        .service-selection-item input {
-            width: 20px;
-            height: 20px;
+        .svc-select-item.disabled {
+            opacity: .5;
+            cursor: not-allowed;
+            background: #f9fafb
         }
 
-        .service-info h4 {
-            margin: 0;
-            font-size: 1rem;
+        .svc-select-item input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: #1e3a8a
         }
 
-        .service-info p {
-            margin: 0;
-            font-size: 0.8rem;
-            color: var(--gray-500);
+        .svc-select-info h4 {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin: 0 0 1px;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem
+        }
+
+        .svc-select-info p {
+            font-size: 0.72rem;
+            color: #6b7280;
+            margin: 0
+        }
+
+        .tag-soon {
+            font-size: 0.6rem;
+            background: #fef3c7;
+            color: #92400e;
+            padding: 1px 5px;
+            border-radius: 4px;
+            font-weight: 700
+        }
+
+        .company-item {
+            padding: 0.7rem 1rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            margin-bottom: 0.4rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            transition: all .15s;
+            font-weight: 500;
+            font-size: 0.82rem
+        }
+
+        .company-item:hover {
+            background: #f9fafb;
+            border-color: #3b82f6
+        }
+
+        .company-item.selected {
+            border-color: #1e3a8a;
+            background: #eff6ff;
+            box-shadow: 0 0 0 2px rgba(30, 58, 138, .1)
+        }
+
+        .company-icon {
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            border-radius: 7px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 800;
+            font-size: 0.75rem
+        }
+
+        @media(max-width:768px) {
+            .ws-sidebar {
+                display: none
+            }
+
+            .ws-main {
+                margin-left: 0
+            }
+
+            .ws-stats {
+                grid-template-columns: 1fr
+            }
+
+            .services-grid {
+                grid-template-columns: 1fr
+            }
         }
     </style>
 </head>
 
 <body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="navbar-container">
-            <a href="clients.html" class="logo"
-                style="text-decoration: none; display: flex; align-items: center; gap: 0.75rem;">
-                <div class="logo-icon"
-                    style="background: #1E3A8A; color: white; padding: 4px 10px; border-radius: 6px; font-weight: 800; display: flex; align-items: center; justify-content: center; width: 32px; height: 32px;">
-                    CE</div>
-                <span style="font-weight: 700; color: #1E3A8A; font-size: 1.1rem;">Compliance AI Expert</span>
-            </a>
+    <!-- Shared App Topbar -->
+    <div id="app-topbar" data-active="dashboard"></div>
+    <script src="app-topbar.js"></script>
 
-            <!-- Center Links -->
-            <div style="display: flex; gap: 2rem; margin-left: auto; margin-right: 2rem; align-items: center;">
-                <a href="clients.html"
-                    style="color: #4B5563; text-decoration: none; font-weight: 500; font-size: 0.95rem;">Home</a>
-                <a href="clients.html"
-                    style="color: #4B5563; text-decoration: none; font-weight: 500; font-size: 0.95rem;">Clients</a>
-                <a href="ai-gpt.html"
-                    style="color: #4B5563; text-decoration: none; font-weight: 500; font-size: 0.95rem;">
-                    AI GPT <span
-                        style="background: #E0E7FF; color: #4338CA; padding: 0.1rem 0.4rem; border-radius: 4px; font-size: 0.7rem; font-weight: 700; margin-left: 0.25rem;">NEW</span>
+    <div class="ws-layout">
+        <!-- ══ LEFT SIDEBAR ══ -->
+        <aside class="ws-sidebar">
+            <div class="sb-client-card">
+                <div class="sb-avatar" id="sb-avatar">C</div>
+                <div class="sb-client-info">
+                    <div class="sb-client-name" id="sb-name">Loading…</div>
+                    <div class="sb-client-type" id="sb-type">Client</div>
+                </div>
+            </div>
+            <div class="sb-section">
+                <div class="sb-section-label">Workspace</div>
+                <a href="#" class="sb-item active" onclick="event.preventDefault()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7" rx="1" />
+                        <rect x="14" y="3" width="7" height="7" rx="1" />
+                        <rect x="3" y="14" width="7" height="7" rx="1" />
+                        <rect x="14" y="14" width="7" height="7" rx="1" />
+                    </svg>
+                    Overview
+                </a>
+                <a href="#" class="sb-item" id="sb-svc-link"
+                    onclick="event.preventDefault();document.getElementById('services-grid').scrollIntoView({behavior:'smooth'})">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                        <polyline points="14 2 14 8 20 8" />
+                    </svg>
+                    Services
+                    <span class="sb-badge green" id="sb-svc-count">0</span>
+                </a>
+                <a href="#" class="sb-item" id="sb-drive-link"
+                    onclick="event.preventDefault();window.location.href='drive.html?clientId='+new URLSearchParams(window.location.search).get('clientId')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
+                    </svg>
+                    Drive
                 </a>
             </div>
+            <div class="sb-divider"></div>
+            <div class="sb-section">
+                <div class="sb-section-label">Quick Access</div>
+                <a href="ca-certificates.html" class="sb-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                        <polyline points="14 2 14 8 20 8" />
+                    </svg>
+                    CA Certificates
+                </a>
+                <a href="agreements.html" class="sb-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                        <polyline points="14 2 14 8 20 8" />
+                        <line x1="16" y1="13" x2="8" y2="13" />
+                        <line x1="16" y1="17" x2="8" y2="17" />
+                    </svg>
+                    Agreements
+                </a>
+                <a href="ai-gpt.html" class="sb-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2a3 3 0 0 0-3 3v4a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z" />
+                        <path d="M19 10v1a7 7 0 0 1-14 0v-1" />
+                        <line x1="12" y1="19" x2="12" y2="22" />
+                    </svg>
+                    AI GPT
+                </a>
+                <a href="tool-document-reader.html" class="sb-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+                        <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+                    </svg>
+                    Doc Reader
+                </a>
+            </div>
+            <div class="sb-divider"></div>
+            <div class="sb-section">
+                <div class="sb-section-label">Actions</div>
+                <a href="#" class="sb-item" onclick="event.preventDefault();openSyncModal()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                        <path d="M3 3v5h5" />
+                        <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
+                        <path d="M16 16h5v5" />
+                    </svg>
+                    Sync Tally
+                </a>
+                <a href="#" class="sb-item" onclick="event.preventDefault();showAddService()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 5v14" />
+                        <path d="M5 12h14" />
+                    </svg>
+                    Add Service
+                </a>
+            </div>
+            <a href="clients.html" class="sb-back">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="m15 18-6-6 6-6" />
+                </svg>
+                Back to Firm
+            </a>
+        </aside>
 
-            <div class="navbar-profile" onclick="toggleProfileDropdown(event)">
-                <div style="display:flex; align-items:center; gap:0.75rem">
-                    <div class="user-avatar-small" id="nav-avatar">U</div>
-                </div>
-                <!-- Dropdown Menu -->
-                <div class="nav-dropdown" id="profile-dropdown">
-                    <a href="profile.html" class="dropdown-item">
-                        <span>👤</span> My Profile
-                    </a>
-                    <a href="integrations.html" class="dropdown-item">
-                        <span>🔌</span> Integrations
-                    </a>
-                    <div class="dropdown-divider"></div>
-                    <div onclick="logout()" class="dropdown-item" style="color: #EF4444;">
-                        <span>🚪</span> Logout
+        <!-- ══ MAIN CONTENT ══ -->
+        <main class="ws-main">
+            <!-- Breadcrumb -->
+            <div class="ws-breadcrumb">
+                <a href="clients.html">Firm</a>
+                <span class="sep">›</span>
+                <span id="breadcrumb-client" style="color:#374151;font-weight:600">Client</span>
+            </div>
+
+            <!-- Client Header -->
+            <div class="ws-client-header">
+                <div class="ws-hero-avatar" id="hero-avatar">C</div>
+                <div class="ws-hero-info">
+                    <div class="ws-hero-tag" id="client-entity-type">Individual</div>
+                    <h1 id="client-name">Loading…</h1>
+                    <div class="ws-hero-ids">
+                        <div class="ws-id-item"><span class="ws-id-label">GSTIN</span><span class="ws-id-value"
+                                id="client-gstin">—</span></div>
+                        <div class="ws-id-item"><span class="ws-id-label">PAN</span><span class="ws-id-value"
+                                id="client-pan">—</span></div>
+                        <div class="ws-id-item"><span class="ws-id-label">CIN</span><span class="ws-id-value"
+                                id="client-cin">—</span></div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </nav>
-
-    <div class="dashboard-container">
-        <!-- Breadcrumb -->
-        <div class="breadcrumb">
-            <a href="clients.html">Home</a>
-            <span>›</span>
-            <a href="clients.html">Clients</a>
-            <span>›</span>
-            <span id="breadcrumb-client">Client</span>
-            <span>›</span>
-            <span>Services</span>
-        </div>
-
-        <!-- Page Header -->
-        <div class="page-header-section">
-            <h1 class="page-title">Service Dashboard</h1>
-            <p class="page-subtitle">Manage compliance services for <span id="subtitle-client-name">your client</span>
-            </p>
-            <div class="page-description">
-                <p>Welcome to your centralized service management hub. This dashboard provides a comprehensive overview
-                    of all active compliance services for your client. Each service is powered by AI-driven automation,
-                    intelligent error detection, and real-time compliance monitoring to ensure accuracy and regulatory
-                    adherence.</p>
-                <p>Click on any service card below to access detailed workflows, upload documents, track progress, and
-                    receive AI-powered recommendations. Our platform combines professional-grade compliance tools with
-                    intelligent assistance to streamline your workflow and minimize compliance risks.</p>
-            </div>
-        </div>
-
-        <!-- Client Details Card -->
-        <div class="client-details-card">
-            <div class="client-details-header">
-                <div class="client-icon-large" id="client-icon-large">C</div>
-                <div class="client-main-info">
-                    <h2 id="client-details-name">Loading...</h2>
-                    <span class="client-entity-badge" id="client-entity-type">Individual</span>
-                    <p class="client-overview-inline">GSTIN: <span id="client-gstin">-</span> • PAN: <span
-                            id="client-pan">-</span> • CIN: <span id="client-cin">-</span></p>
-                </div>
-
-                <!-- Right: Actions -->
-                <div class="client-header-actions">
-                    <button class="btn btn-secondary" onclick="openSyncModal()">
-                        <span style="color: #F59E0B; font-weight: 900;">T</span> Sync Tally Data
+                <div class="ws-hero-actions">
+                    <button class="btn-ws" onclick="openSyncModal()">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                            <path d="M3 3v5h5" />
+                            <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
+                            <path d="M16 16h5v5" />
+                        </svg>
+                        Sync Tally
                     </button>
                 </div>
             </div>
 
-            <div class="client-details-body">
-                <div class="detail-row">
-                    <div class="detail-item">
-                        <span class="detail-label">GSTIN</span>
-                        <span class="detail-value" id="client-gstin">-</span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="detail-label">PAN</span>
-                        <span class="detail-value" id="client-pan">-</span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="detail-label">CIN</span>
-                        <span class="detail-value" id="client-cin">-</span>
+            <!-- Stats -->
+            <div class="ws-stats">
+                <div class="ws-stat">
+                    <div class="ws-stat-icon" style="background:#eff6ff;color:#3b82f6">⚡</div>
+                    <div>
+                        <div class="ws-stat-num" id="stat-services">0</div>
+                        <div class="ws-stat-label">Active Services</div>
                     </div>
                 </div>
-
-                <div class="client-stats-row">
-                    <div class="stat-item-small">
-                        <span class="stat-icon-small">📊</span>
-                        <div>
-                            <div class="stat-value-small" id="active-services-count">0</div>
-                            <div class="stat-label-small">Active Services</div>
-                        </div>
+                <div class="ws-stat">
+                    <div class="ws-stat-icon" style="background:#ecfdf5;color:#059669">📄</div>
+                    <div>
+                        <div class="ws-stat-num" id="stat-gstins">0</div>
+                        <div class="ws-stat-label">GSTINs</div>
                     </div>
-                    <div class="stat-item-small">
-                        <span class="stat-icon-small">📅</span>
-                        <div>
-                            <div class="stat-value-small" id="last-updated">Today</div>
-                            <div class="stat-label-small">Last Updated</div>
-                        </div>
+                </div>
+                <div class="ws-stat">
+                    <div class="ws-stat-icon" style="background:#f5f3ff;color:#7c3aed">🕐</div>
+                    <div>
+                        <div class="ws-stat-num" id="stat-updated" style="font-size:1rem">Today</div>
+                        <div class="ws-stat-label">Last Updated</div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="services-section-title">
-            <h2>Available Services</h2>
-            <button class="btn btn-primary" onclick="showAddService()">+ Add New Service</button>
-        </div>
-
-        <div id="services-grid" class="services-grid">
-            <!-- Services loaded here -->
-        </div>
-
-        <!-- View Mode Information Section -->
-        <div class="view-mode-info-section">
-            <div class="info-header">
-                <h3>📱 Choose Your Workspace Experience</h3>
-                <p>Select the view that best suits your workflow when accessing any service</p>
-            </div>
-
-            <div class="view-mode-cards">
-                <div class="view-mode-card">
-                    <div class="view-mode-icon">💼</div>
-                    <h4>Web View (Professional Mode)</h4>
-                    <p class="view-mode-description">
-                        A structured, traditional interface designed for professionals who prefer organized checklists,
-                        detailed forms, and panel-based workflows. Perfect for accountants and compliance officers who
-                        need comprehensive control and visibility over every step of the process.
-                    </p>
-                    <ul class="view-mode-features">
-                        <li>✓ Structured checklists and step-by-step workflows</li>
-                        <li>✓ Multi-panel interface with detailed forms</li>
-                        <li>✓ Complete data visibility and control</li>
-                        <li>✓ Ideal for complex compliance tasks</li>
-                    </ul>
+            <!-- Services -->
+            <div class="ws-section-header">
+                <div>
+                    <h2>Available Services</h2>
+                    <p>Select a module to open your professional workspace.</p>
                 </div>
-
-                <div class="view-mode-card">
-                    <div class="view-mode-icon">💬</div>
-                    <h4>AI Expert View (Guided Mode)</h4>
-                    <p class="view-mode-description">
-                        An intelligent, conversational interface powered by AI that guides you through compliance tasks
-                        with natural language interactions. The AI assistant asks relevant questions, provides
-                        contextual
-                        help, and simplifies complex processes into easy-to-understand conversations.
-                    </p>
-                    <ul class="view-mode-features">
-                        <li>✓ Conversational AI-guided assistance</li>
-                        <li>✓ Simplified, question-based workflow</li>
-                        <li>✓ Contextual help and smart suggestions</li>
-                        <li>✓ Perfect for quick tasks and beginners</li>
-                    </ul>
-                </div>
+                <button class="btn-add-svc" onclick="showAddService()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5">
+                        <path d="M12 5v14" />
+                        <path d="M5 12h14" />
+                    </svg>
+                    Add Service
+                </button>
             </div>
-
-            <div class="view-mode-note">
-                <span class="note-icon">💡</span>
-                <p><strong>Pro Tip:</strong> You can switch between views at any time during your work. Choose Web View
-                    for detailed control or AI Expert View for guided simplicity.</p>
-            </div>
-        </div>
+            <div id="services-grid" class="services-grid"></div>
+        </main>
     </div>
 
-    <!-- View Selection Modal -->
+    <!-- ══ VIEW SELECTION MODAL ══ -->
     <div id="view-modal" class="modal">
         <div class="modal-content">
-            <h2 id="view-modal-title">Select Your Workspace</h2>
-            <p>How would you like to process this service?</p>
-
-            <div class="view-options">
-                <div class="view-option" onclick="navigateToView('web')">
-                    <div class="icon">💼</div>
-                    <h4>Web View</h4>
-                    <p>Professional Mode: Structured checklists & panels</p>
-                </div>
-                <div class="view-option" onclick="navigateToView('chat')">
-                    <div class="icon">💬</div>
-                    <h4>AI Expert View</h4>
-                    <p>Guided Simplicity: Conversational AI assistance</p>
+            <div class="modal-top">
+                <h2 id="view-modal-title">Select Your Workspace</h2>
+                <p>How would you like to process this service?</p>
+            </div>
+            <div class="modal-body-content">
+                <div class="view-options">
+                    <div class="view-option" onclick="navigateToView('web')">
+                        <div class="vo-icon" style="background:#eff6ff;color:#3b82f6">💼</div>
+                        <h4>Web View</h4>
+                        <p>Professional Mode: Structured checklists & panels</p>
+                    </div>
+                    <div class="view-option" onclick="navigateToView('chat')">
+                        <div class="vo-icon" style="background:#f5f3ff;color:#7c3aed">💬</div>
+                        <h4>AI Expert View</h4>
+                        <p>Guided Simplicity: Conversational AI assistance</p>
+                    </div>
                 </div>
             </div>
-
-            <button class="btn btn-secondary" style="margin-top: 2rem;"
-                onclick="closeModal('view-modal')">Cancel</button>
+            <div class="modal-footer"><button class="btn-modal secondary"
+                    onclick="closeModal('view-modal')">Cancel</button></div>
         </div>
     </div>
 
-    <!-- Manage Services Modal -->
+    <!-- ══ MANAGE SERVICES MODAL ══ -->
     <div id="manage-services-modal" class="modal">
         <div class="modal-content">
-            <h2>Add/Manage Services</h2>
-            <p>Select the services you want to activate for this client.</p>
-
-            <div id="available-services-list" class="service-selection-list">
-                <!-- Loaded via JS -->
+            <div class="modal-top">
+                <h2>Add / Manage Services</h2>
+                <p>Select the services you want to activate for this client.</p>
             </div>
-
-            <div class="modal-actions" style="margin-top: 2rem; display: flex; gap: 1rem; justify-content: flex-end;">
-                <button class="btn btn-secondary" onclick="closeModal('manage-services-modal')">Cancel</button>
-                <button class="btn btn-primary" onclick="saveServices()">Save Changes</button>
+            <div class="modal-body-content">
+                <div id="available-services-list"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-modal secondary" onclick="closeModal('manage-services-modal')">Cancel</button>
+                <button class="btn-modal primary" onclick="saveServices()">Save Changes</button>
             </div>
         </div>
     </div>
 
-    <!-- Tally Sync Modal -->
+    <!-- ══ TALLY SYNC MODAL ══ -->
     <div id="tally-sync-modal" class="modal">
         <div class="modal-content">
-            <h2 style="margin-bottom: 0.5rem;">Select Tally Company</h2>
-            <p style="color: var(--gray-600); margin-bottom: 1.5rem;">Which open company belongs to <strong><span
-                        id="tally-client-target">this client</span></strong>?</p>
-
-            <div id="company-loading" style="display:none; color: var(--primary-blue);">
-                Parsing open companies from Tally...
+            <div class="modal-top">
+                <h2>Select Tally Company</h2>
+                <p>Which open company belongs to <strong><span id="tally-client-target">this client</span></strong>?</p>
             </div>
-
-            <div id="tally-company-list" class="company-list-container">
-                <!-- Items injected by JS -->
+            <div class="modal-body-content">
+                <div id="company-loading" style="display:none;color:#1e3a8a;padding:1rem;text-align:center">Parsing open
+                    companies from Tally…</div>
+                <div id="tally-company-list"></div>
             </div>
-
-            <div class="modal-actions" style="margin-top: 2rem; display: flex; gap: 1rem; justify-content: flex-end;">
-                <button class="btn btn-secondary" onclick="closeModal('tally-sync-modal')">Cancel</button>
-                <button class="btn btn-primary" id="btn-confirm-sync" disabled onclick="confirmSync()">Sync
+            <div class="modal-footer">
+                <button class="btn-modal secondary" onclick="closeModal('tally-sync-modal')">Cancel</button>
+                <button class="btn-modal primary" id="btn-confirm-sync" disabled onclick="confirmSync()">Sync
                     Selected</button>
             </div>
         </div>
@@ -873,384 +1093,202 @@
 
     <script src="api_config.js"></script>
     <script>
+        // ====== STATE ======
         const urlParams = new URLSearchParams(window.location.search);
         const clientId = urlParams.get('clientId');
         let currentService = null;
         let allServices = [];
         let clientServices = [];
-        let currentClientData = null; // Store full client object
+        let currentClientData = null;
         const user = JSON.parse(localStorage.getItem('user'));
-
         if (!clientId) window.location.href = 'clients.html';
 
-        async function loadDashboard() {
-            await Promise.all([loadClientInfo(), loadAvailableServices()]);
-        }
+        // ====== SERVICE METADATA ======
+        const serviceData = {
+            'GST Refund': { icon: '🧾', color: 'blue', desc: 'GST return filing with automated reconciliation, ITC optimization, and AI-powered error detection.' },
+            'GST Filing': { icon: '🧾', color: 'blue', desc: 'GST return filing with automated reconciliation and AI-powered error detection for maximum refunds.' },
+            'Invoice': { icon: '📝', color: 'green', desc: 'Professional invoice generation with GST-compliant templates and payment tracking.' },
+            'Taxation': { icon: '📊', color: 'purple', desc: 'Comprehensive tax planning covering direct and indirect taxes with AI analysis.' },
+            'Income Tax': { icon: '💰', color: 'orange', desc: 'End-to-end ITR filing with intelligent deduction optimization.' },
+            'Audit': { icon: '🔍', color: 'teal', desc: 'Statutory, Internal, Tax, GST, and Stock Audit with AI anomaly detection.' },
+            'Payroll': { icon: '👥', color: 'pink', desc: 'Complete payroll processing with PF, ESI, TDS computation, and Form 16.' },
+            'Company Law': { icon: '📋', color: 'blue', desc: 'Corporate compliance including ROC filings and annual compliance.' },
+            'Accounting': { icon: '📊', color: 'green', desc: 'Professional bookkeeping with bank reconciliation and MIS reports.' },
+            'Compliance': { icon: '⚖️', color: 'purple', desc: 'Unified regulatory compliance with intelligent deadline tracking.' },
+            'CA Certificates': { icon: '📃', color: 'blue', desc: 'Generate legally compliant CA certificates with standardized templates.' },
+            'Data Entry': { icon: '⌨️', color: 'orange', desc: 'Quick entry of banking, sales, purchase, journal, and ledger transactions.' }
+        };
+
+        // ====== LOAD ======
+        async function loadDashboard() { await Promise.all([loadClientInfo(), loadAvailableServices()]) }
 
         async function loadClientInfo() {
             try {
                 const response = await authFetch(`/clients/${clientId}`);
                 if (!response) return;
-                if (!response.ok) throw new Error(`Failed to load client (${response.status})`);
-
+                if (!response.ok) throw new Error(`Failed (${response.status})`);
                 const client = await response.json();
-                currentClientData = client; // Store globally
-
-                // Update all client info displays
-                const clientName = client.name;
-
-                // Update Modal Text
-                const modalTarget = document.getElementById('tally-client-target');
-                if (modalTarget) modalTarget.textContent = clientName;
-
-                const initial = clientName.charAt(0).toUpperCase();
-                const isCompany = clientName.toLowerCase().includes('ltd') || clientName.toLowerCase().includes('inc');
+                currentClientData = client;
+                const name = client.name;
+                const initial = name.charAt(0).toUpperCase();
+                const isCompany = name.toLowerCase().includes('ltd') || name.toLowerCase().includes('inc');
                 const entityType = isCompany ? 'Private Limited' : 'Individual / Proprietor';
 
-                // Navigation
+                // Nav
                 const userInitial = (user.firm_name || user.full_name || user.name || 'U').charAt(0).toUpperCase();
                 document.getElementById('nav-avatar').textContent = userInitial;
 
-                // Breadcrumb and subtitle
-                document.getElementById('breadcrumb-client').textContent = clientName;
-                document.getElementById('subtitle-client-name').textContent = clientName;
+                // Sidebar
+                document.getElementById('sb-avatar').textContent = initial;
+                document.getElementById('sb-name').textContent = name;
+                document.getElementById('sb-type').textContent = entityType;
 
-                // Client Details Card
-                document.getElementById('client-details-name').textContent = clientName;
+                // Breadcrumb
+                document.getElementById('breadcrumb-client').textContent = name;
+
+                // Hero
+                document.getElementById('hero-avatar').textContent = initial;
+                document.getElementById('client-name').textContent = name;
                 document.getElementById('client-entity-type').textContent = entityType;
-                document.getElementById('client-icon-large').textContent = initial;
+                document.getElementById('client-gstin').textContent = (client.gstins && client.gstins[0]) || '—';
+                document.getElementById('client-pan').textContent = client.pan || '—';
+                document.getElementById('client-cin').textContent = client.cin || '—';
 
-                // IDs
-                document.getElementById('client-gstin').textContent = (client.gstins && client.gstins[0]) || '-';
-                document.getElementById('client-pan').textContent = client.pan || '-';
-                document.getElementById('client-cin').textContent = client.cin || '-';
+                // Tally modal
+                const mt = document.getElementById('tally-client-target');
+                if (mt) mt.textContent = name;
 
                 clientServices = client.services || [];
-                document.getElementById('active-services-count').textContent = clientServices.length;
-
+                animateCounter('stat-services', clientServices.length);
+                animateCounter('stat-gstins', (client.gstins && client.gstins.length) || 0);
+                document.getElementById('sb-svc-count').textContent = clientServices.length;
                 renderActiveServices();
             } catch (err) {
                 console.error('Client Load Error:', err);
-                if (err.message.includes('401')) {
-                    alert('Session expired. Please sign in again.');
-                    window.location.href = 'index.html';
-                } else if (err.message.includes('404')) {
-                    alert('Client not found.');
-                    window.location.href = 'clients.html';
-                } else {
-                    alert(`Error loading client: ${err.message}`);
-                }
+                if (err.message.includes('401')) { alert('Session expired.'); window.location.href = 'index.html' }
+                else if (err.message.includes('404')) { alert('Client not found.'); window.location.href = 'clients.html' }
+                else { alert('Error: ' + err.message) }
             }
         }
 
         async function loadAvailableServices() {
-            try {
-                const response = await authFetch('/services/');
-                if (response.ok) {
-                    allServices = await response.json();
-                }
-            } catch (err) {
-                console.error('Error fetching service templates:', err);
-            }
+            try { const r = await authFetch('/services/'); if (r.ok) allServices = await r.json() }
+            catch (e) { console.error(e) }
+        }
+
+        function animateCounter(id, target) {
+            const el = document.getElementById(id); if (!el) return;
+            const dur = 500; const start = parseInt(el.textContent) || 0; const st = performance.now();
+            function step(now) { const p = Math.min((now - st) / dur, 1); const e = 1 - Math.pow(1 - p, 3); el.textContent = Math.round(start + (target - start) * e); if (p < 1) requestAnimationFrame(step) }
+            requestAnimationFrame(step);
+        }
+
+        // ====== RENDER SERVICES ======
+        function renderActiveServices() {
+            const grid = document.getElementById('services-grid'); grid.innerHTML = '';
+            const colorCycle = ['blue', 'green', 'purple', 'orange', 'pink', 'teal'];
+            clientServices.forEach((service, idx) => {
+                const meta = serviceData[service.name] || { icon: '📦', color: colorCycle[idx % 6], desc: 'Professional service management' };
+                const card = document.createElement('div');
+                card.className = 'service-card';
+                card.setAttribute('data-color', meta.color);
+                card.onclick = () => openViewSelection(service);
+                card.innerHTML = `
+                    <div class="svc-card-top">
+                        <div class="svc-icon-box" style="background:${getIconBg(meta.color)};font-size:1.2rem">${meta.icon}</div>
+                        <div style="flex:1;min-width:0"><div class="svc-card-title">${service.name}</div><span class="svc-card-status status-active">Active</span></div>
+                    </div>
+                    <p class="svc-card-desc">${meta.desc}</p>
+                    <div class="svc-card-footer">
+                        <span class="svc-open-link">Open Workspace <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg></span>
+                        <span class="svc-card-meta">AI Powered</span>
+                    </div>`;
+                grid.appendChild(card);
+            });
+        }
+
+        function getIconBg(c) { return { blue: '#eff6ff', green: '#ecfdf5', purple: '#f5f3ff', orange: '#fffbeb', pink: '#fdf2f8', teal: '#f0fdfa' }[c] || '#f3f4f6' }
+
+        // ====== VIEW SELECTION ======
+        function openViewSelection(service) {
+            currentService = service;
+            document.getElementById('view-modal-title').textContent = `${service.name} for ${document.getElementById('client-name').textContent}`;
+            document.getElementById('view-modal').classList.add('active');
         }
 
         function navigateToView(viewType) {
             if (!currentService) return;
-
-            let webPage = 'web-view.html';
-            let chatPage = 'service-gst-refund.html';
-
-            if (currentService.name.includes('Income Tax')) {
-                webPage = 'web-view-income-tax.html';
-                chatPage = 'service-income-tax.html';
-            } else if (currentService.name.includes('Audit')) {
-                webPage = 'web-view-audit.html';
-                chatPage = 'service-audit.html';
+            // AI Expert View — Coming Soon for GST Refund
+            if (viewType === 'chat' && currentService.name === 'GST Refund') {
+                alert('🚀 AI Expert View for GST Refund is coming soon! Stay tuned.');
+                closeModal('view-modal');
+                return;
             }
-
+            let webPage = 'web-view.html', chatPage = 'service-gst-refund.html';
+            if (currentService.name.includes('Income Tax')) { webPage = 'web-view-income-tax.html'; chatPage = 'service-income-tax.html' }
+            else if (currentService.name.includes('Audit')) { webPage = 'web-view-audit.html'; chatPage = 'service-audit.html' }
+            else if (currentService.name === 'CA Certificates') { window.location.href = `ca-certificates.html?clientId=${clientId}&serviceId=${currentService.id}`; return }
+            else if (currentService.name === 'Data Entry') { const dePage = viewType === 'web' ? 'service-data-entry.html' : 'service-data-entry-ai.html'; window.location.href = `${dePage}?clientId=${clientId}&serviceId=${currentService.id}`; return }
             const page = viewType === 'web' ? webPage : chatPage;
-            // Add view param for chat just in case
-            const viewParam = viewType === 'chat' ? '&view=semi-chat' : '';
-
-            window.location.href = `${page}?clientId=${clientId}&serviceId=${currentService.id}${viewParam}`;
+            const vp = viewType === 'chat' ? '&view=semi-chat' : '';
+            window.location.href = `${page}?clientId=${clientId}&serviceId=${currentService.id}${vp}`;
         }
 
-        function renderActiveServices() {
-            const grid = document.getElementById('services-grid');
-            grid.innerHTML = '';
-
-            const serviceData = {
-                'GST Refund': {
-                    icon: '🧾',
-                    desc: 'GST return filing (GSTR-1, GSTR-3B) with automated reconciliation, ITC optimization, and AI-powered error detection for maximum refunds.'
-                },
-                'GST Filing': {
-                    icon: '🧾',
-                    desc: 'GST return filing (GSTR-1, GSTR-3B) with automated reconciliation, ITC optimization, and AI-powered error detection for maximum refunds.'
-                },
-                'Invoice': {
-                    icon: '📝',
-                    desc: 'Professional invoice generation and management system. Create GST-compliant invoices, track payments, manage receivables, and automate invoice delivery. Features include customizable templates, multi-currency support, recurring invoices, and real-time payment tracking with automated reminders.'
-                },
-                'Taxation': {
-                    icon: '📊',
-                    desc: 'Comprehensive tax planning and advisory services covering direct and indirect taxes. Includes tax structure optimization, investment planning for tax efficiency, capital gains management, and strategic tax advisory. Our AI-powered tax calculator provides scenario analysis and recommendations for minimizing tax liability while ensuring full compliance.'
-                },
-                'Income Tax': {
-                    icon: '💰',
-                    desc: 'End-to-end Income Tax Return (ITR) filing service for individuals, businesses, and corporations. Covers all ITR forms (ITR-1 to ITR-7) with intelligent tax planning strategies, advance tax calculations, TDS reconciliation, and Form 26AS verification. Our AI-powered deduction optimizer analyzes your financial data to identify all eligible deductions under Section 80C, 80D, and other provisions. Includes assessment support, notice handling, and tax-saving recommendations tailored to your income profile.'
-                },
-                'Audit': {
-                    icon: '🔍',
-                    desc: 'Professional audit services including Statutory Audit, Internal Audit, Tax Audit (44AB), GST Audit, and Stock Audit. Our comprehensive audit framework includes detailed financial statement verification, risk assessment, internal control evaluation, and regulatory compliance checks. AI-powered anomaly detection identifies unusual transactions, potential fraud indicators, and compliance gaps. Deliverables include detailed audit reports, management letters, and actionable recommendations for process improvements and risk mitigation.'
-                },
-                'Payroll': {
-                    icon: '👥',
-                    desc: 'Complete payroll processing and compliance management solution. Handles salary calculations, statutory deductions (PF, ESI, PT), TDS computation, Form 16 generation, and employee self-service portal access. Automated compliance with labor laws including minimum wages, overtime calculations, and leave management. Features include attendance integration, reimbursement processing, loan management, and real-time payroll reports. Our system ensures timely PF/ESI challans, TDS returns, and complete audit trail for all payroll transactions.'
-                },
-                'Company Law': {
-                    icon: '📋',
-                    desc: 'Comprehensive corporate compliance services under the Companies Act 2013. Includes ROC filings (AOC-4, MGT-7, ADT-1), board meeting management, director appointments/resignations (DIR-12, DIR-11), share capital alterations, and annual compliance calendar. Our platform automates statutory registers, generates board resolutions, tracks filing deadlines, and ensures complete MCA compliance. Services cover incorporation, name changes, registered office shifts, winding up procedures, and all event-based filings with real-time status tracking.'
-                },
-                'Accounting': {
-                    icon: '📊',
-                    desc: 'Professional bookkeeping and accounting services with real-time financial visibility. Includes day-to-day transaction recording, bank reconciliation, accounts payable/receivable management, and financial statement preparation (P&L, Balance Sheet, Cash Flow). Our platform generates comprehensive MIS reports, ratio analysis, budgeting tools, and variance analysis. AI-powered insights identify cost-saving opportunities, cash flow optimization strategies, and financial health indicators. Features include multi-currency support, inventory accounting, and automated financial dashboards.'
-                },
-                'Compliance': {
-                    icon: '⚖️',
-                    desc: 'Unified regulatory compliance management across all applicable laws and regulations. Covers labor law compliance, environmental clearances, FSSAI licenses, trade licenses, professional tax, and industry-specific regulations. Our intelligent compliance calendar tracks all statutory deadlines, sends proactive alerts, and maintains a complete audit trail of all filings. Multi-jurisdiction support ensures compliance across different states and regulatory bodies. Includes license renewal management, inspection readiness, and automated compliance reporting.'
-                }
-            };
-
-            clientServices.forEach(service => {
-                const data = serviceData[service.name] || { icon: '📦', desc: 'Professional service management' };
-                const box = document.createElement('div');
-                box.className = 'service-box-enhanced';
-                box.onclick = () => openViewSelection(service);
-
-                box.innerHTML = `
-                    <div class="service-icon-large">${data.icon}</div>
-                    <h3>${service.name}</h3>
-                    <p class="service-description">${data.desc}</p>
-                    <div class="service-footer">
-                        <span class="status-pill status-active">Active</span>
-                        <span class="service-action">View Details →</span>
-                    </div>
-                `;
-                grid.appendChild(box);
-            });
-
-            // Add "Add Service" box
-            const addBox = document.createElement('div');
-            addBox.className = 'service-box-enhanced add-service-box';
-            addBox.onclick = showAddService;
-            addBox.innerHTML = `
-                <div class="service-icon-large">+</div>
-                <h3>Add Service</h3>
-                <p class="service-description">Activate additional compliance services</p>
-            `;
-            grid.appendChild(addBox);
-        }
-
-        function openViewSelection(service) {
-            currentService = service;
-            // Show view selection modal for all services
-            const clientName = document.getElementById('client-details-name').textContent;
-            document.getElementById('view-modal-title').textContent = `${service.name} for ${clientName}`;
-            document.getElementById('view-modal').classList.add('active');
-        }
-
-        window.toggleProfileDropdown = function (e) {
-            e.stopPropagation();
-            const dd = document.getElementById('profile-dropdown');
-            if (dd) dd.classList.toggle('active');
-        }
-
-        window.logout = function () {
-            localStorage.removeItem('access_token');
-            localStorage.removeItem('user');
-            window.location.href = 'index.html';
-        }
-
-        // Close dropdown when clicking outside
-        document.addEventListener('click', () => {
-            const dd = document.getElementById('profile-dropdown');
-            if (dd) dd.classList.remove('active');
-        });
-
-
-
+        // ====== ADD/MANAGE SERVICES ======
         function showAddService() {
-            const list = document.getElementById('available-services-list');
-            list.innerHTML = '';
-
+            const list = document.getElementById('available-services-list'); list.innerHTML = '';
             allServices.forEach(service => {
                 const isChecked = clientServices.some(s => s.id === service.id);
-                const isDisabled = service.name !== 'GST Refund';
-
+                const isDisabled = service.name !== 'GST Refund' && service.name !== 'CA Certificates' && service.name !== 'Data Entry';
                 const item = document.createElement('div');
-                item.className = 'service-selection-item';
-
-                if (isDisabled) {
-                    item.style.opacity = '0.6';
-                    item.style.cursor = 'not-allowed';
-                    item.style.background = '#f9fafb';
-                } else {
-                    item.onclick = () => {
-                        const cb = item.querySelector('input');
-                        cb.checked = !cb.checked;
-                    };
-                }
-
-                item.innerHTML = `
-                    <input type="checkbox" data-id="${service.id}" ${isChecked ? 'checked' : ''} ${isDisabled ? 'disabled' : ''} onclick="event.stopPropagation()">
-                    <div class="service-info">
-                        <h4 style="display:flex; justify-content:space-between; width:100%">
-                            ${service.name} 
-                            ${isDisabled ? '<span style="font-size:0.7rem; background:#eee; color:#666; padding:2px 6px; border-radius:4px">Coming Soon</span>' : ''}
-                        </h4>
-                        <p>${service.description || ''}</p>
-                    </div>
-                `;
+                item.className = `svc-select-item${isDisabled ? ' disabled' : ''}`;
+                if (!isDisabled) item.onclick = () => { const cb = item.querySelector('input'); cb.checked = !cb.checked };
+                item.innerHTML = `<input type="checkbox" data-id="${service.id}" ${isChecked ? 'checked' : ''} ${isDisabled ? 'disabled' : ''} onclick="event.stopPropagation()"><div class="svc-select-info"><h4>${service.name} ${isDisabled ? '<span class="tag-soon">Coming Soon</span>' : ''}</h4><p>${service.description || ''}</p></div>`;
                 list.appendChild(item);
             });
-
             document.getElementById('manage-services-modal').classList.add('active');
         }
 
         async function saveServices() {
-            const checkboxes = document.querySelectorAll('#available-services-list input[type="checkbox"]');
-            const selectedIds = Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.dataset.id);
-
+            const cbs = document.querySelectorAll('#available-services-list input[type="checkbox"]');
+            const selectedIds = Array.from(cbs).filter(cb => cb.checked).map(cb => cb.dataset.id);
             try {
-                const response = await authFetch(`/clients/${clientId}/services`, {
-                    method: 'PUT',
-                    body: JSON.stringify({ service_ids: selectedIds })
-                });
-
-                if (response.ok) {
-                    closeModal('manage-services-modal');
-                    await loadClientInfo();
-                } else {
-                    alert('Failed to update services.');
-                }
-            } catch (err) {
-                console.error(err);
-                alert('Connection error while updating services.');
-            }
+                const r = await authFetch(`/clients/${clientId}/services`, { method: 'PUT', body: JSON.stringify({ service_ids: selectedIds }) });
+                if (r.ok) { closeModal('manage-services-modal'); await loadClientInfo() }
+                else { alert('Failed to update services.') }
+            } catch (e) { console.error(e); alert('Connection error.') }
         }
 
-        function closeModal(id) {
-            document.getElementById(id).classList.remove('active');
-        }
+        function closeModal(id) { document.getElementById(id).classList.remove('active') }
 
-        function selectView(viewType) {
-            // Requirement 3: Web View or Semi Chat View
-            if (viewType === 'web') {
-                window.location.href = `service-gst-refund.html?clientId=${clientId}&view=web`;
-            } else {
-                window.location.href = `service-gst-refund.html?clientId=${clientId}&view=semi-chat`;
-            }
-        }
-
-        // --- Tally Sync Functions ---
+        // ====== TALLY SYNC ======
         let selectedCompany = null;
-
         async function openSyncModal() {
-            const modal = document.getElementById('tally-sync-modal');
-            modal.classList.add('active');
-
-            const listContainer = document.getElementById('tally-company-list');
-            const loading = document.getElementById('company-loading');
-
-            listContainer.innerHTML = '';
-            loading.style.display = 'block';
-
+            const modal = document.getElementById('tally-sync-modal'); modal.classList.add('active');
+            const list = document.getElementById('tally-company-list'); const loading = document.getElementById('company-loading');
+            list.innerHTML = ''; loading.style.display = 'block';
             try {
-                // Fetch from Backend
-                const response = await fetch('/tally/companies'); // Relative path to frontend_server
-                const companies = await response.json();
-
-                loading.style.display = 'none';
-
-                if (!Array.isArray(companies) || companies.length === 0) {
-                    listContainer.innerHTML = '<div style="padding:1rem">No open companies found in Tally (Port 9000).</div>';
-                    return;
-                }
-
+                const r = await fetch('/tally/companies'); const companies = await r.json(); loading.style.display = 'none';
+                if (!Array.isArray(companies) || !companies.length) { list.innerHTML = '<div style="padding:1rem;text-align:center;color:#9ca3af">No open companies found in Tally.</div>'; return }
                 companies.forEach(comp => {
-                    const div = document.createElement('div');
-                    div.className = 'company-item';
+                    const div = document.createElement('div'); div.className = 'company-item';
                     div.innerHTML = `<span class="company-icon">T</span> <span>${comp}</span>`;
-                    div.onclick = () => selectCompany(div, comp);
-                    listContainer.appendChild(div);
+                    div.onclick = () => selectCompany(div, comp); list.appendChild(div);
                 });
-
-            } catch (e) {
-                loading.style.display = 'none';
-                listContainer.innerHTML = '<div style="padding:1rem; color:red">Error connecting to Tally. Is it running?</div>';
-                console.error(e);
-            }
+            } catch (e) { loading.style.display = 'none'; list.innerHTML = '<div style="padding:1rem;color:#ef4444;text-align:center">Error connecting to Tally.</div>' }
         }
-
-        function selectCompany(el, name) {
-            // Deselect all
-            document.querySelectorAll('.company-item').forEach(i => i.classList.remove('selected'));
-            // Select this
-            el.classList.add('selected');
-            selectedCompany = name;
-            document.getElementById('btn-confirm-sync').disabled = false;
-        }
-
+        function selectCompany(el, name) { document.querySelectorAll('.company-item').forEach(i => i.classList.remove('selected')); el.classList.add('selected'); selectedCompany = name; document.getElementById('btn-confirm-sync').disabled = false }
         async function confirmSync() {
-            if (!selectedCompany) return;
-
-            const btn = document.getElementById('btn-confirm-sync');
-            const originalText = btn.textContent;
-            btn.textContent = 'Syncing...';
-            btn.disabled = true;
-
-            try {
-                const response = await fetch('/tally/sync', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        company_name: selectedCompany,
-                        client_id: clientId
-                    })
-                });
-                const res = await response.json();
-
-                closeModal('tally-sync-modal');
-                alert(`✅ Success: ${res.message}\nFile saved locally.`);
-                btn.textContent = originalText;
-
-            } catch (e) {
-                alert('Sync Failed: ' + e.message);
-                btn.textContent = originalText;
-                btn.disabled = false;
-            }
+            if (!selectedCompany) return; const btn = document.getElementById('btn-confirm-sync'); const ot = btn.textContent; btn.textContent = 'Syncing…'; btn.disabled = true;
+            try { const r = await fetch('/tally/sync', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ company_name: selectedCompany, client_id: clientId }) }); const res = await r.json(); closeModal('tally-sync-modal'); alert('✅ ' + res.message); btn.textContent = ot }
+            catch (e) { alert('Sync Failed: ' + e.message); btn.textContent = ot; btn.disabled = false }
         }
 
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal('view-modal'); closeModal('manage-services-modal'); closeModal('tally-sync-modal') } });
         loadDashboard();
     </script>
-
-    <!-- Footer -->
-    <footer
-        style="background: var(--gray-100); padding: 1.5rem 2rem; text-align: center; border-top: 1px solid var(--gray-200); margin-top: 4rem;">
-        <p style="color: var(--gray-600); font-size: 0.875rem; margin: 0;">
-            If you need more assistance, write an email to us at
-            <a href="mailto:complianceAIExpert@gmail.com"
-                style="color: var(--primary-orange); font-weight: 600; text-decoration: none;">complianceAIExpert@gmail.com</a>
-        </p>
-    </footer>
-
     <script src="session-manager.js?v=2"></script>
-    <script>
-        if (!requireAuth()) {
-            // Will redirect to login if not authenticated
-        }
-    </script>
+    <script>if (!requireAuth()) { }</script>
 </body>
 
 </html>

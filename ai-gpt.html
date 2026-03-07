@@ -1,362 +1,452 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Compliance Assistants - Compliance AI Expert</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>AI Compliance Assistants — ComplianceAI Expert | Agentic AI GPTs for CAs India</title>
+    <meta name="description" content="Access purpose-built AI GPTs for Indian tax law, GST, audit, insolvency, and compliance. Agentic AI assistants trained on CA Act, Companies Act, FEMA, and ICAI standards.">
+    <meta name="keywords" content="AI GPT CA, tax GPT India, GST advisor AI, audit GPT, compliance AI assistant, agentic AI chartered accountant, insolvency AI, FEMA GPT">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@700;800&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
     <style>
-        body {
-            /* Cloud-like gradient background */
-            background: linear-gradient(135deg, #E0E7FF 0%, #DBEAFE 50%, #F5F3FF 100%);
-            min-height: 100vh;
-            font-family: 'Inter', sans-serif;
-            margin: 0;
-            position: relative;
-            overflow-x: hidden;
-        }
+        *{box-sizing:border-box}
+        body{background:#f8fafc;margin:0;min-height:100vh}
 
-        /* Navbar Enhancements */
-        .navbar {
-            background: rgba(255, 255, 255, 0.7);
-            /* translucent */
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.5);
-        }
+        /* ══ LAYOUT ══ */
+        .gpt-layout{display:flex;min-height:100vh;padding-top:64px}
 
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            margin-left: auto;
-            /* Push to right, before profile */
-            margin-right: 2rem;
-            align-items: center;
-        }
+        /* ── Sidebar ── */
+        .gpt-sidebar{width:240px;background:#fff;border-right:1px solid #e5e7eb;position:fixed;top:64px;bottom:0;left:0;display:flex;flex-direction:column;z-index:90;overflow-y:auto}
+        .sb-section{padding:0.75rem 1rem}
+        .sb-section-label{font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#9ca3af;padding:0.5rem 0.75rem;margin-bottom:0.1rem}
+        .sb-item{display:flex;align-items:center;gap:0.6rem;padding:0.5rem 0.75rem;border-radius:8px;font-size:0.8rem;font-weight:500;color:#4b5563;cursor:pointer;transition:all .2s;text-decoration:none;margin-bottom:1px}
+        .sb-item:hover{background:#f1f5f9;color:#4f46e5}
+        .sb-item.active{background:#ede9fe;color:#4f46e5;font-weight:600}
+        .sb-item svg{flex-shrink:0;width:16px;height:16px}
+        .sb-badge{margin-left:auto;font-size:0.6rem;font-weight:700;background:#ede9fe;color:#6d28d9;padding:1px 6px;border-radius:10px}
+        .sb-badge-new{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff}
+        .sb-divider{height:1px;background:#f1f5f9;margin:0.4rem 1rem}
+        .sb-back{display:flex;align-items:center;gap:0.5rem;padding:0.85rem 1rem;border-top:1px solid #f1f5f9;font-size:0.8rem;font-weight:600;color:#6b7280;cursor:pointer;text-decoration:none;transition:all .2s;margin-top:auto}
+        .sb-back:hover{color:#4f46e5;background:#f8fafc}
+        .sb-back svg{width:16px;height:16px}
+        .sb-status{display:flex;align-items:center;gap:0.35rem;font-size:0.6rem;font-weight:600;color:#059669;margin-left:auto}
+        .sb-status-dot{width:5px;height:5px;border-radius:50%;background:#059669;animation:pulse 2s ease-in-out infinite}
+        @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 
-        .nav-link {
-            color: #4B5563;
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 0.95rem;
-            transition: color 0.2s;
-        }
+        /* ── Main ── */
+        .gpt-main{margin-left:240px;flex:1;padding:1.5rem 2rem 3rem}
 
-        .nav-link:hover,
-        .nav-link.active {
-            color: #2563EB;
-            /* Blue */
-        }
+        /* ── Breadcrumb ── */
+        .gpt-breadcrumb{display:flex;align-items:center;gap:0.4rem;font-size:0.75rem;color:#9ca3af;margin-bottom:1.25rem}
+        .gpt-breadcrumb a{color:#6b7280;text-decoration:none;font-weight:500}
+        .gpt-breadcrumb a:hover{color:#4f46e5}
 
-        .nav-link.active {
-            font-weight: 700;
-        }
+        /* ── Page Header ── */
+        .gpt-page-header{margin-bottom:1.5rem;display:flex;align-items:flex-start;justify-content:space-between;gap:1rem}
+        .gpt-page-header h1{font-family:'Outfit',sans-serif;font-size:1.6rem;font-weight:800;color:#111827;margin:0 0 0.25rem;letter-spacing:-0.01em}
+        .gpt-page-header h1 span{background:linear-gradient(135deg,#6366f1,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .gpt-page-header p{font-size:0.82rem;color:#6b7280;margin:0;line-height:1.5;max-width:540px}
 
-        .nav-link-badge {
-            background: #E0E7FF;
-            color: #4338CA;
-            padding: 0.25rem 0.5rem;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            margin-left: 0.5rem;
-        }
+        /* ── Stats Row ── */
+        .gpt-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.75rem}
+        .gpt-stat{background:#fff;border:1px solid #f1f5f9;border-radius:12px;padding:1rem 1.15rem;display:flex;align-items:center;gap:0.85rem;transition:all .2s}
+        .gpt-stat:hover{transform:translateY(-2px);box-shadow:0 4px 14px rgba(0,0,0,.05)}
+        .gpt-stat-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+        .gpt-stat-num{font-size:1.35rem;font-weight:800;font-family:'Outfit',sans-serif;color:#111827;line-height:1}
+        .gpt-stat-label{font-size:0.65rem;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:#9ca3af;margin-top:0.1rem}
 
-        /* Hero Section */
-        .hero-section {
-            text-align: center;
-            padding: 4rem 1rem 2rem;
-        }
+        /* ── Search ── */
+        .search-section{margin-bottom:1.5rem}
+        .section-label{display:flex;align-items:center;gap:0.45rem;font-family:'Outfit',sans-serif;font-size:1.05rem;font-weight:700;color:#111827;margin-bottom:0.85rem}
+        .section-label svg{width:18px;height:18px;color:#6b7280}
+        .search-wrap{position:relative}
+        .search-wrap input{width:100%;padding:0.7rem 1rem 0.7rem 2.6rem;border:1px solid #e5e7eb;border-radius:12px;font-size:0.85rem;font-family:inherit;background:#fff;transition:all .2s;box-shadow:0 1px 3px rgba(0,0,0,.02)}
+        .search-wrap input:focus{outline:none;border-color:#6366f1;box-shadow:0 0 0 3px rgba(99,102,241,.08)}
+        .search-wrap .s-icon{position:absolute;left:0.85rem;top:50%;transform:translateY(-50%);color:#9ca3af;pointer-events:none}
+        .search-wrap .s-clear{position:absolute;right:0.75rem;top:50%;transform:translateY(-50%);width:22px;height:22px;border-radius:6px;border:none;background:#f1f5f9;color:#9ca3af;display:none;align-items:center;justify-content:center;cursor:pointer;font-size:0.65rem;transition:all .15s}
+        .search-wrap .s-clear.show{display:flex}
+        .search-wrap .s-clear:hover{background:#e5e7eb;color:#374151}
+        .search-results{margin-top:0.65rem;display:none}
+        .search-results.show{display:block}
+        .search-results-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem}
+        .search-results-header span{font-size:0.75rem;color:#6b7280;font-weight:600}
+        .sr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:0.6rem}
+        .sr-item{background:#fff;border:1px solid #f1f5f9;border-radius:10px;padding:0.75rem 1rem;display:flex;align-items:center;gap:0.75rem;transition:all .2s;cursor:pointer;text-decoration:none}
+        .sr-item:hover{background:#faf5ff;border-color:#ddd6fe;transform:translateY(-1px);box-shadow:0 2px 8px rgba(99,102,241,.06)}
+        .sr-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:0.85rem;flex-shrink:0}
+        .sr-name{font-size:0.82rem;font-weight:600;color:#1f2937}
+        .sr-cat{font-size:0.68rem;color:#9ca3af;margin-top:1px}
+        .sr-arrow{margin-left:auto;color:#d1d5db;flex-shrink:0}
+        .sr-item:hover .sr-arrow{color:#6366f1}
+        .sr-empty{text-align:center;padding:1.5rem;color:#9ca3af;font-size:0.82rem;background:#fff;border:1px solid #f1f5f9;border-radius:10px}
 
-        .hero-h1 {
-            font-family: 'Outfit', sans-serif;
-            font-size: 2.5rem;
-            color: #312E81;
-            /* Indigo 900 */
-            margin-bottom: 0.5rem;
-        }
+        /* ── GPT Cards ── */
+        .gpt-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;margin-bottom:2rem}
+        .gpt-card{background:#fff;border:1px solid #f1f5f9;border-radius:14px;padding:1.5rem;text-align:center;transition:all .25s;position:relative;overflow:hidden}
+        .gpt-card::before{content:'';position:absolute;top:0;left:0;width:100%;height:3px;opacity:0;transition:opacity .2s}
+        .gpt-card:nth-child(4n+1)::before{background:linear-gradient(90deg,#3b82f6,#60a5fa)}
+        .gpt-card:nth-child(4n+2)::before{background:linear-gradient(90deg,#10b981,#34d399)}
+        .gpt-card:nth-child(4n+3)::before{background:linear-gradient(90deg,#f59e0b,#fbbf24)}
+        .gpt-card:nth-child(4n+4)::before{background:linear-gradient(90deg,#ef4444,#f87171)}
+        .gpt-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px -8px rgba(99,102,241,.12);border-color:#e5e7eb}
+        .gpt-card:hover::before{opacity:1}
+        .gpt-card-icon{width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin:0 auto 1rem}
+        .gpt-card h3{font-family:'Outfit',sans-serif;font-size:1rem;font-weight:700;color:#1e293b;margin:0 0 0.4rem}
+        .gpt-card .gpt-desc{font-size:0.75rem;color:#6b7280;line-height:1.55;margin:0 0 1rem;min-height:3.2em}
+        .gpt-card .gpt-meta{display:flex;align-items:center;justify-content:center;gap:0.75rem;margin-bottom:1rem;font-size:0.65rem;color:#9ca3af}
+        .gpt-card .gpt-meta span{display:flex;align-items:center;gap:0.2rem}
+        .gpt-btn{display:block;width:100%;padding:0.6rem;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;border:none;border-radius:10px;font-weight:700;font-size:0.82rem;cursor:pointer;text-decoration:none;text-align:center;transition:all .2s;font-family:'Inter',sans-serif}
+        .gpt-btn:hover{box-shadow:0 4px 14px rgba(99,102,241,.3);transform:translateY(-1px)}
 
-        .hero-p {
-            font-size: 1.125rem;
-            color: #6B7280;
-        }
+        /* ── Capabilities ── */
+        .cap-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0.85rem;margin-bottom:2rem}
+        .cap-card{background:#fff;border:1px solid #f1f5f9;border-radius:12px;padding:1.15rem;transition:all .2s}
+        .cap-card:hover{transform:translateY(-2px);box-shadow:0 4px 14px rgba(0,0,0,.04)}
+        .cap-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1rem;margin-bottom:0.65rem}
+        .cap-name{font-weight:700;font-size:0.82rem;color:#1e293b;margin:0 0 0.2rem}
+        .cap-desc{font-size:0.72rem;color:#6b7280;line-height:1.5;margin:0}
 
-        /* Cards Grid */
-        .gpt-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
+        /* ── Use Cases ── */
+        .usecase-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0.85rem;margin-bottom:2rem}
+        .usecase-card{background:#fff;border:1px solid #f1f5f9;border-radius:12px;padding:1.15rem;display:flex;gap:0.85rem;transition:all .2s;cursor:pointer;text-decoration:none}
+        .usecase-card:hover{background:#faf5ff;border-color:#ddd6fe;transform:translateY(-1px)}
+        .usecase-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+        .usecase-card h4{font-size:0.82rem;font-weight:700;color:#1e293b;margin:0 0 0.15rem}
+        .usecase-card p{font-size:0.72rem;color:#6b7280;line-height:1.45;margin:0}
 
-        .gpt-card {
-            background: rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            border-radius: 16px;
-            padding: 2rem 1.5rem;
-            text-align: center;
-            transition: transform 0.3s, box-shadow 0.3s;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .gpt-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            background: rgba(255, 255, 255, 0.85);
-        }
-
-        .gpt-image {
-            width: 180px;
-            height: 180px;
-            object-fit: contain;
-            margin-bottom: 1.5rem;
-            /* Enhance the cloud feel with a drop shadow on the robots */
-            filter: drop-shadow(0 10px 15px rgba(59, 130, 246, 0.15));
-        }
-
-        .gpt-title {
-            font-family: 'Outfit', sans-serif;
-            font-size: 1.25rem;
-            color: #3730A3;
-            /* Indigo 800 */
-            margin-bottom: 0.75rem;
-        }
-
-        .gpt-desc {
-            font-size: 0.9rem;
-            color: #4B5563;
-            margin-bottom: 1.5rem;
-            line-height: 1.5;
-            min-height: 2.7em;
-            /* Align buttons */
-        }
-
-        .gpt-btn {
-            background: linear-gradient(135deg, #818CF8, #6366F1);
-            color: white;
-            padding: 0.75rem 2rem;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            width: 100%;
-            display: block;
-            transition: opacity 0.2s;
-            box-shadow: 0 4px 6px rgba(99, 102, 241, 0.2);
-        }
-
-        .gpt-btn:hover {
-            opacity: 0.9;
-        }
-
-        /* Floating Clouds Background Animation (Simplified) */
-        .bg-clouds {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: -1;
-            /* Could implement SVG clouds later if needed, gradient is sufficient for now */
-        }
-
-        /* Profile Dropdown Styles */
-        .navbar-profile {
-            position: relative;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-        }
-
-        .nav-dropdown {
-            position: absolute;
-            top: 120%;
-            right: 0;
-            background: white;
-            border: 1px solid #E5E7EB;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-            width: 200px;
-            display: none;
-            padding: 0.5rem 0;
-            z-index: 9999;
-            margin-top: 0.5rem;
-        }
-
-        .dropdown-item {
-            padding: 0.75rem 1.5rem;
-            color: #374151;
-            /* gray-700 */
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            text-decoration: none;
-            transition: background 0.2s;
-            cursor: pointer;
-            font-size: 0.875rem;
-            font-weight: 500;
-        }
-
-        .dropdown-item:hover {
-            background: #F9FAFB;
-            /* gray-50 */
-            color: #1E3A8A;
-            /* primary-blue */
-        }
-
-        .dropdown-divider {
-            height: 1px;
-            background: #F3F4F6;
-            /* gray-100 */
-            margin: 0.5rem 0;
-        }
+        @media(max-width:1100px){.gpt-stats{grid-template-columns:1fr 1fr 1fr 1fr}.cap-grid{grid-template-columns:1fr 1fr}}
+        @media(max-width:768px){.gpt-sidebar{display:none}.gpt-main{margin-left:0}.gpt-stats{grid-template-columns:1fr 1fr}.gpt-cards{grid-template-columns:1fr}.cap-grid,.usecase-grid{grid-template-columns:1fr}}
     </style>
 </head>
-
 <body>
+    <div id="app-topbar" data-active="ai-gpt"></div>
+    <script src="app-topbar.js"></script>
 
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="navbar-container">
-            <a href="clients.html" class="logo">
-                <div class="logo-icon">CE</div>
-                <span style="font-weight: 700; color: #1e3a8a;">ComplianceAIexpert</span>
+    <div class="gpt-layout">
+        <!-- ══ LEFT SIDEBAR ══ -->
+        <aside class="gpt-sidebar">
+            <div class="sb-section">
+                <div class="sb-section-label">AI Assistants</div>
+                <a href="#" class="sb-item active" onclick="event.preventDefault()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                    All GPTs
+                    <span class="sb-badge">4</span>
+                </a>
+            </div>
+            <div class="sb-divider"></div>
+            <div class="sb-section">
+                <div class="sb-section-label">Expert GPTs</div>
+                <a href="https://chatgpt.com/g/g-69621be2d5488191ae2078658ab0113a-cai-taxation-expert" target="_blank" class="sb-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v4a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1"/></svg>
+                    TaxPro GPT
+                    <span class="sb-status"><span class="sb-status-dot"></span>Live</span>
+                </a>
+                <a href="https://chatgpt.com/g/g-69621e17476081919461beca0735097a-caie" target="_blank" class="sb-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v4a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1"/></svg>
+                    Audit Guide GPT
+                    <span class="sb-status"><span class="sb-status-dot"></span>Live</span>
+                </a>
+                <a href="https://chatgpt.com/g/g-69621e5cddb08191acc1592e903a4f63-caie-2" target="_blank" class="sb-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v4a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1"/></svg>
+                    GST Advisor GPT
+                    <span class="sb-status"><span class="sb-status-dot"></span>Live</span>
+                </a>
+                <a href="https://chatgpt.com/g/g-69620643b1788191b31094fdbc007ffc-vp-expert-of-insolvency" target="_blank" class="sb-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v4a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1"/></svg>
+                    Insolvency GPT
+                    <span class="sb-status"><span class="sb-status-dot"></span>Live</span>
+                </a>
+            </div>
+            <div class="sb-divider"></div>
+            <div class="sb-section">
+                <div class="sb-section-label">Coming Soon</div>
+                <span class="sb-item" style="opacity:.5;cursor:default">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v4a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1"/></svg>
+                    Company Law GPT
+                    <span class="sb-badge sb-badge-new">SOON</span>
+                </span>
+                <span class="sb-item" style="opacity:.5;cursor:default">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v4a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1"/></svg>
+                    FEMA Expert GPT
+                    <span class="sb-badge sb-badge-new">SOON</span>
+                </span>
+                <span class="sb-item" style="opacity:.5;cursor:default">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v4a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1"/></svg>
+                    Payroll & TDS GPT
+                    <span class="sb-badge sb-badge-new">SOON</span>
+                </span>
+            </div>
+            <div class="sb-divider"></div>
+            <div class="sb-section">
+                <div class="sb-section-label">Quick Links</div>
+                <a href="ca-certificates.html" class="sb-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    CA Certificates
+                </a>
+                <a href="agreements.html" class="sb-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                    Agreements
+                </a>
+            </div>
+            <a href="clients.html" class="sb-back">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+                Back to Firm
             </a>
+        </aside>
 
-            <!-- New Center Links -->
-            <div class="nav-links">
-                <a href="clients.html" class="nav-link">Home</a>
-                <a href="clients.html" class="nav-link">Clients</a>
-                <a href="ai-gpt.html" class="nav-link active">
-                    AI GPT <span class="nav-link-badge">NEW</span>
+        <!-- ══ MAIN CONTENT ══ -->
+        <main class="gpt-main">
+            <!-- Breadcrumb -->
+            <div class="gpt-breadcrumb">
+                <a href="clients.html">Firm</a><span style="color:#d1d5db">›</span>
+                <span style="color:#374151;font-weight:600">AI Compliance Assistants</span>
+            </div>
+
+            <!-- Page Header -->
+            <div class="gpt-page-header">
+                <div>
+                    <h1>AI Compliance <span>Assistants</span></h1>
+                    <p>Purpose-built AI GPTs trained on Indian tax law, GST, audit standards, and insolvency codes. Ask complex compliance questions and get expert-level answers instantly.</p>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="gpt-stats">
+                <div class="gpt-stat">
+                    <div class="gpt-stat-icon" style="background:#ede9fe;color:#6d28d9">🤖</div>
+                    <div><div class="gpt-stat-num">4</div><div class="gpt-stat-label">Active GPTs</div></div>
+                </div>
+                <div class="gpt-stat">
+                    <div class="gpt-stat-icon" style="background:#ecfdf5;color:#059669">🧠</div>
+                    <div><div class="gpt-stat-num">12+</div><div class="gpt-stat-label">Compliance Domains</div></div>
+                </div>
+                <div class="gpt-stat">
+                    <div class="gpt-stat-icon" style="background:#eff6ff;color:#1e3a8a">⚡</div>
+                    <div><div class="gpt-stat-num" style="font-size:1rem">Real-Time</div><div class="gpt-stat-label">AI Responses</div></div>
+                </div>
+                <div class="gpt-stat">
+                    <div class="gpt-stat-icon" style="background:#fef3c7;color:#d97706">🇮🇳</div>
+                    <div><div class="gpt-stat-num" style="font-size:1rem">India-First</div><div class="gpt-stat-label">Tax & Compliance</div></div>
+                </div>
+            </div>
+
+            <!-- Search -->
+            <div class="search-section">
+                <div class="section-label">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                    Find an AI Assistant
+                </div>
+                <div class="search-wrap">
+                    <span class="s-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
+                    <input type="text" id="gpt-search" placeholder="Search by name, domain, or topic… e.g. GST, income tax, audit, insolvency">
+                    <button class="s-clear" id="search-clear" onclick="clearSearch()">✕</button>
+                </div>
+                <div class="search-results" id="search-results">
+                    <div class="search-results-header"><span id="sr-count">0 results</span></div>
+                    <div class="sr-grid" id="sr-grid"></div>
+                </div>
+            </div>
+
+            <!-- Expert GPT Cards -->
+            <div class="section-label">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v4a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
+                Expert AI GPTs
+            </div>
+            <div class="gpt-cards">
+                <!-- TaxPro GPT -->
+                <div class="gpt-card">
+                    <div class="gpt-card-icon" style="background:linear-gradient(135deg,#eff6ff,#dbeafe)">🧾</div>
+                    <h3>TaxPro GPT</h3>
+                    <p class="gpt-desc">Navigate income tax questions, ITR filing, TDS provisions, capital gains, and advance tax with expert precision.</p>
+                    <div class="gpt-meta">
+                        <span>📚 Income Tax Act</span>
+                        <span>⚡ Real-time</span>
+                        <span>🟢 Live</span>
+                    </div>
+                    <a href="https://chatgpt.com/g/g-69621be2d5488191ae2078658ab0113a-cai-taxation-expert" target="_blank" class="gpt-btn">Chat with TaxPro →</a>
+                </div>
+
+                <!-- Audit Guide GPT -->
+                <div class="gpt-card">
+                    <div class="gpt-card-icon" style="background:linear-gradient(135deg,#ecfdf5,#d1fae5)">📋</div>
+                    <h3>Audit Guide GPT</h3>
+                    <p class="gpt-desc">Get audit guidance, SA checklists, CARO compliance, and ensure regulatory standards for statutory and tax audits.</p>
+                    <div class="gpt-meta">
+                        <span>📚 SA Standards</span>
+                        <span>⚡ Real-time</span>
+                        <span>🟢 Live</span>
+                    </div>
+                    <a href="https://chatgpt.com/g/g-69621e17476081919461beca0735097a-caie" target="_blank" class="gpt-btn">Chat with Audit Guide →</a>
+                </div>
+
+                <!-- GST Advisor GPT -->
+                <div class="gpt-card">
+                    <div class="gpt-card-icon" style="background:linear-gradient(135deg,#fffbeb,#fef3c7)">📊</div>
+                    <h3>GST Advisor GPT</h3>
+                    <p class="gpt-desc">Optimize GST refunds, GSTR filings, HSN classification, e-way bills, and reconcile incorrectly claimed ITC.</p>
+                    <div class="gpt-meta">
+                        <span>📚 GST Act</span>
+                        <span>⚡ Real-time</span>
+                        <span>🟢 Live</span>
+                    </div>
+                    <a href="https://chatgpt.com/g/g-69621e5cddb08191acc1592e903a4f63-caie-2" target="_blank" class="gpt-btn">Chat with GST Advisor →</a>
+                </div>
+
+                <!-- Insolvency GPT -->
+                <div class="gpt-card">
+                    <div class="gpt-card-icon" style="background:linear-gradient(135deg,#fef2f2,#fecaca)">⚖️</div>
+                    <h3>Insolvency GPT</h3>
+                    <p class="gpt-desc">Manage IBC cases, CIRP timelines, CoC meetings, liquidation processes, and NCLT filing procedures.</p>
+                    <div class="gpt-meta">
+                        <span>📚 IBC 2016</span>
+                        <span>⚡ Real-time</span>
+                        <span>🟢 Live</span>
+                    </div>
+                    <a href="https://chatgpt.com/g/g-69620643b1788191b31094fdbc007ffc-vp-expert-of-insolvency" target="_blank" class="gpt-btn">Chat with Insolvency GPT →</a>
+                </div>
+            </div>
+
+            <!-- Example Use Cases -->
+            <div class="section-label">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                Example Questions You Can Ask
+            </div>
+            <div class="usecase-grid">
+                <a class="usecase-card" href="https://chatgpt.com/g/g-69621be2d5488191ae2078658ab0113a-cai-taxation-expert" target="_blank">
+                    <div class="usecase-icon" style="background:#eff6ff;color:#3b82f6">💡</div>
+                    <div>
+                        <h4>"What is the TDS rate for professional fees u/s 194J?"</h4>
+                        <p>TaxPro GPT will explain the rate, threshold limits, and when to deduct for FY 2025-26.</p>
+                    </div>
+                </a>
+                <a class="usecase-card" href="https://chatgpt.com/g/g-69621e5cddb08191acc1592e903a4f63-caie-2" target="_blank">
+                    <div class="usecase-icon" style="background:#fffbeb;color:#d97706">💡</div>
+                    <div>
+                        <h4>"How to claim GST refund on exported services?"</h4>
+                        <p>GST Advisor GPT walks you through Rule 89, documentation needed, and RFD-01 filing steps.</p>
+                    </div>
+                </a>
+                <a class="usecase-card" href="https://chatgpt.com/g/g-69621e17476081919461beca0735097a-caie" target="_blank">
+                    <div class="usecase-icon" style="background:#ecfdf5;color:#059669">💡</div>
+                    <div>
+                        <h4>"What are the CARO 2020 reporting requirements?"</h4>
+                        <p>Audit Guide GPT provides clause-by-clause guidance with practical exemptions and applicability.</p>
+                    </div>
+                </a>
+                <a class="usecase-card" href="https://chatgpt.com/g/g-69620643b1788191b31094fdbc007ffc-vp-expert-of-insolvency" target="_blank">
+                    <div class="usecase-icon" style="background:#fef2f2;color:#ef4444">💡</div>
+                    <div>
+                        <h4>"What is the timeline for CIRP under IBC?"</h4>
+                        <p>Insolvency GPT explains the 180+90 day timeline, extensions, and NCLT procedures for resolution.</p>
+                    </div>
                 </a>
             </div>
 
-            <div class="navbar-profile" onclick="toggleProfileDropdown(event)">
-                <div style="display:flex; align-items:center; gap:0.75rem">
-                    <div class="user-avatar-small" id="nav-avatar">U</div>
+            <!-- Capabilities -->
+            <div class="section-label" style="margin-top:0.5rem">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                What Makes Our AI Different
+            </div>
+            <div class="cap-grid">
+                <div class="cap-card">
+                    <div class="cap-icon" style="background:#ede9fe;color:#6d28d9">🧠</div>
+                    <div class="cap-name">India-First Training</div>
+                    <div class="cap-desc">Trained on Income Tax Act, GST Act, Companies Act 2013, FEMA, ICAI standards, and latest Finance Act amendments.</div>
                 </div>
-                <!-- Dropdown Menu -->
-                <div class="nav-dropdown" id="profile-dropdown">
-                    <a href="profile.html" class="dropdown-item">
-                        <span>👤</span> My Profile
-                    </a>
-                    <a href="integrations.html" class="dropdown-item">
-                        <span>🔌</span> Integrations
-                    </a>
-                    <div class="dropdown-divider"></div>
-                    <div onclick="logout()" class="dropdown-item" style="color: #EF4444;">
-                        <span>🚪</span> Logout
-                    </div>
+                <div class="cap-card">
+                    <div class="cap-icon" style="background:#eff6ff;color:#1e3a8a">🤖</div>
+                    <div class="cap-name">Agentic AI Architecture</div>
+                    <div class="cap-desc">AI agents that autonomously reason through multi-step compliance workflows — not just simple Q&A chatbots.</div>
+                </div>
+                <div class="cap-card">
+                    <div class="cap-icon" style="background:#ecfdf5;color:#059669">🖥️</div>
+                    <div class="cap-name">Dual Workspace</div>
+                    <div class="cap-desc">Use Web View for structured panel workflows or Semi-Chat View for conversational AI — same powerful engine.</div>
+                </div>
+                <div class="cap-card">
+                    <div class="cap-icon" style="background:#fffbeb;color:#d97706">📄</div>
+                    <div class="cap-name">Document-Aware</div>
+                    <div class="cap-desc">Upload invoices, FIRCs, bank statements — AI reads, extracts data, and answers questions about your documents.</div>
+                </div>
+                <div class="cap-card">
+                    <div class="cap-icon" style="background:#fdf2f8;color:#db2777">🔄</div>
+                    <div class="cap-name">Always Up-to-Date</div>
+                    <div class="cap-desc">Continuously updated with latest GST Council decisions, CBDT notifications, and SEBI circulars.</div>
+                </div>
+                <div class="cap-card">
+                    <div class="cap-icon" style="background:#f0fdfa;color:#0f766e">🔐</div>
+                    <div class="cap-name">Secure & Private</div>
+                    <div class="cap-desc">Your queries and data are encrypted and never used for training. Enterprise-grade security for CA firms.</div>
                 </div>
             </div>
-        </div>
-    </nav>
-
-    <!-- Main Content -->
-    <section class="hero-section" style="padding-top: 6rem;">
-        <h1 class="hero-h1" style="color: #1e3a8a; text-shadow: 0 1px 2px rgba(255,255,255,0.8);">Your AI Compliance
-            Assistants</h1>
-        <p class="hero-p" style="max-width: 800px; margin: 0 auto; color: #4B5563;">
-            Four expert GPTs ready to elevate your financial and compliance work. Get instant answers, generate reports,
-            and navigate complex regulations with ease.
-        </p>
-    </section>
-
-    <div class="gpt-grid">
-
-        <!-- ONE: TaxPro GPT -->
-        <div class="gpt-card">
-            <img src="assets/icon-tax.png" alt="Tax Icon" class="gpt-image">
-            <h3 class="gpt-title">TaxPro GPT</h3>
-            <p class="gpt-desc">Navigate income tax to questions and filings with expert precision.</p>
-            <a href="https://chatgpt.com/g/g-69621be2d5488191ae2078658ab0113a-cai-taxation-expert" target="_blank"
-                class="gpt-btn">Chat Now ></a>
-        </div>
-
-        <!-- TWO: Audit Guide -->
-        <div class="gpt-card">
-            <img src="assets/icon-audit.png" alt="Audit Icon" class="gpt-image">
-            <h3 class="gpt-title">Audit Guide GPT</h3>
-            <p class="gpt-desc">Get audit guidance, checklists, and ensure regulatory compliance.</p>
-            <a href="https://chatgpt.com/g/g-69621e17476081919461beca0735097a-caie" target="_blank" class="gpt-btn">Chat
-                Now ></a>
-        </div>
-
-        <!-- THREE: GST Advisor -->
-        <div class="gpt-card">
-            <img src="assets/icon-gst.png" alt="GST Icon" class="gpt-image">
-            <h3 class="gpt-title">GST Advisor GPT</h3>
-            <p class="gpt-desc">Optimize GST refunds, filings, and reconcile incorrectly claimed ITC.</p>
-            <a href="https://chatgpt.com/g/g-69621e5cddb08191acc1592e903a4f63-caie-2" target="_blank"
-                class="gpt-btn">Chat Now ></a>
-        </div>
-
-        <!-- FOUR: Insolvency -->
-        <div class="gpt-card">
-            <img src="assets/icon-insolvency.png" alt="Insolvency Icon" class="gpt-image">
-            <h3 class="gpt-title">Insolvency GPT</h3>
-            <p class="gpt-desc">Manage insolvency cases and legal processes with expert guidance.</p>
-            <a href="https://chatgpt.com/g/g-69620643b1788191b31094fdbc007ffc-vp-expert-of-insolvency" target="_blank"
-                class="gpt-btn">Chat Now ></a>
-        </div>
-
+        </main>
     </div>
 
-    <!-- Scripts -->
     <script src="api_config.js?v=2"></script>
     <script src="session-manager.js?v=2"></script>
     <script>
-        // Init Check
-        document.addEventListener('DOMContentLoaded', () => {
-            // Use session-manager's auth check
-            if (!requireAuth()) return; // Will redirect if not logged in
+        if (!requireAuth()) { }
 
-            // Get user from localStorage (as set by session-manager/login)
-            const userStr = localStorage.getItem('user');
-            if (userStr) {
-                const user = JSON.parse(userStr);
-                // Determine initial
-                const nameToUse = user.firm_name || user.full_name || user.email || 'U';
-                const initial = nameToUse.charAt(0).toUpperCase();
+        // ====== GPT DATA ======
+        const gptAssistants = [
+            { name: 'TaxPro GPT', domain: 'Income Tax', topics: 'income tax, ITR, TDS, capital gains, advance tax, deductions, exemptions, section 80C, HRA', icon: '🧾', url: 'https://chatgpt.com/g/g-69621be2d5488191ae2078658ab0113a-cai-taxation-expert' },
+            { name: 'Audit Guide GPT', domain: 'Audit & Assurance', topics: 'statutory audit, tax audit, CARO, SA standards, internal audit, compliance, reporting', icon: '📋', url: 'https://chatgpt.com/g/g-69621e17476081919461beca0735097a-caie' },
+            { name: 'GST Advisor GPT', domain: 'GST & Indirect Tax', topics: 'GST, GSTR, ITC, e-way bill, HSN, SAC, refund, reverse charge, composition scheme, reconciliation', icon: '📊', url: 'https://chatgpt.com/g/g-69621e5cddb08191acc1592e903a4f63-caie-2' },
+            { name: 'Insolvency GPT', domain: 'IBC & Insolvency', topics: 'IBC, CIRP, liquidation, NCLT, CoC, insolvency resolution, moratorium, avoidance transactions', icon: '⚖️', url: 'https://chatgpt.com/g/g-69620643b1788191b31094fdbc007ffc-vp-expert-of-insolvency' },
+        ];
 
-                const navAvatar = document.getElementById('nav-avatar');
-                if (navAvatar) navAvatar.textContent = initial;
-            }
-        });
+        const srColors = ['#ede9fe','#ecfdf5','#fffbeb','#fef2f2','#eff6ff','#f0fdfa'];
 
-        window.toggleProfileDropdown = function (e) {
-            e.stopPropagation();
-            const dd = document.getElementById('profile-dropdown');
-            if (dd.style.display === 'block') {
-                dd.style.display = 'none';
+        // ====== SEARCH ======
+        function clearSearch(){
+            document.getElementById('gpt-search').value = '';
+            document.getElementById('search-results').classList.remove('show');
+            document.getElementById('search-clear').classList.remove('show');
+        }
+
+        function performSearch(query){
+            const q = query.toLowerCase().trim();
+            const clearBtn = document.getElementById('search-clear');
+            const resultsDiv = document.getElementById('search-results');
+            const srGrid = document.getElementById('sr-grid');
+            const srCount = document.getElementById('sr-count');
+
+            if(!q){clearBtn.classList.remove('show');resultsDiv.classList.remove('show');return}
+            clearBtn.classList.add('show');
+
+            const matches = gptAssistants.filter(g => {
+                const haystack = (g.name + ' ' + g.domain + ' ' + g.topics).toLowerCase();
+                return q.split(/\s+/).every(word => haystack.includes(word));
+            });
+
+            srCount.textContent = matches.length + (matches.length === 1 ? ' result' : ' results');
+            if(matches.length === 0){
+                srGrid.innerHTML = '<div class="sr-empty">No AI assistants match your search. Try keywords like "GST", "income tax", "audit", or "insolvency".</div>';
             } else {
-                dd.style.display = 'block';
+                srGrid.innerHTML = matches.map((g, i) => `
+                    <a class="sr-item" href="${g.url}" target="_blank">
+                        <div class="sr-icon" style="background:${srColors[i % 6]}">${g.icon}</div>
+                        <div><div class="sr-name">${highlightMatch(g.name, q)}</div><div class="sr-cat">${g.domain}</div></div>
+                        <span class="sr-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></span>
+                    </a>
+                `).join('');
             }
-        };
+            resultsDiv.classList.add('show');
+        }
 
-        // Close dropdown when clicking outside
-        document.addEventListener('click', function (event) {
-            const dropdown = document.getElementById('profile-dropdown');
-            const profile = document.querySelector('.navbar-profile');
-            if (dropdown && profile && !profile.contains(event.target)) {
-                dropdown.style.display = 'none';
-            }
-        });
+        function highlightMatch(text, query){
+            const words = query.split(/\s+/).filter(w => w);
+            let result = text;
+            words.forEach(w => {
+                const regex = new RegExp('(' + w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+                result = result.replace(regex, '<mark style="background:#fef08a;padding:0 1px;border-radius:2px">$1</mark>');
+            });
+            return result;
+        }
 
-        // Remove duplicate logout() - use the one from session-manager.js
+        document.getElementById('gpt-search').addEventListener('input', e => performSearch(e.target.value));
     </script>
 </body>
-
 </html>

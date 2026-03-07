@@ -1,0 +1,1347 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agreement Wizard — ComplianceAI Expert</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-light: #818cf8;
+            --primary-bg: #eef2ff;
+            --success: #16a34a;
+            --success-bg: #dcfce7;
+            --danger: #dc2626;
+            --g50: #f8fafc;
+            --g100: #f1f5f9;
+            --g200: #e2e8f0;
+            --g300: #cbd5e1;
+            --g400: #94a3b8;
+            --g500: #64748b;
+            --g700: #334155;
+            --g800: #1e293b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: #f0f2f7;
+            color: var(--g800);
+        }
+
+        /* ─── Split Layout ─── */
+        .wizard-wrap {
+            padding-top: 76px;
+            display: flex;
+            height: calc(100vh - 0px);
+        }
+
+        .wizard-left {
+            width: 55%;
+            overflow-y: auto;
+            padding: 2rem 2.5rem 3rem;
+        }
+
+        .wizard-right {
+            width: 45%;
+            background: white;
+            border-left: 1px solid var(--g200);
+            overflow-y: auto;
+            position: sticky;
+            top: 76px;
+            height: calc(100vh - 76px);
+        }
+
+        .preview-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--g200);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: var(--g50);
+            position: sticky;
+            top: 0;
+            z-index: 2;
+        }
+
+        .preview-header h3 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--g700);
+        }
+
+        .preview-badge {
+            font-size: 0.65rem;
+            background: #dcfce7;
+            color: #16a34a;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .preview-body {
+            padding: 0;
+        }
+
+        .preview-body iframe {
+            width: 100%;
+            height: calc(100vh - 130px);
+            border: none;
+        }
+
+        .preview-empty {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: calc(100vh - 130px);
+            color: var(--g400);
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .preview-empty svg {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+
+        .preview-empty p {
+            font-size: 0.9rem;
+            max-width: 300px;
+        }
+
+        /* ─── Stepper ─── */
+        .stepper {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            padding: 0.75rem 1rem;
+            background: white;
+            border-radius: 12px;
+            border: 1px solid var(--g200);
+        }
+
+        .step-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--g400);
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .step-item.active {
+            color: var(--primary);
+        }
+
+        .step-item.done {
+            color: var(--success);
+        }
+
+        .step-num {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 700;
+            border: 2px solid var(--g300);
+            background: white;
+            transition: all 0.2s;
+        }
+
+        .step-item.active .step-num {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: white;
+        }
+
+        .step-item.done .step-num {
+            border-color: var(--success);
+            background: var(--success);
+            color: white;
+        }
+
+        .step-line {
+            flex: 1;
+            height: 2px;
+            background: var(--g200);
+            min-width: 20px;
+        }
+
+        .step-line.done {
+            background: var(--success);
+        }
+
+        /* ─── Step Content ─── */
+        .step-content {
+            display: none;
+        }
+
+        .step-content.visible {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px)
+            }
+
+            to {
+                opacity: 1;
+                transform: none
+            }
+        }
+
+        .step-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.4rem;
+        }
+
+        .step-subtitle {
+            color: var(--g500);
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* ─── Category & Type Cards ─── */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .sel-card {
+            background: white;
+            border-radius: 14px;
+            padding: 1.25rem;
+            border: 2px solid var(--g200);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .sel-card:hover {
+            border-color: #c7d2fe;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px -6px rgba(79, 70, 229, 0.1);
+        }
+
+        .sel-card.selected {
+            border-color: var(--primary);
+            background: var(--primary-bg);
+        }
+
+        .sel-card .card-icon {
+            font-size: 1.5rem;
+        }
+
+        .sel-card .card-name {
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        .sel-card .card-desc {
+            font-size: 0.78rem;
+            color: var(--g500);
+            line-height: 1.4;
+        }
+
+        .sel-card .card-count {
+            font-size: 0.7rem;
+            color: var(--g400);
+            font-weight: 600;
+        }
+
+        /* ─── Form ─── */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+
+        .form-group.full {
+            grid-column: 1/-1;
+        }
+
+        .form-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--g700);
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .form-label .req {
+            color: var(--danger);
+        }
+
+        .form-input,
+        .form-textarea,
+        .form-select {
+            padding: 0.65rem 0.85rem;
+            border: 1px solid var(--g200);
+            border-radius: 10px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.88rem;
+            color: var(--g800);
+            background: var(--g50);
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.08);
+            background: white;
+        }
+
+        .form-textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        /* ─── Clause Section ─── */
+        .clause-section {
+            margin-top: 2rem;
+        }
+
+        .clause-section-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--g200);
+        }
+
+        .clause-section-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .clause-actions {
+            margin-left: auto;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .clause-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .clause-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.85rem 1rem;
+            background: white;
+            border-radius: 10px;
+            border: 1px solid var(--g200);
+            transition: border-color 0.2s;
+        }
+
+        .clause-row.unchecked {
+            opacity: 0.5;
+        }
+
+        .clause-row:hover {
+            border-color: #c7d2fe;
+        }
+
+        .clause-cb {
+            width: 20px;
+            height: 20px;
+            border-radius: 6px;
+            border: 2px solid var(--g300);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+            margin-top: 2px;
+            transition: all 0.2s;
+        }
+
+        .clause-cb.checked {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .clause-cb svg {
+            display: none;
+        }
+
+        .clause-cb.checked svg {
+            display: block;
+        }
+
+        .clause-info {
+            flex: 1;
+        }
+
+        .clause-info .cl-title {
+            font-weight: 600;
+            font-size: 0.88rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .clause-info .cl-preview {
+            font-size: 0.78rem;
+            color: var(--g500);
+            line-height: 1.4;
+            max-height: 40px;
+            overflow: hidden;
+        }
+
+        /* ─── Buttons ─── */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.6rem 1.25rem;
+            border-radius: 10px;
+            border: none;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+            box-shadow: 0 2px 8px rgba(79, 70, 229, 0.25);
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 4px 14px rgba(79, 70, 229, 0.35);
+            transform: translateY(-1px);
+        }
+
+        .btn-outline {
+            background: white;
+            color: var(--g700);
+            border: 1px solid var(--g200);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--g300);
+            background: var(--g50);
+        }
+
+        .btn-success {
+            background: #059669;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #047857;
+        }
+
+        .btn-ai {
+            background: linear-gradient(135deg, #ec4899, #8b5cf6);
+            color: white;
+            box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);
+        }
+
+        .btn-ai:hover {
+            box-shadow: 0 4px 14px rgba(139, 92, 246, 0.4);
+        }
+
+        .btn-sm {
+            padding: 0.4rem 0.85rem;
+            font-size: 0.78rem;
+            border-radius: 8px;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-row .spacer {
+            flex: 1;
+        }
+
+        /* ─── Toast ─── */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: #1e293b;
+            color: white;
+            padding: 0.85rem 1.5rem;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast.success {
+            background: #059669;
+        }
+
+        .toast.error {
+            background: #dc2626;
+        }
+
+        /* ─── Loading ─── */
+        .loading-center {
+            text-align: center;
+            padding: 3rem;
+            color: var(--g400);
+        }
+
+        .spin {
+            width: 32px;
+            height: 32px;
+            border: 3px solid var(--g200);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: sp 0.8s linear infinite;
+            margin: 0 auto 0.75rem;
+        }
+
+        @keyframes sp {
+            to {
+                transform: rotate(360deg)
+            }
+        }
+
+        @media(max-width:900px) {
+            .wizard-wrap {
+                flex-direction: column;
+            }
+
+            .wizard-left,
+            .wizard-right {
+                width: 100%;
+            }
+
+            .wizard-right {
+                position: relative;
+                top: 0;
+                height: auto;
+                min-height: 400px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app-topbar" data-active="certificates"></div>
+
+    <div class="wizard-wrap">
+        <!-- LEFT PANEL — Wizard Steps -->
+        <div class="wizard-left">
+            <div class="stepper" id="stepper"></div>
+            <div id="step-1" class="step-content visible"></div>
+            <div id="step-2" class="step-content"></div>
+            <div id="step-3" class="step-content"></div>
+            <div id="step-4" class="step-content"></div>
+        </div>
+
+        <!-- RIGHT PANEL — Live Preview -->
+        <div class="wizard-right">
+            <div class="preview-header">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                    <polyline points="14 2 14 8 20 8" />
+                </svg>
+                <h3>Live Preview</h3>
+                <span class="preview-badge" id="preview-badge" style="display:none">● LIVE</span>
+            </div>
+            <div class="preview-body" id="preview-body">
+                <div class="preview-empty">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                        <polyline points="14 2 14 8 20 8" />
+                        <line x1="16" y1="13" x2="8" y2="13" />
+                        <line x1="16" y1="17" x2="8" y2="17" />
+                        <polyline points="10 9 9 9 8 9" />
+                    </svg>
+                    <p>Select an agreement type and fill in the details to see a live preview here</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script src="api_config.js"></script>
+    <script src="session-manager.js?v=2"></script>
+    <script>
+        if (!requireAuth()) { }
+
+        // ═══ STATE ═══
+        let categories = [];
+        let selectedCategory = null;
+        let selectedType = null;
+        let currentStep = 1;
+        let fieldValues = {};
+        let clauses = [];
+        let extraClauses = []; // AI-suggested extra clauses for template types
+        let previewDebounce = null;
+        let templatePreviewHtml = null; // cached docx-based HTML template
+
+        const STEPS = [
+            { num: 1, label: 'Category' },
+            { num: 2, label: 'Agreement' },
+            { num: 3, label: 'Details & Clauses' },
+            { num: 4, label: 'Generate' },
+        ];
+
+        // ═══ STEPPER ═══
+        function renderStepper() {
+            document.getElementById('stepper').innerHTML = STEPS.map((s, i) => {
+                const cls = s.num < currentStep ? 'done' : s.num === currentStep ? 'active' : '';
+                const lineCls = s.num < currentStep ? 'done' : '';
+                return `
+                <div class="step-item ${cls}" onclick="${s.num < currentStep ? `goToStep(${s.num})` : ''}">
+                    <div class="step-num">${s.num < currentStep ? '✓' : s.num}</div>
+                    <span>${s.label}</span>
+                </div>
+                ${i < STEPS.length - 1 ? `<div class="step-line ${lineCls}"></div>` : ''}
+            `;
+            }).join('');
+        }
+
+        function goToStep(n) {
+            currentStep = n;
+            renderStepper();
+            document.querySelectorAll('.step-content').forEach(el => el.classList.remove('visible'));
+            document.getElementById(`step-${n}`).classList.add('visible');
+            if (n >= 3) updatePreview();
+        }
+
+        // ═══ STEP 1 — CATEGORIES ═══
+        async function loadCategories() {
+            const el = document.getElementById('step-1');
+            el.innerHTML = '<div class="loading-center"><div class="spin"></div><p>Loading categories...</p></div>';
+
+            try {
+                const resp = await authFetch('/agreements/categories');
+                if (!resp || !resp.ok) throw new Error('Failed');
+                categories = await resp.json();
+
+                el.innerHTML = `
+                <h2 class="step-title">Choose Agreement Category</h2>
+                <p class="step-subtitle">Select the category that best matches the type of agreement you want to create.</p>
+                <div class="card-grid">
+                    ${categories.map((c, i) => `
+                        <div class="sel-card" data-id="${c.id}" onclick="selectCategory('${c.id}')">
+                            <div class="card-icon">${c.icon || '📄'}</div>
+                            <div class="card-name">${c.name}</div>
+                            <div class="card-desc">${c.description || ''}</div>
+                            <div class="card-count">${c.agreement_types.length} templates</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            } catch (err) {
+                el.innerHTML = `<div style="color:var(--danger);padding:2rem;">⚠️ ${err.message}</div>`;
+            }
+        }
+
+        function selectCategory(catId) {
+            selectedCategory = categories.find(c => c.id === catId);
+            // Highlight
+            document.querySelectorAll('#step-1 .sel-card').forEach(c => c.classList.remove('selected'));
+            document.querySelector(`#step-1 .sel-card[data-id="${catId}"]`).classList.add('selected');
+            // Auto-advance after brief delay
+            setTimeout(() => {
+                renderStep2();
+                goToStep(2);
+            }, 300);
+        }
+
+        // ═══ STEP 2 — TYPE SELECTION ═══
+        function renderStep2() {
+            if (!selectedCategory) return;
+            const el = document.getElementById('step-2');
+            el.innerHTML = `
+            <h2 class="step-title">${selectedCategory.icon || ''} ${selectedCategory.name}</h2>
+            <p class="step-subtitle">Select the specific agreement template you want to create.</p>
+            <div class="card-grid">
+                ${selectedCategory.agreement_types.map(t => `
+                    <div class="sel-card" data-id="${t.id}" onclick="selectType('${t.id}')">
+                        <div class="card-icon">${t.icon || '📄'}</div>
+                        <div class="card-name">${t.name}</div>
+                        <div class="card-desc">${t.description || ''}</div>
+                    </div>
+                `).join('')}
+            </div>
+            <div class="btn-row">
+                <button class="btn btn-outline" onclick="goToStep(1)">← Back</button>
+            </div>
+        `;
+        }
+
+        async function selectType(typeId) {
+            document.querySelectorAll('#step-2 .sel-card').forEach(c => c.classList.remove('selected'));
+            document.querySelector(`#step-2 .sel-card[data-id="${typeId}"]`).classList.add('selected');
+
+            // Fetch type details (with template_fields and clauses)
+            try {
+                const resp = await authFetch(`/agreements/types/${typeId}/template`);
+                if (!resp || !resp.ok) throw new Error('Failed');
+                const data = await resp.json();
+                selectedType = data.agreement_type;
+                selectedType._hasDocxTemplate = !!(selectedType.template_path);
+                clauses = data.clauses.map(c => ({ ...c, _enabled: c.is_default }));
+                fieldValues = {};
+                templatePreviewHtml = null; // reset cache
+
+                // If template exists, fetch the HTML preview template
+                if (selectedType._hasDocxTemplate) {
+                    fetchTemplatePreview(selectedType.id);
+                }
+
+                setTimeout(() => {
+                    renderStep3();
+                    goToStep(3);
+                }, 300);
+            } catch (err) {
+                showToast('❌ Failed to load template', 'error');
+            }
+        }
+
+        // ═══ STEP 3 — FORM + CLAUSES ═══
+        function renderStep3() {
+            if (!selectedType) return;
+            const el = document.getElementById('step-3');
+            const fields = selectedType.template_fields || [];
+            const enabledCount = clauses.filter(c => c._enabled).length;
+
+            el.innerHTML = `
+            <h2 class="step-title">${selectedType.icon || ''} ${selectedType.name}</h2>
+            <p class="step-subtitle">Fill in the agreement details and select clauses to include.</p>
+
+            <!-- Info Form -->
+            <div class="form-grid">
+                ${fields.map(f => `
+                    <div class="form-group ${f.type === 'textarea' ? 'full' : ''}">
+                        <label class="form-label">
+                            ${f.label}${f.required ? '<span class="req">*</span>' : ''}
+                        </label>
+                        ${f.type === 'textarea'
+                    ? `<textarea class="form-textarea" data-field="${f.name}"
+                                placeholder="${f.placeholder || ''}"
+                                oninput="onFieldChange('${f.name}', this.value)">${fieldValues[f.name] || ''}</textarea>`
+                    : f.type === 'select'
+                        ? `<select class="form-select" data-field="${f.name}" onchange="onFieldChange('${f.name}', this.value)">
+                                <option value="">Select...</option>
+                                ${(f.options || []).map(o => `<option ${fieldValues[f.name] === o ? 'selected' : ''}>${o}</option>`).join('')}
+                               </select>`
+                        : `<input class="form-input" type="${f.type || 'text'}" data-field="${f.name}"
+                                placeholder="${f.placeholder || ''}" value="${fieldValues[f.name] || ''}"
+                                oninput="onFieldChange('${f.name}', this.value)">`
+                }
+                    </div>
+                `).join('')}
+            </div>
+
+            ${selectedType._hasDocxTemplate ? `
+            <!-- For template types: no clause list, just AI button -->
+            <div class="clause-section">
+                <div class="clause-section-header">
+                    <div class="clause-section-title">📋 Additional Clauses</div>
+                    <span style="color:var(--g400);font-size:0.78rem;">Template has all standard clauses built-in</span>
+                </div>
+                <div style="background:white;border-radius:12px;padding:1.25rem;border:1px solid var(--g200);">
+                    <p style="font-size:0.82rem;color:var(--g500);margin-bottom:0.75rem;line-height:1.5;">
+                        This agreement already includes all standard <strong>${selectedType.name}</strong> clauses. You can optionally add extra clauses suggested by AI under the Miscellaneous section.
+                    </p>
+                    <button class="btn btn-ai btn-sm" onclick="aiSuggestExtra()" id="btn-ai-extra">
+                        ✨ AI Suggest Extra Clauses
+                    </button>
+                    <div id="extra-clauses-list" style="margin-top:0.75rem;"></div>
+                </div>
+            </div>
+            ` : `
+            <!-- For non-template types: full clause list -->
+            <div class="clause-section">
+                <div class="clause-section-header">
+                    <div class="clause-section-title">📋 Clauses</div>
+                    <span style="color:var(--g400);font-size:0.8rem;">${enabledCount} of ${clauses.length} selected</span>
+                    <div class="clause-actions">
+                        <button class="btn btn-ai btn-sm" onclick="aiSelectClauses()">✨ AI Select</button>
+                        <button class="btn btn-outline btn-sm" onclick="selectAllClauses()">All</button>
+                        <button class="btn btn-outline btn-sm" onclick="deselectAllClauses()">None</button>
+                    </div>
+                </div>
+                <div class="clause-list" id="clause-list">
+                    ${clauses.map((c, i) => `
+                        <div class="clause-row ${c._enabled ? '' : 'unchecked'}" id="cr-${i}">
+                            <div class="clause-cb ${c._enabled ? 'checked' : ''}" onclick="toggleClause(${i})">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3">
+                                    <polyline points="20 6 9 17 4 12"/>
+                                </svg>
+                            </div>
+                            <div class="clause-info">
+                                <div class="cl-title">${c.title}</div>
+                                <div class="cl-preview">${escapeHTML(c.content).substring(0, 120)}...</div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+            `}
+
+            <div class="btn-row">
+                <button class="btn btn-outline" onclick="goToStep(2)">← Back</button>
+                <div class="spacer"></div>
+                <button class="btn btn-outline" onclick="saveDraft()">💾 Save Draft</button>
+                <button class="btn btn-primary" onclick="goToStep(4)">Preview & Generate →</button>
+            </div>
+        `;
+            schedulePreview();
+        }
+
+        function onFieldChange(field, value) {
+            fieldValues[field] = value;
+            schedulePreview();
+        }
+
+        function toggleClause(idx) {
+            clauses[idx]._enabled = !clauses[idx]._enabled;
+            clauses[idx].is_default = clauses[idx]._enabled;
+            renderStep3();
+        }
+
+        function selectAllClauses() {
+            clauses.forEach(c => { c._enabled = true; c.is_default = true; });
+            renderStep3();
+        }
+
+        function deselectAllClauses() {
+            clauses.forEach(c => { c._enabled = false; c.is_default = false; });
+            renderStep3();
+        }
+
+        async function aiSelectClauses() {
+            showToast('✨ Asking AI to recommend clauses...', '');
+            try {
+                const resp = await authFetch('/agreements/ai-select-clauses', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        agreement_type_id: selectedType.id,
+                        context: fieldValues.business_nature || fieldValues.services_desc || '',
+                    }),
+                });
+                if (!resp || !resp.ok) throw new Error('AI failed');
+                const data = await resp.json();
+                const recIds = new Set(data.recommended_clause_ids);
+                clauses.forEach(c => {
+                    c._enabled = recIds.has(c.id);
+                    c.is_default = c._enabled;
+                });
+                renderStep3();
+                showToast(`✅ AI selected ${recIds.size} clauses (${data.source})`, 'success');
+            } catch (err) {
+                showToast('⚠️ AI unavailable, using defaults', 'error');
+            }
+        }
+
+        // ═══ AI EXTRA CLAUSES (for template types) ═══
+        async function aiSuggestExtra() {
+            const btn = document.getElementById('btn-ai-extra');
+            if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spin" style="width:14px;height:14px;border-width:2px;margin:0"></span> Thinking...'; }
+
+            // Hardcoded 2 extra clauses for Rent/Lease (practical suggestions)
+            // In future, this could call an AI endpoint
+            const suggestions = [
+                {
+                    id: 'extra_pets',
+                    title: 'Pets Policy',
+                    content: 'The Tenant shall not keep any pets (dogs, cats, birds, or other animals) on the Demised Premises without prior written consent of the Landlord. If consent is granted, the Tenant shall be liable for any damage caused by such pets and shall ensure compliance with local bye-laws regarding pet ownership.',
+                    _enabled: false,
+                },
+                {
+                    id: 'extra_parking',
+                    title: 'Parking Facility',
+                    content: 'The Landlord shall allot one designated parking space (Car/Two-wheeler) in the building/society premises for the Tenant\'s use during the tenancy period. The Tenant shall not sublet, assign, or transfer the parking space independently. Any additional parking charges imposed by the society shall be borne by the Tenant.',
+                    _enabled: false,
+                },
+            ];
+
+            // Simulate brief delay for AI feel
+            await new Promise(r => setTimeout(r, 800));
+
+            extraClauses = suggestions;
+            renderExtraClauses();
+            if (btn) { btn.disabled = false; btn.innerHTML = '✨ AI Suggest Extra Clauses'; }
+            showToast('✨ 2 extra clauses suggested — select to add under Miscellaneous', 'success');
+        }
+
+        function renderExtraClauses() {
+            const el = document.getElementById('extra-clauses-list');
+            if (!el) return;
+            el.innerHTML = extraClauses.map((c, i) => `
+                <div class="clause-row ${c._enabled ? '' : 'unchecked'}" style="margin-top:0.5rem;">
+                    <div class="clause-cb ${c._enabled ? 'checked' : ''}" onclick="toggleExtraClause(${i})">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3">
+                            <polyline points="20 6 9 17 4 12"/>
+                        </svg>
+                    </div>
+                    <div class="clause-info">
+                        <div class="cl-title">${c.title}</div>
+                        <div class="cl-preview">${escapeHTML(c.content).substring(0, 150)}...</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function toggleExtraClause(idx) {
+            extraClauses[idx]._enabled = !extraClauses[idx]._enabled;
+            renderExtraClauses();
+            schedulePreview(); // re-render preview with/without extra clauses
+        }
+
+        // ═══ STEP 4 — GENERATE ═══
+        function renderStep4() {
+            const el = document.getElementById('step-4');
+            el.innerHTML = `
+            <h2 class="step-title">Preview & Generate</h2>
+            <p class="step-subtitle">Review the live preview on the right. When ready, generate or download your agreement.</p>
+
+            <div style="background:white;border-radius:14px;padding:1.5rem;border:1px solid var(--g200);margin-bottom:1.5rem;">
+                <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">
+                    <span style="font-size:1.5rem;">${selectedType.icon || '📄'}</span>
+                    <div>
+                        <div style="font-weight:700;font-size:1.1rem;">${selectedType.name}</div>
+                        <div style="font-size:0.8rem;color:var(--g400);">${clauses.filter(c => c._enabled).length} clauses selected</div>
+                    </div>
+                </div>
+                <div style="font-size:0.82rem;color:var(--g500);line-height:1.5;">
+                    ${Object.entries(fieldValues).filter(([k, v]) => v).map(([k, v]) => `
+                        <div><strong>${k.replace(/_/g, ' ')}:</strong> ${v}</div>
+                    `).join('')}
+                </div>
+            </div>
+
+            <div class="btn-row">
+                <button class="btn btn-outline" onclick="goToStep(3)">← Back to Edit</button>
+                <div class="spacer"></div>
+                <button class="btn btn-outline" onclick="saveDraft()">💾 Save Draft</button>
+                <button class="btn btn-outline" id="btn-edit-preview" onclick="togglePreviewEdit()">
+                    ✏️ Edit Document
+                </button>
+                ${selectedType._hasDocxTemplate ? `
+                <button class="btn btn-primary" onclick="downloadDocx()" id="btn-docx">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        <polyline points="14 2 14 8 20 8"/>
+                        <line x1="16" y1="13" x2="8" y2="13"/>
+                        <line x1="16" y1="17" x2="8" y2="17"/>
+                    </svg>
+                    Download Word (.docx)
+                </button>` : ''}
+                <button class="btn btn-success" onclick="downloadPDF()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    Download PDF
+                </button>
+            </div>
+        `;
+        }
+
+        // ═══ EDIT PREVIEW (STEP 4) ═══
+        function togglePreviewEdit() {
+            const pb = document.getElementById('preview-body');
+            const iframe = pb.querySelector('iframe');
+            if (!iframe) {
+                showToast('⚠️ No preview to edit', 'error');
+                return;
+            }
+
+            const btn = document.getElementById('btn-edit-preview');
+            const doc = iframe.contentDocument;
+            const isEditing = doc.body.getAttribute('contenteditable') === 'true';
+
+            if (isEditing) {
+                // Disable editing
+                doc.body.setAttribute('contenteditable', 'false');
+                doc.body.style.backgroundColor = '';
+                btn.innerHTML = '✏️ Edit Document';
+                btn.classList.remove('btn-success');
+                btn.classList.add('btn-outline');
+
+                // For template previews, when finished editing, update the html cache so it gets saved on docx generation
+                if (templatePreviewHtml) {
+                    templatePreviewHtml = doc.documentElement.outerHTML;
+                    // Note: downloading docx from server will STILL use the original template with form fields, 
+                    // NOT the raw HTML edits. Word extraction of raw HTML is complex. 
+                    // But downloading PDF will capture all edits!
+                }
+
+                showToast('Editing disabled. Download PDF to capture exact visual edits.', '');
+            } else {
+                // Enable editing
+                doc.body.setAttribute('contenteditable', 'true');
+                doc.body.focus();
+                doc.body.style.backgroundColor = '#fefefe';
+                doc.body.style.borderRadius = '4px';
+                doc.body.style.boxShadow = 'inset 0 0 0 2px var(--primary)';
+
+                btn.innerHTML = '💾 Finish Editing';
+                btn.classList.remove('btn-outline');
+                btn.classList.add('btn-success');
+                showToast('✅ You can now edit the entire document directly! Click anywhere in the preview.', 'success');
+            }
+        }
+
+        // ═══ PREVIEW ═══
+        function schedulePreview() {
+            clearTimeout(previewDebounce);
+            previewDebounce = setTimeout(updatePreview, 150); // faster since client-side
+        }
+
+        async function fetchTemplatePreview(typeId) {
+            try {
+                const resp = await authFetch(`/agreements/types/${typeId}/preview-template`);
+                if (!resp || !resp.ok) throw new Error('Failed');
+                const data = await resp.json();
+                if (data.has_template && data.html) {
+                    templatePreviewHtml = data.html;
+                    updatePreview(); // initial render
+                }
+            } catch (err) {
+                console.warn('Template preview fetch failed, using clause preview:', err);
+                templatePreviewHtml = null;
+            }
+        }
+
+        function updatePreview() {
+            if (!selectedType) return;
+            const badge = document.getElementById('preview-badge');
+
+            // If we have a docx-based template, do client-side replacement
+            if (templatePreviewHtml) {
+                updateTemplatePreview();
+                if (badge) badge.style.display = 'inline';
+                return;
+            }
+
+            // Fallback: clause-based preview via backend
+            updateClausePreview();
+        }
+
+        function updateTemplatePreview() {
+            let html = templatePreviewHtml;
+
+            // Append extra clauses HTML if any are enabled
+            const enabledExtra = extraClauses.filter(c => c._enabled);
+            if (enabledExtra.length > 0) {
+                let extraHtml = '<h2 style="font-size:14px;font-weight:700;color:#1e3a8a;margin:24px 0 8px;text-transform:uppercase;letter-spacing:0.5px;">Additional Clauses (Miscellaneous)</h2>';
+                enabledExtra.forEach((c, i) => {
+                    extraHtml += `<p style="margin:8px 0;text-align:justify;color:#334155;"><b>${i + 1}. ${c.title}:</b> ${c.content}</p>`;
+                });
+                // Insert before </body>
+                html = html.replace('</body>', extraHtml + '</body>');
+            }
+
+            // Use DOM to replace placeholder spans with field values
+            const pb = document.getElementById('preview-body');
+            let iframe = pb.querySelector('iframe');
+            if (!iframe) {
+                iframe = document.createElement('iframe');
+                iframe.style.width = '100%';
+                iframe.style.height = 'calc(100vh - 130px)';
+                iframe.style.border = 'none';
+                pb.innerHTML = '';
+                pb.appendChild(iframe);
+            }
+
+            iframe.contentDocument.open();
+            iframe.contentDocument.write(html);
+            iframe.contentDocument.close();
+
+            // Now replace placeholders and make them editable
+            const placeholders = iframe.contentDocument.querySelectorAll('.tpl-ph[data-field]');
+            placeholders.forEach(span => {
+                const field = span.getAttribute('data-field');
+                const value = fieldValues[field];
+
+                // Make editable
+                span.setAttribute('contenteditable', 'true');
+                span.setAttribute('spellcheck', 'false');
+                span.style.cursor = 'text';
+                span.style.outline = 'none';
+                span.style.minWidth = '60px';
+
+                if (value && value.toString().trim()) {
+                    span.textContent = value;
+                    span.classList.add('filled');
+                } else {
+                    span.textContent = field.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+                    span.classList.remove('filled');
+                }
+
+                // On focus, select all text for easy editing
+                span.addEventListener('focus', function () {
+                    if (!this.classList.contains('filled')) {
+                        this.textContent = '';
+                    }
+                    this.style.background = '#fef3c7';
+                    this.style.borderColor = '#f59e0b';
+                    this.style.color = '#92400e';
+                });
+
+                // On blur, sync back to fieldValues and update form
+                span.addEventListener('blur', function () {
+                    const newVal = this.textContent.trim();
+                    if (newVal) {
+                        fieldValues[field] = newVal;
+                        this.classList.add('filled');
+                        this.style.background = '#f0fdf4';
+                        this.style.borderColor = '#86efac';
+                        this.style.color = '#166534';
+                    } else {
+                        delete fieldValues[field];
+                        this.textContent = field.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+                        this.classList.remove('filled');
+                        this.style.background = '#eff6ff';
+                        this.style.borderColor = '#93c5fd';
+                        this.style.color = '#1e40af';
+                    }
+                    // Sync to form input on left panel
+                    const formInput = document.querySelector(`[data-field="${field}"]`);
+                    if (formInput) {
+                        formInput.value = newVal;
+                    }
+                });
+
+                // Prevent Enter from creating new lines
+                span.addEventListener('keydown', function (e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        this.blur();
+                    }
+                });
+            });
+        }
+
+        async function updateClausePreview() {
+            if (clauses.length === 0) return;
+            const badge = document.getElementById('preview-badge');
+            try {
+                const resp = await authFetch('/agreements/generate-preview', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        agreement_type_id: selectedType.id,
+                        field_values: fieldValues,
+                        selected_clauses: clauses.filter(c => c._enabled).map(c => ({
+                            id: c.id, title: c.title, content: c.content,
+                            is_default: true, order: c.order,
+                        })),
+                    }),
+                });
+                if (!resp || !resp.ok) throw new Error('Preview failed');
+                const data = await resp.json();
+
+                const pb = document.getElementById('preview-body');
+                const iframe = document.createElement('iframe');
+                iframe.style.width = '100%';
+                iframe.style.height = 'calc(100vh - 130px)';
+                iframe.style.border = 'none';
+                pb.innerHTML = '';
+                pb.appendChild(iframe);
+                iframe.contentDocument.open();
+                iframe.contentDocument.write(data.html);
+                iframe.contentDocument.close();
+
+                if (badge) { badge.style.display = 'inline'; }
+            } catch (err) {
+                console.error('Preview error:', err);
+            }
+        }
+
+        // ═══ DRAFT ═══
+        async function saveDraft() {
+            try {
+                const resp = await authFetch('/agreements/drafts', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        agreement_type_id: selectedType.id,
+                        title: `${selectedType.name} — ${fieldValues.party_a_name || ''} & ${fieldValues.party_b_name || ''}`.trim(),
+                        field_values: fieldValues,
+                        selected_clauses: clauses.map(c => ({
+                            id: c.id, title: c.title, content: c.content,
+                            is_default: c._enabled, order: c.order,
+                        })),
+                    }),
+                });
+                if (!resp || !resp.ok) throw new Error('Save failed');
+                showToast('✅ Draft saved!', 'success');
+            } catch (err) {
+                showToast('❌ Failed to save draft', 'error');
+            }
+        }
+
+        // ═══ DOWNLOAD PDF ═══
+        function downloadPDF() {
+            const iframe = document.querySelector('#preview-body iframe');
+            if (!iframe) {
+                showToast('⚠️ Generate a preview first', 'error');
+                return;
+            }
+            iframe.contentWindow.print();
+        }
+
+        // ═══ DOWNLOAD DOCX ═══
+        async function downloadDocx() {
+            if (!selectedType || !selectedType._hasDocxTemplate) return;
+            const btn = document.getElementById('btn-docx');
+            if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spin" style="width:16px;height:16px;border-width:2px;margin:0"></span> Generating...'; }
+
+            try {
+                const token = localStorage.getItem('access_token');
+                const resp = await fetch(`${API_BASE_URL}/agreements/generate-docx`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({
+                        agreement_type_id: selectedType.id,
+                        field_values: fieldValues,
+                        selected_clauses: clauses.filter(c => c._enabled).map(c => ({
+                            id: c.id, title: c.title, content: c.content,
+                            is_default: true, order: c.order,
+                        })),
+                    }),
+                });
+
+                if (!resp.ok) {
+                    const err = await resp.json().catch(() => ({}));
+                    throw new Error(err.detail || 'Failed to generate document');
+                }
+
+                const blob = await resp.blob();
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                const cd = resp.headers.get('content-disposition');
+                a.download = cd ? cd.split('filename=')[1]?.replace(/"/g, '') : `${selectedType.name}.docx`;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                URL.revokeObjectURL(url);
+                showToast('✅ Word document downloaded!', 'success');
+            } catch (err) {
+                showToast('❌ ' + err.message, 'error');
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg> Download Word (.docx)`;
+                }
+            }
+        }
+
+        // ═══ HELPERS ═══
+        function showToast(msg, type = '') {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.className = `toast show ${type}`;
+            setTimeout(() => t.className = 'toast', 3000);
+        }
+
+        function escapeHTML(s) {
+            return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+
+        // Override goToStep to also render step 4
+        const _origGoToStep = goToStep;
+        goToStep = function (n) {
+            if (n === 4) renderStep4();
+            _origGoToStep(n);
+        };
+
+        // ═══ INIT ═══
+        renderStepper();
+        loadCategories();
+
+        // Check URL params for direct type access
+        const urlParams = new URLSearchParams(window.location.search);
+        const directTypeId = urlParams.get('typeId');
+        if (directTypeId) {
+            // Load categories then auto-select
+            (async () => {
+                await loadCategories();
+                for (const cat of categories) {
+                    const found = cat.agreement_types.find(t => t.id === directTypeId);
+                    if (found) {
+                        selectedCategory = cat;
+                        await selectType(directTypeId);
+                        break;
+                    }
+                }
+            })();
+        }
+    </script>
+    <script src="app-topbar.js"></script>
+    <script src="app-footer.js"></script>
+</body>
+
+</html>

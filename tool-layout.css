@@ -1,0 +1,584 @@
+/*
+ * GST Tool Layout — Shared styles for all GST tool pages
+ * Provides consistent sidebar + main content layout
+ */
+
+/* ══ BODY ══ */
+body {
+    background: #fff !important
+}
+
+/* ══ LAYOUT ══ */
+.tool-layout {
+    display: flex;
+    min-height: 100vh;
+    padding-top: 64px
+}
+
+/* ── Tool Sidebar ── */
+.tool-sidebar {
+    width: 240px;
+    background: #fff;
+    border-right: 1px solid #e5e7eb;
+    position: fixed;
+    top: 64px;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    z-index: 90;
+    overflow-y: auto
+}
+
+.tsb-section {
+    padding: 0.75rem 1rem
+}
+
+.tsb-label {
+    font-size: 0.62rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #9ca3af;
+    padding: 0.5rem 0.75rem;
+    margin-bottom: 0.1rem
+}
+
+.tsb-item {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: #4b5563;
+    cursor: pointer;
+    transition: all .2s;
+    text-decoration: none;
+    margin-bottom: 1px
+}
+
+.tsb-item:hover {
+    background: #f1f5f9;
+    color: #1e3a8a
+}
+
+.tsb-item.active {
+    background: #eff6ff;
+    color: #1e3a8a;
+    font-weight: 600
+}
+
+.tsb-item svg {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px
+}
+
+.tsb-badge {
+    margin-left: auto;
+    font-size: 0.58rem;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 10px
+}
+
+.tsb-badge-blue {
+    background: #dbeafe;
+    color: #1e3a8a
+}
+
+.tsb-badge-green {
+    background: #dcfce7;
+    color: #166534
+}
+
+.tsb-badge-orange {
+    background: #fef3c7;
+    color: #92400e
+}
+
+.tsb-divider {
+    height: 1px;
+    background: #f1f5f9;
+    margin: 0.4rem 1rem
+}
+
+.tsb-back {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.85rem 1rem;
+    border-top: 1px solid #f1f5f9;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #6b7280;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all .2s;
+    margin-top: auto
+}
+
+.tsb-back:hover {
+    color: #1e3a8a;
+    background: #f8fafc
+}
+
+.tsb-back svg {
+    width: 16px;
+    height: 16px
+}
+
+/* ── Main Content ── */
+.tool-main {
+    margin-left: 240px;
+    flex: 1;
+    padding: 1.5rem 2rem 3rem;
+    overflow-y: auto;
+    background: #fff
+}
+
+.tool-main-inner {
+    max-width: 100%
+}
+
+/* ── Breadcrumb ── */
+.tool-bc {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.75rem;
+    color: #9ca3af;
+    margin-bottom: 1.25rem
+}
+
+.tool-bc a {
+    color: #6b7280;
+    text-decoration: none;
+    font-weight: 500
+}
+
+.tool-bc a:hover {
+    color: #1e3a8a
+}
+
+/* ── Page Header ── */
+.tool-page-header {
+    margin-bottom: 1.5rem
+}
+
+.tool-page-header h1 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #111827;
+    margin: 0 0 0.25rem;
+    letter-spacing: -0.01em
+}
+
+.tool-page-header h1 span {
+    background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text
+}
+
+.tool-page-header p {
+    font-size: 0.82rem;
+    color: #6b7280;
+    margin: 0;
+    line-height: 1.5;
+    max-width: 600px
+}
+
+/* ── Cards ── */
+.tool-card {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.25rem;
+    transition: all .2s
+}
+
+.tool-card:hover {
+    box-shadow: 0 4px 14px rgba(0, 0, 0, .04)
+}
+
+.tool-card h3 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #111827;
+    margin: 0 0 0.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem
+}
+
+.tool-card h3 svg {
+    width: 17px;
+    height: 17px;
+    color: #6b7280
+}
+
+.tool-card>p {
+    font-size: 0.78rem;
+    color: #6b7280;
+    margin: 0 0 1.25rem
+}
+
+/* ── Upload Zone ── */
+.tool-upload {
+    border: 2px dashed #d1d5db;
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s
+}
+
+.tool-upload:hover {
+    border-color: #1e3a8a;
+    background: #eff6ff
+}
+
+.tool-upload.has-file {
+    border-color: #059669;
+    background: #ecfdf5;
+    border-style: solid
+}
+
+.tool-upload .t-icon {
+    font-size: 2rem;
+    margin-bottom: 0.65rem
+}
+
+.tool-upload .t-title {
+    font-weight: 700;
+    font-size: 0.88rem;
+    color: #374151;
+    margin-bottom: 0.2rem
+}
+
+.tool-upload .t-sub {
+    font-size: 0.78rem;
+    color: #9ca3af
+}
+
+.tool-upload .t-sub strong {
+    color: #1e3a8a
+}
+
+.tool-upload .t-file {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #059669;
+    margin-top: 0.4rem
+}
+
+/* ── Buttons ── */
+.tbtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.55rem 1.15rem;
+    border-radius: 9px;
+    border: none;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: all 0.2s
+}
+
+.tbtn-primary {
+    background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(30, 58, 138, .15)
+}
+
+.tbtn-primary:hover {
+    box-shadow: 0 4px 14px rgba(30, 58, 138, .25);
+    transform: translateY(-1px)
+}
+
+.tbtn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none
+}
+
+.tbtn-secondary {
+    background: #fff;
+    color: #374151;
+    border: 1px solid #d1d5db
+}
+
+.tbtn-secondary:hover {
+    border-color: #1e3a8a;
+    color: #1e3a8a;
+    background: #f8fafc
+}
+
+.tbtn-download {
+    background: #1e3a8a;
+    color: #fff;
+    padding: 0.35rem 0.75rem;
+    font-size: 0.75rem;
+    border-radius: 7px
+}
+
+.tbtn-download:hover {
+    background: #1e40af
+}
+
+/* ── Input ── */
+.tool-input {
+    width: 100%;
+    padding: 0.6rem 0.85rem;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-family: inherit;
+    color: #1e293b;
+    background: #f9fafb;
+    transition: all 0.2s
+}
+
+.tool-input:focus {
+    outline: none;
+    border-color: #1e3a8a;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(30, 58, 138, .06)
+}
+
+.tool-input::placeholder {
+    color: #9ca3af
+}
+
+.tool-input-row {
+    display: flex;
+    gap: 0.65rem;
+    margin-bottom: 1rem
+}
+
+.tool-input-row .tool-input {
+    flex: 1
+}
+
+/* ── File List ── */
+.tool-file-list {
+    margin-top: 0.75rem
+}
+
+.tool-file-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #f8fafc;
+    padding: 0.45rem 0.75rem;
+    border-radius: 7px;
+    margin-bottom: 0.35rem;
+    font-size: 0.78rem;
+    border: 1px solid #f1f5f9
+}
+
+.tool-file-item .fname {
+    color: #374151;
+    font-weight: 500
+}
+
+.tool-file-item .fremove {
+    color: #ef4444;
+    cursor: pointer;
+    font-weight: 600
+}
+
+/* ── Jobs List ── */
+.tool-jobs {
+    margin-top: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem
+}
+
+.tool-job {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.85rem 1rem;
+    border: 1px solid #f1f5f9;
+    border-radius: 10px;
+    background: #fff;
+    transition: all .15s
+}
+
+.tool-job:hover {
+    background: #f8fafc;
+    border-color: #e5e7eb
+}
+
+.tool-job-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem
+}
+
+.tool-job-name {
+    font-weight: 600;
+    font-size: 0.82rem;
+    color: #111827
+}
+
+.tool-job-meta {
+    font-size: 0.7rem;
+    color: #9ca3af
+}
+
+.tool-job-status {
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 0.2rem 0.55rem;
+    border-radius: 9999px;
+    text-transform: uppercase
+}
+
+.tj-queued {
+    background: #f3f4f6;
+    color: #4b5563
+}
+
+.tj-processing {
+    background: #dbeafe;
+    color: #1e3a8a
+}
+
+.tj-completed {
+    background: #dcfce7;
+    color: #166534
+}
+
+.tj-failed {
+    background: #fee2e2;
+    color: #991b1b
+}
+
+/* ── Results Table ── */
+.tool-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #e5e7eb
+}
+
+.tool-table th {
+    background: #f9fafb;
+    padding: 0.6rem 0.85rem;
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    text-align: left;
+    border-bottom: 1px solid #e5e7eb
+}
+
+.tool-table td {
+    padding: 0.6rem 0.85rem;
+    font-size: 0.82rem;
+    color: #374151;
+    border-bottom: 1px solid #f8fafc
+}
+
+.tool-table tr:last-child td {
+    border-bottom: none
+}
+
+.tool-table tr:hover td {
+    background: #f8fafc
+}
+
+/* ── Spinner ── */
+.tool-spinner {
+    display: inline-block;
+    width: 0.9rem;
+    height: 0.9rem;
+    border: 2px solid rgba(255, 255, 255, .4);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: toolSpin 0.6s linear infinite;
+    vertical-align: middle
+}
+
+@keyframes toolSpin {
+    to {
+        transform: rotate(360deg)
+    }
+}
+
+/* ── Status badges ── */
+.tool-status-valid {
+    color: #059669;
+    font-weight: 600;
+    background: #ecfdf5;
+    padding: 0.2rem 0.5rem;
+    border-radius: 6px;
+    font-size: 0.72rem
+}
+
+.tool-status-invalid {
+    color: #dc2626;
+    font-weight: 600;
+    background: #fef2f2;
+    padding: 0.2rem 0.5rem;
+    border-radius: 6px;
+    font-size: 0.72rem
+}
+
+/* ── Toast ── */
+.tool-toast {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background: #0f172a;
+    color: #fff;
+    padding: 0.75rem 1.25rem;
+    border-radius: 10px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    z-index: 9999;
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all .35s cubic-bezier(.4, 0, .2, 1);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, .15)
+}
+
+.tool-toast.show {
+    transform: translateY(0);
+    opacity: 1
+}
+
+.tool-toast.success {
+    background: #059669
+}
+
+.tool-toast.error {
+    background: #dc2626
+}
+
+/* ── Responsive ── */
+@media(max-width:768px) {
+    .tool-sidebar {
+        display: none
+    }
+
+    .tool-main {
+        margin-left: 0
+    }
+}

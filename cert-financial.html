@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Facts Certificate Wizard — ComplianceAI Expert</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-light: #818cf8;
+            --primary-bg: #eef2ff;
+            --success: #16a34a;
+            --success-bg: #dcfce7;
+            --danger: #dc2626;
+            --g50: #f8fafc;
+            --g100: #f1f5f9;
+            --g200: #e2e8f0;
+            --g300: #cbd5e1;
+            --g400: #94a3b8;
+            --g500: #64748b;
+            --g700: #334155;
+            --g800: #1e293b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: #f0f2f7;
+            color: var(--g800);
+        }
+
+        /* ─── Split Layout ─── */
+        .wizard-wrap {
+            padding-top: 76px;
+            display: flex;
+            height: calc(100vh - 0px);
+        }
+
+        .wizard-left {
+            width: 55%;
+            overflow-y: auto;
+            padding: 2rem 2.5rem 3rem;
+        }
+
+        .wizard-right {
+            width: 45%;
+            background: white;
+            border-left: 1px solid var(--g200);
+            overflow-y: auto;
+            position: sticky;
+            top: 76px;
+            height: calc(100vh - 76px);
+        }
+
+        .preview-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--g200);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: var(--g50);
+            position: sticky;
+            top: 0;
+            z-index: 2;
+        }
+
+        .preview-header h3 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--g700);
+        }
+
+        .preview-badge {
+            font-size: 0.65rem;
+            background: #dcfce7;
+            color: #16a34a;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .preview-body {
+            padding: 0;
+        }
+
+        .preview-body iframe {
+            width: 100%;
+            height: calc(100vh - 130px);
+            border: none;
+        }
+
+        .preview-empty {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: calc(100vh - 130px);
+            color: var(--g400);
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .preview-empty svg {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+
+        .preview-empty p {
+            font-size: 0.9rem;
+            max-width: 300px;
+        }
+
+        /* ─── Stepper ─── */
+        .stepper {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            padding: 0.75rem 1rem;
+            background: white;
+            border-radius: 12px;
+            border: 1px solid var(--g200);
+        }
+
+        .step-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--g400);
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .step-item.active {
+            color: var(--primary);
+        }
+
+        .step-item.done {
+            color: var(--success);
+        }
+
+        .step-num {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 700;
+            border: 2px solid var(--g300);
+            background: white;
+            transition: all 0.2s;
+        }
+
+        .step-item.active .step-num {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: white;
+        }
+
+        .step-item.done .step-num {
+            border-color: var(--success);
+            background: var(--success);
+            color: white;
+        }
+
+        .step-line {
+            flex: 1;
+            height: 2px;
+            background: var(--g200);
+            min-width: 20px;
+        }
+
+        .step-line.done {
+            background: var(--success);
+        }
+
+        /* ─── Step Content ─── */
+        .step-content {
+            display: none;
+        }
+
+        .step-content.visible {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px)
+            }
+
+            to {
+                opacity: 1;
+                transform: none
+            }
+        }
+
+        .step-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.4rem;
+        }
+
+        .step-subtitle {
+            color: var(--g500);
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* ─── Category & Type Cards ─── */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .sel-card {
+            background: white;
+            border-radius: 14px;
+            padding: 1.25rem;
+            border: 2px solid var(--g200);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .sel-card:hover {
+            border-color: #c7d2fe;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px -6px rgba(79, 70, 229, 0.1);
+        }
+
+        .sel-card.selected {
+            border-color: var(--primary);
+            background: var(--primary-bg);
+        }
+
+        .sel-card .card-icon {
+            font-size: 1.5rem;
+        }
+
+        .sel-card .card-name {
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        .sel-card .card-desc {
+            font-size: 0.78rem;
+            color: var(--g500);
+            line-height: 1.4;
+        }
+
+        .sel-card .card-count {
+            font-size: 0.7rem;
+            color: var(--g400);
+            font-weight: 600;
+        }
+
+        /* ─── Form ─── */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+
+        .form-group.full {
+            grid-column: 1/-1;
+        }
+
+        .form-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--g700);
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .form-label .req {
+            color: var(--danger);
+        }
+
+        .form-input,
+        .form-textarea,
+        .form-select {
+            padding: 0.65rem 0.85rem;
+            border: 1px solid var(--g200);
+            border-radius: 10px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.88rem;
+            color: var(--g800);
+            background: var(--g50);
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.08);
+            background: white;
+        }
+
+        .form-textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        /* ─── Clause Section ─── */
+        .clause-section {
+            margin-top: 2rem;
+        }
+
+        .clause-section-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--g200);
+        }
+
+        .clause-section-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .clause-actions {
+            margin-left: auto;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .clause-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .clause-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.85rem 1rem;
+            background: white;
+            border-radius: 10px;
+            border: 1px solid var(--g200);
+            transition: border-color 0.2s;
+        }
+
+        .clause-row.unchecked {
+            opacity: 0.5;
+        }
+
+        .clause-row:hover {
+            border-color: #c7d2fe;
+        }
+
+        .clause-cb {
+            width: 20px;
+            height: 20px;
+            border-radius: 6px;
+            border: 2px solid var(--g300);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+            margin-top: 2px;
+            transition: all 0.2s;
+        }
+
+        .clause-cb.checked {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .clause-cb svg {
+            display: none;
+        }
+
+        .clause-cb.checked svg {
+            display: block;
+        }
+
+        .clause-info {
+            flex: 1;
+        }
+
+        .clause-info .cl-title {
+            font-weight: 600;
+            font-size: 0.88rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .clause-info .cl-preview {
+            font-size: 0.78rem;
+            color: var(--g500);
+            line-height: 1.4;
+            max-height: 40px;
+            overflow: hidden;
+        }
+
+        /* ─── Buttons ─── */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.6rem 1.25rem;
+            border-radius: 10px;
+            border: none;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+            box-shadow: 0 2px 8px rgba(79, 70, 229, 0.25);
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 4px 14px rgba(79, 70, 229, 0.35);
+            transform: translateY(-1px);
+        }
+
+        .btn-outline {
+            background: white;
+            color: var(--g700);
+            border: 1px solid var(--g200);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--g300);
+            background: var(--g50);
+        }
+
+        .btn-success {
+            background: #059669;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #047857;
+        }
+
+        .btn-ai {
+            background: linear-gradient(135deg, #ec4899, #8b5cf6);
+            color: white;
+            box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);
+        }
+
+        .btn-ai:hover {
+            box-shadow: 0 4px 14px rgba(139, 92, 246, 0.4);
+        }
+
+        .btn-sm {
+            padding: 0.4rem 0.85rem;
+            font-size: 0.78rem;
+            border-radius: 8px;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-row .spacer {
+            flex: 1;
+        }
+
+        /* ─── Toast ─── */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: #1e293b;
+            color: white;
+            padding: 0.85rem 1.5rem;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast.success {
+            background: #059669;
+        }
+
+        .toast.error {
+            background: #dc2626;
+        }
+
+        /* ─── Loading ─── */
+        .loading-center {
+            text-align: center;
+            padding: 3rem;
+            color: var(--g400);
+        }
+
+        .spin {
+            width: 32px;
+            height: 32px;
+            border: 3px solid var(--g200);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: sp 0.8s linear infinite;
+            margin: 0 auto 0.75rem;
+        }
+
+        @keyframes sp {
+            to {
+                transform: rotate(360deg)
+            }
+        }
+
+        @media(max-width:900px) {
+            .wizard-wrap {
+                flex-direction: column;
+            }
+
+            .wizard-left,
+            .wizard-right {
+                width: 100%;
+            }
+
+            .wizard-right {
+                position: relative;
+                top: 0;
+                height: auto;
+                min-height: 400px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app-topbar" data-active="certificates"></div>
+
+    <div class="wizard-wrap">
+        <!-- LEFT PANEL — Wizard Steps -->
+        <div class="wizard-left">
+            <div class="stepper" id="stepper"></div>
+            <div id="step-1" class="step-content visible"></div>
+            <div id="step-2" class="step-content"></div>
+            <div id="step-3" class="step-content"></div>
+            <div id="step-4" class="step-content"></div>
+        </div>
+
+        <!-- RIGHT PANEL — Live Preview -->
+        <div class="wizard-right">
+            <div class="preview-header">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                    <polyline points="14 2 14 8 20 8" />
+                </svg>
+                <h3>Live Preview</h3>
+                <span class="preview-badge" id="preview-badge" style="display:none">● LIVE</span>
+            </div>
+            <div class="preview-body" id="preview-body">
+                <div class="preview-empty">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                        <polyline points="14 2 14 8 20 8" />
+                        <line x1="16" y1="13" x2="8" y2="13" />
+                        <line x1="16" y1="17" x2="8" y2="17" />
+                        <polyline points="10 9 9 9 8 9" />
+                    </svg>
+                    <p>Select an agreement type and fill in the details to see a live preview here</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script src="api_config.js"></script>
+    <script src="session-manager.js?v=2"></script>
+    <script>
+        if (!requireAuth()) { }
+        
+                const CERT_CATEGORY = "financial";
+
+        function getInitialFieldValues(templateName) {
+            return {"entity_name": "", "pan": "", "address": "", "financial_year": "", "amount": "", "basis_of_prep": "examined the books of accounts and records", "purpose": "Bank Loan", "notes": "", "ca_firm_name": "", "frn_number": "", "ca_name": "", "membership_no": "", "udin": "", "place": "", "cert_date": "", "sign_date": ""};
+        }
+
+        function getFieldSections() {
+            return [{"title": "🏢 Entity Details", "fields": [{"name": "entity_name", "label": "Entity Name", "type": "text", "placeholder": "e.g. Acme Tech Pvt Ltd", "required": true}, {"name": "pan", "label": "PAN", "type": "text", "placeholder": "e.g. ABCDE1234F"}, {"name": "address", "label": "Registered Address", "type": "text", "placeholder": "Full registered address"}]}, {"title": "📊 Financial Details", "fields": [{"name": "financial_year", "label": "Financial Year", "type": "text", "placeholder": "e.g. 2023-24", "required": true}, {"name": "amount", "label": "Amount (in ₹)", "type": "number", "placeholder": "e.g. 5000000", "required": true}, {"name": "basis_of_prep", "label": "Basis of Preparation", "type": "text", "placeholder": "e.g. Audited Financial Statements"}, {"name": "purpose", "label": "Purpose", "type": "text", "placeholder": "e.g. Bank Loan / Tender", "required": true}, {"name": "notes", "label": "Additional Notes", "type": "text", "placeholder": "Any specific disclosures"}]}, {"title": "💼 CA / Firm Details", "fields": [{"name": "ca_firm_name", "label": "CA Firm Name", "type": "text", "placeholder": "e.g. Gupta & Associates", "required": true}, {"name": "frn_number", "label": "FRN", "type": "text", "placeholder": "e.g. 123456N"}, {"name": "ca_name", "label": "CA / Partner Name", "type": "text", "placeholder": "Name of Signing Authority", "required": true}, {"name": "membership_no", "label": "Membership No.", "type": "text", "placeholder": "e.g. 123456", "required": true}]}, {"title": "✍️ Certification & Signatory", "fields": [{"name": "udin", "label": "UDIN", "type": "text", "placeholder": "e.g. 24123456ABCDEF1234", "required": true}, {"name": "place", "label": "Place", "type": "text", "placeholder": "e.g. Mumbai"}, {"name": "cert_date", "label": "Certificate Date", "type": "text", "placeholder": "DD/MM/YYYY"}]}];
+        }
+
+        function getReplacements(mkSpan) {
+            return [
+                { find: /M\/s _+/g, replace: () => `M/s ${mkSpan("entity_name", "[Entity Name]")}` },
+                { find: /Details of _+/g, replace: () => `Details of ${mkSpan("entity_name", "[Entity Name]")}` },
+                { find: /PAN: _+/g, replace: () => `PAN: ${mkSpan("pan", "[PAN]")}` },
+                { find: /office at _+/g, replace: () => `office at ${mkSpan("address", "[Address]")}` },
+                { find: /Financial Year: _+/g, replace: () => `Financial Year: ${mkSpan("financial_year", "[Year]")}` },
+                { find: /Turnover: _+/g, replace: () => `Turnover: ${mkSpan("amount", "[Amount]")}` },
+                { find: /Amount: _+/g, replace: () => `Amount: ${mkSpan("amount", "[Amount]")}` },
+                { find: /Net Profit: _+/g, replace: () => `Net Profit: ${mkSpan("amount", "[Amount]")}` },
+                { find: /based on _+/g, replace: () => `based on ${mkSpan("basis_of_prep", "[Basis of Preparation]")}` },
+                { find: /purpose of _+/g, replace: () => `purpose of ${mkSpan("purpose", "[Purpose]")}` },
+                { find: /Notes: _+/g, replace: () => `Notes: ${mkSpan("notes", "[Notes]")}` },
+                { find: /For _+/g, replace: () => `For ${mkSpan("ca_firm_name", "[CA Firm Name]")}` },
+                { find: /FRN: _+/g, replace: () => `FRN: ${mkSpan("frn_number", "[FRN Number]")}` },
+                { find: /M\. No\.: _+/g, replace: () => `M. No.: ${mkSpan("membership_no", "[Membership No.]")}` },
+                { find: /UDIN: _+/g, replace: () => `UDIN: ${mkSpan("udin", "[UDIN]")}` },
+                { find: /Place: _+/g, replace: () => `Place: ${mkSpan("place", "[City]")}` },
+                { find: /Date: _+/g, replace: () => `Date: ${mkSpan("cert_date", "[Date]")}` },
+                { find: / Partner / Proprietor/g, replace: () => ` ${mkSpan("ca_name", "[CA Name]")} (Partner / Proprietor)` },
+            ];
+        }
+
+
+    </script>
+    <script src="cert-engine.js"></script>
+    <script src="app-topbar.js"></script>
+
+</body>
+</html>

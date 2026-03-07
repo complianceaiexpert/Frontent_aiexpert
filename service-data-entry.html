@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Entry — ComplianceAI Expert</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="data-entry.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <!-- Consistent Top Bar -->
+    <div id="app-topbar" data-active="dashboard"></div>
+
+    <div class="de-layout">
+        <!-- ══════ LEFT SIDEBAR ══════ -->
+        <aside class="de-sidebar">
+            <div class="de-sb-brand">
+                <div class="de-sb-logo">DE</div>
+                <div class="de-sb-brand-text">
+                    <span class="de-sb-brand-name" id="sb-company-name">Data Entry</span>
+                    <span class="de-sb-brand-sub" id="sb-date-range">FY 2025-26</span>
+                </div>
+            </div>
+
+            <div class="de-sb-section">
+                <div class="de-sb-item active" onclick="deNav('dashboard',this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7" rx="1" />
+                        <rect x="14" y="3" width="7" height="7" rx="1" />
+                        <rect x="3" y="14" width="7" height="7" rx="1" />
+                        <rect x="14" y="14" width="7" height="7" rx="1" />
+                    </svg>
+                    Dashboard
+                </div>
+
+                <div class="de-sb-item" onclick="deNav('bulk-upload',this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                        <polyline points="17 8 12 3 7 8" />
+                        <line x1="12" y1="3" x2="12" y2="15" />
+                    </svg>
+                    Bulk Upload
+                </div>
+
+                <div class="de-sb-item" onclick="deNav('transactions',this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="1" x2="12" y2="23" />
+                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                    </svg>
+                    Transactions
+                </div>
+
+                <div class="de-sb-item" onclick="deNav('master',this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                    </svg>
+                    Master
+                </div>
+
+                <div class="de-sb-divider"></div>
+
+                <div class="de-sb-item" onclick="deNav('reports',this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21.21 15.89A10 10 0 1 1 8 2.83" />
+                        <path d="M22 12A10 10 0 0 0 12 2v10z" />
+                    </svg>
+                    Reports
+                    <span class="de-sb-badge beta">BETA</span>
+                </div>
+
+                <div class="de-sb-item" onclick="deNav('analysis',this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="20" x2="18" y2="10" />
+                        <line x1="12" y1="20" x2="12" y2="4" />
+                        <line x1="6" y1="20" x2="6" y2="14" />
+                    </svg>
+                    Analysis
+                    <span class="de-sb-badge beta">BETA</span>
+                </div>
+            </div>
+
+            <a class="de-sb-back" id="back-link" href="services-dashboard.html">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="19" y1="12" x2="5" y2="12" />
+                    <polyline points="12 19 5 12 12 5" />
+                </svg>
+                Back to Services
+            </a>
+        </aside>
+
+        <!-- ══════ MAIN CONTENT ══════ -->
+        <main class="de-main">
+
+            <!-- ═══ DASHBOARD ═══ -->
+            <div class="de-section active" id="sec-dashboard">
+                <!-- Tally Sync Stats -->
+                <div class="de-panel">
+                    <div class="de-panel-header">
+                        <h3 class="de-panel-title">Transactions sent to Tally</h3>
+                        <div style="display:flex;gap:.5rem">
+                            <select class="de-select">
+                                <option>All</option>
+                            </select>
+                            <select class="de-select">
+                                <option>Today</option>
+                                <option>This Week</option>
+                                <option>This Month</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="de-stats-row">
+                        <div class="de-stat">
+                            <div class="de-stat-label">Total</div>
+                            <div class="de-stat-num" id="stat-total">0</div>
+                        </div>
+                        <div class="de-stat">
+                            <div class="de-stat-label">Banking</div>
+                            <div class="de-stat-num" id="stat-banking">0</div>
+                        </div>
+                        <div class="de-stat">
+                            <div class="de-stat-label">Sales</div>
+                            <div class="de-stat-num" id="stat-sales">0</div>
+                        </div>
+                        <div class="de-stat">
+                            <div class="de-stat-label">Purchase</div>
+                            <div class="de-stat-num" id="stat-purchase">0</div>
+                        </div>
+                        <div class="de-stat">
+                            <div class="de-stat-label">Journal</div>
+                            <div class="de-stat-num" id="stat-journal">0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Create -->
+                <div class="de-panel">
+                    <div class="de-panel-header">
+                        <h3 class="de-panel-title green">Quick Create</h3>
+                    </div>
+                    <div class="qc-grid">
+                        <div class="qc-pill"
+                            onclick="deNav('transactions',document.querySelector('[onclick*=transactions]'))"><em>+</em>
+                            Banking</div>
+                        <div class="qc-pill"
+                            onclick="deNav('transactions',document.querySelector('[onclick*=transactions]'))"><em>+</em>
+                            Sales</div>
+                        <div class="qc-pill"
+                            onclick="deNav('transactions',document.querySelector('[onclick*=transactions]'))"><em>+</em>
+                            Sales Return</div>
+                        <div class="qc-pill"
+                            onclick="deNav('transactions',document.querySelector('[onclick*=transactions]'))"><em>+</em>
+                            Purchase</div>
+                        <div class="qc-pill"
+                            onclick="deNav('transactions',document.querySelector('[onclick*=transactions]'))"><em>+</em>
+                            Purchase Return</div>
+                        <div class="qc-pill"
+                            onclick="deNav('transactions',document.querySelector('[onclick*=transactions]'))"><em>+</em>
+                            Journal</div>
+                        <div class="qc-pill" onclick="deNav('master',document.querySelector('[onclick*=master]'))">
+                            <em>+</em> Ledger
+                        </div>
+                        <div class="qc-pill" onclick="deNav('master',document.querySelector('[onclick*=master]'))">
+                            <em>+</em> Item
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Top 5 Grid -->
+                <div class="de-top5-grid">
+                    <div class="de-top5">
+                        <div class="de-top5-header">
+                            <h4 class="de-top5-title">Top 5 Customer</h4>
+                            <select class="de-select" style="font-size:.75rem;padding:.3rem .5rem">
+                                <option>Top 5</option>
+                                <option>Top 10</option>
+                            </select>
+                        </div>
+                        <table class="de-table" style="min-width:auto">
+                            <thead>
+                                <tr>
+                                    <th>Sr. No.</th>
+                                    <th>Customer Name</th>
+                                    <th>Total Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody id="top5-customers">
+                                <tr>
+                                    <td colspan="3" style="text-align:center;color:#9ca3af;padding:2rem">
+                                        <div style="font-size:2rem;margin-bottom:.5rem">📋</div>No data
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="de-top5">
+                        <div class="de-top5-header">
+                            <h4 class="de-top5-title green">Top 5 Supplier</h4>
+                            <select class="de-select" style="font-size:.75rem;padding:.3rem .5rem">
+                                <option>Top 5</option>
+                                <option>Top 10</option>
+                            </select>
+                        </div>
+                        <table class="de-table" style="min-width:auto">
+                            <thead>
+                                <tr>
+                                    <th>Sr. No.</th>
+                                    <th>Supplier Name</th>
+                                    <th>Total Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody id="top5-suppliers">
+                                <tr>
+                                    <td colspan="3" style="text-align:center;color:#9ca3af;padding:2rem">
+                                        <div style="font-size:2rem;margin-bottom:.5rem">📋</div>No data
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="de-top5">
+                        <div class="de-top5-header">
+                            <h4 class="de-top5-title orange">Payment vs Receipt</h4>
+                        </div>
+                        <div
+                            style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;text-align:center;padding:1.5rem 0">
+                            <div>
+                                <div
+                                    style="font-size:.7rem;font-weight:600;color:#9ca3af;text-transform:uppercase;margin-bottom:.35rem">
+                                    Payment</div>
+                                <div
+                                    style="font-size:1.35rem;font-weight:800;font-family:'Outfit',sans-serif;color:#dc2626">
+                                    ₹ 0</div>
+                            </div>
+                            <div>
+                                <div
+                                    style="font-size:.7rem;font-weight:600;color:#9ca3af;text-transform:uppercase;margin-bottom:.35rem">
+                                    Receipt</div>
+                                <div
+                                    style="font-size:1.35rem;font-weight:800;font-family:'Outfit',sans-serif;color:#059669">
+                                    ₹ 0</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══ BULK UPLOAD ═══ -->
+            <div class="de-section" id="sec-bulk-upload">
+                <div class="de-sh">
+                    <h1>📤 Bulk Upload</h1>
+                    <p>Upload transaction files for AI-powered data extraction</p>
+                </div>
+                <div class="de-upload-zone" id="uploadZone">
+                    <input type="file" multiple accept=".pdf,.jpg,.jpeg,.png,.xlsx,.csv"
+                        onchange="handleBulkUpload(this)">
+                    <div class="de-upload-icon">📁</div>
+                    <h3>Drag & drop files here or click to browse</h3>
+                    <p>Upload invoices, bank statements, or transaction files</p>
+                    <div class="de-upload-formats">
+                        <span class="de-upload-fmt">PDF</span>
+                        <span class="de-upload-fmt">Excel</span>
+                        <span class="de-upload-fmt">CSV</span>
+                        <span class="de-upload-fmt">Images</span>
+                    </div>
+                </div>
+                <div id="file-queue" style="margin-top:1.25rem"></div>
+            </div>
+
+            <!-- ═══ TRANSACTIONS ═══ -->
+            <div class="de-section" id="sec-transactions">
+                <div class="de-sh">
+                    <h1>💰 Transactions</h1>
+                    <p>View, approve, and sync your transaction entries</p>
+                </div>
+                <div class="de-panel" style="padding:0">
+                    <div class="de-filter-bar">
+                        <input type="text" class="de-search" placeholder="Search by party name, invoice no..."
+                            oninput="handleTxSearch(this.value)">
+                        <select class="de-select" onchange="handleTxFilter(this.value)">
+                            <option value="all">All Types</option>
+                            <option value="Banking">Banking</option>
+                            <option value="Sales">Sales</option>
+                            <option value="Purchase">Purchase</option>
+                            <option value="Journal">Journal</option>
+                        </select>
+                        <select class="de-select" onchange="handleTxSort(this.value)">
+                            <option value="newest">Newest First</option>
+                            <option value="oldest">Oldest First</option>
+                            <option value="amount-high">Amount: High → Low</option>
+                            <option value="amount-low">Amount: Low → High</option>
+                        </select>
+                        <div style="margin-left:auto"><button class="de-btn primary"
+                                onclick="deNav('bulk-upload',document.querySelector('[onclick*=bulk-upload]'))">+ Upload
+                                Files</button></div>
+                    </div>
+                    <div id="transactions-table"></div>
+                </div>
+            </div>
+
+            <!-- ═══ MASTER ═══ -->
+            <div class="de-section" id="sec-master">
+                <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem">
+                    <div class="de-sh" style="margin-bottom:0">
+                        <h1>📓 Master</h1>
+                    </div>
+                    <div style="margin-left:auto;display:flex;gap:.5rem">
+                        <input type="text" class="de-search" placeholder="Search by Name" id="ledger-search"
+                            oninput="filterLedger(this.value)">
+                        <button class="de-btn primary">+ Add New</button>
+                    </div>
+                </div>
+                <div class="de-panel" style="padding:0">
+                    <div class="de-master-tabs" style="padding:0 1rem">
+                        <div class="de-master-tab active" onclick="switchMasterTab('ledger',this)">Ledger</div>
+                        <div class="de-master-tab" onclick="switchMasterTab('item',this)">Item</div>
+                        <div class="de-master-tab" onclick="switchMasterTab('rule-list',this)">Rule List</div>
+                    </div>
+                    <div id="master-content">
+                        <div class="de-table-wrap">
+                            <table class="de-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width:60px">Sr.No.</th>
+                                        <th>Ledger Name</th>
+                                        <th>Under (Group)</th>
+                                        <th>GSTIN</th>
+                                        <th>Opening Balance</th>
+                                        <th>Sync Status</th>
+                                        <th style="width:80px">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ledger-tbody"></tbody>
+                            </table>
+                        </div>
+                        <div class="de-pagination" id="ledger-pagination"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══ REPORTS ═══ -->
+            <div class="de-section" id="sec-reports">
+                <div class="de-sh">
+                    <h1>📊 Reports</h1>
+                    <p>Generate and view financial reports</p>
+                </div>
+                <div class="de-panel">
+                    <div class="de-report-grid">
+                        <div class="de-report-col">
+                            <div class="de-report-item" onclick="openReport('sales-credit')">
+                                <span class="ri-icon">📄</span><span>Sales · Credit Note</span>
+                            </div>
+                            <div class="de-report-item" onclick="openReport('payment-receipt')">
+                                <span class="ri-icon">💳</span><span>Payment · Receipt</span>
+                            </div>
+                            <div class="de-report-item" onclick="openReport('sp-order')">
+                                <span class="ri-icon">📦</span><span>S/P Order</span>
+                            </div>
+                            <div class="de-report-item" onclick="openReport('items')">
+                                <span class="ri-icon">📋</span><span>Items</span>
+                            </div>
+                            <div class="de-report-item" onclick="openReport('bank-cash')">
+                                <span class="ri-icon">🏦</span><span>Bank / Cash</span>
+                            </div>
+                            <div class="de-report-item" onclick="openReport('expenses')">
+                                <span class="ri-icon">💸</span><span>Expenses</span>
+                            </div>
+                            <div class="de-report-item" onclick="openReport('ledger-report')">
+                                <span class="ri-icon">📓</span><span>Ledger Report</span>
+                            </div>
+                            <div class="de-report-item" onclick="openReport('day-book')">
+                                <span class="ri-icon">📅</span><span>Day Book</span>
+                            </div>
+                        </div>
+                        <div class="de-report-col">
+                            <div class="de-report-item" onclick="openReport('purchase-debit')">
+                                <span class="ri-icon">🧾</span><span>Purchase · Debit Note</span>
+                            </div>
+                            <div class="de-report-item" onclick="openReport('outstanding')">
+                                <span class="ri-icon">📊</span><span>Outstanding</span>
+                            </div>
+                            <div class="de-report-item" onclick="openReport('delivery-note')">
+                                <span class="ri-icon">🚚</span><span>Delivery Note</span>
+                            </div>
+                            <div class="de-report-item" onclick="openReport('party')">
+                                <span class="ri-icon">👤</span><span>Party</span>
+                            </div>
+                            <div class="de-report-item" onclick="openReport('profit-loss')">
+                                <span class="ri-icon">📈</span><span>Profit & Loss</span>
+                            </div>
+                            <div class="de-report-item" onclick="openReport('balance-sheet')">
+                                <span class="ri-icon">📑</span><span>Balance Sheet</span>
+                            </div>
+                            <div class="de-report-item" onclick="openReport('map')">
+                                <span class="ri-icon">🗺️</span><span>Map</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══ ANALYSIS ═══ -->
+            <div class="de-section" id="sec-analysis">
+                <div class="de-sh">
+                    <h1>📈 Analysis</h1>
+                    <p>Financial insights and trends</p>
+                </div>
+                <div class="de-tabs">
+                    <div class="de-tab active" onclick="switchAnalysisTab('financial',this)">Financial Overview</div>
+                    <div class="de-tab" onclick="switchAnalysisTab('transaction',this)">Transaction Analysis</div>
+                    <div class="de-tab" onclick="switchAnalysisTab('accounting',this)">Accounting Details</div>
+                    <div class="de-tab" onclick="switchAnalysisTab('performers',this)">Top Performers</div>
+                    <div class="de-tab" onclick="switchAnalysisTab('trends',this)">Trends and Analysis</div>
+                </div>
+                <div class="de-empty">
+                    <div class="de-empty-icon">📊</div>
+                    <h3>No Data available for selected time period</h3>
+                    <p>Please select another time period or sync data from Tally</p>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script src="api_config.js?v=2"></script>
+    <script>
+        // ═══ URL PARAMS ═══
+        const urlParams = new URLSearchParams(window.location.search);
+        const clientId = urlParams.get('clientId');
+        const serviceName = urlParams.get('service');
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+
+        document.getElementById('back-link').href = `services-dashboard.html?clientId=${clientId}`;
+        if (user && user.firm_name) {
+            document.getElementById('sb-company-name').textContent = user.firm_name;
+        }
+
+        // ═══ INDIAN ACCOUNTING HELPERS ═══
+        function formatINR(val) {
+            const num = Math.abs(Number(val) || 0);
+            return '₹ ' + num.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+        function drCr(val) {
+            const n = Number(val) || 0;
+            if (n === 0) return '-';
+            // In Tally: positive = Credit, negative = Debit
+            return n < 0
+                ? `<span style="color:#dc2626;font-weight:600">${formatINR(n)} Dr</span>`
+                : `<span style="color:#059669;font-weight:600">${formatINR(n)} Cr</span>`;
+        }
+
+        // ═══ SIDEBAR NAVIGATION ═══
+        function deNav(sectionId, el) {
+            document.querySelectorAll('.de-section').forEach(s => s.classList.remove('active'));
+            const target = document.getElementById('sec-' + sectionId);
+            if (target) target.classList.add('active');
+            document.querySelectorAll('.de-sb-item').forEach(l => l.classList.remove('active'));
+            if (el) el.classList.add('active');
+            if (sectionId === 'master') loadLedgerData();
+            if (sectionId === 'transactions') renderTransactions();
+        }
+
+        // ═══ DASHBOARD — LIVE STATS ═══
+        async function loadDashboardStats() {
+            try {
+                // Ledger stats
+                const lRes = await authFetch('/tally/ledgers/stats');
+                if (lRes.ok) {
+                    const ls = await lRes.json();
+                    document.getElementById('stat-total').textContent = ls.total_ledgers || 0;
+                }
+                // Voucher stats
+                const vRes = await authFetch('/tally/vouchers/stats');
+                if (vRes.ok) {
+                    const vs = await vRes.json();
+                    document.getElementById('stat-total').textContent = vs.total || 0;
+                    document.getElementById('stat-banking').textContent = (vs.payment || 0) + (vs.receipt || 0);
+                    document.getElementById('stat-sales').textContent = vs.sales || 0;
+                    document.getElementById('stat-purchase').textContent = vs.purchase || 0;
+                    document.getElementById('stat-journal').textContent = vs.journal || 0;
+                }
+            } catch (e) { console.error('Dashboard stats error:', e); }
+        }
+
+        // ═══ DASHBOARD — TOP 5 CUSTOMER / SUPPLIER ═══
+        async function loadTop5() {
+            try {
+                // Top 5 Customers = Sundry Debtors sorted by closing_balance desc
+                const cRes = await authFetch('/tally/ledgers?parent=Sundry+Debtors&per_page=5&page=1');
+                if (cRes.ok) {
+                    const cd = await cRes.json();
+                    const tbody = document.getElementById('top5-customers');
+                    if (cd.data.length > 0) {
+                        const sorted = cd.data.sort((a, b) => Math.abs(b.closing_balance) - Math.abs(a.closing_balance));
+                        tbody.innerHTML = sorted.map((l, i) => `<tr>
+                            <td style="text-align:center">${i + 1}</td>
+                            <td style="font-weight:500">${l.name}</td>
+                            <td style="font-weight:600">${formatINR(l.closing_balance)}</td>
+                        </tr>`).join('');
+                    }
+                }
+                // Top 5 Suppliers = Sundry Creditors sorted by closing_balance desc
+                const sRes = await authFetch('/tally/ledgers?parent=Sundry+Creditors&per_page=5&page=1');
+                if (sRes.ok) {
+                    const sd = await sRes.json();
+                    const tbody = document.getElementById('top5-suppliers');
+                    if (sd.data.length > 0) {
+                        const sorted = sd.data.sort((a, b) => Math.abs(b.closing_balance) - Math.abs(a.closing_balance));
+                        tbody.innerHTML = sorted.map((l, i) => `<tr>
+                            <td style="text-align:center">${i + 1}</td>
+                            <td style="font-weight:500">${l.name}</td>
+                            <td style="font-weight:600">${formatINR(l.closing_balance)}</td>
+                        </tr>`).join('');
+                    }
+                }
+            } catch (e) { console.error('Top5 error:', e); }
+        }
+
+        // ═══ MASTER / LEDGER — LIVE FROM SUPABASE ═══
+        let ledgerPage = 1;
+        let ledgerTotalPages = 1;
+        let ledgerTotal = 0;
+        const LEDGER_PER_PAGE = 20;
+        let ledgerSearchVal = '';
+        let ledgerParentFilter = '';
+
+        async function loadLedgerData(page) {
+            if (page) ledgerPage = page;
+            const tbody = document.getElementById('ledger-tbody');
+            tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:2rem;color:#9ca3af">Loading ledgers from Tally...</td></tr>';
+
+            try {
+                let url = `/tally/ledgers?page=${ledgerPage}&per_page=${LEDGER_PER_PAGE}`;
+                if (ledgerSearchVal) url += `&search=${encodeURIComponent(ledgerSearchVal)}`;
+                if (ledgerParentFilter) url += `&parent=${encodeURIComponent(ledgerParentFilter)}`;
+
+                const res = await authFetch(url);
+                if (!res.ok) throw new Error('Failed to load ledgers');
+                const result = await res.json();
+
+                ledgerTotal = result.total;
+                ledgerTotalPages = result.total_pages;
+                const ledgers = result.data;
+
+                if (ledgers.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:3rem;color:#9ca3af"><div style="font-size:2rem;margin-bottom:.5rem">📓</div>No ledgers found</td></tr>';
+                    document.getElementById('ledger-pagination').innerHTML = '';
+                    return;
+                }
+
+                tbody.innerHTML = ledgers.map((l, i) => {
+                    const srNo = (ledgerPage - 1) * LEDGER_PER_PAGE + i + 1;
+                    const gstin = l.party_gstin || '-';
+                    const gstType = l.gst_registration_type || '-';
+                    const obDisplay = drCr(l.opening_balance);
+                    const cbDisplay = drCr(l.closing_balance);
+                    const syncTime = l.synced_at ? new Date(l.synced_at).toLocaleDateString('en-GB') : '-';
+
+                    return `<tr>
+                        <td style="text-align:center;color:#6b7280">${srNo}</td>
+                        <td>
+                            <strong style="font-weight:600;color:#0f172a">${l.name}</strong>
+                            ${l.state ? `<div style="font-size:.7rem;color:#9ca3af;margin-top:1px">📍 ${l.state}</div>` : ''}
+                        </td>
+                        <td><span style="color:#475569;font-size:.82rem">${l.parent}</span></td>
+                        <td style="font-size:.78rem;color:#475569;font-family:monospace">${gstin !== '-' && gstin ? gstin : '<span style="color:#d1d5db">—</span>'}</td>
+                        <td>
+                            <div style="font-size:.78rem">${obDisplay}</div>
+                            <div style="font-size:.68rem;color:#9ca3af">Op. Bal</div>
+                        </td>
+                        <td><span class="de-badge synced">Synced</span><div style="font-size:.65rem;color:#9ca3af;margin-top:2px">${syncTime}</div></td>
+                        <td style="text-align:center">
+                            <span class="de-sync-icon" title="View Details" onclick="viewLedgerDetail('${l.name}')">👁️</span>
+                        </td>
+                    </tr>`;
+                }).join('');
+
+                renderLedgerPagination();
+            } catch (e) {
+                console.error('Ledger load error:', e);
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:3rem;color:#dc2626">⚠️ Failed to load ledgers. Check server connection.</td></tr>';
+            }
+        }
+
+        function renderLedgerPagination() {
+            const pagEl = document.getElementById('ledger-pagination');
+            if (ledgerTotalPages <= 1) { pagEl.innerHTML = `<div class="de-page-info">${ledgerTotal} ledger(s)</div><div></div><div></div>`; return; }
+
+            const startItem = (ledgerPage - 1) * LEDGER_PER_PAGE + 1;
+            const endItem = Math.min(ledgerPage * LEDGER_PER_PAGE, ledgerTotal);
+
+            let pagHtml = `<div class="de-page-info">Showing ${startItem}–${endItem} of ${ledgerTotal} ledgers</div>`;
+            pagHtml += `<div class="de-page-btns">`;
+            pagHtml += `<button class="de-page-btn" ${ledgerPage === 1 ? 'disabled' : ''} onclick="loadLedgerData(${ledgerPage - 1})">‹</button>`;
+
+            // Smart page range
+            let startP = Math.max(1, ledgerPage - 2);
+            let endP = Math.min(ledgerTotalPages, startP + 4);
+            if (endP - startP < 4) startP = Math.max(1, endP - 4);
+
+            if (startP > 1) pagHtml += `<button class="de-page-btn" onclick="loadLedgerData(1)">1</button><button class="de-page-btn" disabled>…</button>`;
+            for (let p = startP; p <= endP; p++) {
+                pagHtml += `<button class="de-page-btn ${p === ledgerPage ? 'active' : ''}" onclick="loadLedgerData(${p})">${p}</button>`;
+            }
+            if (endP < ledgerTotalPages) pagHtml += `<button class="de-page-btn" disabled>…</button><button class="de-page-btn ${ledgerTotalPages === ledgerPage ? 'active' : ''}" onclick="loadLedgerData(${ledgerTotalPages})">${ledgerTotalPages}</button>`;
+
+            pagHtml += `<button class="de-page-btn" ${ledgerPage === ledgerTotalPages ? 'disabled' : ''} onclick="loadLedgerData(${ledgerPage + 1})">›</button>`;
+            pagHtml += `</div><div style="font-size:.78rem;color:#9ca3af">${LEDGER_PER_PAGE} / page</div>`;
+            pagEl.innerHTML = pagHtml;
+        }
+
+        function filterLedger(val) { ledgerSearchVal = val; ledgerPage = 1; loadLedgerData(); }
+
+        let searchDebounce = null;
+        document.getElementById('ledger-search')?.addEventListener('input', function () {
+            clearTimeout(searchDebounce);
+            searchDebounce = setTimeout(() => filterLedger(this.value), 300);
+        });
+
+        function viewLedgerDetail(name) {
+            alert(`Ledger: ${name}\n\nDetailed view coming soon — will show all voucher entries for this ledger.`);
+        }
+
+        function switchMasterTab(tab, el) {
+            document.querySelectorAll('.de-master-tab').forEach(t => t.classList.remove('active'));
+            el.classList.add('active');
+            if (tab === 'ledger') loadLedgerData();
+        }
+
+        // ═══ TRANSACTIONS — FROM INVOICES ═══
+        let allInvoices = [];
+        let txSearch = '', txFilter = 'all', txSort = 'newest';
+
+        async function loadInvoices() {
+            try {
+                const res = await authFetch('/invoices/');
+                if (!res.ok) throw new Error('Failed');
+                const data = await res.json();
+                allInvoices = data.map(inv => ({
+                    id: inv.id,
+                    source: inv.source || 'upload',
+                    invoiceNo: inv.invoice_number || 'N/A',
+                    vendor: inv.vendor_name || 'Unknown',
+                    gstin: inv.gst_number || '-',
+                    type: inv.expenses_type || 'Uncategorized',
+                    date: inv.received_at || inv.invoice_date,
+                    amount: inv.amount || 0,
+                    gstAmount: inv.gst_amount || 0,
+                    totalAmount: inv.total_amount || 0,
+                    status: 'Pending',
+                    raw: inv
+                }));
+                renderTransactions();
+            } catch (e) { console.error('Load invoices error:', e); }
+        }
+
+        function renderTransactions() {
+            const container = document.getElementById('transactions-table');
+            if (!container) return;
+            let data = allInvoices.slice();
+
+            if (txFilter !== 'all') data = data.filter(t => t.type === txFilter);
+            if (txSearch) { const q = txSearch.toLowerCase(); data = data.filter(t => t.vendor.toLowerCase().includes(q) || t.invoiceNo.toLowerCase().includes(q)); }
+            data.sort((a, b) => {
+                if (txSort === 'newest') return new Date(b.date || 0) - new Date(a.date || 0);
+                if (txSort === 'oldest') return new Date(a.date || 0) - new Date(b.date || 0);
+                if (txSort === 'amount-high') return (b.totalAmount || 0) - (a.totalAmount || 0);
+                return (a.totalAmount || 0) - (b.totalAmount || 0);
+            });
+
+            if (!data.length) {
+                container.innerHTML = `<div class="de-empty"><div class="de-empty-icon">📂</div><h3>No transactions found</h3><p>Upload files or manually create entries</p></div>`;
+                return;
+            }
+
+            let html = `<div class="de-table-wrap"><table class="de-table"><thead><tr>
+                <th>Sr.</th><th>Source</th><th>Inv. No.</th><th>Vendor</th><th>GST No.</th><th>Type</th><th>Date</th><th>Amount</th><th>GST</th><th>Total</th><th>Status</th><th style="text-align:right">Actions</th>
+            </tr></thead><tbody>`;
+            data.forEach((tx, i) => {
+                const badgeCls = tx.status === 'Pending' ? 'pending' : tx.status === 'Synced' ? 'synced' : 'saved';
+                html += `<tr style="cursor:pointer">
+                    <td>${i + 1}</td>
+                    <td style="text-transform:uppercase;font-size:.78rem">${tx.source}</td>
+                    <td style="color:#3b82f6;font-weight:500">${tx.invoiceNo}</td>
+                    <td><strong style="font-weight:600">${tx.vendor}</strong></td>
+                    <td style="font-size:.8rem;color:#475569">${tx.gstin}</td>
+                    <td><span class="de-badge ${badgeCls}">${tx.type}</span></td>
+                    <td>${tx.date ? new Date(tx.date).toLocaleDateString('en-GB') : '-'}</td>
+                    <td>${formatINR(tx.amount)}</td>
+                    <td>${formatINR(tx.gstAmount)}</td>
+                    <td style="font-weight:700">${formatINR(tx.totalAmount)}</td>
+                    <td><span class="de-badge ${badgeCls}">${tx.status}</span></td>
+                    <td style="text-align:right;display:flex;gap:.4rem;justify-content:flex-end">
+                        <button class="de-btn success" onclick="event.stopPropagation()">✓ Approve</button>
+                        <button class="de-btn primary" onclick="event.stopPropagation()" disabled>⟳ Sync</button>
+                    </td>
+                </tr>`;
+            });
+            html += `</tbody></table></div>`;
+            container.innerHTML = html;
+        }
+
+        function handleTxSearch(v) { txSearch = v; renderTransactions(); }
+        function handleTxFilter(v) { txFilter = v; renderTransactions(); }
+        function handleTxSort(v) { txSort = v; renderTransactions(); }
+
+        // ═══ BULK UPLOAD ═══
+        function handleBulkUpload(input) {
+            const files = Array.from(input.files);
+            const queue = document.getElementById('file-queue');
+            files.forEach(f => {
+                const ext = f.name.split('.').pop().toUpperCase();
+                const bg = ext === 'PDF' ? '#fef2f2' : ext === 'XLSX' || ext === 'CSV' ? '#ecfdf5' : '#eff6ff';
+                queue.innerHTML += `<div class="fq-item">
+                    <div class="fq-icon" style="background:${bg}">${ext === 'PDF' ? '📄' : '📊'}</div>
+                    <div class="fq-info"><div class="fq-name">${f.name}</div><div class="fq-meta">${(f.size / 1024).toFixed(1)} KB</div></div>
+                    <span class="fq-status pending">Queued</span>
+                </div>`;
+            });
+            input.value = '';
+        }
+
+        const uploadZone = document.getElementById('uploadZone');
+        if (uploadZone) {
+            uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('drag-over'); });
+            uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag-over'));
+            uploadZone.addEventListener('drop', e => { e.preventDefault(); uploadZone.classList.remove('drag-over'); });
+        }
+
+        // ═══ REPORTS & ANALYSIS ═══
+        function openReport(type) { alert('Report: ' + type + ' — Coming soon!'); }
+        function switchAnalysisTab(tab, el) {
+            document.querySelectorAll('.de-tab').forEach(t => t.classList.remove('active'));
+            el.classList.add('active');
+        }
+
+        // ═══ INIT ═══
+        window.addEventListener('load', async () => {
+            // Load all data in parallel
+            await Promise.allSettled([
+                loadDashboardStats(),
+                loadTop5(),
+                loadInvoices()
+            ]);
+
+            const section = urlParams.get('section');
+            if (section) {
+                const link = document.querySelector(`[onclick*="${section}"]`);
+                deNav(section, link);
+            }
+        });
+    </script>
+    <script src="app-topbar.js"></script>
+</body>
+
+</html>

@@ -4,419 +4,148 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document Reader - Compliance AI Expert</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Document Reader — ComplianceAI Expert</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@700;800&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap"
         rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="tool-layout.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #f8fafc;
-            min-height: 100vh;
-        }
-
-        .tool-topbar {
-            background: #fff;
-            border-bottom: 1px solid #e5e7eb;
-            padding: 0.875rem 2rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .tool-topbar .back-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: #1E3A8A;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.9rem;
-            padding: 0.4rem 0.75rem;
-            border-radius: 6px;
-            transition: background 0.2s;
-            cursor: pointer;
-        }
-
-        .tool-topbar .back-btn:hover {
-            background: #eff6ff;
-        }
-
-        .tool-topbar h1 {
-            font-size: 1.15rem;
-            font-weight: 700;
-            color: #111827;
-        }
-
-        .tool-topbar .badge {
-            background: #fef3c7;
-            color: #92400e;
-            font-size: 0.7rem;
-            font-weight: 700;
-            padding: 0.2rem 0.5rem;
-            border-radius: 4px;
-        }
-
-        .tool-container {
-            max-width: 900px;
-            margin: 2.5rem auto;
-            padding: 0 2rem;
-        }
-
-        .tool-hero {
-            background: linear-gradient(135deg, #1E3A8A 0%, #1E40AF 100%);
-            border-radius: 16px;
-            padding: 2.5rem;
-            color: #fff;
-            margin-bottom: 2rem;
-            box-shadow: 0 4px 12px rgba(30, 58, 138, 0.15);
-        }
-
-        .tool-hero h2 {
-            font-size: 1.75rem;
-            font-weight: 800;
-            margin-bottom: 0.5rem;
-        }
-
-        .tool-hero p {
-            opacity: 0.85;
-            font-size: 0.95rem;
-            line-height: 1.6;
-        }
-
-        .tool-form-card {
-            background: #fff;
-            border: 1px solid #e5e7eb;
-            border-radius: 12px;
-            padding: 2rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .tool-form-card h3 {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #111827;
-            margin-bottom: 0.5rem;
-        }
-
-        .tool-form-card p {
-            font-size: 0.85rem;
-            color: #6b7280;
-            margin-bottom: 1.5rem;
-        }
-
-        .upload-zone {
-            border: 2px dashed #d1d5db;
-            border-radius: 10px;
-            padding: 2.5rem;
-            text-align: center;
-            cursor: pointer;
-            transition: border-color 0.2s, background 0.2s;
-        }
-
-        .upload-zone:hover {
-            border-color: #0f766e;
-            background: #f0fdfa;
-        }
-
-        .upload-zone .icon {
-            font-size: 2.5rem;
-            margin-bottom: 0.75rem;
-        }
-
-        .upload-zone .text {
-            color: #6b7280;
-            font-size: 0.85rem;
-        }
-
-        .upload-zone .text strong {
-            color: #0f766e;
-        }
-
-        .btn-primary {
-            background: #EB6711;
-            color: #fff;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: background 0.2s, transform 0.1s;
-        }
-
-        .btn-primary:hover {
-            background: #d45a0f;
-            transform: translateY(-1px);
-        }
-
-        .btn-primary:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        /* Document Type Selector */
         .doc-types {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 0.75rem;
-            margin-bottom: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: .65rem;
+            margin-bottom: 1.25rem
         }
 
         .doc-type-btn {
-            padding: 0.75rem;
+            padding: .75rem .5rem;
             border: 1.5px solid #e5e7eb;
-            border-radius: 8px;
+            border-radius: 10px;
             background: #fff;
             cursor: pointer;
             text-align: center;
-            transition: all 0.2s;
-            font-family: inherit;
+            transition: all .2s;
+            font-family: inherit
         }
 
         .doc-type-btn:hover {
-            border-color: #0f766e;
-            background: #f0fdfa;
+            border-color: #1e3a8a;
+            background: #eff6ff
         }
 
         .doc-type-btn.active {
-            border-color: #0f766e;
-            background: #f0fdfa;
-            box-shadow: 0 0 0 2px rgba(15, 118, 110, 0.2);
+            border-color: #1e3a8a;
+            background: #eff6ff;
+            box-shadow: 0 0 0 2px rgba(30, 58, 138, .12)
         }
 
         .doc-type-btn .icon {
-            font-size: 1.25rem;
-            margin-bottom: 0.25rem;
+            font-size: 1.3rem;
+            margin-bottom: .25rem
         }
 
         .doc-type-btn .label {
-            font-size: 0.75rem;
+            font-size: .7rem;
             font-weight: 600;
-            color: #374151;
-        }
-
-        .file-list {
-            margin-top: 0.75rem;
-        }
-
-        .file-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: #f9fafb;
-            padding: 0.5rem 0.75rem;
-            border-radius: 6px;
-            margin-bottom: 0.375rem;
-            font-size: 0.8rem;
-        }
-
-        .file-item .name {
-            color: #374151;
-            font-weight: 500;
-        }
-
-        .file-item .remove {
-            color: #ef4444;
-            cursor: pointer;
-            font-weight: 600;
-        }
-
-        .loading-spinner {
-            display: inline-block;
-            width: 1rem;
-            height: 1rem;
-            border: 2px solid #fff;
-            border-radius: 50%;
-            border-top-color: transparent;
-            animation: spin 0.6s linear infinite;
-            margin-right: 0.5rem;
-            vertical-align: middle;
-        }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        /* Recent Jobs Styles */
-        .recent-jobs-card {
-            background: #fff;
-            border: 1px solid #e5e7eb;
-            border-radius: 12px;
-            padding: 2rem;
-            margin-top: 1.5rem;
-        }
-
-        .jobs-list {
-            margin-top: 1rem;
-        }
-
-        .job-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 1rem;
-            border: 1px solid #f3f4f6;
-            border-radius: 8px;
-            margin-bottom: 0.75rem;
-            background: #fafafa;
-        }
-
-        .job-info {
-            display: flex;
-            flex-direction: column;
-            gap: 0.25rem;
-        }
-
-        .job-name {
-            font-weight: 600;
-            font-size: 0.9rem;
-            color: #111827;
-        }
-
-        .job-meta {
-            font-size: 0.75rem;
-            color: #6b7280;
-        }
-
-        .job-status {
-            font-size: 0.7rem;
-            font-weight: 700;
-            padding: 0.25rem 0.6rem;
-            border-radius: 9999px;
-            text-transform: uppercase;
-        }
-
-        .status-queued {
-            background: #f3f4f6;
-            color: #4b5563;
-        }
-
-        .status-processing {
-            background: #e0f2fe;
-            color: #0369a1;
-        }
-
-        .status-completed {
-            background: #dcfce7;
-            color: #166534;
-        }
-
-        .status-failed {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-
-        .btn-download {
-            background: #1E3A8A;
-            color: #fff;
-            border: none;
-            padding: 0.4rem 0.8rem;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: none;
-        }
-
-        .btn-download:hover {
-            background: #1e40af;
+            color: #374151
         }
     </style>
 </head>
 
 <body>
-    <div class="tool-topbar">
-        <a class="back-btn" onclick="goBack()">← Back to Tools</a>
-        <h1>📖 Document Reader</h1>
-        <span class="badge">REFUND TOOL</span>
-    </div>
+    <div id="app-topbar" data-active="dashboard"></div>
+    <script src="app-topbar.js"></script>
 
-    <div class="tool-container">
-        <div class="tool-hero">
-            <h2>Document Reader</h2>
-            <p>Easily read and extract data from your GST-related documents — including CSB, BRC, Invoice, Shipping
-                Bill, and FIRC — for faster, more accurate processing. AI-powered extraction ensures high accuracy.</p>
-        </div>
+    <div class="tool-layout">
+        <aside class="tool-sidebar" id="tool-sidebar"></aside>
+        <main class="tool-main">
+            <div class="tool-main-inner">
+                <div class="tool-bc">
+                    <a href="clients.html">Firm</a><span style="color:#d1d5db">›</span>
+                    <a href="javascript:goBackToWebView()">GST Workspace</a><span style="color:#d1d5db">›</span>
+                    <span style="color:#374151;font-weight:600">Document Reader</span>
+                </div>
+                <div class="tool-page-header">
+                    <h1>📖 Document <span>Reader</span></h1>
+                    <p>Easily read and extract data from GST-related documents — including CSB, BRC, Invoice, Shipping
+                        Bill, and FIRC — for faster, more accurate processing.</p>
+                </div>
 
-        <div class="tool-form-card">
-            <h3>Select Document Type</h3>
-            <p>Choose what type of document you want to process.</p>
-            <div class="doc-types">
-                <button class="doc-type-btn active" onclick="selectDocType(this, 'csb')">
-                    <div class="icon">📦</div>
-                    <div class="label">CSB</div>
-                </button>
-                <button class="doc-type-btn" onclick="selectDocType(this, 'brc')">
-                    <div class="icon">🏦</div>
-                    <div class="label">BRC</div>
-                </button>
-                <button class="doc-type-btn" onclick="selectDocType(this, 'invoice')">
-                    <div class="icon">🧾</div>
-                    <div class="label">Invoice</div>
-                </button>
-                <button class="doc-type-btn" onclick="selectDocType(this, 'shipping_bill')">
-                    <div class="icon">🚢</div>
-                    <div class="label">Shipping Bill</div>
-                </button>
-                <button class="doc-type-btn" onclick="selectDocType(this, 'firc')">
-                    <div class="icon">💱</div>
-                    <div class="label">FIRC</div>
-                </button>
-            </div>
-        </div>
+                <!-- Select Document Type -->
+                <div class="tool-card">
+                    <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
+                        </svg> Select Document Type</h3>
+                    <p>Choose what type of document you want to process.</p>
+                    <div class="doc-types">
+                        <button class="doc-type-btn active" onclick="selectDocType(this,'csb')">
+                            <div class="icon">📦</div>
+                            <div class="label">CSB</div>
+                        </button>
+                        <button class="doc-type-btn" onclick="selectDocType(this,'brc')">
+                            <div class="icon">🏦</div>
+                            <div class="label">BRC</div>
+                        </button>
+                        <button class="doc-type-btn" onclick="selectDocType(this,'invoice')">
+                            <div class="icon">🧾</div>
+                            <div class="label">Invoice</div>
+                        </button>
+                        <button class="doc-type-btn" onclick="selectDocType(this,'shipping_bill')">
+                            <div class="icon">🚢</div>
+                            <div class="label">Shipping Bill</div>
+                        </button>
+                        <button class="doc-type-btn" onclick="selectDocType(this,'firc')">
+                            <div class="icon">💱</div>
+                            <div class="label">FIRC</div>
+                        </button>
+                    </div>
+                </div>
 
-        <div class="tool-form-card">
-            <h3>Upload Documents</h3>
-            <p>Upload one or more PDF / image / Excel files to extract data.</p>
-            <div class="upload-zone" onclick="document.getElementById('doc-files').click()">
-                <div class="icon">📄</div>
-                <div class="text">
-                    <strong>Click to upload</strong> or drag and drop<br>
-                    PDF, Images (JPG, PNG), or Excel files
+                <!-- Upload Documents -->
+                <div class="tool-card">
+                    <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                            <polyline points="17 8 12 3 7 8" />
+                            <line x1="12" y1="3" x2="12" y2="15" />
+                        </svg> Upload Documents</h3>
+                    <p>Upload one or more PDF / image / Excel files to extract data.</p>
+                    <div class="tool-upload" onclick="document.getElementById('doc-files').click()">
+                        <div class="t-icon">📄</div>
+                        <div class="t-title">Click to upload or drag and drop</div>
+                        <div class="t-sub">PDF, Images (JPG, PNG), or Excel files</div>
+                    </div>
+                    <input type="file" id="doc-files" accept=".pdf,.jpg,.jpeg,.png,.xlsx,.csv" multiple
+                        style="display:none" onchange="handleFiles(this)">
+                    <div class="tool-file-list" id="file-list"></div>
+                    <div style="margin-top:1.25rem">
+                        <button class="tbtn tbtn-primary" id="extract-btn" onclick="extractData()" disabled>📖 Extract
+                            Data</button>
+                    </div>
+                </div>
+
+                <!-- Recent Jobs -->
+                <div class="tool-card" id="recent-jobs-container" style="display:none">
+                    <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            style="width:17px;height:17px;vertical-align:middle">
+                            <circle cx="12" cy="12" r="10" />
+                            <polyline points="12 6 12 12 16 14" />
+                        </svg> Recent Reader Jobs</h3>
+                    <p>Track the status of your document extraction tasks.</p>
+                    <div class="tool-jobs" id="jobs-list"></div>
                 </div>
             </div>
-            <input type="file" id="doc-files" accept=".pdf,.jpg,.jpeg,.png,.xlsx,.csv" multiple style="display:none"
-                onchange="handleFiles(this)">
-
-            <div class="file-list" id="file-list"></div>
-
-            <div style="margin-top:1.25rem; display:flex; gap:0.75rem;">
-                <button class="btn-primary" id="extract-btn" onclick="extractData()" disabled>📖 Extract Data</button>
-            </div>
-        </div>
-
-        <div class="recent-jobs-card" id="recent-jobs-container" style="display: none;">
-            <h3>Recent Reader Jobs</h3>
-            <p>Track the status of your document extraction tasks.</p>
-            <div class="jobs-list" id="jobs-list">
-                <!-- Jobs will be loaded here -->
-            </div>
-        </div>
+        </main>
     </div>
 
+    <script src="tool-sidebar.js"></script>
     <script src="api_config.js?v=2"></script>
+    <script src="session-manager.js?v=2"></script>
     <script>
-        function goBack() {
-            const params = new URLSearchParams(window.location.search);
-            params.set('section', 'tools');
-            window.location.href = 'web-view.html?' + params.toString();
-        }
+        if (!requireAuth()) { }
+        renderToolSidebar('document-reader');
 
         let selectedType = 'csb';
         let uploadedFiles = [];
@@ -442,7 +171,7 @@
         function renderFileList() {
             const list = document.getElementById('file-list');
             list.innerHTML = uploadedFiles.map((f, i) =>
-                `<div class="file-item"><span class="name">📎 ${f.name}</span><span class="remove" onclick="removeFile(${i})">✕</span></div>`
+                `<div class="tool-file-item"><span class="fname">📎 ${f.name}</span><span class="fremove" onclick="removeFile(${i})">✕</span></div>`
             ).join('');
         }
 
@@ -451,27 +180,19 @@
             const btn = document.getElementById('extract-btn');
             const originalText = btn.innerHTML;
             btn.disabled = true;
-            btn.innerHTML = '<span class="loading-spinner"></span> Extracting...';
-
+            btn.innerHTML = '<span class="tool-spinner"></span> Extracting...';
             try {
                 const token = localStorage.getItem('access_token');
                 const params = new URLSearchParams(window.location.search);
                 const clientId = params.get('clientId');
                 const fileKeys = [];
-
                 for (const file of uploadedFiles) {
-                    const fd = new FormData();
-                    fd.append('file', file);
-                    const res = await fetch(`${API_BASE_URL}/jobs/upload`, {
-                        method: 'POST', headers: { 'Authorization': `Bearer ${token}` }, body: fd
-                    });
-                    if (res.ok) {
-                        const d = await res.json();
-                        fileKeys.push(d.file_key || d.file_path);
-                    }
+                    const fd = new FormData(); fd.append('file', file);
+                    const res = await fetch(`${API_BASE_URL}/jobs/upload`, { method: 'POST', headers: { 'Authorization': `Bearer ${token}` }, body: fd });
+                    if (res.ok) { const d = await res.json(); fileKeys.push(d.file_key || d.file_path); }
                 }
-
                 const jobRes = await fetch(`${API_BASE_URL}/jobs/`, {
+<<<<<<< HEAD
                     method: 'POST',
                     headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -540,88 +261,55 @@
                 btn.disabled = false;
                 btn.innerHTML = originalText;
             }
+=======
+                    method: 'POST', headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ job_type: 'document_reader', input_files: fileKeys, client_id: clientId, metadata: { document_type: selectedType } })
+                });
+                if (jobRes.ok) { alert('Document extraction started!'); loadJobs(); }
+                else { const err = await jobRes.json(); alert('Failed: ' + (err.detail || 'Error')); }
+            } catch (err) { console.error(err); alert('Error: ' + err.message); }
+            finally { btn.disabled = false; btn.innerHTML = '📖 Extract Data'; }
+>>>>>>> ea8664237128fffa4ca00ea0ee0946ce90945ffa
         }
 
-        // --- Recent Jobs Logic ---
         let pollingInterval = null;
-
         async function loadJobs() {
             const params = new URLSearchParams(window.location.search);
-            const clientId = params.get('clientId');
-            if (!clientId) return;
-
+            const clientId = params.get('clientId'); if (!clientId) return;
             try {
                 const res = await authFetch(`/jobs/?skip=0&limit=50&client_id=${clientId}`);
                 if (res.ok) {
                     const jobs = await res.json();
-                    const readerJobs = jobs.filter(j => j.job_type === 'document_reader');
-
-                    if (readerJobs.length > 0) {
+                    const rJobs = jobs.filter(j => j.job_type === 'document_reader');
+                    if (rJobs.length > 0) {
                         document.getElementById('recent-jobs-container').style.display = 'block';
-                        renderJobs(readerJobs);
-
-                        const hasInProgress = readerJobs.some(j => j.status === 'QUEUED' || j.status === 'PROCESSING');
-                        if (hasInProgress && !pollingInterval) {
-                            pollingInterval = setInterval(loadJobs, 5000);
-                        } else if (!hasInProgress && pollingInterval) {
-                            clearInterval(pollingInterval);
-                            pollingInterval = null;
-                        }
+                        renderJobs(rJobs);
+                        const hasIP = rJobs.some(j => j.status === 'QUEUED' || j.status === 'PROCESSING');
+                        if (hasIP && !pollingInterval) pollingInterval = setInterval(loadJobs, 5000);
+                        else if (!hasIP && pollingInterval) { clearInterval(pollingInterval); pollingInterval = null; }
                     }
                 }
-            } catch (e) {
-                console.error("Failed to load jobs", e);
-            }
+            } catch (e) { console.error(e); }
         }
 
         function renderJobs(jobs) {
-            const list = document.getElementById('jobs-list');
-            list.innerHTML = jobs.map(job => {
+            document.getElementById('jobs-list').innerHTML = jobs.map(job => {
                 const date = new Date(job.created_at).toLocaleString();
-                let statusClass = 'status-' + job.status.toLowerCase();
                 const docType = (job.metadata && job.metadata.document_type) ? job.metadata.document_type.toUpperCase() : 'UNKNOWN';
-                const jobName = `READER: ${docType}`;
-
-                return `
-                    <div class="job-item">
-                        <div class="job-info">
-                            <span class="job-name">${jobName}</span>
-                            <span class="job-meta">Created: ${date}</span>
-                        </div>
-                        <div style="display: flex; align-items: center; gap: 1rem;">
-                            <span class="job-status ${statusClass}">${job.status}</span>
-                            ${job.status === 'COMPLETED' ?
-                        `<button class="btn-download" onclick="downloadJobFile('${job.id}')">⬇ Download</button>` :
-                        ''}
-                        </div>
-                    </div>
-                `;
+                return `<div class="tool-job"><div class="tool-job-info"><span class="tool-job-name">Reader: ${docType}</span><span class="tool-job-meta">Created: ${date}</span></div><div style="display:flex;align-items:center;gap:.75rem"><span class="tool-job-status tj-${job.status.toLowerCase()}">${job.status}</span>${job.status === 'COMPLETED' ? `<button class="tbtn tbtn-download" onclick="downloadJobFile('${job.id}')">⬇ Download</button>` : ''}</div></div>`;
             }).join('');
         }
 
         async function downloadJobFile(jobId) {
             try {
                 const response = await authFetch(`/jobs/${jobId}/download`);
-                if (!response.ok) {
-                    alert('Download failed');
-                    return;
-                }
-                const blob = await response.blob();
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `Extracted_Data_${jobId.substring(0, 8)}.xlsx`;
-                document.body.appendChild(a);
-                a.click();
-                window.URL.revokeObjectURL(url);
-                document.body.removeChild(a);
-            } catch (e) {
-                console.error('Download error:', e);
-                alert('Error downloading file');
-            }
+                if (!response.ok) { alert('Download failed'); return; }
+                const blob = await response.blob(); const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a'); a.href = url; a.download = `Extracted_Data_${jobId.substring(0, 8)}.xlsx`;
+                document.body.appendChild(a); a.click(); window.URL.revokeObjectURL(url); document.body.removeChild(a);
+            } catch (e) { console.error(e); alert('Error downloading file'); }
         }
 
-        // Initialize
         loadJobs();
     </script>
 </body>
