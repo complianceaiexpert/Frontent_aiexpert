@@ -4,7 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Features - Compliance AI Expert</title>
+    <title>Features - ComplianceAI Expert</title>
+    <meta name="description"
+        content="Explore the powerful features of ComplianceAI Expert — AI-powered compliance for CAs and tax professionals.">
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,90 +14,221 @@
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@700;800&display=swap"
         rel="stylesheet">
     <style>
+        /* ── Hero ── */
         .features-hero {
-            padding: 8rem 2rem 4rem;
-            background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%);
+            padding: 8rem 2rem 5rem;
+            background: linear-gradient(135deg, #f8fafc 0%, #EBF0FF 50%, #FFF7ED 100%);
             text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .features-hero::before {
+            content: '';
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            background: rgba(30, 58, 138, 0.04);
+            top: -200px;
+            right: -100px;
+            filter: blur(80px);
         }
 
         .features-hero h1 {
             font-size: 3.5rem;
+            font-weight: 800;
             margin-bottom: 1rem;
-            color: var(--gray-900);
+            position: relative;
+        }
+
+        .features-hero h1 .highlight {
+            background: linear-gradient(135deg, var(--primary-orange), var(--primary-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .features-hero p {
-            font-size: 1.25rem;
+            font-size: 1.2rem;
             color: var(--gray-600);
-            max-width: 700px;
+            max-width: 650px;
             margin: 0 auto;
+            position: relative;
+            line-height: 1.7;
         }
 
-        .features-section {
-            padding: 4rem 2rem;
+        /* ── Category Section ── */
+        .category-section {
+            padding: 5rem 2rem;
         }
 
-        .feature-category {
+        .category-section:nth-child(odd) {
+            background: white;
+        }
+
+        .category-section:nth-child(even) {
+            background: var(--gray-50);
+        }
+
+        .category-inner {
             max-width: 1200px;
-            margin: 0 auto 6rem;
+            margin: 0 auto;
         }
 
         .category-header {
-            text-align: center;
-            margin-bottom: 3rem;
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            margin-bottom: 2.5rem;
         }
 
-        .category-header .icon {
-            font-size: 4rem;
-            margin-bottom: 1rem;
+        .category-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            flex-shrink: 0;
         }
 
         .category-header h2 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            color: var(--gray-900);
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 0.25rem;
         }
 
         .category-header p {
-            font-size: 1.125rem;
-            color: var(--gray-600);
-            max-width: 600px;
-            margin: 0 auto;
+            font-size: 1rem;
+            color: var(--gray-500);
         }
 
-        .features-grid {
+        .features-bento {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.25rem;
         }
 
-        .feature-card {
+        .f-card {
             background: white;
-            padding: 2rem;
-            border-radius: var(--radius-xl);
-            box-shadow: var(--shadow-md);
-            transition: all var(--transition-base);
+            border: 1px solid var(--gray-200);
+            border-radius: 16px;
+            padding: 1.75rem;
+            transition: all 0.3s;
         }
 
-        .feature-card:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-xl);
+        .category-section:nth-child(odd) .f-card {
+            background: var(--gray-50);
         }
 
-        .feature-card .icon {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
+        .f-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary-blue);
         }
 
-        .feature-card h3 {
-            font-size: 1.5rem;
+        .f-card .emoji {
+            font-size: 2rem;
             margin-bottom: 0.75rem;
+        }
+
+        .f-card h3 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
             color: var(--gray-900);
         }
 
-        .feature-card p {
+        .f-card p {
+            font-size: 0.9rem;
+            color: var(--gray-500);
+            line-height: 1.6;
+        }
+
+        /* ── CTA ── */
+        .features-cta {
+            padding: 5rem 2rem;
+            text-align: center;
+            background: linear-gradient(135deg, #FFF7ED 0%, #EBF0FF 100%);
+        }
+
+        .features-cta h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        .features-cta p {
+            font-size: 1.15rem;
             color: var(--gray-600);
+            margin-bottom: 2rem;
+        }
+
+        /* ── Footer ── */
+        .site-footer {
+            background: var(--gray-900);
+            color: white;
+            padding: 4rem 2rem 2rem;
+        }
+
+        .footer-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-brand p {
+            color: var(--gray-400);
             line-height: 1.7;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .footer-col h4 {
+            color: white;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+
+        .footer-col a {
+            display: block;
+            color: var(--gray-400);
+            margin-bottom: 0.6rem;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        .footer-col a:hover {
+            color: var(--primary-orange);
+        }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            color: var(--gray-500);
+            font-size: 0.85rem;
+        }
+
+        /* ── Scroll Reveal ── */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         @media (max-width: 768px) {
@@ -103,29 +236,33 @@
                 font-size: 2.5rem;
             }
 
-            .category-header h2 {
-                font-size: 2rem;
+            .category-header {
+                flex-direction: column;
+                text-align: center;
             }
 
-            .features-grid {
+            .features-bento {
                 grid-template-columns: 1fr;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
             }
         }
     </style>
 </head>
 
-<body>
-    <!-- Navigation -->
+<body style="background: white;">
     <nav class="navbar">
         <div class="navbar-container">
-            <a href="index.html" class="logo">
-                <div class="logo-icon" style="background: #1e3a8a; padding: 4px 8px; border-radius: 4px; color: white;">
-                    CE</div>
-                <span style="font-weight: 700; color: #1e3a8a;">ComplianceAIexpert</span>
+            <a href="index.html" class="logo" style="text-decoration: none;">
+                <div class="logo-icon">CE</div>
+                <span style="font-weight: 700; font-size: 1.25rem; color: var(--primary-blue);">ComplianceAI<span
+                        style="color: var(--primary-orange);">expert</span></span>
             </a>
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
-                <li><a href="features.html">Features</a></li>
+                <li><a href="features.html" style="color: var(--primary-blue); font-weight: 600;">Features</a></li>
                 <li><a href="how-it-works.html">How It Works</a></li>
                 <li><a href="pricing.html">Pricing</a></li>
                 <li><a href="sign-in.html" class="btn btn-primary btn-small">Sign In</a></li>
@@ -133,136 +270,149 @@
         </div>
     </nav>
 
-    <!-- Features Hero -->
+    <!-- Hero -->
     <section class="features-hero">
-        <h1>Powerful Features for Modern CAs</h1>
-        <p>Everything you need to manage compliance, automate workflows, and deliver exceptional service to your clients
-        </p>
+        <h1>Powerful Features for <span class="highlight">Modern CAs</span></h1>
+        <p>Everything you need to manage compliance, automate workflows, and deliver exceptional service — powered by
+            intelligence.</p>
     </section>
 
-    <!-- Features Sections -->
-    <section class="features-section">
-        <!-- AI-Powered Intelligence -->
-        <div class="feature-category">
+    <!-- AI Intelligence -->
+    <section class="category-section">
+        <div class="category-inner reveal">
             <div class="category-header">
-                <div class="icon">🤖</div>
-                <h2>AI-Powered Intelligence</h2>
-                <p>Leverage cutting-edge AI to make smarter decisions and automate complex tasks</p>
+                <div class="category-icon" style="background: rgba(30, 58, 138, 0.08);">🤖</div>
+                <div>
+                    <h2>AI-Powered Intelligence</h2>
+                    <p>Leverage cutting-edge AI to make smarter decisions and automate complex tasks</p>
+                </div>
             </div>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="icon">📊</div>
+            <div class="features-bento">
+                <div class="f-card">
+                    <div class="emoji">📊</div>
                     <h3>Predictive Risk Scoring</h3>
-                    <p>AI analyzes your client data to identify potential compliance risks before they become issues,
-                        helping you stay proactive.</p>
+                    <p>AI analyzes client data to identify potential compliance risks before they become issues, keeping
+                        you proactive.</p>
                 </div>
-                <div class="feature-card">
-                    <div class="icon">📄</div>
+                <div class="f-card">
+                    <div class="emoji">📄</div>
                     <h3>Automated Document Analysis</h3>
-                    <p>Intelligent document processing extracts key information, validates data, and flags
-                        inconsistencies automatically.</p>
+                    <p>Intelligent processing extracts key information, validates data, and flags inconsistencies
+                        automatically.</p>
                 </div>
-                <div class="feature-card">
-                    <div class="icon">💡</div>
+                <div class="f-card">
+                    <div class="emoji">💡</div>
                     <h3>Smart Recommendations</h3>
                     <p>Get AI-powered suggestions for tax optimization, compliance strategies, and workflow
                         improvements.</p>
                 </div>
             </div>
         </div>
+    </section>
 
-        <!-- Comprehensive Compliance -->
-        <div class="feature-category">
+    <!-- Compliance -->
+    <section class="category-section">
+        <div class="category-inner reveal">
             <div class="category-header">
-                <div class="icon">✅</div>
-                <h2>Comprehensive Compliance</h2>
-                <p>Complete compliance management suite designed for Indian regulations</p>
+                <div class="category-icon" style="background: rgba(16, 185, 129, 0.08);">✅</div>
+                <div>
+                    <h2>Comprehensive Compliance</h2>
+                    <p>Complete compliance management suite designed for Indian regulations</p>
+                </div>
             </div>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="icon">📋</div>
+            <div class="features-bento">
+                <div class="f-card">
+                    <div class="emoji">📋</div>
                     <h3>GST Filing Automation</h3>
                     <p>Automated GSTR-1, GSTR-3B, and refund filing with built-in validation and error checking.</p>
                 </div>
-                <div class="feature-card">
-                    <div class="icon">🧮</div>
+                <div class="f-card">
+                    <div class="emoji">🧮</div>
                     <h3>Tax Computation</h3>
                     <p>Accurate tax calculations for income tax, GST, and other compliance requirements with AI
                         verification.</p>
                 </div>
-                <div class="feature-card">
-                    <div class="icon">📢</div>
+                <div class="f-card">
+                    <div class="emoji">📢</div>
                     <h3>Regulatory Updates</h3>
                     <p>Stay informed with real-time updates on tax law changes, compliance deadlines, and regulatory
                         notifications.</p>
                 </div>
-                <div class="feature-card">
-                    <div class="icon">🗺️</div>
+                <div class="f-card">
+                    <div class="emoji">🗺️</div>
                     <h3>Multi-State Compliance</h3>
                     <p>Manage compliance across multiple states with automated tracking and state-specific requirements.
                     </p>
                 </div>
             </div>
         </div>
+    </section>
 
-        <!-- Real-time Workflow -->
-        <div class="feature-category">
+    <!-- Real-time Workflow -->
+    <section class="category-section">
+        <div class="category-inner reveal">
             <div class="category-header">
-                <div class="icon">⚡</div>
-                <h2>Real-time Workflow</h2>
-                <p>Collaborate seamlessly and track progress in real-time</p>
+                <div class="category-icon" style="background: rgba(235, 103, 17, 0.08);">⚡</div>
+                <div>
+                    <h2>Real-time Workflow</h2>
+                    <p>Collaborate seamlessly and track progress in real-time</p>
+                </div>
             </div>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="icon">👥</div>
+            <div class="features-bento">
+                <div class="f-card">
+                    <div class="emoji">👥</div>
                     <h3>Live Collaboration</h3>
                     <p>Work together with your team in real-time, share notes, and coordinate tasks effortlessly.</p>
                 </div>
-                <div class="feature-card">
-                    <div class="icon">🔔</div>
+                <div class="f-card">
+                    <div class="emoji">🔔</div>
                     <h3>Instant Notifications</h3>
                     <p>Get notified about deadlines, client updates, and important events via email, SMS, and in-app
                         alerts.</p>
                 </div>
-                <div class="feature-card">
-                    <div class="icon">📈</div>
+                <div class="f-card">
+                    <div class="emoji">📈</div>
                     <h3>Progress Tracking</h3>
                     <p>Visual dashboards show real-time progress on all tasks, filings, and client work at a glance.</p>
                 </div>
-                <div class="feature-card">
-                    <div class="icon">🤝</div>
+                <div class="f-card">
+                    <div class="emoji">🤝</div>
                     <h3>Team Coordination</h3>
                     <p>Assign tasks, set priorities, and manage workload distribution across your team efficiently.</p>
                 </div>
             </div>
         </div>
+    </section>
 
-        <!-- Management Tools -->
-        <div class="feature-category">
+    <!-- Management Tools -->
+    <section class="category-section">
+        <div class="category-inner reveal">
             <div class="category-header">
-                <div class="icon">🛠️</div>
-                <h2>Management Tools</h2>
-                <p>Comprehensive tools to manage clients, documents, and services</p>
+                <div class="category-icon" style="background: rgba(139, 92, 246, 0.08);">🛠️</div>
+                <div>
+                    <h2>Management Tools</h2>
+                    <p>Comprehensive tools to manage clients, documents, and services</p>
+                </div>
             </div>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="icon">📚</div>
+            <div class="features-bento">
+                <div class="f-card">
+                    <div class="emoji">📚</div>
                     <h3>Service History</h3>
                     <p>Complete audit trail of all services, communications, and actions for every client.</p>
                 </div>
-                <div class="feature-card">
-                    <div class="icon">🌐</div>
+                <div class="f-card">
+                    <div class="emoji">🌐</div>
                     <h3>Client Portals</h3>
                     <p>Branded client portals where clients can view status, upload documents, and communicate securely.
                     </p>
                 </div>
-                <div class="feature-card">
-                    <div class="icon">🔄</div>
+                <div class="f-card">
+                    <div class="emoji">🔄</div>
                     <h3>Version Control</h3>
                     <p>Track all document versions, changes, and revisions with complete version history.</p>
                 </div>
-                <div class="feature-card">
-                    <div class="icon">📁</div>
+                <div class="f-card">
+                    <div class="emoji">📁</div>
                     <h3>Document Management</h3>
                     <p>Secure cloud storage with smart organization, search, and retrieval of all client documents.</p>
                 </div>
@@ -270,46 +420,47 @@
         </div>
     </section>
 
+    <!-- CTA -->
+    <section class="features-cta reveal">
+        <h2>Ready to Supercharge Your Practice?</h2>
+        <p>See how ComplianceAI Expert can transform the way you work</p>
+        <a href="sign-up.html" class="btn btn-primary btn-large">Get Started Free →</a>
+    </section>
+
     <!-- Footer -->
-    <footer style="background: var(--gray-900); color: white; padding: 4rem 2rem 2rem;">
-        <div class="container">
-            <div
-                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 3rem; margin-bottom: 3rem;">
-                <div>
-                    <div class="logo" style="color: white; margin-bottom: 1rem;">
-                        <div class="logo-icon">CE</div>
-                        <span style="font-weight: 700;">ComplianceAIexpert</span>
-                    </div>
-                    <p style="color: var(--gray-400); line-height: 1.7;">Intelligent compliance decisions, powered by
-                        AI.</p>
-                </div>
-                <div>
-                    <h4 style="margin-bottom: 1rem; color: white;">Product</h4>
-                    <ul style="list-style: none;">
-                        <li style="margin-bottom: 0.75rem;"><a href="features.html"
-                                style="color: var(--gray-400);">Features</a></li>
-                        <li style="margin-bottom: 0.75rem;"><a href="pricing.html"
-                                style="color: var(--gray-400);">Pricing</a></li>
-                        <li style="margin-bottom: 0.75rem;"><a href="how-it-works.html"
-                                style="color: var(--gray-400);">How It Works</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 style="margin-bottom: 1rem; color: white;">Company</h4>
-                    <ul style="list-style: none;">
-                        <li style="margin-bottom: 0.75rem;"><a href="#" style="color: var(--gray-400);">About Us</a>
-                        </li>
-                        <li style="margin-bottom: 0.75rem;"><a href="#" style="color: var(--gray-400);">Contact</a></li>
-                        <li style="margin-bottom: 0.75rem;"><a href="#" style="color: var(--gray-400);">Support</a></li>
-                    </ul>
-                </div>
+    <footer class="site-footer">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <a href="index.html" class="logo" style="text-decoration: none;">
+                    <div class="logo-icon">CE</div>
+                    <span style="font-weight: 700; font-size: 1.2rem; color: white;">ComplianceAI<span
+                            style="color: var(--primary-orange);">expert</span></span>
+                </a>
+                <p>AI-powered compliance intelligence for the modern Indian professional.</p>
             </div>
-            <div
-                style="padding-top: 2rem; border-top: 1px solid var(--gray-800); text-align: center; color: var(--gray-400);">
-                <p>&copy; 2025 Compliance AI Expert. All rights reserved.</p>
+            <div class="footer-col">
+                <h4>Product</h4><a href="features.html">Features</a><a href="pricing.html">Pricing</a><a
+                    href="how-it-works.html">How It Works</a>
+            </div>
+            <div class="footer-col">
+                <h4>Company</h4><a href="about-us.html">About Us</a><a href="contact-us.html">Contact</a><a
+                    href="#">Careers</a>
+            </div>
+            <div class="footer-col">
+                <h4>Legal</h4><a href="#">Privacy Policy</a><a href="#">Terms of Service</a><a href="#">Security</a>
             </div>
         </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 ComplianceAI Expert. All rights reserved.</p>
+        </div>
     </footer>
+
+    <script>
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+        }, { threshold: 0.15 });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    </script>
 </body>
 
 </html>

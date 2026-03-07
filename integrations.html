@@ -4,892 +4,766 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Services - Compliance AI Expert</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Integrations & Data Sources — ComplianceAI Expert</title>
+    <meta name="description"
+        content="Connect Tally Prime, upload documents, use AI GPT, and integrate your accounting stack with ComplianceAI Expert for automated compliance.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@700;800&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap"
         rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
     <style>
-        /* Apply purple gradient background */
+        * {
+            box-sizing: border-box
+        }
+
         body {
-            background: linear-gradient(135deg, #E0E7FF 0%, #F5F3FF 100%);
+            background: #fff;
+            margin: 0;
             min-height: 100vh;
-        }
-
-        .dashboard-container {
-            max-width: 1200px;
-            margin: 80px auto;
-            padding: 2rem 32px;
-        }
-
-        /* Navigation Enhancements */
-        .nav-links {
-            display: flex;
-            align-items: center;
-            gap: 2rem;
-        }
-
-        .nav-link {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: var(--gray-700);
-            text-decoration: none;
-            font-weight: 500;
-            transition: color var(--transition-base);
-        }
-
-        .nav-link:hover {
-            color: var(--primary-blue);
-        }
-
-        .client-info-nav {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-        }
-
-        .client-name-text {
-            font-weight: 600;
-            color: var(--gray-900);
-            font-size: 0.875rem;
-        }
-
-        .client-type-text {
-            font-size: 0.75rem;
-            color: var(--gray-500);
-        }
-
-        /* Dropdown Styles */
-        .navbar-profile {
-            position: relative;
-            cursor: pointer;
-        }
-
-        .nav-dropdown {
-            position: absolute;
-            top: 120%;
-            right: 0;
-            background: white;
-            border: 1px solid var(--gray-200);
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-            width: 200px;
-            display: none;
-            padding: 0.5rem 0;
-            z-index: 9999;
-            margin-top: 0.5rem;
-        }
-
-        .nav-dropdown.active {
-            display: block;
-        }
-
-        .dropdown-item {
-            padding: 0.75rem 1.5rem;
-            color: var(--gray-700);
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            text-decoration: none;
-            transition: background 0.2s;
-            cursor: pointer;
-            font-size: 0.875rem;
-            font-weight: 500;
-        }
-
-        .dropdown-item:hover {
-            background: var(--gray-50);
-            color: var(--primary-blue);
-        }
-
-        .dropdown-divider {
-            height: 1px;
-            background: var(--gray-100);
-            margin: 0.5rem 0;
-        }
-
-        /* Breadcrumb */
-        .breadcrumb {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-bottom: 2rem;
-            font-size: 0.875rem;
-            color: var(--gray-600);
-        }
-
-        .breadcrumb a {
-            color: var(--primary-blue);
-            text-decoration: none;
-            transition: color var(--transition-base);
-        }
-
-        .breadcrumb a:hover {
-            color: var(--primary-blue-dark);
-        }
-
-        .breadcrumb span:not(:has(a)) {
-            color: var(--gray-400);
+            font-family: 'Inter', sans-serif
         }
 
         /* Page Header */
-        .page-header-section {
-            margin-bottom: 2rem;
+        .page-header {
+            padding: 5rem 2rem 1.5rem;
+            max-width: 1100px;
+            margin: 0 auto
         }
 
-        .page-title {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--gray-900);
-            margin-bottom: 0.5rem;
-            font-family: var(--font-display);
+        .page-header .tag {
+            display: inline-flex;
+            align-items: center;
+            gap: .4rem;
+            padding: .25rem .8rem;
+            background: #eff6ff;
+            border: 1px solid #dbeafe;
+            border-radius: 999px;
+            font-size: .68rem;
+            font-weight: 600;
+            color: #1e3a8a;
+            margin-bottom: .75rem
         }
 
-        .page-subtitle {
-            font-size: 1rem;
-            color: var(--gray-600);
-            margin-bottom: 1.5rem;
+        .page-header h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: #111827;
+            margin: 0 0 .3rem;
+            letter-spacing: -.01em
         }
 
-        .page-description-styled {
+        .page-header h1 span {
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text
+        }
+
+        .page-header p {
+            font-size: .85rem;
+            color: #6b7280;
+            max-width: 600px;
+            line-height: 1.6;
+            margin: 0
+        }
+
+        /* Layout */
+        .page-wrap {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 2rem 3rem
+        }
+
+        /* Section */
+        .sec-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: #111827;
+            margin: 2rem 0 .25rem
+        }
+
+        .sec-sub {
+            font-size: .78rem;
+            color: #6b7280;
+            margin: 0 0 1rem;
+            line-height: 1.5
+        }
+
+        /* Integration Grid */
+        .int-grid {
             display: grid;
-            gap: 1.5rem;
-            margin-top: 1.5rem;
+            grid-template-columns: repeat(3, 1fr);
+            gap: .85rem;
+            margin-bottom: 1.5rem
         }
 
-        .description-block {
-            display: flex;
-            gap: 1.25rem;
-            padding: 1.75rem;
-            background: white;
+        .int-card {
+            background: #fff;
+            border: 1px solid #e5e7eb;
             border-radius: 12px;
-            border-left: 4px solid var(--primary-blue);
-            box-shadow: 0 2px 8px -2px rgba(0, 0, 0, 0.08);
+            padding: 1.15rem;
+            transition: all .2s;
+            position: relative
         }
 
-        .description-icon {
-            font-size: 2rem;
-            flex-shrink: 0;
+        .int-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 14px rgba(0, 0, 0, .04)
         }
 
-        .description-block h4 {
-            font-size: 1.125rem;
-            font-weight: 700;
-            color: var(--gray-900);
-            margin-bottom: 0.5rem;
-        }
-
-        .description-block p {
-            font-size: 0.9375rem;
-            color: var(--gray-600);
-            line-height: 1.7;
-            margin: 0;
-        }
-
-        /* Client Details Card */
-        .client-details-card {
-            background: white;
-            border-radius: 16px;
-            padding: 2rem;
-            margin-bottom: 3rem;
-            box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.08);
-        }
-
-        .client-details-header {
+        .int-card-top {
             display: flex;
             align-items: center;
-            gap: 1.5rem;
-            padding-bottom: 1.5rem;
-            border-bottom: 1px solid var(--gray-100);
+            gap: .65rem;
+            margin-bottom: .5rem
         }
 
-        .client-icon-large {
-            width: 64px;
-            height: 64px;
-            background: linear-gradient(135deg, #3B82F6, #2563EB);
-            border-radius: 12px;
+        .int-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 9px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
-            font-size: 2rem;
-            font-weight: 700;
+            font-weight: 800;
+            font-size: .85rem;
             flex-shrink: 0;
+            font-family: 'Outfit', sans-serif
         }
 
-        .client-main-info {
-            flex: 1;
-        }
-
-        .client-main-info h2 {
-            font-size: 1.75rem;
+        .int-card-top h4 {
+            font-size: .82rem;
             font-weight: 700;
-            color: var(--gray-900);
-            margin-bottom: 0.5rem;
+            color: #111827;
+            margin: 0;
+            flex: 1
         }
 
-        .client-entity-badge {
-            display: inline-block;
-            background: var(--gray-100);
-            color: var(--gray-700);
-            padding: 0.25rem 0.75rem;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            font-weight: 600;
+        .int-badge {
+            font-size: .55rem;
+            font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
+            letter-spacing: .05em;
+            padding: 2px 6px;
+            border-radius: 4px
         }
 
-        .client-overview-inline {
-            font-size: 0.875rem;
-            color: var(--gray-600);
-            line-height: 1.6;
-            margin-top: 0.75rem;
-            max-width: 600px;
+        .int-card>p {
+            font-size: .73rem;
+            color: #6b7280;
+            line-height: 1.5;
+            margin: 0 0 .55rem
         }
 
-        .client-details-body {
-            padding-top: 1.5rem;
-        }
-
-        .detail-row {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .detail-item {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .detail-label {
-            font-size: 0.75rem;
-            color: var(--gray-500);
+        .int-action {
+            display: inline-flex;
+            align-items: center;
+            gap: .25rem;
+            font-size: .72rem;
             font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .detail-value {
-            font-size: 1rem;
-            color: var(--gray-900);
-            font-weight: 500;
-            font-family: monospace;
-        }
-
-        .client-stats-row {
-            display: flex;
-            gap: 2rem;
-            padding-top: 1rem;
-            border-top: 1px solid var(--gray-100);
-        }
-
-        .stat-item-small {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .stat-icon-small {
-            font-size: 1.5rem;
-        }
-
-        .stat-value-small {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--gray-900);
-            line-height: 1;
-        }
-
-        .stat-label-small {
-            font-size: 0.75rem;
-            color: var(--gray-500);
-            margin-top: 0.25rem;
-        }
-
-        /* Services Section */
-        .services-section-title {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-        }
-
-        .services-section-title h2 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--gray-900);
-        }
-
-        .services-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 1.5rem;
-        }
-
-        /* Enhanced Service Cards */
-        .service-box-enhanced {
-            background: white;
-            border: 1px solid var(--gray-100);
-            border-radius: 16px;
-            padding: 2rem;
+            color: #1e3a8a;
             cursor: pointer;
-            transition: all var(--transition-base);
-            display: flex;
-            flex-direction: column;
-            min-height: 240px;
+            text-decoration: none;
+            transition: color .15s
         }
 
-        .service-box-enhanced:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-            border-color: var(--primary-blue-light);
+        .int-action:hover {
+            color: #3b82f6
         }
 
-        .service-icon-large {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-
-        .service-box-enhanced h3 {
-            font-size: 1.25rem;
-            font-weight: 700;
-            margin-bottom: 0.75rem;
-            color: var(--gray-900);
-        }
-
-        .service-description {
-            font-size: 0.875rem;
-            color: var(--gray-600);
-            line-height: 1.6;
-            flex: 1;
-            margin-bottom: 1.5rem;
-        }
-
-        .service-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-top: 1rem;
-            border-top: 1px solid var(--gray-100);
-        }
-
-        .service-action {
-            font-size: 0.875rem;
-            color: var(--primary-blue);
-            font-weight: 600;
-        }
-
-        .status-pill {
-            font-size: 0.75rem;
-            padding: 0.4rem 1rem;
-            border-radius: 9999px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .status-active {
-            background: #E0F2FE;
-            color: #0369A1;
-        }
-
-        .add-service-box {
-            border: 2px dashed var(--gray-200);
-            background: transparent;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-        }
-
-        .add-service-box:hover {
-            border-color: var(--primary-blue);
-            background: #F0F9FF;
-        }
-
-        /* View Mode Information Section */
-        .view-mode-info-section {
-            margin-top: 4rem;
-            padding: 2.5rem;
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.08);
-        }
-
-        .info-header {
-            text-align: center;
-            margin-bottom: 2.5rem;
-        }
-
-        .info-header h3 {
-            font-size: 1.75rem;
-            font-weight: 700;
-            color: var(--gray-900);
-            margin-bottom: 0.5rem;
-        }
-
-        .info-header p {
-            font-size: 1rem;
-            color: var(--gray-600);
-        }
-
-        .view-mode-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        .view-mode-card {
-            padding: 2rem;
-            border: 2px solid var(--gray-100);
-            border-radius: 12px;
-            transition: all var(--transition-base);
-        }
-
-        .view-mode-icon {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .view-mode-card h4 {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: var(--gray-900);
-            margin-bottom: 1rem;
-        }
-
-        .view-mode-description {
-            font-size: 0.9375rem;
-            color: var(--gray-600);
-            line-height: 1.6;
-            margin-bottom: 1.5rem;
-        }
-
-        .view-mode-features {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .view-mode-features li {
-            font-size: 0.875rem;
-            color: var(--gray-700);
-            padding: 0.5rem 0;
-            border-bottom: 1px solid var(--gray-100);
-        }
-
-        .view-mode-features li:last-child {
-            border-bottom: none;
-        }
-
-        .view-mode-note {
-            display: flex;
-            align-items: flex-start;
-            gap: 1rem;
+        /* Tally Card — Expanded */
+        .setup-card {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
             padding: 1.5rem;
-            background: linear-gradient(135deg, #EFF6FF, #F0F9FF);
-            border-radius: 12px;
-            border-left: 4px solid var(--primary-blue);
+            margin-bottom: 1.5rem
         }
 
-        .note-icon {
-            font-size: 1.5rem;
-            flex-shrink: 0;
+        .setup-header {
+            display: flex;
+            align-items: center;
+            gap: .85rem;
+            margin-bottom: 1rem;
+            padding-bottom: .85rem;
+            border-bottom: 1px solid #f1f5f9
         }
 
-        .view-mode-note p {
-            margin: 0;
-            font-size: 0.9375rem;
-            color: var(--gray-700);
-            line-height: 1.6;
-        }
-
-        /* Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
+        .setup-logo {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            display: flex;
             align-items: center;
             justify-content: center;
+            font-weight: 800;
+            font-size: 1.15rem;
+            flex-shrink: 0;
+            font-family: 'Outfit', sans-serif
         }
 
-        .modal.active {
-            display: flex;
+        .setup-info h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #111827;
+            margin: 0 0 .1rem
         }
 
-        .modal-content {
-            background: white;
-            padding: 3rem;
-            border-radius: var(--radius-2xl);
-            width: 100%;
-            max-width: 600px;
-            text-align: center;
+        .setup-info p {
+            font-size: .75rem;
+            color: #6b7280;
+            margin: 0
         }
 
-        .view-options {
+        .setup-status {
+            display: inline-flex;
+            align-items: center;
+            gap: .35rem;
+            padding: .2rem .65rem;
+            border-radius: 999px;
+            font-size: .68rem;
+            font-weight: 700;
+            background: #f3f4f6;
+            color: #6b7280;
+            margin-left: auto
+        }
+
+        .setup-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #9ca3af
+        }
+
+        .methods {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-            margin-top: 2rem;
+            gap: 1rem;
+            margin-bottom: 1rem
         }
 
-        .view-option {
-            border: 2px solid var(--gray-200);
-            padding: 2rem;
-            border-radius: var(--radius-xl);
-            cursor: pointer;
-            transition: all var(--transition-base);
+        .method {
+            padding: 1.15rem;
+            border-radius: 10px;
+            border: 1px solid #e5e7eb;
+            background: #f9fafb
         }
 
-        .view-option:hover {
-            border-color: var(--primary-blue);
-            background: var(--gray-50);
+        .method.rec {
+            background: #eff6ff;
+            border-color: #dbeafe
         }
 
-        .view-option .icon {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
+        .method-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            font-size: .6rem;
+            font-weight: 700;
+            margin-right: .3rem
         }
 
-        .view-option h4 {
-            margin-bottom: 0.5rem;
-            font-size: 1.25rem;
+        .method h4 {
+            font-size: .82rem;
+            font-weight: 700;
+            color: #111827;
+            margin: 0 0 .35rem;
+            display: flex;
+            align-items: center
         }
 
-        .view-option p {
-            font-size: 0.875rem;
-            color: var(--gray-600);
+        .method.rec h4 {
+            color: #1e3a8a
         }
 
-        .service-selection-list {
-            margin-top: 1.5rem;
-            text-align: left;
-            max-height: 400px;
-            overflow-y: auto;
+        .method p {
+            font-size: .73rem;
+            color: #6b7280;
+            line-height: 1.5;
+            margin: 0 0 .7rem
         }
 
-        .service-selection-item {
+        .method-rec-badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: #fff;
+            font-size: .55rem;
+            padding: .15rem .5rem;
+            border-bottom-left-radius: 6px;
+            font-weight: 700;
+            letter-spacing: .04em
+        }
+
+        .m-btn {
             display: flex;
             align-items: center;
-            gap: 1rem;
-            padding: 1rem;
-            border: 1px solid var(--gray-200);
-            border-radius: var(--radius-lg);
-            margin-bottom: 0.75rem;
+            justify-content: center;
+            gap: .35rem;
+            width: 100%;
+            padding: .5rem;
+            border-radius: 7px;
+            border: none;
+            font-weight: 700;
+            font-size: .75rem;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: all .15s;
+            font-family: 'Inter', sans-serif
         }
 
-        .service-selection-item:hover {
-            background: var(--gray-50);
+        .m-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, .08)
         }
 
-        .service-selection-item input {
-            width: 20px;
-            height: 20px;
+        .m-btn-primary {
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: #fff
         }
 
-        .service-info h4 {
+        .m-btn-secondary {
+            background: #fff;
+            color: #374151;
+            border: 1px solid #e5e7eb
+        }
+
+        .m-token {
+            background: #fff;
+            padding: .55rem;
+            border-radius: 6px;
+            border: 1px dashed #d1d5db;
+            margin-top: .55rem
+        }
+
+        .m-token label {
+            display: block;
+            font-size: .55rem;
+            font-weight: 700;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            margin-bottom: .25rem
+        }
+
+        .m-token-row {
+            display: flex;
+            gap: .3rem
+        }
+
+        .m-token-row input {
+            flex: 1;
+            padding: .2rem .4rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: .7rem;
+            color: #6b7280
+        }
+
+        .m-token-row button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: .78rem
+        }
+
+        .sync-row {
+            display: flex;
+            align-items: center;
+            gap: .65rem;
+            margin-bottom: 1rem
+        }
+
+        .sync-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: .35rem;
+            padding: .5rem 1rem;
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: .78rem;
+            cursor: pointer;
+            transition: all .15s;
+            font-family: 'Inter', sans-serif
+        }
+
+        .sync-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(30, 58, 138, .2)
+        }
+
+        .sync-btn:disabled {
+            opacity: .5;
+            cursor: not-allowed;
+            transform: none !important
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg)
+            }
+        }
+
+        .setup-steps {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #f1f5f9
+        }
+
+        .step-col h4 {
+            font-size: .78rem;
+            font-weight: 700;
+            color: #111827;
+            margin: 0 0 .4rem;
+            display: flex;
+            align-items: center;
+            gap: .3rem
+        }
+
+        .step-col ol {
             margin: 0;
-            font-size: 1rem;
+            padding-left: 1.15rem;
+            font-size: .73rem;
+            color: #6b7280;
+            line-height: 1.6
         }
 
-        .service-info p {
-            margin: 0;
-            font-size: 0.8rem;
-            color: var(--gray-500);
+        .step-col ol li {
+            margin-bottom: .25rem
+        }
+
+        /* AI section */
+        .ai-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: .85rem;
+            margin-bottom: 1.5rem
+        }
+
+        .ai-card {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 1rem;
+            display: flex;
+            gap: .7rem;
+            transition: all .15s
+        }
+
+        .ai-card:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, .03)
+        }
+
+        .ai-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .9rem;
+            flex-shrink: 0
+        }
+
+        .ai-card h4 {
+            font-size: .78rem;
+            font-weight: 700;
+            color: #111827;
+            margin: 0 0 .15rem
+        }
+
+        .ai-card p {
+            font-size: .68rem;
+            color: #6b7280;
+            line-height: 1.5;
+            margin: 0
+        }
+
+        @media(max-width:868px) {
+
+            .int-grid,
+            .ai-grid {
+                grid-template-columns: 1fr 1fr
+            }
+
+            .methods,
+            .setup-steps {
+                grid-template-columns: 1fr
+            }
+        }
+
+        @media(max-width:640px) {
+
+            .int-grid,
+            .ai-grid {
+                grid-template-columns: 1fr
+            }
         }
     </style>
 </head>
 
 <body>
-    <!-- Enhanced Navigation -->
-    <nav class="navbar">
-        <div class="navbar-container">
-            <a href="clients.html" class="logo">
-                <div class="logo-icon">CE</div>
-                <span style="font-weight: 700; color: #1e3a8a;">ComplianceAIexpert</span>
-            </a>
+    <div id="app-topbar" data-active="settings"></div>
+    <script src="app-topbar.js?v=3"></script>
 
-            <!-- Center Links -->
-            <div style="display: flex; gap: 2rem; margin-left: auto; margin-right: 2rem; align-items: center;">
-                <a href="clients.html"
-                    style="color: #4B5563; text-decoration: none; font-weight: 500; font-size: 0.95rem;">Home</a>
-                <a href="clients.html"
-                    style="color: #4B5563; text-decoration: none; font-weight: 500; font-size: 0.95rem;">Clients</a>
-                <a href="ai-gpt.html"
-                    style="color: #4B5563; text-decoration: none; font-weight: 500; font-size: 0.95rem;">
-                    AI GPT <span
-                        style="background: #E0E7FF; color: #4338CA; padding: 0.1rem 0.4rem; border-radius: 4px; font-size: 0.7rem; font-weight: 700; margin-left: 0.25rem;">NEW</span>
-                </a>
-            </div>
-
-            <div class="navbar-profile" onclick="toggleProfileDropdown(event)">
-                <div style="display:flex; align-items:center; gap:0.75rem">
-                    <div class="user-avatar-small" id="nav-avatar">U</div>
-                </div>
-                <!-- Dropdown Menu -->
-                <div class="nav-dropdown" id="profile-dropdown">
-                    <a href="profile.html" class="dropdown-item">
-                        <span>👤</span> My Profile
-                    </a>
-                    <a href="integrations.html" class="dropdown-item">
-                        <span>🔌</span> Integrations
-                    </a>
-                    <div class="dropdown-divider"></div>
-                    <div onclick="logout()" class="dropdown-item" style="color: #EF4444;">
-                        <span>🚪</span> Logout
-                    </div>
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    <div class="dashboard-container">
-        <!-- Breadcrumb -->
-        <div class="breadcrumb">
-            <a href="clients.html">Home</a>
-            <span>›</span>
-            <span>Integrations</span>
-        </div>
-
-        <!-- Page Header -->
-        <div class="page-header-section">
-            <h1 class="page-title">Integrations & Data Sources</h1>
-            <p class="page-subtitle">Connect your accounting software to sync data automatically</p>
-        </div>
-
-        <!-- Integration Cards -->
-        <div style="display: grid; gap: 2rem;">
-
-            <!-- Tally Integration Card -->
-            <div class="client-details-card" style="border-left: 5px solid #166534;">
-                <div class="client-details-header"
-                    style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid var(--gray-100); padding-bottom: 1.5rem; margin-bottom: 1.5rem;">
-                    <div style="display: flex; gap: 1.5rem;">
-                        <div class="client-icon-large" style="background: #166534; font-size: 2rem;">T</div>
-                        <div class="client-main-info">
-                            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
-                                <h2 style="margin: 0; font-size: 1.5rem;">Tally Prime / ERP 9</h2>
-                                <span id="tally-status-pill" class="status-pill"
-                                    style="background: #F3F4F6; color: #6B7280; display: flex; align-items: center; gap: 0.5rem;">
-                                    <span id="tally-status-dot"
-                                        style="width: 8px; height: 8px; background: #9CA3AF; border-radius: 50%;"></span>
-                                    <span id="tally-status-text">Not Connected</span>
-                                </span>
-                            </div>
-                            <p class="client-overview-inline" style="max-width: 600px; margin-top: 0.5rem;">
-                                Sync ledgers, vouchers, and trial balances. Choose your preferred connection method
-                                below.
-                            </p>
-                        </div>
-                    </div>
-
-                    <button id="sync-btn" class="btn btn-primary" style="background: #166534; gap: 0.5rem;"
-                        onclick="syncTally()">
-                        <span id="sync-icon">🔄</span> <span id="sync-text">Sync Now</span>
-                    </button>
-                </div>
-
-                <!-- Connection Methods Grid -->
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
-
-                    <!-- Method 1: Connector -->
-                    <div
-                        style="background: #F9FAFB; padding: 1.5rem; border-radius: 12px; border: 1px solid var(--gray-200);">
-                        <h3
-                            style="font-size: 1.125rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
-                            <span
-                                style="background: #E5E7EB; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem;">1</span>
-                            Browser + Connector
-                        </h3>
-                        <p
-                            style="font-size: 0.875rem; color: var(--gray-600); margin-bottom: 1.5rem; min-height: 40px;">
-                            Keep using this website. Install a small utility to bridge the connection.
-                        </p>
-                        <button class="btn btn-secondary"
-                            style="width: 100%; justify-content: center; margin-bottom: 1rem;"
-                            onclick="downloadConnector()">
-                            ⬇️ Download Connector (.exe)
-                        </button>
-
-                        <div
-                            style="background: white; padding: 1rem; border-radius: 8px; border: 1px dashed var(--gray-300);">
-                            <label
-                                style="display: block; font-size: 0.7rem; font-weight: 700; color: var(--gray-500); margin-bottom: 0.5rem; text-transform: uppercase;">Connection
-                                Token</label>
-                            <div style="display: flex; gap: 0.5rem;">
-                                <input type="text" value="ca_live_tk_9982374823" readonly
-                                    style="width: 100%; padding: 0.25rem 0.5rem; border: 1px solid var(--gray-200); border-radius: 4px; font-family: monospace; font-size: 0.8rem; color: var(--gray-600);">
-                                <button onclick="copyToken()"
-                                    style="background: none; border: none; cursor: pointer;">📋</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Method 2: Desktop App (Unified) -->
-                    <div
-                        style="background: #F0FDF4; padding: 1.5rem; border-radius: 12px; border: 1px solid #166534; position: relative; overflow: hidden;">
-                        <div
-                            style="position: absolute; top: 0; right: 0; background: #166534; color: white; font-size: 0.7rem; padding: 0.25rem 0.75rem; border-bottom-left-radius: 8px; font-weight: 700;">
-                            RECOMMENDED</div>
-
-                        <h3
-                            style="font-size: 1.125rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; color: #166534;">
-                            <span
-                                style="background: #166534; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem;">2</span>
-                            Desktop App
-                        </h3>
-                        <p style="font-size: 0.875rem; color: #14532D; margin-bottom: 1.5rem; min-height: 40px;">
-                            Download the full Compliance AI app. <b>No setup required.</b> Sync works automatically.
-                        </p>
-
-                        <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
-                            <button class="btn btn-primary"
-                                style="background: #166534; flex: 1; justify-content: center;"
-                                onclick="downloadDesktop('win')">
-                                <span style="margin-right: 0.5rem;">🪟</span> Windows (.exe)
-                            </button>
-                        </div>
-                        <button class="btn btn-secondary"
-                            style="width: 100%; justify-content: center; border-color: #166534; color: #166534;"
-                            onclick="downloadDesktop('mac')">
-                            <span style="margin-right: 0.5rem;">🍎</span> macOS (.dmg)
-                        </button>
-
-                        <p style="font-size: 0.75rem; color: #166534; margin-top: 1rem; text-align: center;">
-                            ✅ Zero Configuration &nbsp; ✅ Enhanced Security
-                        </p>
-                    </div>
-
-                </div>
-
-                <!-- Detailed Setup Instructions -->
-                <div style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--gray-200);">
-                    <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--gray-900); margin-bottom: 1.5rem;">
-                        How to Connect
-                    </h3>
-
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem;">
-
-                        <!-- Instructions for Method 1 -->
-                        <div>
-                            <h4
-                                style="font-size: 1rem; font-weight: 700; color: var(--gray-700); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
-                                <span
-                                    style="background: var(--gray-200); width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem;">1</span>
-                                Using the Connector
-                            </h4>
-                            <ol
-                                style="margin: 0; padding-left: 1.5rem; color: var(--gray-600); font-size: 0.9rem; line-height: 1.6;">
-                                <li style="margin-bottom: 0.5rem;">Open <b>Tally Prime</b> or <b>ERP 9</b> and ensure
-                                    your company is loaded.</li>
-                                <li style="margin-bottom: 0.5rem;">Run the <b>Compliance AI Connector</b> (.exe).</li>
-                                <li style="margin-bottom: 0.5rem;">Paste the <b>Connection Token</b> (below) when asked.
-                                </li>
-                                <li>The Connector will detect Tally and start syncing automatically.</li>
-                            </ol>
-                        </div>
-
-                        <!-- Instructions for Method 2 -->
-                        <div>
-                            <h4
-                                style="font-size: 1rem; font-weight: 700; color: #166534; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
-                                <span
-                                    style="background: #166534; color: white; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem;">2</span>
-                                Using the Desktop App (Better)
-                            </h4>
-                            <ol
-                                style="margin: 0; padding-left: 1.5rem; color: var(--gray-600); font-size: 0.9rem; line-height: 1.6;">
-                                <li style="margin-bottom: 0.5rem;">Download and install the <b>full Desktop App</b>.
-                                </li>
-                                <li style="margin-bottom: 0.5rem;">Log in with your email and password.</li>
-                                <li style="margin-bottom: 0.5rem;">Keep <b>Tally Open</b> in the background.</li>
-                                <li>Click the <b>"Sync Tally"</b> button inside the app dashboard. No token needed!</li>
-                            </ol>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-        </div>
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="tag">🔌 Settings & Integrations</div>
+        <h1>Integrations & <span>Data Sources</span></h1>
+        <p>Connect your accounting stack, sync data, and power AI-driven compliance automation across your practice.</p>
     </div>
 
-    <!-- View Selection Modal -->
-    <div id="view-modal" class="modal">
-        <div class="modal-content">
-            <h2 id="view-modal-title">Select Your Workspace</h2>
-            <p>How would you like to process this service?</p>
-
-            <div class="view-options">
-                <div class="view-option" onclick="navigateToView('web')">
-                    <div class="icon">💼</div>
-                    <h4>Web View</h4>
-                    <p>Professional Mode: Structured checklists & panels</p>
+    <div class="page-wrap">
+        <!-- Available Integrations -->
+        <h2 class="sec-title">Available Integrations</h2>
+        <p class="sec-sub">Connect popular accounting platforms, data sources, and AI tools to automate GST, income tax,
+            audit, and compliance workflows.</p>
+        <div class="int-grid">
+            <div class="int-card" style="border-left:3px solid #1e3a8a">
+                <div class="int-card-top">
+                    <div class="int-icon" style="background:#1e3a8a;color:#fff">T</div>
+                    <h4>Tally Prime / ERP 9</h4>
+                    <span class="int-badge" style="background:#dbeafe;color:#1e3a8a">ACTIVE</span>
                 </div>
-                <div class="view-option" onclick="navigateToView('chat')">
-                    <div class="icon">💬</div>
-                    <h4>AI Expert View</h4>
-                    <p>Guided Simplicity: Conversational AI assistance</p>
-                </div>
+                <p>Sync ledgers, vouchers, trial balances, and company data directly from Tally. Zero-config desktop app
+                    or browser connector.</p>
+                <a href="#tally-setup" class="int-action">Configure ↓</a>
             </div>
-
-            <button class="btn btn-secondary" style="margin-top: 2rem;"
-                onclick="closeModal('view-modal')">Cancel</button>
+            <div class="int-card" style="border-left:3px solid #6366f1">
+                <div class="int-card-top">
+                    <div class="int-icon" style="background:#6366f1;color:#fff">📄</div>
+                    <h4>Document Upload & OCR</h4>
+                    <span class="int-badge" style="background:#ede9fe;color:#6366f1">ACTIVE</span>
+                </div>
+                <p>Upload invoices, FIRCs, bank statements, and reports. AI OCR extracts and structures data
+                    automatically from PDFs and images.</p>
+                <a href="tool-document-reader.html" class="int-action">Open Reader →</a>
+            </div>
+            <div class="int-card" style="border-left:3px solid #7c3aed">
+                <div class="int-card-top">
+                    <div class="int-icon" style="background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff">🤖</div>
+                    <h4>AI Assistant (GPT)</h4>
+                    <span class="int-badge" style="background:#f3e8ff;color:#7c3aed">ACTIVE</span>
+                </div>
+                <p>Purpose-built AI GPTs for Indian tax law, Companies Act, FEMA, and ICAI standards. Ask in natural
+                    language.</p>
+                <a href="ai-gpt.html" class="int-action">Open AI Assistant →</a>
+            </div>
+            <div class="int-card" style="border-left:3px solid #3b82f6">
+                <div class="int-card-top">
+                    <div class="int-icon" style="background:#eff6ff;color:#3b82f6">📧</div>
+                    <h4>Email Integration</h4>
+                    <span class="int-badge" style="background:#dbeafe;color:#1e3a8a">ACTIVE</span>
+                </div>
+                <p>Connect client email accounts for AI agents to auto-read attachments, extract invoices, and file
+                    documents to client folders.</p>
+                <a href="ai-agents.html" class="int-action">Configure Agent →</a>
+            </div>
+            <div class="int-card" style="border-left:3px solid #d1d5db">
+                <div class="int-card-top">
+                    <div class="int-icon" style="background:#f1f5f9;color:#6b7280">📊</div>
+                    <h4>Excel / CSV Import</h4>
+                    <span class="int-badge" style="background:#f1f5f9;color:#6b7280">COMING SOON</span>
+                </div>
+                <p>Bulk import financial data from Excel and CSV. Map columns to fields and let AI validate and
+                    reconcile automatically.</p>
+                <span class="int-action" style="color:#9ca3af">Notify Me</span>
+            </div>
+            <div class="int-card" style="border-left:3px solid #d1d5db">
+                <div class="int-card-top">
+                    <div class="int-icon" style="background:#f1f5f9;color:#6b7280">🏦</div>
+                    <h4>Bank Statement API</h4>
+                    <span class="int-badge" style="background:#f1f5f9;color:#6b7280">COMING SOON</span>
+                </div>
+                <p>Auto-import bank transactions via Account Aggregator APIs for instant reconciliation with GST and
+                    books.</p>
+                <span class="int-action" style="color:#9ca3af">Notify Me</span>
+            </div>
+            <div class="int-card" style="border-left:3px solid #d1d5db">
+                <div class="int-card-top">
+                    <div class="int-icon" style="background:#f1f5f9;color:#6b7280">🔗</div>
+                    <h4>REST API</h4>
+                    <span class="int-badge" style="background:#f1f5f9;color:#6b7280">COMING SOON</span>
+                </div>
+                <p>Integrate ComplianceAI into your systems with a developer-friendly REST API. White-label and embed AI
+                    compliance.</p>
+                <span class="int-action" style="color:#9ca3af">Notify Me</span>
+            </div>
+            <div class="int-card" style="border-left:3px solid #d1d5db">
+                <div class="int-card-top">
+                    <div class="int-icon" style="background:#f1f5f9;color:#6b7280">☁️</div>
+                    <h4>Google Workspace</h4>
+                    <span class="int-badge" style="background:#f1f5f9;color:#6b7280">COMING SOON</span>
+                </div>
+                <p>Connect Gmail, Google Drive, and Sheets. Auto-sync documents, spreadsheets, and emails for AI
+                    processing.</p>
+                <span class="int-action" style="color:#9ca3af">Notify Me</span>
+            </div>
+            <div class="int-card" style="border-left:3px solid #d1d5db">
+                <div class="int-card-top">
+                    <div class="int-icon" style="background:#f1f5f9;color:#6b7280">💼</div>
+                    <h4>Zoho Books</h4>
+                    <span class="int-badge" style="background:#f1f5f9;color:#6b7280">COMING SOON</span>
+                </div>
+                <p>Sync invoices, expenses, and financial reports from Zoho Books for seamless compliance automation.
+                </p>
+                <span class="int-action" style="color:#9ca3af">Notify Me</span>
+            </div>
         </div>
-    </div>
 
-    <!-- Manage Services Modal -->
-    <div id="manage-services-modal" class="modal">
-        <div class="modal-content">
-            <h2>Add/Manage Services</h2>
-            <p>Select the services you want to activate for this client.</p>
-
-            <div id="available-services-list" class="service-selection-list">
-                <!-- Loaded via JS -->
+        <!-- Tally Integration Setup -->
+        <div id="tally-setup" class="setup-card">
+            <div class="setup-header">
+                <div class="setup-logo" style="background:linear-gradient(135deg,#1e3a8a,#3b82f6);color:#fff">T</div>
+                <div class="setup-info">
+                    <h3>Tally Prime / ERP 9 Integration</h3>
+                    <p>Sync ledgers, vouchers, and trial balances. Choose your preferred connection method.</p>
+                </div>
+                <div class="setup-status" id="tally-status-pill">
+                    <span class="setup-dot" id="tally-status-dot"></span>
+                    <span id="tally-status-text">Not Connected</span>
+                </div>
             </div>
 
-            <div class="modal-actions" style="margin-top: 2rem; display: flex; gap: 1rem; justify-content: flex-end;">
-                <button class="btn btn-secondary" onclick="closeModal('manage-services-modal')">Cancel</button>
-                <button class="btn btn-primary" onclick="saveServices()">Save Changes</button>
+            <div class="methods">
+                <div class="method">
+                    <h4><span class="method-num" style="background:#e5e7eb;color:#374151">1</span> Browser + Connector
+                    </h4>
+                    <p>Keep using this website. Install a small utility to bridge the connection to Tally on your
+                        machine.</p>
+                    <button class="m-btn m-btn-secondary" onclick="downloadConnector()">⬇️ Download Connector
+                        (.exe)</button>
+                    <div class="m-token">
+                        <label>Connection Token</label>
+                        <div class="m-token-row">
+                            <input type="text" value="ca_live_tk_9982374823" readonly>
+                            <button onclick="copyToken()">📋</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="method rec" style="position:relative">
+                    <span class="method-rec-badge">RECOMMENDED</span>
+                    <h4><span class="method-num" style="background:#1e3a8a;color:#fff">2</span> Desktop App</h4>
+                    <p>Download the full ComplianceAI desktop app. <strong>No setup required.</strong> Sync works when
+                        Tally is open.</p>
+                    <div style="display:flex;gap:.4rem;margin-bottom:.4rem">
+                        <button class="m-btn m-btn-primary" onclick="downloadDesktop('win')" style="flex:1">🪟
+                            Windows</button>
+                        <button class="m-btn m-btn-secondary" onclick="downloadDesktop('mac')" style="flex:1">🍎
+                            macOS</button>
+                    </div>
+                    <p style="text-align:center;font-size:.62rem;color:#1e3a8a;margin:0">✅ Zero Config · ✅ Enhanced
+                        Security</p>
+                </div>
+            </div>
+
+            <div class="sync-row">
+                <button id="sync-btn" class="sync-btn" onclick="syncTally()">
+                    <span id="sync-icon">🔄</span> <span id="sync-text">Sync Now</span>
+                </button>
+                <span style="font-size:.7rem;color:#9ca3af">Ensure Tally is running on port 9000</span>
+            </div>
+
+            <div class="setup-steps">
+                <div class="step-col">
+                    <h4><span class="method-num"
+                            style="background:#e5e7eb;color:#374151;display:inline-flex;font-size:.55rem">1</span> Using
+                        the Connector</h4>
+                    <ol>
+                        <li>Open <strong>Tally Prime</strong> or <strong>ERP 9</strong> and ensure your company is
+                            loaded.</li>
+                        <li>Run the <strong>ComplianceAI Connector</strong> (.exe).</li>
+                        <li>Paste the <strong>Connection Token</strong> when asked.</li>
+                        <li>The Connector will detect Tally and start syncing automatically.</li>
+                    </ol>
+                </div>
+                <div class="step-col">
+                    <h4 style="color:#1e3a8a"><span class="method-num"
+                            style="background:#1e3a8a;color:#fff;display:inline-flex;font-size:.55rem">2</span> Using
+                        Desktop App (Better)</h4>
+                    <ol>
+                        <li>Download and install the <strong>full Desktop App</strong>.</li>
+                        <li>Log in with your email and password.</li>
+                        <li>Keep <strong>Tally open</strong> in the background.</li>
+                        <li>Click <strong>"Sync Tally"</strong> in the app dashboard. No token needed!</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI-Powered Data Processing -->
+        <h2 class="sec-title">AI-Powered Data Processing</h2>
+        <p class="sec-sub">Once connected, our agentic AI engine processes your data through intelligent workflows —
+            from extraction to compliance output.</p>
+        <div class="ai-grid">
+            <div class="ai-card">
+                <div class="ai-icon" style="background:#eff6ff;color:#1e3a8a">🤖</div>
+                <div>
+                    <h4>Agentic AI Reconciliation</h4>
+                    <p>AI agents autonomously reconcile GSTR-2A vs books, flag mismatches, and suggest corrections.</p>
+                </div>
+            </div>
+            <div class="ai-card">
+                <div class="ai-icon" style="background:#f5f3ff;color:#7c3aed">💬</div>
+                <div>
+                    <h4>AI Chat Workspace</h4>
+                    <p>Ask "Show pending GST invoices for Q3" and get instant structured responses from synced data.</p>
+                </div>
+            </div>
+            <div class="ai-card">
+                <div class="ai-icon" style="background:#eff6ff;color:#3b82f6">🖥️</div>
+                <div>
+                    <h4>Web View Panels</h4>
+                    <p>Structured checklists and guided workflows for GST filing, income tax, audit, and certificates.
+                    </p>
+                </div>
+            </div>
+            <div class="ai-card">
+                <div class="ai-icon" style="background:#fef3c7;color:#d97706">📄</div>
+                <div>
+                    <h4>Smart OCR Engine</h4>
+                    <p>Upload PDFs, images, or scans. AI extracts text, identifies fields, and maps to compliance forms.
+                    </p>
+                </div>
+            </div>
+            <div class="ai-card">
+                <div class="ai-icon" style="background:#fdf2f8;color:#db2777">📜</div>
+                <div>
+                    <h4>Certificate Generator</h4>
+                    <p>Generate 30+ CA certificate types with auto-filled data from Tally and uploaded documents.</p>
+                </div>
+            </div>
+            <div class="ai-card">
+                <div class="ai-icon" style="background:#ecfdf5;color:#059669">⚡</div>
+                <div>
+                    <h4>Real-Time Alerts</h4>
+                    <p>Get notified about GST Council updates, filing deadlines, and regulatory changes.</p>
+                </div>
             </div>
         </div>
     </div>
 
     <script src="api_config.js"></script>
+    <script src="session-manager.js?v=2"></script>
     <script>
-        // Initialize Integrations Page
-        async function initializePage() {
-            // Check auth
-            // This relies on api_config.js loaded before this script
-            const user = JSON.parse(localStorage.getItem('user'));
-            const token = localStorage.getItem('access_token');
-            if (!user || !token) {
-                window.location.href = 'index.html';
-                return;
-            }
-
-            // Update Avatar
-            const userInitial = (user.firm_name || user.full_name || user.name || 'U').charAt(0).toUpperCase();
-            const avatarEl = document.getElementById('nav-avatar');
-            if (avatarEl) avatarEl.textContent = userInitial;
-        }
+        if (!requireAuth()) { }
 
         function downloadConnector() {
-            // Mock download
             const link = document.createElement('a');
             link.href = '#';
             link.download = 'ComplianceAI-Connector-Setup.exe';
@@ -899,238 +773,34 @@
         function downloadDesktop(os) {
             const ext = os === 'win' ? 'exe' : 'dmg';
             const fileName = `ComplianceAI-Desktop-Setup.${ext}`;
-
-            // Create a temporary link to trigger download from the assets folder
             const link = document.createElement('a');
             link.href = `assets/downloads/${fileName}`;
             link.download = fileName;
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-
-            // Optional: User feedback
-            // alert(`Downloading ${fileName}...`);
         }
 
         function copyToken() {
             const tokenInput = document.querySelector('input[readonly]');
             tokenInput.select();
             document.execCommand('copy');
-
             const btn = document.querySelector('button[onclick="copyToken()"]');
-            const originalText = btn.innerHTML;
-            btn.innerHTML = '✅ Copied!';
-            setTimeout(() => {
-                btn.innerHTML = originalText;
-            }, 2000);
+            const orig = btn.innerHTML;
+            btn.innerHTML = '✅';
+            setTimeout(() => btn.innerHTML = orig, 2000);
         }
-
-        // async function syncTally() {
-        //     const isDesktop = !!window.__TAURI__?.core;
-
-        //     // Browser mode: block sync
-        //     if (!isDesktop) {
-        //         alert('Sync works via Desktop App. Please download the Desktop App and click Sync there.');
-        //         return;
-        //     }
-
-        //     const btn = document.getElementById('sync-btn');
-        //     const syncIcon = document.getElementById('sync-icon');
-        //     const syncText = document.getElementById('sync-text');
-        //     const pill = document.getElementById('tally-status-pill');
-        //     const dot = document.getElementById('tally-status-dot');
-        //     const statusText = document.getElementById('tally-status-text');
-
-        //     // UI: Connecting
-        //     btn.disabled = true;
-        //     syncIcon.style.display = 'inline-block';
-        //     syncIcon.style.animation = 'spin 1s linear infinite';
-        //     syncText.textContent = 'Connecting...';
-
-        //     pill.style.background = '#FEF3C7';
-        //     pill.style.color = '#B45309';
-        //     dot.style.background = '#F59E0B';
-        //     statusText.textContent = 'Connecting...';
-
-        //     try {
-        //         // ✅ Tauri invoke (Rust will call http://localhost:9000)
-        //         const { invoke } = window.__TAURI__.core;
-        //         const data = await invoke('tally_status');
-        //         // expected: { status: "connected"|"disconnected", message?: string }
-
-        //         // UI: reset button
-        //         btn.disabled = false;
-        //         syncIcon.style.animation = 'none';
-        //         syncIcon.style.display = 'none';
-        //         syncText.textContent = 'Sync Now';
-
-        //         if (data?.status === 'connected') {
-        //             pill.style.background = '#DCFCE7';
-        //             pill.style.color = '#166534';
-        //             dot.style.background = '#166534';
-        //             statusText.textContent = 'Connected';
-        //         } else {
-        //             pill.style.background = '#FEE2E2';
-        //             pill.style.color = '#991B1B';
-        //             dot.style.background = '#EF4444';
-        //             statusText.textContent = 'Not Connected';
-
-        //             alert(data?.message || 'Could not connect to Tally. Ensure Tally is running on port 9000.');
-        //         }
-        //     } catch (e) {
-        //         // UI: error
-        //         btn.disabled = false;
-        //         syncIcon.style.animation = 'none';
-        //         syncIcon.style.display = 'none';
-        //         syncText.textContent = 'Sync Now';
-
-        //         pill.style.background = '#FEE2E2';
-        //         pill.style.color = '#991B1B';
-        //         dot.style.background = '#EF4444';
-        //         statusText.textContent = 'Error';
-
-        //         console.error(e);
-        //         alert('Connection Error: ' + (e?.message || String(e)));
-        //     }
-        // }
-
-        // async function syncTally() {
-        //     // ✅ Backup hints (NOT authoritative)
-        //     const hasCoreInvoke = !!window.__TAURI__?.core?.invoke;
-        //     const hasInternals = !!window.__TAURI__INTERNALS__;
-        //     const tauriHint = hasCoreInvoke || hasInternals;
-
-        //     // ✅ Authoritative desktop check (only this can enable sync)
-        //     let isDesktop = false;
-        //     if (hasCoreInvoke) {
-        //         try {
-        //             isDesktop = await window.__TAURI__.core.invoke('app_ping'); // add in Rust
-        //         } catch (_) {
-        //             isDesktop = false;
-        //         }
-        //     }
-
-        //     // Browser / not-real-desktop: block sync
-        //     if (!isDesktop) {
-        //         // Slightly better message if internals/tauri are detected but invoke isn't usable
-        //         alert(
-        //             tauriHint
-        //                 ? 'Desktop bridge not available here. Please open this inside the installed Desktop App and click Sync there.'
-        //                 : 'Sync works via Desktop App. Please download the Desktop App and click Sync there.'
-        //         );
-        //         return;
-        //     }
-
-        //     const btn = document.getElementById('sync-btn');
-        //     const syncIcon = document.getElementById('sync-icon');
-        //     const syncText = document.getElementById('sync-text');
-        //     const pill = document.getElementById('tally-status-pill');
-        //     const dot = document.getElementById('tally-status-dot');
-        //     const statusText = document.getElementById('tally-status-text');
-
-        //     // UI: Connecting
-        //     btn.disabled = true;
-        //     syncIcon.style.display = 'inline-block';
-        //     syncIcon.style.animation = 'spin 1s linear infinite';
-        //     syncText.textContent = 'Connecting...';
-
-        //     pill.style.background = '#FEF3C7';
-        //     pill.style.color = '#B45309';
-        //     dot.style.background = '#F59E0B';
-        //     statusText.textContent = 'Connecting...';
-
-        //     try {
-        //         // ✅ Tauri invoke (Rust will call http://localhost:9000)
-        //         const { invoke } = window.__TAURI__.core;
-        //         const data = await invoke('tally_status');
-        //         // expected: { status: "connected"|"disconnected", message?: string }
-
-        //         // UI: reset button
-        //         btn.disabled = false;
-        //         syncIcon.style.animation = 'none';
-        //         syncIcon.style.display = 'none';
-        //         syncText.textContent = 'Sync Now';
-
-        //         if (data?.status === 'connected') {
-        //             pill.style.background = '#DCFCE7';
-        //             pill.style.color = '#166534';
-        //             dot.style.background = '#166534';
-        //             statusText.textContent = 'Connected';
-        //         } else {
-        //             pill.style.background = '#FEE2E2';
-        //             pill.style.color = '#991B1B';
-        //             dot.style.background = '#EF4444';
-        //             statusText.textContent = 'Not Connected';
-
-        //             alert(data?.message || 'Could not connect to Tally. Ensure Tally is running on port 9000.');
-        //         }
-        //     } catch (e) {
-        //         // UI: error
-        //         btn.disabled = false;
-        //         syncIcon.style.animation = 'none';
-        //         syncIcon.style.display = 'none';
-        //         syncText.textContent = 'Sync Now';
-
-        //         pill.style.background = '#FEE2E2';
-        //         pill.style.color = '#991B1B';
-        //         dot.style.background = '#EF4444';
-        //         statusText.textContent = 'Error';
-
-        //         console.error(e);
-        //         alert('Connection Error: ' + (e?.message || String(e)));
-        //     }
-        // }
-
-        // async function syncTally() {
-        //     const btn = document.getElementById('sync-btn');
-        //     const statusText = document.getElementById('tally-status-text');
-
-        //     btn.disabled = true;
-        //     statusText.textContent = "Connecting...";
-
-        //     try {
-
-        //         const res = await fetch("http://127.0.0.1:17890/tally", {
-        //             method: "POST",
-        //             headers: { "Content-Type": "text/xml" },
-        //             body: `<ENVELOPE>
-        //     <HEADER>
-        //         <TALLYREQUEST>Export Data</TALLYREQUEST>
-        //     </HEADER>
-        //     <BODY>
-        //         <EXPORTDATA>
-        //         <REQUESTDESC>
-        //             <REPORTNAME>List of Companies</REPORTNAME>
-        //         </REQUESTDESC>
-        //         </EXPORTDATA>
-        //     </BODY>
-        //     </ENVELOPE>`
-        //         });
-
-        //         const text = await res.text();
-
-        //         if (res.ok && text.includes("<COMPANY")) {
-        //             statusText.textContent = "Connected";
-        //             alert("Connected to Tally");
-        //         } else {
-        //             statusText.textContent = "Not Connected";
-        //             alert("Tally not running on port 9000");
-        //         }
-
-        //     } catch (e) {
-        //         statusText.textContent = "Error";
-        //         alert("Bridge not running");
-        //     }
-
-        //     btn.disabled = false;
-        // }
 
         async function syncTally() {
             const btn = document.getElementById("sync-btn");
             const statusText = document.getElementById("tally-status-text");
+            const pill = document.getElementById("tally-status-pill");
+            const dot = document.getElementById("tally-status-dot");
 
             btn.disabled = true;
             statusText.textContent = "Connecting...";
+            pill.style.background = "#FEF3C7"; pill.style.color = "#B45309";
+            dot.style.background = "#F59E0B";
 
             try {
                 const res = await fetch("http://127.0.0.1:9000/tally", {
@@ -1150,81 +820,40 @@
                 });
 
                 const text = await res.text();
-
-                // 1) Tally connected check (got an XML envelope back)
                 const connected = res.ok && /<ENVELOPE[\s>]/i.test(text);
                 if (!connected) {
                     statusText.textContent = "Not Connected";
-                    alert("Not connected to Tally");
+                    pill.style.background = "#FEE2E2"; pill.style.color = "#991B1B";
+                    dot.style.background = "#EF4444";
+                    alert("Not connected to Tally. Ensure Tally is running on port 9000.");
                     return;
                 }
 
-                alert("Yeahh Connected ✅");
-
-                alert(text);
-
                 const tags = ["COMPANYNAME", "CMPNAME", "NAME"];
                 let companyName = null;
-
                 for (const t of tags) {
                     const m = text.match(new RegExp(`<${t}>([\\s\\S]*?)<\\/${t}>`, "i"));
                     if (m && m[1].trim()) { companyName = m[1].trim(); break; }
                 }
 
-                // 2) Company name check
-                // const m = text.match(/<COMPANYNAME>([\s\S]*?)<\/COMPANYNAME>/i);
-                // const companyName = m ? m[1].trim() : null;
+                pill.style.background = "#DCFCE7"; pill.style.color = "#166534";
+                dot.style.background = "#166534";
 
                 if (companyName) {
                     statusText.textContent = `Connected: ${companyName}`;
-                    alert(`Company: ${companyName}`);
+                    alert(`Connected to Tally ✅\nCompany: ${companyName}`);
                 } else {
                     statusText.textContent = "Connected (no company name)";
-                    alert("Connected, but no company name found in response");
+                    alert("Connected to Tally ✅ but no company name found.");
                 }
             } catch (e) {
                 statusText.textContent = "Error";
-                alert("Bridge not running");
+                pill.style.background = "#FEE2E2"; pill.style.color = "#991B1B";
+                dot.style.background = "#EF4444";
+                alert("Bridge not running. Ensure Tally is open or use the Desktop App.");
             } finally {
                 btn.disabled = false;
             }
-        }
-
-        window.toggleProfileDropdown = function (e) {
-            e.stopPropagation();
-            const dd = document.getElementById('profile-dropdown');
-            if (dd) dd.classList.toggle('active');
-        }
-
-        window.logout = function () {
-            localStorage.removeItem('access_token');
-            localStorage.removeItem('user');
-            window.location.href = 'index.html';
-        }
-
-        // Close dropdown when clicking outside
-        document.addEventListener('click', () => {
-            const dd = document.getElementById('profile-dropdown');
-            if (dd) dd.classList.remove('active');
-        });
-
-        initializePage();
-    </script>
-
-    <!-- Footer -->
-    <footer
-        style="background: var(--gray-100); padding: 1.5rem 2rem; text-align: center; border-top: 1px solid var(--gray-200); margin-top: 4rem;">
-        <p style="color: var(--gray-600); font-size: 0.875rem; margin: 0;">
-            If you need more assistance, write an email to us at
-            <a href="mailto:complianceAIExpert@gmail.com"
-                style="color: var(--primary-orange); font-weight: 600; text-decoration: none;">complianceAIExpert@gmail.com</a>
-        </p>
-    </footer>
-
-    <script src="session-manager.js?v=2"></script>
-    <script>
-        if (!requireAuth()) {
-            // Will redirect to login if not authenticated
         }
     </script>
 </body>

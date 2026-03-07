@@ -4,490 +4,208 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Statement3 Generation - Compliance AI Expert</title>
+    <title>Statement 3 Generation — ComplianceAI Expert</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@700;800&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap"
         rel="stylesheet">
+    <link rel="stylesheet" href="tool-layout.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #f8fafc;
-            min-height: 100vh;
-        }
-
-        .tool-topbar {
-            background: #fff;
-            border-bottom: 1px solid #e5e7eb;
-            padding: 0.875rem 2rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .tool-topbar .back-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: #1E3A8A;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.9rem;
-            padding: 0.4rem 0.75rem;
-            border-radius: 6px;
-            transition: background 0.2s;
-            cursor: pointer;
-        }
-
-        .tool-topbar .back-btn:hover {
-            background: #eff6ff;
-        }
-
-        .tool-topbar h1 {
-            font-size: 1.15rem;
-            font-weight: 700;
-            color: #111827;
-        }
-
-        .tool-topbar .badge {
-            background: #fef3c7;
-            color: #92400e;
-            font-size: 0.7rem;
-            font-weight: 700;
-            padding: 0.2rem 0.5rem;
-            border-radius: 4px;
-        }
-
-        .tool-container {
-            max-width: 900px;
-            margin: 2.5rem auto;
-            padding: 0 2rem;
-        }
-
-        .tool-hero {
-            background: linear-gradient(135deg, #1E3A8A 0%, #1E40AF 100%);
-            border-radius: 16px;
-            padding: 2.5rem;
-            color: #fff;
-            margin-bottom: 2rem;
-            box-shadow: 0 4px 12px rgba(30, 58, 138, 0.15);
-        }
-
-        .tool-hero h2 {
-            font-size: 1.75rem;
-            font-weight: 800;
-            margin-bottom: 0.5rem;
-        }
-
-        .tool-hero p {
-            opacity: 0.85;
-            font-size: 0.95rem;
-            line-height: 1.6;
-        }
-
-        .tool-form-card {
-            background: #fff;
-            border: 1px solid #e5e7eb;
-            border-radius: 12px;
-            padding: 2rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .tool-form-card h3 {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #111827;
-            margin-bottom: 0.5rem;
-        }
-
-        .tool-form-card p {
-            font-size: 0.85rem;
-            color: #6b7280;
-            margin-bottom: 1.5rem;
-        }
-
-        .upload-zone {
-            border: 2px dashed #d1d5db;
-            border-radius: 10px;
-            padding: 2rem;
-            text-align: center;
-            cursor: pointer;
-            transition: border-color 0.2s, background 0.2s;
-            margin-bottom: 1rem;
-        }
-
-        .upload-zone:hover {
-            border-color: #0891b2;
-            background: #ecfeff;
-        }
-
-        .upload-zone .icon {
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .upload-zone .text {
-            color: #6b7280;
-            font-size: 0.85rem;
-        }
-
-        .upload-zone .text strong {
-            color: #0891b2;
-        }
-
-        .btn-primary {
-            background: #EB6711;
-            color: #fff;
-            border: none;
-            padding: 0.75rem 1.5rem;
+        .tool-select {
+            width: 100%;
+            padding: 0.6rem 0.85rem;
+            border: 1.5px solid #e5e7eb;
             border-radius: 8px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: background 0.2s, transform 0.1s;
-        }
-
-        .btn-primary:hover {
-            background: #d45a0f;
-            transform: translateY(-1px);
-        }
-
-        .btn-primary:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .file-list {
-            margin-top: 0.75rem;
-        }
-
-        .file-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+            font-size: 0.85rem;
+            font-family: inherit;
+            color: #1e293b;
             background: #f9fafb;
-            padding: 0.5rem 0.75rem;
-            border-radius: 6px;
-            margin-bottom: 0.375rem;
-            font-size: 0.8rem;
-        }
-
-        .file-item .name {
-            color: #374151;
-            font-weight: 500;
-        }
-
-        .file-item .remove {
-            color: #ef4444;
+            transition: all .2s;
             cursor: pointer;
-            font-weight: 600;
         }
 
-        .step-list {
-            counter-reset: step;
+        .tool-select:focus {
+            outline: none;
+            border-color: #1e3a8a;
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(30, 58, 138, .06)
         }
 
-        .step-item {
+        .tool-step-list {
+            counter-reset: step
+        }
+
+        .tool-step {
             display: flex;
-            gap: 1rem;
-            margin-bottom: 1.25rem;
-            align-items: flex-start;
+            gap: .85rem;
+            margin-bottom: 1rem;
+            align-items: flex-start
         }
 
-        .step-num {
-            background: #0891b2;
+        .tool-step-num {
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
             color: #fff;
-            width: 28px;
-            height: 28px;
+            width: 26px;
+            height: 26px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.75rem;
+            font-size: .7rem;
             font-weight: 700;
-            flex-shrink: 0;
+            flex-shrink: 0
         }
 
-        .step-content h4 {
-            font-size: 0.9rem;
+        .tool-step h4 {
+            font-size: .85rem;
             font-weight: 600;
             color: #111827;
-            margin-bottom: 0.2rem;
+            margin-bottom: .15rem
         }
 
-        .step-content p {
-            font-size: 0.8rem;
+        .tool-step p {
+            font-size: .75rem;
             color: #6b7280;
-        }
-
-        .loading-spinner {
-            display: inline-block;
-            width: 1rem;
-            height: 1rem;
-            border: 2px solid #fff;
-            border-radius: 50%;
-            border-top-color: transparent;
-            animation: spin 0.6s linear infinite;
-            margin-right: 0.5rem;
-            vertical-align: middle;
-        }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        /* Recent Jobs Styles */
-        .recent-jobs-card {
-            background: #fff;
-            border: 1px solid #e5e7eb;
-            border-radius: 12px;
-            padding: 2rem;
-            margin-top: 1.5rem;
-        }
-
-        .jobs-list {
-            margin-top: 1rem;
-        }
-
-        .job-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 1rem;
-            border: 1px solid #f3f4f6;
-            border-radius: 8px;
-            margin-bottom: 0.75rem;
-            background: #fafafa;
-        }
-
-        .job-info {
-            display: flex;
-            flex-direction: column;
-            gap: 0.25rem;
-        }
-
-        .job-name {
-            font-weight: 600;
-            font-size: 0.9rem;
-            color: #111827;
-        }
-
-        .job-meta {
-            font-size: 0.75rem;
-            color: #6b7280;
-        }
-
-        .job-status {
-            font-size: 0.7rem;
-            font-weight: 700;
-            padding: 0.25rem 0.6rem;
-            border-radius: 9999px;
-            text-transform: uppercase;
-        }
-
-        .status-queued {
-            background: #f3f4f6;
-            color: #4b5563;
-        }
-
-        .status-processing {
-            background: #e0f2fe;
-            color: #0369a1;
-        }
-
-        .status-completed {
-            background: #dcfce7;
-            color: #166534;
-        }
-
-        .status-failed {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-
-        .btn-download {
-            background: #1E3A8A;
-            color: #fff;
-            border: none;
-            padding: 0.4rem 0.8rem;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: none;
-        }
-
-        .btn-download:hover {
-            background: #1e40af;
+            margin: 0
         }
     </style>
 </head>
 
 <body>
-    <div class="tool-topbar">
-        <a class="back-btn" onclick="goBack()">← Back to Tools</a>
-        <h1>📝 Statement3 Generation</h1>
-        <span class="badge">REFUND TOOL</span>
+    <div id="app-topbar" data-active="dashboard"></div>
+    <script src="app-topbar.js"></script>
+
+    <div class="tool-layout">
+        <aside class="tool-sidebar" id="tool-sidebar"></aside>
+        <main class="tool-main">
+            <div class="tool-main-inner">
+                <div class="tool-bc">
+                    <a href="clients.html">Firm</a><span style="color:#d1d5db">›</span>
+                    <a href="javascript:goBackToWebView()">GST Workspace</a><span style="color:#d1d5db">›</span>
+                    <span style="color:#374151;font-weight:600">Statement 3</span>
+                </div>
+
+                <div class="tool-page-header">
+                    <h1>📝 Statement 3 <span>Generation</span></h1>
+                    <p>Generate your Statement 3 based on your GST refund type. Automate the complex process of mapping
+                        documents for your refund claims.</p>
+                </div>
+
+                <!-- Refund Type Selection -->
+                <div class="tool-card">
+                    <h3>Select GST Refund Type</h3>
+                    <p>Choose your refund type to see the required document uploads.</p>
+                    <select class="tool-select" id="refund-type-select" onchange="updateUploadOptions(this.value)">
+                        <option value="export_goods">Export of Goods - Without payment of Tax</option>
+                        <option value="export_service">Export of Service - Without payment of Tax</option>
+                        <option value="inverted_duty">Inverted Duty Structure</option>
+                        <option value="deemed_export">Deemed Exports</option>
+                    </select>
+                </div>
+
+                <!-- Upload Documents -->
+                <div class="tool-card">
+                    <h3 id="upload-title">Upload Documents</h3>
+                    <p id="upload-desc">Upload Shipping Bills and BRC (Bank Realisation Certificate) files.</p>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+                        <div class="tool-upload" onclick="document.getElementById('file-1').click()">
+                            <div class="t-icon" id="icon-1">🚢</div>
+                            <div class="t-title" id="label-1">Shipping Bills</div>
+                            <div class="t-sub" id="sublabel-1">Excel file with shipping bill data</div>
+                            <div class="t-file" id="f1-name" style="display:none"></div>
+                        </div>
+                        <div class="tool-upload" onclick="document.getElementById('file-2').click()">
+                            <div class="t-icon" id="icon-2">🏦</div>
+                            <div class="t-title" id="label-2">BRC Documents</div>
+                            <div class="t-sub" id="sublabel-2">Bank Realisation Certificates</div>
+                            <div class="t-file" id="f2-name" style="display:none"></div>
+                        </div>
+                    </div>
+                    <input type="file" id="file-1" accept=".xlsx,.csv,.pdf,.jpg,.jpeg,.png" style="display:none"
+                        onchange="addFile('f1', this)">
+                    <input type="file" id="file-2" accept=".xlsx,.csv,.pdf,.jpg,.jpeg,.png" style="display:none"
+                        onchange="addFile('f2', this)">
+                    <div class="tool-file-list" id="file-list"></div>
+                    <div style="margin-top:1.25rem">
+                        <button class="tbtn tbtn-primary" id="generate-btn" onclick="generateStatement3()" disabled>📋
+                            Generate Statement 3</button>
+                    </div>
+                </div>
+
+                <!-- How it works -->
+                <div class="tool-card">
+                    <h3>How It Works</h3>
+                    <div class="tool-step-list">
+                        <div class="tool-step">
+                            <div class="tool-step-num">1</div>
+                            <div>
+                                <h4>Select Refund Type</h4>
+                                <p>Choose the category that matches your GST refund application.</p>
+                            </div>
+                        </div>
+                        <div class="tool-step">
+                            <div class="tool-step-num">2</div>
+                            <div>
+                                <h4>Upload Required Files</h4>
+                                <p>Upload the specific documents requested for your refund type.</p>
+                            </div>
+                        </div>
+                        <div class="tool-step">
+                            <div class="tool-step-num">3</div>
+                            <div>
+                                <h4>Processing</h4>
+                                <p>The system maps and validates your data for Statement 3.</p>
+                            </div>
+                        </div>
+                        <div class="tool-step">
+                            <div class="tool-step-num">4</div>
+                            <div>
+                                <h4>Download</h4>
+                                <p>Get the completed Statement 3 ready for refund filing.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Jobs -->
+                <div class="tool-card" id="recent-jobs-container" style="display:none">
+                    <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            style="width:17px;height:17px;vertical-align:middle">
+                            <circle cx="12" cy="12" r="10" />
+                            <polyline points="12 6 12 12 16 14" />
+                        </svg> Recent Jobs</h3>
+                    <p>Track the status of your Statement 3 reports and download the results.</p>
+                    <div class="tool-jobs" id="jobs-list"></div>
+                </div>
+            </div>
+        </main>
     </div>
 
-    <div class="tool-container">
-        <div class="tool-hero">
-            <h2>Statement3 Generation</h2>
-            <p>Generate your Statement 3 based on your GST refund type. Automate the complex process of mapping
-                documents for your refund claims.</p>
-        </div>
-
-        <div class="tool-form-card">
-            <h3>Select GST Refund Type</h3>
-            <p>Choose your refund type to see the required document uploads.</p>
-            <div style="margin-bottom: 1.5rem;">
-                <select id="refund-type-select"
-                    style="width: 100%; padding: 0.75rem; border: 1.5px solid #d1d5db; border-radius: 8px; font-size: 0.95rem; font-family: inherit;"
-                    onchange="updateUploadOptions(this.value)">
-                    <option value="export_goods">Export of Goods - Without payment of Tax</option>
-                    <option value="export_service">Export of Service - Without payment of Tax</option>
-                    <option value="inverted_duty">Inverted Duty Structure</option>
-                    <option value="deemed_export">Deemed Exports</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="tool-form-card">
-            <h3 id="upload-title">Upload Documents</h3>
-            <p id="upload-desc">Upload Shipping Bills and BRC (Bank Realisation Certificate) files.</p>
-
-            <div id="upload-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                <div class="upload-zone" id="zone-1" onclick="document.getElementById('file-1').click()">
-                    <div class="icon" id="icon-1">🚢</div>
-                    <div class="text"><strong id="label-1">Shipping Bills</strong><br><span id="sublabel-1">Excel file
-                            with shipping bill data</span></div>
-                </div>
-                <div class="upload-zone" id="zone-2" onclick="document.getElementById('file-2').click()">
-                    <div class="icon" id="icon-2">🏦</div>
-                    <div class="text"><strong id="label-2">BRC Documents</strong><br><span id="sublabel-2">Bank
-                            Realisation Certificates</span></div>
-                </div>
-            </div>
-
-            <input type="file" id="file-1" accept=".xlsx,.csv,.pdf,.jpg,.jpeg,.png" style="display:none"
-                onchange="addFile('f1', this)">
-            <input type="file" id="file-2" accept=".xlsx,.csv,.pdf,.jpg,.jpeg,.png" style="display:none"
-                onchange="addFile('f2', this)">
-
-            <div class="file-list" id="file-list"></div>
-
-            <div style="margin-top:1.25rem;">
-                <button class="btn-primary" id="generate-btn" onclick="generateStatement3()" disabled>📋 Generate
-                    Statement 3</button>
-            </div>
-        </div>
-
-        <div class="tool-form-card">
-            <h3>How It Works</h3>
-            <div class="step-list" id="step-list">
-                <div class="step-item">
-                    <div class="step-num">1</div>
-                    <div class="step-content">
-                        <h4>Select Refund Type</h4>
-                        <p>Choose the category that matches your GST refund application.</p>
-                    </div>
-                </div>
-                <div class="step-item">
-                    <div class="step-num">2</div>
-                    <div class="step-content">
-                        <h4>Upload Required Files</h4>
-                        <p>Upload the specific documents requested for your refund type.</p>
-                    </div>
-                </div>
-                <div class="step-item">
-                    <div class="step-num">3</div>
-                    <div class="step-content">
-                        <h4>Processing</h4>
-                        <p>The system maps and validates your data for Statement 3.</p>
-                    </div>
-                </div>
-                <div class="step-item">
-                    <div class="step-num">4</div>
-                    <div class="step-content">
-                        <h4>Download</h4>
-                        <p>Get the completed Statement 3 ready for refund filing.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="recent-jobs-card" id="recent-jobs-container" style="display: none;">
-            <h3>Recent Generation Jobs</h3>
-            <p>Track the status of your Statement 3 reports and download the results.</p>
-            <div class="jobs-list" id="jobs-list">
-                <!-- Jobs will be loaded here -->
-            </div>
-        </div>
-    </div>
-
+    <script src="tool-sidebar.js"></script>
     <script src="api_config.js?v=2"></script>
+    <script src="session-manager.js"></script>
     <script>
-        function goBack() {
-            const params = new URLSearchParams(window.location.search);
-            params.set('section', 'tools');
-            window.location.href = 'web-view.html?' + params.toString();
-        }
+        renderToolSidebar('statement3');
 
         const refundConfigs = {
-            export_goods: {
-                title: "Upload Documents",
-                desc: "Upload Shipping Bills and BRC (Bank Realisation Certificate) files.",
-                z1: { label: "Shipping Bills", icon: "🚢", sub: "Excel file with data" },
-                z2: { label: "BRC / FIRC", icon: "🏦", sub: "Bank Realisation Certificates" }
-            },
-            export_service: {
-                title: "Upload Documents",
-                desc: "Upload Invoices and BRC (Bank Realisation Certificate) files.",
-                z1: { label: "Export Invoices", icon: "🧾", sub: "Excel/PDF invoices" },
-                z2: { label: "BRC / FIRC", icon: "🏦", sub: "Bank Realisation Certificates" }
-            },
-            inverted_duty: {
-                title: "Upload Documents",
-                desc: "Upload GSTR-2A/2B and your Purchase Register.",
-                z1: { label: "GSTR-2A/2B", icon: "📋", sub: "Excel from GST portal" },
-                z2: { label: "Purchase Register", icon: "📥", sub: "Internal purchase data" }
-            },
-            deemed_export: {
-                title: "Upload Documents",
-                desc: "Upload Deemed Export Invoices and Proof of Receipt.",
-                z1: { label: "Export Invoices", icon: "🧾", sub: "Invoices for deemed exports" },
-                z2: { label: "Proof of Receipt", icon: "✅", sub: "Evidence of goods receipt" }
-            }
+            export_goods: { title: "Upload Documents", desc: "Upload Shipping Bills and BRC (Bank Realisation Certificate) files.", z1: { label: "Shipping Bills", icon: "🚢", sub: "Excel file with data" }, z2: { label: "BRC / FIRC", icon: "🏦", sub: "Bank Realisation Certificates" } },
+            export_service: { title: "Upload Documents", desc: "Upload Invoices and BRC (Bank Realisation Certificate) files.", z1: { label: "Export Invoices", icon: "🧾", sub: "Excel/PDF invoices" }, z2: { label: "BRC / FIRC", icon: "🏦", sub: "Bank Realisation Certificates" } },
+            inverted_duty: { title: "Upload Documents", desc: "Upload GSTR-2A/2B and your Purchase Register.", z1: { label: "GSTR-2A/2B", icon: "📋", sub: "Excel from GST portal" }, z2: { label: "Purchase Register", icon: "📥", sub: "Internal purchase data" } },
+            deemed_export: { title: "Upload Documents", desc: "Upload Deemed Export Invoices and Proof of Receipt.", z1: { label: "Export Invoices", icon: "🧾", sub: "Invoices for deemed exports" }, z2: { label: "Proof of Receipt", icon: "✅", sub: "Evidence of goods receipt" } }
         };
 
         function updateUploadOptions(type) {
-            const config = refundConfigs[type];
-            document.getElementById('upload-title').textContent = config.title;
-            document.getElementById('upload-desc').textContent = config.desc;
-
-            document.getElementById('label-1').textContent = config.z1.label;
-            document.getElementById('icon-1').textContent = config.z1.icon;
-            document.getElementById('sublabel-1').textContent = config.z1.sub;
-
-            document.getElementById('label-2').textContent = config.z2.label;
-            document.getElementById('icon-2').textContent = config.z2.icon;
-            document.getElementById('sublabel-2').textContent = config.z2.sub;
-
-            // Clear selected files when switching type
+            const c = refundConfigs[type];
+            document.getElementById('upload-title').textContent = c.title;
+            document.getElementById('upload-desc').textContent = c.desc;
+            document.getElementById('label-1').textContent = c.z1.label;
+            document.getElementById('icon-1').textContent = c.z1.icon;
+            document.getElementById('sublabel-1').textContent = c.z1.sub;
+            document.getElementById('label-2').textContent = c.z2.label;
+            document.getElementById('icon-2').textContent = c.z2.icon;
+            document.getElementById('sublabel-2').textContent = c.z2.sub;
             files = { f1: null, f2: null };
             renderFileList();
             document.getElementById('generate-btn').disabled = true;
@@ -497,32 +215,28 @@
         function addFile(type, input) {
             if (input.files.length) {
                 files[type] = input.files[0];
+                const el = document.getElementById(type + '-name');
+                el.textContent = '📎 ' + files[type].name; el.style.display = '';
+                input.closest('.tool-upload').classList.add('has-file');
                 renderFileList();
                 document.getElementById('generate-btn').disabled = !(files.f1 || files.f2);
             }
         }
-
-        function removeFile(type) {
-            files[type] = null;
-            renderFileList();
-            document.getElementById('generate-btn').disabled = !(files.f1 || files.f2);
-        }
+        function removeFile(type) { files[type] = null; renderFileList(); document.getElementById('generate-btn').disabled = !(files.f1 || files.f2); }
 
         function renderFileList() {
             const list = document.getElementById('file-list');
-            let html = '';
             const type = document.getElementById('refund-type-select').value;
-            const config = refundConfigs[type];
-
-            if (files.f1) html += `<div class="file-item"><span class="name">${config.z1.icon} ${files.f1.name}</span><span class="remove" onclick="removeFile('f1')">✕</span></div>`;
-            if (files.f2) html += `<div class="file-item"><span class="name">${config.z2.icon} ${files.f2.name}</span><span class="remove" onclick="removeFile('f2')">✕</span></div>`;
+            const c = refundConfigs[type];
+            let html = '';
+            if (files.f1) html += `<div class="tool-file-item"><span class="fname">${c.z1.icon} ${files.f1.name}</span><span class="fremove" onclick="removeFile('f1')">✕</span></div>`;
+            if (files.f2) html += `<div class="tool-file-item"><span class="fname">${c.z2.icon} ${files.f2.name}</span><span class="fremove" onclick="removeFile('f2')">✕</span></div>`;
             list.innerHTML = html;
         }
 
         async function generateStatement3() {
             const btn = document.getElementById('generate-btn');
-            btn.disabled = true;
-            btn.innerHTML = '<span class="loading-spinner"></span> Generating...';
+            btn.disabled = true; btn.innerHTML = '<span class="tool-spinner"></span> Generating...';
             try {
                 const token = localStorage.getItem('access_token');
                 const params = new URLSearchParams(window.location.search);
@@ -530,126 +244,54 @@
                 const refundType = document.getElementById('refund-type-select').value;
                 const backendJobType = (refundType === 'export_service') ? 'statement3_firc' : 'statement3';
                 const fileKeys = [];
-
                 for (const file of [files.f1, files.f2].filter(Boolean)) {
-                    const fd = new FormData();
-                    fd.append('file', file);
-                    const res = await fetch(`${API_BASE_URL}/jobs/upload`, {
-                        method: 'POST', headers: { 'Authorization': `Bearer ${token}` }, body: fd
-                    });
-                    if (res.ok) {
-                        const d = await res.json();
-                        fileKeys.push(d.file_key || d.file_path);
-                    }
+                    const fd = new FormData(); fd.append('file', file);
+                    const res = await fetch(`${API_BASE_URL}/jobs/upload`, { method: 'POST', headers: { 'Authorization': `Bearer ${token}` }, body: fd });
+                    if (res.ok) { const d = await res.json(); fileKeys.push(d.file_key || d.file_path); }
                 }
-
                 const jobRes = await fetch(`${API_BASE_URL}/jobs/`, {
-                    method: 'POST',
-                    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        job_type: backendJobType,
-                        input_files: fileKeys,
-                        client_id: clientId
-                    })
+                    method: 'POST', headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ job_type: backendJobType, input_files: fileKeys, client_id: clientId })
                 });
-
-                if (jobRes.ok) {
-                    alert('Statement 3 generation started!');
-                    loadJobs(); // Refresh list immediately
-                }
+                if (jobRes.ok) { alert('Statement 3 generation started!'); loadJobs(); }
                 else { const err = await jobRes.json(); alert('Failed: ' + (err.detail || 'Error')); }
             } catch (err) { console.error(err); alert('Error: ' + err.message); }
             finally { btn.disabled = false; btn.textContent = '📋 Generate Statement 3'; }
         }
 
-        // --- Recent Jobs Logic ---
         let pollingInterval = null;
-
         async function loadJobs() {
             const params = new URLSearchParams(window.location.search);
-            const clientId = params.get('clientId');
-            if (!clientId) return;
-
+            const clientId = params.get('clientId'); if (!clientId) return;
             try {
                 const res = await authFetch(`/jobs/?skip=0&limit=50&client_id=${clientId}`);
                 if (res.ok) {
-                    const jobs = await res.json();
-                    const statement3Jobs = jobs.filter(j => j.job_type === 'statement3' || j.job_type === 'statement3_firc');
-
-                    if (statement3Jobs.length > 0) {
-                        document.getElementById('recent-jobs-container').style.display = 'block';
-                        renderJobs(statement3Jobs);
-
-                        // Check if any job is still in progress
-                        const hasInProgress = statement3Jobs.some(j => j.status === 'QUEUED' || j.status === 'PROCESSING');
-                        if (hasInProgress && !pollingInterval) {
-                            pollingInterval = setInterval(loadJobs, 5000);
-                        } else if (!hasInProgress && pollingInterval) {
-                            clearInterval(pollingInterval);
-                            pollingInterval = null;
-                        }
+                    const jobs = await res.json(); const sJobs = jobs.filter(j => j.job_type === 'statement3' || j.job_type === 'statement3_firc');
+                    if (sJobs.length > 0) {
+                        document.getElementById('recent-jobs-container').style.display = 'block'; renderJobs(sJobs);
+                        const hasIP = sJobs.some(j => j.status === 'QUEUED' || j.status === 'PROCESSING');
+                        if (hasIP && !pollingInterval) pollingInterval = setInterval(loadJobs, 5000); else if (!hasIP && pollingInterval) { clearInterval(pollingInterval); pollingInterval = null; }
                     }
                 }
-            } catch (e) {
-                console.error("Failed to load jobs", e);
-            }
+            } catch (e) { console.error(e) }
         }
 
         function renderJobs(jobs) {
-            const list = document.getElementById('jobs-list');
-            list.innerHTML = jobs.map(job => {
-                const date = new Date(job.created_at).toLocaleString();
-                let statusClass = 'status-' + job.status.toLowerCase();
-                const jobName = job.job_type.toUpperCase().replace('_', ' ');
-
-                return `
-                    <div class="job-item">
-                        <div class="job-info">
-                            <span class="job-name">${jobName}</span>
-                            <span class="job-meta">Created: ${date}</span>
-                        </div>
-                        <div style="display: flex; align-items: center; gap: 1rem;">
-                            <span class="job-status ${statusClass}">${job.status}</span>
-                            ${job.status === 'COMPLETED' ?
-                        `<button class="btn-download" onclick="downloadJobFile('${job.id}')">⬇ Download</button>` :
-                        ''}
-                        </div>
-                    </div>
-                `;
+            document.getElementById('jobs-list').innerHTML = jobs.map(job => {
+                const date = new Date(job.created_at).toLocaleString(); const name = job.job_type.toUpperCase().replaceAll('_', ' ');
+                return `<div class="tool-job"><div class="tool-job-info"><span class="tool-job-name">${name}</span><span class="tool-job-meta">Created: ${date}</span></div><div style="display:flex;align-items:center;gap:.75rem"><span class="tool-job-status tj-${job.status.toLowerCase()}">${job.status}</span>${job.status === 'COMPLETED' ? `<button class="tbtn tbtn-download" onclick="downloadJobFile('${job.id}')">⬇ Download</button>` : ''}</div></div>`;
             }).join('');
         }
 
         async function downloadJobFile(jobId) {
             try {
-                const response = await authFetch(`/jobs/${jobId}/download`);
-                if (!response.ok) {
-                    alert('Download failed: ' + response.statusText);
-                    return;
-                }
-
-                const contentDisposition = response.headers.get('Content-Disposition');
-                let filename = `Statement3_${jobId.substring(0, 8)}.xlsx`;
-                if (contentDisposition) {
-                    const match = contentDisposition.match(/filename="?(.+)"?/);
-                    if (match && match[1]) filename = match[1];
-                }
-
-                const blob = await response.blob();
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = filename;
-                document.body.appendChild(a);
-                a.click();
-                window.URL.revokeObjectURL(url);
-                document.body.removeChild(a);
-            } catch (e) {
-                console.error('Download error:', e);
-                alert('Error downloading file');
-            }
+                const response = await authFetch(`/jobs/${jobId}/download`); if (!response.ok) { alert('Download failed'); return; }
+                const cd = response.headers.get('Content-Disposition'); let filename = `Statement3_${jobId.substring(0, 8)}.xlsx`;
+                if (cd) { const m = cd.match(/filename="?(.+)"?/); if (m && m[1]) filename = m[1]; }
+                const blob = await response.blob(); const url = window.URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = filename; document.body.appendChild(a); a.click(); window.URL.revokeObjectURL(url); document.body.removeChild(a);
+            } catch (e) { console.error(e); alert('Error downloading file'); }
         }
 
-        // Initialize
         updateUploadOptions(document.getElementById('refund-type-select').value);
         loadJobs();
     </script>

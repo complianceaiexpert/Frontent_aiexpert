@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us — ComplianceAI Expert | AI-Powered CA &amp; Tax Compliance Platform India</title>
+    <meta name="description"
+        content="ComplianceAI Expert is India's leading agentic AI platform for Chartered Accountants, CA firms, and tax professionals. Automate GST filing, income tax, audit, CA certificates, and compliance workflows with AI GPTs and intelligent automation.">
+    <meta name="keywords"
+        content="ComplianceAI, CA software India, AI compliance platform, chartered accountant automation, GST filing software, income tax automation, agentic AI, CA certificate generator, tax compliance India, AI GPT for CAs">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #f0f4f8;
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        /* ── HERO ─────────────────────────────────────────── */
+        .about-hero {
+            position: relative;
+            background: linear-gradient(135deg, #0a1628 0%, #0f2150 40%, #1e3a8a 70%, #312e81 100%);
+            overflow: hidden;
+            padding: 0;
+            min-height: 540px;
+            display: flex;
+            align-items: stretch;
+        }
+
+        /* Animated grid overlay */
+        .about-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+            background-size: 50px 50px;
+            mask-image: radial-gradient(ellipse at 50% 50%, black 40%, transparent 80%);
+        }
+
+        /* Floating orbs */
+        .hero-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.35;
+            pointer-events: none;
+            animation: orbFloat 8s ease-in-out infinite;
+        }
+
+        .hero-orb-1 {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, #3b82f6, transparent);
+            top: -80px;
+            right: 200px;
+            animation-delay: 0s;
+        }
+
+        .hero-orb-2 {
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, #EB6711, transparent);
+            bottom: -60px;
+            right: 80px;
+            animation-delay: -3s;
+        }
+
+        .hero-orb-3 {
+            width: 250px;
+            height: 250px;
+            background: radial-gradient(circle, #8b5cf6, transparent);
+            top: 50px;
+            left: 100px;
+            animation-delay: -5s;
+        }
+
+        @keyframes orbFloat {
+
+            0%,
+            100% {
+                transform: translateY(0) scale(1);
+            }
+
+            50% {
+                transform: translateY(-20px) scale(1.05);
+            }
+        }
+
+        /* Hero inner layout */
+        .hero-inner {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 5rem 2.5rem 4.5rem;
+            gap: 3rem;
+        }
+
+        /* Left text column */
+        .hero-text {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .hero-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem 1rem;
+            background: rgba(235, 103, 17, 0.15);
+            border: 1px solid rgba(235, 103, 17, 0.3);
+            border-radius: 999px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #fb923c;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-eyebrow-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #fb923c;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.5;
+                transform: scale(1.5);
+            }
+        }
+
+        .hero-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 3.25rem;
+            font-weight: 800;
+            color: #fff;
+            margin: 0 0 1.25rem;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+        }
+
+        .hero-title .accent {
+            color: #fb923c;
+        }
+
+        .hero-desc {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.7);
+            max-width: 520px;
+            line-height: 1.75;
+            margin: 0 0 2rem;
+        }
+
+        .hero-cta-row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .hero-btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.75rem 1.75rem;
+            background: linear-gradient(135deg, #EB6711, #c55410);
+            color: #fff;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.88rem;
+            text-decoration: none;
+            transition: all 0.25s;
+            box-shadow: 0 6px 20px rgba(235, 103, 17, 0.4);
+        }
+
+        .hero-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 28px rgba(235, 103, 17, 0.5);
+            color: #fff;
+        }
+
+        .hero-btn-ghost {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.75rem 1.5rem;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.85);
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.88rem;
+            text-decoration: none;
+            transition: all 0.25s;
+            backdrop-filter: blur(8px);
+        }
+
+        .hero-btn-ghost:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        /* Right visual panel */
+        .hero-visual {
+            flex: 0 0 380px;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .hero-stat-card {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.10);
+            border-radius: 16px;
+            padding: 1.25rem 1.5rem;
+            backdrop-filter: blur(12px);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s;
+        }
+
+        .hero-stat-card:hover {
+            background: rgba(255, 255, 255, 0.10);
+            transform: translateX(-4px);
+        }
+
+        .hsc-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.35rem;
+            flex-shrink: 0;
+        }
+
+        .hsc-body {
+            flex: 1;
+        }
+
+        .hsc-num {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #fff;
+            line-height: 1;
+        }
+
+        .hsc-label {
+            font-size: 0.72rem;
+            color: rgba(255, 255, 255, 0.55);
+            font-weight: 500;
+            margin-top: 0.2rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .hsc-badge {
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 999px;
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        /* ── PAGE WRAP ──────────────────────────────────────── */
+        .page-wrap {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 3rem 2rem 4rem;
+        }
+
+        /* ── STORY SECTION (new layout) ──────────────────── */
+        .story-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .story-card {
+            background: #fff;
+            border-radius: 20px;
+            padding: 2.25rem;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #e8edf5;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+            transition: all 0.3s;
+        }
+
+        .story-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+        }
+
+        .story-card-accent {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            border-radius: 20px 20px 0 0;
+        }
+
+        .story-card.mission .story-card-accent {
+            background: linear-gradient(90deg, #1e3a8a, #3b82f6);
+        }
+
+        .story-card.vision .story-card-accent {
+            background: linear-gradient(90deg, #7c3aed, #a78bfa);
+        }
+
+        .story-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.3rem 0.85rem;
+            border-radius: 999px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 1rem;
+        }
+
+        .story-card.mission .story-pill {
+            background: #eff6ff;
+            color: #1d4ed8;
+        }
+
+        .story-card.vision .story-pill {
+            background: #f5f3ff;
+            color: #7c3aed;
+        }
+
+        .story-card h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #0f172a;
+            margin: 0 0 0.85rem;
+            line-height: 1.3;
+        }
+
+        .story-card p {
+            font-size: 0.84rem;
+            color: #64748b;
+            line-height: 1.8;
+            margin: 0;
+        }
+
+        .story-card p strong {
+            color: #1e293b;
+        }
+
+        /* ── STATS STRIP ────────────────────────────────── */
+        .stats-strip {
+            background: linear-gradient(135deg, #0f172a, #1e3a8a);
+            border-radius: 20px;
+            padding: 2rem 2.5rem;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-strip::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        .stat-item {
+            position: relative;
+            text-align: center;
+            padding: 0.5rem 0;
+        }
+
+        .stat-item:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 10%;
+            bottom: 10%;
+            width: 1px;
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .stat-num {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.25rem;
+            font-weight: 800;
+            line-height: 1;
+            margin-bottom: 0.35rem;
+            background: linear-gradient(135deg, #fff, #93c5fd);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            font-size: 0.72rem;
+            color: rgba(255, 255, 255, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            font-weight: 500;
+        }
+
+        /* ── SECTION HEADER ────────────────────────────── */
+        .section-header {
+            margin-bottom: 1.75rem;
+        }
+
+        .section-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.68rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #1e3a8a;
+            background: #eff6ff;
+            padding: 0.3rem 0.9rem;
+            border-radius: 999px;
+            margin-bottom: 0.65rem;
+        }
+
+        .section-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #0f172a;
+            margin: 0 0 0.35rem;
+            letter-spacing: -0.01em;
+        }
+
+        .section-subtitle {
+            font-size: 0.84rem;
+            color: #64748b;
+            line-height: 1.65;
+            max-width: 560px;
+        }
+
+        /* ── AI CAPABILITIES ─────────────────────────── */
+        .cap-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.25rem;
+            margin-bottom: 3rem;
+        }
+
+        .cap-card {
+            background: #fff;
+            border: 1px solid #e8edf5;
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: all 0.25s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cap-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--card-accent, #3b82f6), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .cap-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+        }
+
+        .cap-card:hover::after {
+            opacity: 1;
+        }
+
+        .cap-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.15rem;
+            margin-bottom: 1rem;
+        }
+
+        .cap-card h4 {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin: 0 0 0.4rem;
+        }
+
+        .cap-card p {
+            font-size: 0.77rem;
+            color: #64748b;
+            line-height: 1.65;
+            margin: 0;
+        }
+
+        /* ── VALUES SECTION ──────────────────────────── */
+        .values-section {
+            background: #fff;
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin-bottom: 3rem;
+            border: 1px solid #e8edf5;
+        }
+
+        .val-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-top: 1.75rem;
+        }
+
+        .val-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .val-icon-wrap {
+            flex-shrink: 0;
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+
+        .val-body {}
+
+        .val-body h4 {
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin: 0 0 0.25rem;
+        }
+
+        .val-body p {
+            font-size: 0.76rem;
+            color: #64748b;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        /* ── CTA ──────────────────────────────────────── */
+        .cta-section {
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 60%, #312e81 100%);
+            border-radius: 20px;
+            padding: 3.5rem 2.5rem;
+            text-align: center;
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        .cta-inner {
+            position: relative;
+        }
+
+        .cta-eyebrow {
+            display: inline-block;
+            padding: 0.35rem 1rem;
+            background: rgba(235, 103, 17, 0.15);
+            border: 1px solid rgba(235, 103, 17, 0.3);
+            border-radius: 999px;
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: #fb923c;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 1rem;
+        }
+
+        .cta-section h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2rem;
+            font-weight: 800;
+            margin: 0 0 0.65rem;
+            color: #fff;
+        }
+
+        .cta-section p {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            margin: 0 auto 2rem;
+            max-width: 480px;
+            line-height: 1.7;
+        }
+
+        .cta-btn-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .cta-btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.8rem 2rem;
+            background: linear-gradient(135deg, #EB6711, #c55410);
+            color: #fff;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: all 0.25s;
+            box-shadow: 0 6px 20px rgba(235, 103, 17, 0.4);
+        }
+
+        .cta-btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(235, 103, 17, 0.5);
+            color: #fff;
+        }
+
+        .cta-btn-ghost {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.8rem 1.75rem;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.85);
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: all 0.25s;
+            backdrop-filter: blur(8px);
+        }
+
+        .cta-btn-ghost:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        /* ── RESPONSIVE ───────────────────────────────── */
+        @media (max-width: 900px) {
+            .hero-inner {
+                flex-direction: column;
+                padding: 4rem 1.5rem 3rem;
+            }
+
+            .hero-visual {
+                flex: none;
+                width: 100%;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 0.75rem;
+            }
+
+            .hero-title {
+                font-size: 2.25rem;
+            }
+
+            .story-section {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-strip {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .cap-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .val-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .hero-visual {
+                grid-template-columns: 1fr;
+            }
+
+            .cap-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .val-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-strip {
+                grid-template-columns: 1fr 1fr;
+                padding: 1.5rem;
+            }
+
+            .hero-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app-topbar" data-active="dashboard"></div>
+    <script src="app-topbar.js"></script>
+
+    <!-- ══ HERO ══════════════════════════════════════════════ -->
+    <section class="about-hero">
+        <div class="hero-orb hero-orb-1"></div>
+        <div class="hero-orb hero-orb-2"></div>
+        <div class="hero-orb hero-orb-3"></div>
+
+        <div class="hero-inner">
+            <!-- Left: Text -->
+            <div class="hero-text">
+                <div class="hero-eyebrow">
+                    <span class="hero-eyebrow-dot"></span>
+                    India's First Agentic AI Compliance Platform
+                </div>
+                <h1 class="hero-title">
+                    Making Compliance<br>
+                    <span class="accent">Intelligent</span> &amp;<br>
+                    Autonomous
+                </h1>
+                <p class="hero-desc">
+                    We're building the future of compliance management for Chartered Accountants and tax professionals
+                    across India — powered by agentic AI, designed with trust, built for scale.
+                </p>
+                <div class="hero-cta-row">
+                    <a href="sign-up.html" class="hero-btn-primary">Get Started Free →</a>
+                    <a href="ai-gpt.html" class="hero-btn-ghost">Explore AI GPTs</a>
+                </div>
+            </div>
+
+            <!-- Right: Floating stat cards -->
+            <div class="hero-visual">
+                <div class="hero-stat-card">
+                    <div class="hsc-icon" style="background:rgba(59,130,246,0.15);color:#60a5fa">🏢</div>
+                    <div class="hsc-body">
+                        <div class="hsc-num">500+</div>
+                        <div class="hsc-label">CAs &amp; Firms Served</div>
+                    </div>
+                    <div class="hsc-badge">↑ Growing</div>
+                </div>
+
+                <div class="hero-stat-card">
+                    <div class="hsc-icon" style="background:rgba(235,103,17,0.15);color:#fb923c">⚡</div>
+                    <div class="hsc-body">
+                        <div class="hsc-num">80%</div>
+                        <div class="hsc-label">Time Saved on Compliance</div>
+                    </div>
+                    <div class="hsc-badge">Proven</div>
+                </div>
+
+                <div class="hero-stat-card">
+                    <div class="hsc-icon" style="background:rgba(139,92,246,0.15);color:#a78bfa">🤖</div>
+                    <div class="hsc-body">
+                        <div class="hsc-num">12+</div>
+                        <div class="hsc-label">AI-Powered Modules</div>
+                    </div>
+                    <div class="hsc-badge">Active</div>
+                </div>
+
+                <div class="hero-stat-card">
+                    <div class="hsc-icon" style="background:rgba(16,185,129,0.15);color:#34d399">🛡️</div>
+                    <div class="hsc-body">
+                        <div class="hsc-num">99.9%</div>
+                        <div class="hsc-label">Uptime Reliability</div>
+                    </div>
+                    <div class="hsc-badge">Verified</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="page-wrap">
+
+        <!-- ══ MISSION & VISION ══════════════════════════════ -->
+        <div class="story-section">
+            <div class="story-card mission">
+                <div class="story-card-accent"></div>
+                <div class="story-pill">🎯 Our Mission</div>
+                <h2>Empowering every CA with agentic AI-driven compliance tools</h2>
+                <p>ComplianceAI Expert bridges the gap between taxation, accounting, and the professionals who manage
+                    them. Our platform uses <strong>agentic AI agents</strong> and purpose-built <strong>AI
+                        GPTs</strong> to automate GST filing, income tax returns, CA certificate generation, and audit
+                    workflows — saving up to <strong>80% of manual effort</strong> across India's most complex
+                    compliance landscape.</p>
+            </div>
+            <div class="story-card vision">
+                <div class="story-card-accent"></div>
+                <div class="story-pill">🌟 Our Vision</div>
+                <h2>Reinstituting India as the global leader in intelligent accounting</h2>
+                <p>India was once the cradle of accounting — with Chanakya and Aryabhatt leading the way. We envision
+                    adding a new dimension to global standards in accounting through <strong>autonomous AI
+                        workflows</strong>, intelligent document analysis, and <strong>semi-chat and web-view
+                        workspaces</strong> that let CAs work the way they prefer.</p>
+            </div>
+        </div>
+
+        <!-- ══ STATS STRIP ════════════════════════════════════ -->
+        <div class="stats-strip">
+            <div class="stat-item">
+                <div class="stat-num">500+</div>
+                <div class="stat-label">CAs &amp; Firms Served</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-num">80%</div>
+                <div class="stat-label">Time Saved</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-num">12+</div>
+                <div class="stat-label">AI Modules</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-num">99.9%</div>
+                <div class="stat-label">Uptime</div>
+            </div>
+        </div>
+
+        <!-- ══ AI CAPABILITIES ════════════════════════════════ -->
+        <div class="section-header">
+            <div class="section-eyebrow">⚡ What We Build</div>
+            <h2 class="section-title">Agentic AI Capabilities</h2>
+            <p class="section-subtitle">Our platform goes beyond simple automation — our AI agents understand tax law,
+                process documents, and complete compliance tasks autonomously.</p>
+        </div>
+        <div class="cap-grid">
+            <div class="cap-card" style="--card-accent:#3b82f6">
+                <div class="cap-icon" style="background:#eff6ff;color:#1e3a8a">🤖</div>
+                <h4>Agentic AI Workflows</h4>
+                <p>Autonomous AI agents that read documents, extract data, reconcile GST returns, and generate
+                    compliance reports without manual intervention.</p>
+            </div>
+            <div class="cap-card" style="--card-accent:#7c3aed">
+                <div class="cap-icon" style="background:#f5f3ff;color:#7c3aed">💬</div>
+                <h4>AI GPTs for CAs</h4>
+                <p>Purpose-built GPT models trained on Indian tax law, Companies Act, FEMA, RBI circulars, and ICAI
+                    standards for instant expert-level guidance.</p>
+            </div>
+            <div class="cap-card" style="--card-accent:#059669">
+                <div class="cap-icon" style="background:#ecfdf5;color:#059669">🖥️</div>
+                <h4>Dual Workspace Views</h4>
+                <p><strong>Web View</strong> for structured panel workflows and <strong>Semi-Chat View</strong> for
+                    conversational AI assistance — choose the mode that fits your style.</p>
+            </div>
+            <div class="cap-card" style="--card-accent:#d97706">
+                <div class="cap-icon" style="background:#fffbeb;color:#d97706">📄</div>
+                <h4>Smart Document Analysis</h4>
+                <p>AI-powered document reader that extracts data from invoices, FIRCs, bank statements, and financial
+                    reports with OCR and intelligent parsing.</p>
+            </div>
+            <div class="cap-card" style="--card-accent:#db2777">
+                <div class="cap-icon" style="background:#fdf2f8;color:#db2777">📜</div>
+                <h4>CA Certificate Engine</h4>
+                <p>Generate 30+ types of CA certificates — GST, Net Worth, Financial, FEMA, Bank — with DOCX templates,
+                    live preview, and UDIN compliance.</p>
+            </div>
+            <div class="cap-card" style="--card-accent:#0f766e">
+                <div class="cap-icon" style="background:#f0fdfa;color:#0f766e">⚖️</div>
+                <h4>Agreement Generator</h4>
+                <p>Draft legally compliant rental, employment, NDA, MOU, and service agreements with AI-recommended
+                    clauses and downloadable PDFs.</p>
+            </div>
+        </div>
+
+        <!-- ══ CORE VALUES ════════════════════════════════════ -->
+        <div class="values-section">
+            <div class="section-header" style="margin-bottom:0">
+                <div class="section-eyebrow">💎 What Drives Us</div>
+                <h2 class="section-title">Core Values</h2>
+                <p class="section-subtitle">The principles that drive every product decision, every line of code, and
+                    every client interaction.</p>
+            </div>
+            <div class="val-grid">
+                <div class="val-item">
+                    <div class="val-icon-wrap" style="background:#eff6ff;color:#3b82f6">🔒</div>
+                    <div class="val-body">
+                        <h4>Transparency</h4>
+                        <p>Open communication, honest operations, and clear business practices at every level of our
+                            AI-powered platform.</p>
+                    </div>
+                </div>
+                <div class="val-item">
+                    <div class="val-icon-wrap" style="background:#ecfdf5;color:#16a34a">✅</div>
+                    <div class="val-body">
+                        <h4>Accountability</h4>
+                        <p>We own our commitments and deliver on our promises to every CA firm and tax professional in
+                            India.</p>
+                    </div>
+                </div>
+                <div class="val-item">
+                    <div class="val-icon-wrap" style="background:#fef3c7;color:#d97706">⚡</div>
+                    <div class="val-body">
+                        <h4>Responsiveness</h4>
+                        <p>Adapting quickly to GST Council updates, income tax amendments, and evolving compliance
+                            requirements.</p>
+                    </div>
+                </div>
+                <div class="val-item">
+                    <div class="val-icon-wrap" style="background:#f5f3ff;color:#7c3aed">🤝</div>
+                    <div class="val-body">
+                        <h4>Inclusiveness</h4>
+                        <p>Equitable access and service for firms of all sizes — from solo practitioners to large
+                            multi-city CA firms.</p>
+                    </div>
+                </div>
+                <div class="val-item">
+                    <div class="val-icon-wrap" style="background:#fdf2f8;color:#ec4899">🎯</div>
+                    <div class="val-body">
+                        <h4>Efficiency</h4>
+                        <p>Delivering maximum value through agentic AI — from automated data entry to one-click GST
+                            return filing.</p>
+                    </div>
+                </div>
+                <div class="val-item">
+                    <div class="val-icon-wrap" style="background:#f0fdfa;color:#14b8a6">🛡️</div>
+                    <div class="val-body">
+                        <h4>Integrity</h4>
+                        <p>Ethics at the core of every AI model, data processing pipeline, and client interaction across
+                            the platform.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══ CTA ════════════════════════════════════════════ -->
+        <div class="cta-section">
+            <div class="cta-inner">
+                <div class="cta-eyebrow">🚀 Get Started Today</div>
+                <h2>Ready to Transform Your Practice?</h2>
+                <p>Join hundreds of CAs across India who trust ComplianceAI Expert for smarter, faster, AI-powered
+                    compliance management.</p>
+                <div class="cta-btn-row">
+                    <a href="sign-up.html" class="cta-btn-primary">Get Started Free →</a>
+                    <a href="ai-gpt.html" class="cta-btn-ghost">Explore AI Tools</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="session-manager.js?v=2"></script>
+</body>
+
+</html>

@@ -4,9 +4,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ComplianceAIexpert - Your Professional Compliance Partner</title>
+  <title>ComplianceAI Expert — AI-Powered Compliance for Professionals</title>
   <meta name="description"
-    content="A comprehensive compliance management platform designed for finance and legal professionals. Reduce compliance time by 60% with AI-powered automation.">
+    content="The intelligent compliance platform for CAs, tax consultants, and legal professionals. Automate GST, certificates, and filings with AI.">
   <link rel="stylesheet" href="styles.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,390 +14,756 @@
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@700;800&display=swap"
     rel="stylesheet">
   <style>
-    .hero-modern {
-      min-height: 90vh;
+    /* ── Landing Page Styles ── */
+
+    .landing-hero {
+      min-height: 100vh;
       display: flex;
       align-items: center;
-      justify-content: center;
-      background: linear-gradient(135deg, #f8fafc 0%, #EBF0FF 100%);
-      padding: 6rem 2rem 4rem;
       position: relative;
       overflow: hidden;
+      padding: 8rem 2rem 4rem;
+      background: linear-gradient(135deg, #f8fafc 0%, #EBF0FF 50%, #FFF7ED 100%);
     }
 
-    .hero-modern::before {
-      content: '';
+    /* Decorative gradient orbs */
+    .orb {
       position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      z-index: 0;
+      animation: orbFloat 8s ease-in-out infinite;
+    }
+
+    .orb-1 {
       width: 500px;
       height: 500px;
-      background: radial-gradient(circle, rgba(37, 99, 235, 0.1) 0%, transparent 70%);
-      top: -250px;
-      right: -250px;
+      background: rgba(30, 58, 138, 0.06);
+      top: -15%;
+      left: -5%;
     }
 
-    .hero-content-modern {
-      max-width: 1200px;
+    .orb-2 {
+      width: 400px;
+      height: 400px;
+      background: rgba(235, 103, 17, 0.06);
+      bottom: -10%;
+      right: -5%;
+      animation-delay: -4s;
+    }
+
+    .orb-3 {
+      width: 300px;
+      height: 300px;
+      background: rgba(139, 92, 246, 0.04);
+      top: 30%;
+      right: 15%;
+      animation-delay: -2s;
+    }
+
+    @keyframes orbFloat {
+
+      0%,
+      100% {
+        transform: translate(0, 0) scale(1);
+      }
+
+      33% {
+        transform: translate(20px, -30px) scale(1.05);
+      }
+
+      66% {
+        transform: translate(-15px, 15px) scale(0.95);
+      }
+    }
+
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(30, 58, 138, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(30, 58, 138, 0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      z-index: 0;
+    }
+
+    .hero-inner {
+      max-width: 1280px;
+      margin: 0 auto;
       width: 100%;
-      text-align: center;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 4rem;
+      align-items: center;
       position: relative;
       z-index: 1;
     }
 
-    .hero-content-modern h1 {
-      font-size: 4rem;
+    .hero-left {
+      animation: fadeInUp 0.8s ease-out;
+    }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.4rem 1rem;
+      background: rgba(30, 58, 138, 0.06);
+      border: 1px solid rgba(30, 58, 138, 0.15);
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--primary-blue);
+      margin-bottom: 1.5rem;
+      letter-spacing: 0.02em;
+    }
+
+    .hero-h1 {
+      font-size: 3.75rem;
       font-weight: 800;
+      line-height: 1.08;
       margin-bottom: 1.5rem;
       color: var(--gray-900);
-      line-height: 1.1;
     }
 
-    .hero-content-modern .subtitle {
-      font-size: 1.5rem;
-      color: var(--gray-600);
-      margin-bottom: 3rem;
-      max-width: 800px;
-      margin-left: auto;
-      margin-right: auto;
-      line-height: 1.6;
+    .hero-h1 .gradient-text {
+      background: linear-gradient(135deg, var(--primary-orange) 0%, var(--primary-blue) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
-    .hero-cta-buttons {
-      display: flex;
-      gap: 1.5rem;
-      justify-content: center;
-      margin-bottom: 4rem;
-    }
-
-    .trust-indicators {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 2rem;
-      max-width: 1000px;
-      margin: 0 auto;
-    }
-
-    .trust-item {
-      background: white;
-      padding: 2rem;
-      border-radius: var(--radius-xl);
-      box-shadow: var(--shadow-md);
-      text-align: center;
-      transition: transform var(--transition-base);
-    }
-
-    .trust-item:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-lg);
-    }
-
-    .trust-item .icon {
-      font-size: 3rem;
-      margin-bottom: 1rem;
-    }
-
-    .trust-item .value {
-      font-size: 2rem;
-      font-weight: 700;
-      color: #EB6711;
-      margin-bottom: 0.5rem;
-    }
-
-    .trust-item .label {
-      color: var(--gray-600);
-      font-size: 1rem;
-    }
-
-    .trust-item .icon {
-      color: #1E3A8A;
-      font-size: 3rem;
-      margin-bottom: 1rem;
-    }
-
-    .testimonials-section {
-      padding: 6rem 2rem;
-      background: white;
-    }
-
-    .section-header {
-      text-align: center;
-      margin-bottom: 4rem;
-    }
-
-    .section-header h2 {
-      font-size: 3rem;
-      margin-bottom: 1rem;
-      color: var(--gray-900);
-    }
-
-    .section-header p {
-      font-size: 1.25rem;
-      color: var(--gray-600);
-    }
-
-    .testimonials-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-      gap: 2rem;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    .testimonial-card {
-      background: var(--gray-50);
-      padding: 2rem;
-      border-radius: var(--radius-xl);
-      border-left: 4px solid var(--primary-blue);
-    }
-
-    .testimonial-text {
-      font-size: 1.125rem;
-      color: var(--gray-700);
-      margin-bottom: 1.5rem;
+    .hero-desc {
+      font-size: 1.2rem;
       line-height: 1.7;
-      font-style: italic;
+      color: var(--gray-600);
+      margin-bottom: 2.5rem;
+      max-width: 540px;
     }
 
-    .testimonial-author {
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .hero-trust {
       display: flex;
       align-items: center;
+      gap: 1.5rem;
+      font-size: 0.875rem;
+      color: var(--gray-500);
+    }
+
+    .hero-trust-item {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .hero-trust-item svg {
+      color: var(--primary-blue);
+    }
+
+    /* ── Bento Preview Cards ── */
+    .hero-right {
+      animation: fadeInUp 0.8s ease-out 0.3s backwards;
+    }
+
+    .bento-preview {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
       gap: 1rem;
     }
 
-    .author-avatar {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--primary-blue), var(--accent-purple));
+    .bento-card {
+      background: white;
+      border: 1px solid var(--gray-200);
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: var(--shadow-md);
+      transition: all 0.3s ease;
+    }
+
+    .bento-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-xl);
+      border-color: var(--primary-blue);
+    }
+
+    .bento-card.wide {
+      grid-column: 1 / -1;
+    }
+
+    .bento-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: white;
-      font-weight: 700;
       font-size: 1.25rem;
+      margin-bottom: 0.75rem;
     }
 
-    .author-info .name {
+    .bento-icon.orange {
+      background: rgba(235, 103, 17, 0.1);
+    }
+
+    .bento-icon.blue {
+      background: rgba(30, 58, 138, 0.08);
+    }
+
+    .bento-icon.purple {
+      background: rgba(139, 92, 246, 0.08);
+    }
+
+    .bento-icon.green {
+      background: rgba(16, 185, 129, 0.08);
+    }
+
+    .bento-title {
       font-weight: 600;
+      font-size: 0.95rem;
       color: var(--gray-900);
-      margin-bottom: 0.25rem;
+      margin-bottom: 0.35rem;
     }
 
-    .author-info .title {
-      font-size: 0.875rem;
+    .bento-desc {
+      font-size: 0.8rem;
+      color: var(--gray-500);
+      line-height: 1.5;
+    }
+
+    .bento-bar {
+      height: 6px;
+      border-radius: 3px;
+      background: var(--gray-200);
+      margin-top: 0.75rem;
+      overflow: hidden;
+    }
+
+    .bento-bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      background: linear-gradient(90deg, var(--primary-orange), var(--primary-blue));
+      animation: barGrow 2s ease-out forwards;
+    }
+
+    @keyframes barGrow {
+      from {
+        width: 0;
+      }
+    }
+
+    /* ── Social Proof ── */
+    .social-proof {
+      padding: 4rem 2rem;
+      text-align: center;
+      background: white;
+      border-top: 1px solid var(--gray-200);
+      border-bottom: 1px solid var(--gray-200);
+    }
+
+    .social-proof p {
+      font-size: 0.9rem;
+      color: var(--gray-400);
+      margin-bottom: 2rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-weight: 600;
+    }
+
+    .proof-logos {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 3rem;
+      flex-wrap: wrap;
+      opacity: 0.4;
+    }
+
+    .proof-logo {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--gray-600);
+      letter-spacing: 0.05em;
+    }
+
+    /* ── Feature Panels ── */
+    .feature-section {
+      padding: 6rem 2rem;
+    }
+
+    .feature-section:nth-child(odd) {
+      background: var(--gray-50);
+    }
+
+    .feature-section:nth-child(even) {
+      background: white;
+    }
+
+    .feature-row {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+
+    .feature-row.reverse .feature-visual {
+      order: -1;
+    }
+
+    .feature-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--primary-orange);
+      margin-bottom: 1rem;
+    }
+
+    .feature-heading {
+      font-size: 2.5rem;
+      font-weight: 800;
+      line-height: 1.15;
+      color: var(--gray-900);
+      margin-bottom: 1rem;
+    }
+
+    .feature-body {
+      font-size: 1.1rem;
+      line-height: 1.7;
+      color: var(--gray-600);
+      margin-bottom: 1.5rem;
+    }
+
+    .feature-checklist {
+      list-style: none;
+      padding: 0;
+    }
+
+    .feature-checklist li {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 0.95rem;
+      color: var(--gray-600);
+      margin-bottom: 0.6rem;
+    }
+
+    .feature-checklist li .check {
+      color: var(--accent-green);
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+
+    .feature-visual {
+      position: relative;
+    }
+
+    .feature-visual img {
+      width: 100%;
+      border-radius: 16px;
+      border: 1px solid var(--gray-200);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+    }
+
+    .feature-visual:hover img {
+      transform: scale(1.01);
+      transition: transform 0.3s;
+    }
+
+    /* ── Steps Section ── */
+    .steps-section {
+      padding: 6rem 2rem;
+      background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%);
+    }
+
+    .steps-header {
+      text-align: center;
+      max-width: 700px;
+      margin: 0 auto 4rem;
+    }
+
+    .steps-header h2 {
+      font-size: 2.75rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+    }
+
+    .steps-header p {
+      font-size: 1.15rem;
       color: var(--gray-600);
     }
 
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .step-card {
+      background: white;
+      border: 1px solid var(--gray-200);
+      border-radius: 20px;
+      padding: 2rem;
+      transition: all 0.3s;
+      box-shadow: var(--shadow-md);
+    }
+
+    .step-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-xl);
+      border-color: var(--primary-blue);
+    }
+
+    .step-number {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1.25rem;
+      margin-bottom: 1.25rem;
+      color: white;
+    }
+
+    .step-card:nth-child(1) .step-number {
+      background: var(--primary-orange);
+    }
+
+    .step-card:nth-child(2) .step-number {
+      background: var(--primary-blue);
+    }
+
+    .step-card:nth-child(3) .step-number {
+      background: var(--accent-purple);
+    }
+
+    .step-card h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--gray-900);
+    }
+
+    .step-card p {
+      font-size: 0.95rem;
+      color: var(--gray-500);
+      line-height: 1.6;
+    }
+
+    /* ── Security Banner ── */
+    .security-banner {
+      padding: 4rem 2rem;
+      background: linear-gradient(135deg, var(--primary-blue), var(--primary-blue-dark));
+      color: white;
+    }
+
+    .security-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 3rem;
+    }
+
+    .security-icon-wrap {
+      width: 80px;
+      height: 80px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      flex-shrink: 0;
+      animation: glowPulse 3s ease-in-out infinite;
+    }
+
+    .security-text h3 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: white;
+    }
+
+    .security-text p {
+      font-size: 1rem;
+      color: rgba(255, 255, 255, 0.85);
+      line-height: 1.6;
+    }
+
+    .security-badges {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .sec-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.35rem 0.8rem;
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: white;
+    }
+
+    /* ── FAQ ── */
     .faq-section {
       padding: 6rem 2rem;
       background: var(--gray-50);
     }
 
-    .faq-container {
-      max-width: 1000px;
+    .faq-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .faq-header h2 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 0.75rem;
+    }
+
+    .faq-header p {
+      color: var(--gray-600);
+      font-size: 1.1rem;
+    }
+
+    .faq-list {
+      max-width: 800px;
       margin: 0 auto;
     }
 
     .faq-item {
       background: white;
-      border-radius: var(--radius-lg);
-      margin-bottom: 1rem;
+      border: 1px solid var(--gray-200);
+      border-radius: 14px;
+      margin-bottom: 0.75rem;
       overflow: hidden;
       box-shadow: var(--shadow-sm);
     }
 
-    .faq-question {
-      padding: 1.5rem;
+    .faq-q {
+      padding: 1.25rem 1.5rem;
       cursor: pointer;
       display: flex;
       justify-content: space-between;
       align-items: center;
       font-weight: 600;
+      font-size: 1rem;
       color: var(--gray-900);
-      transition: background var(--transition-fast);
+      transition: background 0.2s;
     }
 
-    .faq-question:hover {
+    .faq-q:hover {
       background: var(--gray-50);
     }
 
-    .faq-question .icon {
-      font-size: 1.5rem;
+    .faq-q .arrow {
       color: var(--primary-blue);
-      transition: transform var(--transition-fast);
+      font-size: 1.25rem;
+      transition: transform 0.2s;
     }
 
-    .faq-item.active .faq-question .icon {
+    .faq-item.open .faq-q .arrow {
       transform: rotate(180deg);
     }
 
-    .faq-answer {
+    .faq-a {
       max-height: 0;
       overflow: hidden;
-      transition: max-height var(--transition-base);
+      transition: max-height 0.3s ease;
     }
 
-    .faq-item.active .faq-answer {
-      max-height: 500px;
+    .faq-item.open .faq-a {
+      max-height: 300px;
     }
 
-    .faq-answer-content {
-      padding: 0 1.5rem 1.5rem;
+    .faq-a-inner {
+      padding: 0 1.5rem 1.25rem;
       color: var(--gray-600);
       line-height: 1.7;
     }
 
-    .final-cta-section {
+    /* ── Final CTA ── */
+    .cta-section {
       padding: 6rem 2rem;
-      background: linear-gradient(135deg, var(--primary-blue), var(--primary-blue-dark));
-      color: white;
       text-align: center;
+      background: linear-gradient(135deg, #FFF7ED 0%, #EBF0FF 100%);
+      position: relative;
     }
 
-    .final-cta-section h2 {
-      font-size: 3rem;
+    .cta-section h2 {
+      font-size: 2.75rem;
+      font-weight: 800;
       margin-bottom: 1rem;
+    }
+
+    .cta-section p {
+      font-size: 1.15rem;
+      color: var(--gray-600);
+      margin-bottom: 2rem;
+    }
+
+    /* ── Footer ── */
+    .site-footer {
+      background: var(--gray-900);
+      padding: 4rem 2rem 2rem;
       color: white;
     }
 
-    .final-cta-section p {
-      font-size: 1.25rem;
-      margin-bottom: 2rem;
-      opacity: 0.9;
+    .footer-grid {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 3rem;
+      margin-bottom: 3rem;
     }
 
-    @media (max-width: 768px) {
-      .hero-content-modern h1 {
-        font-size: 2.5rem;
-      }
+    .footer-brand p {
+      color: var(--gray-400);
+      line-height: 1.7;
+      margin-top: 1rem;
+      font-size: 0.9rem;
+    }
 
-      .hero-content-modern .subtitle {
-        font-size: 1.125rem;
-      }
+    .footer-col h4 {
+      color: white;
+      margin-bottom: 1rem;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
 
-      .hero-cta-buttons {
-        flex-direction: column;
-      }
+    .footer-col a {
+      display: block;
+      color: var(--gray-400);
+      margin-bottom: 0.6rem;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
 
-      .trust-indicators {
+    .footer-col a:hover {
+      color: var(--primary-orange);
+    }
+
+    .footer-bottom {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      text-align: center;
+      color: var(--gray-500);
+      font-size: 0.85rem;
+    }
+
+    /* ── Scroll Reveal ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .hero-inner {
         grid-template-columns: 1fr;
-      }
-
-      .section-header h2 {
-        font-size: 2rem;
-      }
-
-      .testimonials-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .feature-block,
-      .feature-block.reverse {
-        flex-direction: column;
         text-align: center;
       }
 
-      .feature-showcase-section {
-        padding: 2rem;
+      .hero-desc {
+        margin-left: auto;
+        margin-right: auto;
       }
 
-      .feature-section-header {
+      .hero-actions {
+        justify-content: center;
+      }
+
+      .hero-trust {
+        justify-content: center;
+      }
+
+      .hero-right {
+        display: none;
+      }
+
+      .hero-h1 {
+        font-size: 2.75rem;
+      }
+
+      .feature-row,
+      .feature-row.reverse {
+        grid-template-columns: 1fr;
+      }
+
+      .feature-row.reverse .feature-visual {
+        order: 0;
+      }
+
+      .steps-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .security-inner {
         flex-direction: column;
-        gap: 1.5rem;
+        text-align: center;
       }
     }
 
-    .feature-showcase-section {
-      width: 100%;
-      margin: 4rem 0 6rem;
-      display: flex;
-      flex-direction: column;
-      gap: 3rem;
-    }
+    @media (max-width: 480px) {
+      .hero-h1 {
+        font-size: 2rem;
+      }
 
-    .feature-section-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 4rem;
-      margin-bottom: 2rem;
-      text-align: left;
-      background: linear-gradient(135deg, #1E3A8A, #1E40AF);
-      padding: 3rem;
-      border-radius: var(--radius-2xl);
-      color: white;
-      box-shadow: var(--shadow-lg);
-    }
+      .feature-heading {
+        font-size: 1.75rem;
+      }
 
-    .feature-section-header h2 {
-      font-size: 2rem;
-      flex: 1;
-      line-height: 1.3;
-      color: white;
-      margin-bottom: 0;
-    }
-
-    .feature-section-header p {
-      flex: 1;
-      font-size: 1rem;
-      color: rgba(255, 255, 255, 0.95);
-      line-height: 1.6;
-      margin-bottom: 0;
-    }
-
-    .feature-block {
-      display: flex;
-      align-items: center;
-      gap: 4rem;
-      text-align: left;
-    }
-
-    .feature-block.reverse {
-      flex-direction: row-reverse;
-    }
-
-    .feature-text {
-      flex: 1;
-    }
-
-    .feature-text h3 {
-      font-size: 2.25rem;
-      font-weight: 700;
-      color: var(--gray-900);
-      margin-bottom: 1rem;
-    }
-
-    .feature-text p {
-      font-size: 1.125rem;
-      color: var(--gray-600);
-      line-height: 1.6;
-      margin-bottom: 1.5rem;
-    }
-
-    .feature-image {
-      flex: 1.2;
-    }
-
-    .feature-image img {
-      width: 100%;
-      border-radius: var(--radius-xl);
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-      border: 8px solid rgba(255, 255, 255, 0.5);
-      transition: transform var(--transition-base);
-    }
-
-    .feature-image img:hover {
-      transform: scale(1.02);
+      .footer-grid {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
 
-<body>
-  <!-- Navigation -->
+<body style="background: white;">
+
+  <!-- ═══════ NAVBAR ═══════ -->
   <nav class="navbar">
     <div class="navbar-container">
-      <a href="index.html" class="logo" style="text-decoration: none; display: flex; align-items: center; gap: 0.5rem;">
-        <div class="logo-icon" style="background: #1e3a8a;">CE</div>
-        <span style="font-weight: 700; font-size: 1.25rem; color: #1e3a8a;">ComplianceAIexpert</span>
+      <a href="index.html" class="logo" style="text-decoration: none;">
+        <div class="logo-icon">CE</div>
+        <span style="font-weight: 700; font-size: 1.25rem; color: var(--primary-blue);">ComplianceAI<span
+            style="color: var(--primary-orange);">expert</span></span>
       </a>
       <ul class="nav-links">
         <li><a href="index.html">Home</a></li>
@@ -409,277 +775,312 @@
     </div>
   </nav>
 
-  <!-- Hero Section -->
-  <section class="hero-modern">
-    <div class="hero-content-modern">
-      <h1>Smart Compliance for Professionals</h1>
-      <p class="subtitle">The all-in-one platform for tax consultants, legal experts, and business advisors.
-        Automate your work and save hours every day. <strong>Your client data is secured and won't be stored with
-          us.</strong></p>
+  <!-- ═══════ HERO ═══════ -->
+  <section class="landing-hero">
+    <div class="hero-grid"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
 
-      <div class="hero-cta-buttons">
-        <a href="sign-in.html" class="btn btn-primary btn-large">Get Started →</a>
-        <a href="how-it-works.html" class="btn btn-secondary btn-large">See How It Works</a>
-      </div>
-
-      <!-- Feature Showcase -->
-      <!-- Feature Showcase -->
-      <div class="feature-showcase-section">
-
-        <div class="feature-section-header">
-          <h2>Designed for Professionals Who Need Both Control and Clarity.</h2>
-          <p>Manage filings, reports, and compliance workflows in Web View, while AI Expert View acts as your on-demand
-            compliance expert—answering questions and highlighting risks instantly</p>
+    <div class="hero-inner">
+      <div class="hero-left">
+        <div class="hero-tag">🔒 Zero Data Retention · Bank-Grade Security</div>
+        <h1 class="hero-h1">
+          Compliance,<br>
+          <span class="gradient-text">Reimagined with AI.</span>
+        </h1>
+        <p class="hero-desc">
+          The intelligent platform that helps Chartered Accountants and tax professionals automate GST filings,
+          generate certificates, and manage clients — all in one secure workspace.
+        </p>
+        <div class="hero-actions">
+          <a href="sign-in.html" class="btn btn-primary btn-large">Start Free →</a>
+          <a href="how-it-works.html" class="btn btn-secondary btn-large">See How It Works</a>
         </div>
-
-        <!-- Feature 1: Web View (Left Text, Right Image) -->
-        <div class="feature-block">
-          <div class="feature-text">
-            <h3>Web View Dashboard</h3>
-            <p>Experience a comprehensive work environment designed for speed and clarity.
-              Manage clients, track compliance status, and handle documents in a structured,
-              professional interface built for power users.</p>
-            <ul style="list-style: none; margin: 0; padding: 0; color: var(--gray-600);">
-              <li style="margin-bottom: 0.5rem">✨ <b>Structured Data Tables</b></li>
-              <li style="margin-bottom: 0.5rem">⚡ <b>Quick Actions & Filters</b></li>
-              <li style="margin-bottom: 0.5rem">📂 <b>Integrated Document Management</b></li>
-            </ul>
+        <div class="hero-trust">
+          <div class="hero-trust-item">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M8 0L10 5.5H16L11 9L13 15L8 11.5L3 15L5 9L0 5.5H6L8 0Z" />
+            </svg>
+            <span>Trusted by 500+ CAs</span>
           </div>
-          <div class="feature-image">
-            <img src="assets/webview_refined.png" alt="Web View Dashboard Interface"
-              style="max-width: 90%; margin: 0 auto; display: block;">
+          <div class="hero-trust-item">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+              <circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5" />
+              <path d="M5 8L7 10L11 6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+            <span>SOC 2 Compliant</span>
           </div>
-        </div>
-
-        <!-- Feature 2: AI View (Right Text, Left Image) -->
-        <div class="feature-block reverse">
-          <div class="feature-text">
-            <h3>AI Expert View</h3>
-            <p>Work naturally with your data using our intelligent conversational assistant.
-              Ask questions like "Who hasn't filed GST yet?" or "Summarize the tax liability for Acme"
-              and get instant, actionable answers.</p>
-            <ul style="list-style: none; margin: 0; padding: 0; color: var(--gray-600);">
-              <li style="margin-bottom: 0.5rem">💬 <b>Natural Language Queries</b></li>
-              <li style="margin-bottom: 0.5rem">🤖 <b>Instant Compliance Summaries</b></li>
-              <li style="margin-bottom: 0.5rem">🧬 <b>Context-Aware Assistance</b></li>
-            </ul>
-          </div>
-          <div class="feature-image">
-            <img src="assets/aiview_refined.png" alt="AI Expert Chat Interface"
-              style="max-width: 90%; margin: 0 auto; display: block;">
+          <div class="hero-trust-item">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M8 1L14 4V7.5C14 11 11.5 13.5 8 15C4.5 13.5 2 11 2 7.5V4L8 1Z" fill="none" stroke="currentColor"
+                stroke-width="1.5" />
+            </svg>
+            <span>Data Encrypted</span>
           </div>
         </div>
       </div>
 
-      <div class="section-header" style="margin-top: 6rem; margin-bottom: 3rem;">
-        <h2>An AI Platform that Understands Your Firm and Clients</h2>
-        <p style="font-size: 1.125rem; max-width: 900px; margin: 0 auto; line-height: 1.6;">ComplianceAIexpert goes
-          beyond conversational AI by providing a structured, firm-centric platform. Firms can maintain multiple client
-          accounts while the AI Expert delivers context-aware, client-specific compliance insights based on relevant
-          data, regulations, and engagement scope.</p>
-      </div>
-
-      <div class="trust-indicators">
-        <div class="trust-item">
-          <div class="icon">⚡</div>
-          <div class="value">Fast</div>
-          <div class="label" style="display: block;">
-            <span style="display: block; font-weight: 600; margin-bottom: 0.25rem;">Save 60% Time</span>
-            <span style="font-size: 0.9rem;">Automate routine data entry tasks</span>
+      <div class="hero-right">
+        <div class="bento-preview">
+          <div class="bento-card">
+            <div class="bento-icon orange">📊</div>
+            <div class="bento-title">GST Reconciliation</div>
+            <div class="bento-desc">Auto-match GSTR-1, 2B, 3B with one click</div>
+            <div class="bento-bar">
+              <div class="bento-bar-fill" style="width: 85%;"></div>
+            </div>
           </div>
-        </div>
-        <div class="trust-item">
-          <div class="icon">👥</div>
-          <div class="value">Easy</div>
-          <div class="label" style="display: block;">
-            <span style="display: block; font-weight: 600; margin-bottom: 0.25rem;">Client Management</span>
-            <span style="font-size: 0.9rem;">Organize all client files centrally</span>
+          <div class="bento-card">
+            <div class="bento-icon blue">🤖</div>
+            <div class="bento-title">AI Assistant</div>
+            <div class="bento-desc">Ask questions in natural language</div>
+            <div class="bento-bar">
+              <div class="bento-bar-fill" style="width: 72%;"></div>
+            </div>
           </div>
-        </div>
-        <div class="trust-item">
-          <div class="icon">🤖</div>
-          <div class="value">Smart</div>
-          <div class="label" style="display: block;">
-            <span style="display: block; font-weight: 600; margin-bottom: 0.25rem;">AI Assistance</span>
-            <span style="font-size: 0.9rem;">Proactive compliance alerts</span>
+          <div class="bento-card wide">
+            <div class="bento-icon green">📜</div>
+            <div class="bento-title">Certificate Generation</div>
+            <div class="bento-desc">Generate GST refund, ITC, export, and networth certificates from templates —
+              editable and exportable as PDF.</div>
           </div>
-        </div>
-        <div class="trust-item">
-          <div class="icon">🔒</div>
-          <div class="value">Safe</div>
-          <div class="label" style="display: block;">
-            <span style="display: block; font-weight: 600; margin-bottom: 0.25rem;">Secured Processing</span>
-            <span style="font-size: 0.9rem;">Client data is never stored on our servers</span>
+          <div class="bento-card">
+            <div class="bento-icon purple">🔗</div>
+            <div class="bento-title">Tally Integration</div>
+            <div class="bento-desc">One-click data sync</div>
           </div>
-        </div>
-        <div class="trust-item">
-          <div class="icon">🎯</div>
-          <div class="value">Accurate</div>
-          <div class="label" style="display: block;">
-            <span style="display: block; font-weight: 600; margin-bottom: 0.25rem;">Zero Errors</span>
-            <span style="font-size: 0.9rem;">Precision in tax calculations</span>
-          </div>
-        </div>
-        <div class="trust-item">
-          <div class="icon">🔄</div>
-          <div class="value">Integrated</div>
-          <div class="label" style="display: block;">
-            <span style="display: block; font-weight: 600; margin-bottom: 0.25rem;">Tally & Excel Sync</span>
-            <span style="font-size: 0.9rem;">Seamless one-click import</span>
+          <div class="bento-card">
+            <div class="bento-icon orange">👥</div>
+            <div class="bento-title">Client Manager</div>
+            <div class="bento-desc">Organize all client files</div>
           </div>
         </div>
       </div>
     </div>
   </section>
 
+  <!-- ═══════ SOCIAL PROOF ═══════ -->
+  <section class="social-proof">
+    <p>Built for professionals who demand accuracy</p>
+    <div class="proof-logos">
+      <span class="proof-logo">GST Council</span>
+      <span class="proof-logo">ICAI</span>
+      <span class="proof-logo">Tally ERP</span>
+      <span class="proof-logo">Government of India</span>
+    </div>
+  </section>
 
+  <!-- ═══════ FEATURE 1: Web View ═══════ -->
+  <section class="feature-section">
+    <div class="feature-row reveal">
+      <div class="feature-info">
+        <div class="feature-label">⚡ Structured Workflows</div>
+        <h2 class="feature-heading">A Dashboard Built for Speed and Precision</h2>
+        <p class="feature-body">Manage clients, track compliance deadlines, and handle documents in a structured,
+          professional interface. Everything your firm needs, organized for power users.</p>
+        <ul class="feature-checklist">
+          <li><span class="check">✓</span> Real-time compliance status tracking</li>
+          <li><span class="check">✓</span> Smart search & quick filters</li>
+          <li><span class="check">✓</span> Integrated document management</li>
+          <li><span class="check">✓</span> One-click export to Excel & PDF</li>
+        </ul>
+      </div>
+      <div class="feature-visual">
+        <img src="assets/webview_refined.png" alt="Web View Dashboard">
+      </div>
+    </div>
+  </section>
 
-  <!-- FAQ Section -->
+  <!-- ═══════ FEATURE 2: AI Expert ═══════ -->
+  <section class="feature-section">
+    <div class="feature-row reverse reveal">
+      <div class="feature-info">
+        <div class="feature-label">🤖 AI-Powered Intelligence</div>
+        <h2 class="feature-heading">Ask Your Data. Get Instant Answers.</h2>
+        <p class="feature-body">Interact with your compliance data using natural language. Ask "Who hasn't filed GST
+          yet?" or "Summarize Acme Corp's tax liability" and get instant, context-aware answers.</p>
+        <ul class="feature-checklist">
+          <li><span class="check">✓</span> Natural language queries</li>
+          <li><span class="check">✓</span> Context-aware client insights</li>
+          <li><span class="check">✓</span> Proactive compliance alerts</li>
+          <li><span class="check">✓</span> Powered by latest AI models</li>
+        </ul>
+      </div>
+      <div class="feature-visual">
+        <img src="assets/aiview_refined.png" alt="AI Expert View">
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════ HOW IT WORKS ═══════ -->
+  <section class="steps-section">
+    <div class="steps-header reveal">
+      <h2>Get Started in 3 Steps</h2>
+      <p>No complex setup required. Start automating your compliance workflow in minutes.</p>
+    </div>
+    <div class="steps-grid">
+      <div class="step-card reveal">
+        <div class="step-number">1</div>
+        <h3>Create Your Workspace</h3>
+        <p>Sign up and set up your firm profile. Add team members and configure your practice areas.</p>
+      </div>
+      <div class="step-card reveal">
+        <div class="step-number">2</div>
+        <h3>Connect Your Data</h3>
+        <p>Import data from Tally, upload Excel sheets, or connect directly to your GST portal for seamless sync.</p>
+      </div>
+      <div class="step-card reveal">
+        <div class="step-number">3</div>
+        <h3>Let AI Do the Work</h3>
+        <p>Run reconciliations, generate certificates, and get compliance insights — all powered by AI.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════ SECURITY BANNER ═══════ -->
+  <section class="security-banner reveal">
+    <div class="security-inner">
+      <div class="security-icon-wrap">🛡️</div>
+      <div class="security-text">
+        <h3>Your Client Data Never Leaves Your Control</h3>
+        <p>We process data in memory and never store client files on our servers. All communications are encrypted
+          end-to-end. Your data is yours — always.</p>
+        <div class="security-badges">
+          <span class="sec-badge">🔐 AES-256 Encryption</span>
+          <span class="sec-badge">🚫 Zero Data Retention</span>
+          <span class="sec-badge">🇮🇳 India-First Compliance</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════ FAQ ═══════ -->
   <section class="faq-section">
-    <div class="section-header">
-      <h2>Frequently Asked Questions</h2>
-      <p>Simple answers to your common questions</p>
+    <div class="faq-header reveal">
+      <h2>Common Questions</h2>
+      <p>Everything you need to know before getting started</p>
     </div>
-
-    <div class="faq-container">
+    <div class="faq-list">
       <div class="faq-item">
-        <div class="faq-question" onclick="toggleFAQ(this)">
-          <span>Who is this platform for?</span>
-          <span class="icon">▼</span>
+        <div class="faq-q" onclick="toggleFAQ(this)">
+          <span>Who is this platform designed for?</span>
+          <span class="arrow">▼</span>
         </div>
-        <div class="faq-answer">
-          <div class="faq-answer-content">
-            It's built for all finance and legal professionals in India. Whether you are a Tax Consultant, Business
-            Advisor, or part of a large firm, our tools help you manage your work easily.
-          </div>
+        <div class="faq-a">
+          <div class="faq-a-inner">ComplianceAI Expert is built for Chartered Accountants, tax consultants, legal
+            professionals, and financial advisors across India. Whether you're a solo practitioner or part of a large
+            firm, our platform scales with you.</div>
         </div>
       </div>
-
       <div class="faq-item">
-        <div class="faq-question" onclick="toggleFAQ(this)">
-          <span>What services do you offer?</span>
-          <span class="icon">▼</span>
+        <div class="faq-q" onclick="toggleFAQ(this)">
+          <span>Is my client data safe and private?</span>
+          <span class="arrow">▼</span>
         </div>
-        <div class="faq-answer">
-          <div class="faq-answer-content">
-            We help with GST refunds, tax filing, and general compliance tracking. Our smart system does the heavy
-            lifting so you can focus on your clients.
-          </div>
+        <div class="faq-a">
+          <div class="faq-a-inner">Absolutely. We use AES-256 encryption and never store client data on our servers. All
+            processing happens in-memory and data is discarded after your session. Your client's confidential
+            information remains confidential.</div>
         </div>
       </div>
-
       <div class="faq-item">
-        <div class="faq-question" onclick="toggleFAQ(this)">
-          <span>Is my client data safe?</span>
-          <span class="icon">▼</span>
+        <div class="faq-q" onclick="toggleFAQ(this)">
+          <span>Does it integrate with Tally?</span>
+          <span class="arrow">▼</span>
         </div>
-        <div class="faq-answer">
-          <div class="faq-answer-content">
-            Yes, absolutely. We use bank-level security to protect all your data. Your client's information is safe,
-            private, and confidential.
-          </div>
+        <div class="faq-a">
+          <div class="faq-a-inner">Yes! We have a native desktop connector that syncs directly with Tally Prime. Import
+            your financial data with a single click — no manual data entry, no errors.</div>
         </div>
       </div>
-
       <div class="faq-item">
-        <div class="faq-question" onclick="toggleFAQ(this)">
-          <span>Does it work with Tally?</span>
-          <span class="icon">▼</span>
+        <div class="faq-q" onclick="toggleFAQ(this)">
+          <span>What AI model powers the platform?</span>
+          <span class="arrow">▼</span>
         </div>
-        <div class="faq-answer">
-          <div class="faq-answer-content">
-            Yes! You can easily import your data from Tally. This makes moving your financial information quick and
-            error-free.
-          </div>
+        <div class="faq-a">
+          <div class="faq-a-inner">We use the latest GPT models combined with our proprietary compliance knowledge base.
+            The AI understands Indian tax law, GST regulations, and FEMA guidelines to provide accurate, context-aware
+            assistance.</div>
         </div>
       </div>
-
       <div class="faq-item">
-        <div class="faq-question" onclick="toggleFAQ(this)">
-          <span>What is the 'Semi-Chat' view?</span>
-          <span class="icon">▼</span>
+        <div class="faq-q" onclick="toggleFAQ(this)">
+          <span>Can I try it for free?</span>
+          <span class="arrow">▼</span>
         </div>
-        <div class="faq-answer">
-          <div class="faq-answer-content">
-            It's a special feature where you can work by just chatting with our AI. It guides you step-by-step, making
-            complex tasks feel like a simple conversation.
-          </div>
+        <div class="faq-a">
+          <div class="faq-a-inner">Yes! Sign up for a free account and explore the platform. No credit card required.
+            You'll get access to core features including client management, basic reconciliation tools, and AI
+            assistance.</div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Final CTA Section -->
-  <section class="final-cta-section">
-    <h2>Ready to Modernize Your Practice?</h2>
-    <p>Join hundreds of CAs who are already saving time and delivering better results</p>
-    <a href="sign-up.html" class="btn btn-large" style="background: white; color: #1E3A8A;">Get Started
-      Today →</a>
+  <!-- ═══════ FINAL CTA ═══════ -->
+  <section class="cta-section reveal">
+    <h2>Ready to Transform Your Practice?</h2>
+    <p>Join the growing community of CAs who save 60% of their compliance time</p>
+    <a href="sign-up.html" class="btn btn-primary btn-large">Get Started Free →</a>
   </section>
 
-  <!-- Footer -->
-  <footer style="background: var(--gray-900); color: white; padding: 4rem 2rem 2rem;">
-    <div class="container">
-      <div
-        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 3rem; margin-bottom: 3rem;">
-        <div>
-          <div class="logo" style="color: white; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
-            <div class="logo-icon" style="background: white; color: #0f172a;">CE</div>
-            <span style="font-weight: 700; font-size: 1.25rem;">ComplianceAIexpert</span>
-          </div>
-          <p style="color: var(--gray-400); line-height: 1.7;">Smart compliance decisions, powered by AI. Built for
-            modern professionals.</p>
-        </div>
-        <div>
-          <h4 style="margin-bottom: 1rem; color: white;">Product</h4>
-          <ul style="list-style: none;">
-            <li style="margin-bottom: 0.75rem;"><a href="features.html" style="color: var(--gray-400);">Features</a>
-            </li>
-            <li style="margin-bottom: 0.75rem;"><a href="pricing.html" style="color: var(--gray-400);">Pricing</a></li>
-            <li style="margin-bottom: 0.75rem;"><a href="how-it-works.html" style="color: var(--gray-400);">How It
-                Works</a></li>
-          </ul>
-        </div>
-        <div>
-          <h4 style="margin-bottom: 1rem; color: white;">Company</h4>
-          <ul style="list-style: none;">
-            <li style="margin-bottom: 0.75rem;"><a href="#" style="color: var(--gray-400);">About Us</a></li>
-            <li style="margin-bottom: 0.75rem;"><a href="#" style="color: var(--gray-400);">Contact</a></li>
-            <li style="margin-bottom: 0.75rem;"><a href="#" style="color: var(--gray-400);">Support</a></li>
-          </ul>
-        </div>
-        <div>
-          <h4 style="margin-bottom: 1rem; color: white;">Legal</h4>
-          <ul style="list-style: none;">
-            <li style="margin-bottom: 0.75rem;"><a href="#" style="color: var(--gray-400);">Privacy Policy</a></li>
-            <li style="margin-bottom: 0.75rem;"><a href="#" style="color: var(--gray-400);">Terms of Service</a></li>
-            <li style="margin-bottom: 0.75rem;"><a href="#" style="color: var(--gray-400);">Security</a></li>
-          </ul>
-        </div>
+  <!-- ═══════ FOOTER ═══════ -->
+  <footer class="site-footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="index.html" class="logo" style="text-decoration: none;">
+          <div class="logo-icon">CE</div>
+          <span style="font-weight: 700; font-size: 1.2rem; color: white;">ComplianceAI<span
+              style="color: var(--primary-orange);">expert</span></span>
+        </a>
+        <p>AI-powered compliance intelligence, built for the modern Indian professional. Secure, fast, and always
+          accurate.</p>
       </div>
-      <div
-        style="padding-top: 2rem; border-top: 1px solid var(--gray-800); text-align: center; color: var(--gray-400);">
-        <p>&copy; 2025 ComplianceAIexpert. All rights reserved.</p>
+      <div class="footer-col">
+        <h4>Product</h4>
+        <a href="features.html">Features</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="how-it-works.html">How It Works</a>
+        <a href="integrations.html">Integrations</a>
       </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="about-us.html">About Us</a>
+        <a href="contact-us.html">Contact</a>
+        <a href="#">Careers</a>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">Security</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 ComplianceAI Expert. All rights reserved. Made with 🤍 in India.</p>
     </div>
   </footer>
 
   <script>
-    function toggleFAQ(element) {
-      const faqItem = element.parentElement;
-      const isActive = faqItem.classList.contains('active');
-
-      // Close all FAQ items
-      document.querySelectorAll('.faq-item').forEach(item => {
-        item.classList.remove('active');
-      });
-
-      // Open clicked item if it wasn't active
-      if (!isActive) {
-        faqItem.classList.add('active');
-      }
+    function toggleFAQ(el) {
+      const item = el.parentElement;
+      const wasOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+      if (!wasOpen) item.classList.add('open');
     }
+
+    // Scroll Reveal
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    }, { threshold: 0.15 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
   </script>
+
 </body>
 
 </html>

@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Agents — ComplianceAI Expert</title>
+    <meta name="description"
+        content="Automate your CA practice with AI Agents. Auto-email clients, extract data from emails, read file attachments, and more.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            background: #f8fafc;
+            margin: 0;
+            min-height: 100vh
+        }
+
+        .ag-layout {
+            display: flex;
+            min-height: 100vh;
+            padding-top: 64px
+        }
+
+        .ag-sidebar {
+            width: 240px;
+            background: #fff;
+            border-right: 1px solid #e5e7eb;
+            position: fixed;
+            top: 64px;
+            bottom: 0;
+            left: 0;
+            display: flex;
+            flex-direction: column;
+            z-index: 90;
+            overflow-y: auto
+        }
+
+        .sb-section {
+            padding: 0.75rem 1rem
+        }
+
+        .sb-section-label {
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #9ca3af;
+            padding: 0.5rem 0.75rem;
+            margin-bottom: 0.15rem
+        }
+
+        .sb-item {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            padding: 0.55rem 0.75rem;
+            border-radius: 8px;
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: #4b5563;
+            cursor: pointer;
+            transition: all .2s;
+            text-decoration: none;
+            margin-bottom: 2px
+        }
+
+        .sb-item:hover {
+            background: #f1f5f9;
+            color: #1e3a8a
+        }
+
+        .sb-item.active {
+            background: #eff6ff;
+            color: #1e3a8a;
+            font-weight: 600
+        }
+
+        .sb-item svg {
+            flex-shrink: 0;
+            width: 17px;
+            height: 17px
+        }
+
+        .sb-badge {
+            margin-left: auto;
+            font-size: 0.65rem;
+            font-weight: 700;
+            background: #dbeafe;
+            color: #1e3a8a;
+            padding: 1px 7px;
+            border-radius: 10px
+        }
+
+        .sb-divider {
+            height: 1px;
+            background: #f1f5f9;
+            margin: 0.5rem 1rem
+        }
+
+        .ag-main {
+            margin-left: 240px;
+            flex: 1;
+            padding: 1.5rem 2rem 3rem
+        }
+
+        /* Breadcrumb */
+        .ag-breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.75rem;
+            color: #9ca3af;
+            margin-bottom: 1.25rem
+        }
+
+        .ag-breadcrumb a {
+            color: #6b7280;
+            text-decoration: none;
+            font-weight: 500
+        }
+
+        .ag-breadcrumb a:hover {
+            color: #1e3a8a
+        }
+
+        /* Page Header */
+        .ag-header {
+            margin-bottom: 1.75rem
+        }
+
+        .ag-header h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.65rem;
+            font-weight: 800;
+            color: #111827;
+            margin: 0 0 0.3rem
+        }
+
+        .ag-header h1 span {
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text
+        }
+
+        .ag-header p {
+            font-size: 0.85rem;
+            color: #6b7280;
+            margin: 0;
+            max-width: 600px;
+            line-height: 1.55
+        }
+
+        /* Stats */
+        .ag-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.75rem
+        }
+
+        .ag-stat {
+            background: #fff;
+            border: 1px solid #f1f5f9;
+            border-radius: 12px;
+            padding: 1rem 1.15rem;
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            transition: all .2s
+        }
+
+        .ag-stat:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 14px rgba(0, 0, 0, .05)
+        }
+
+        .ag-stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0
+        }
+
+        .ag-stat-num {
+            font-size: 1.35rem;
+            font-weight: 800;
+            font-family: 'Outfit', sans-serif;
+            color: #111827;
+            line-height: 1
+        }
+
+        .ag-stat-label {
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #9ca3af;
+            margin-top: 0.1rem
+        }
+
+        /* Section Label */
+        .section-label {
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 0.85rem
+        }
+
+        .section-label svg {
+            width: 18px;
+            height: 18px;
+            color: #6b7280
+        }
+
+        /* Agent Cards */
+        .agent-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem
+        }
+
+        .agent-card {
+            background: #fff;
+            border: 1px solid #f1f5f9;
+            border-radius: 14px;
+            padding: 1.5rem;
+            transition: all .25s;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer
+        }
+
+        .agent-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            opacity: 0;
+            transition: opacity .25s
+        }
+
+        .agent-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px -8px rgba(30, 58, 138, .12);
+            border-color: #e5e7eb
+        }
+
+        .agent-card:hover::before {
+            opacity: 1
+        }
+
+        .agent-card:nth-child(6n+1)::before {
+            background: linear-gradient(90deg, #1e3a8a, #3b82f6)
+        }
+
+        .agent-card:nth-child(6n+2)::before {
+            background: linear-gradient(90deg, #059669, #34d399)
+        }
+
+        .agent-card:nth-child(6n+3)::before {
+            background: linear-gradient(90deg, #d97706, #fbbf24)
+        }
+
+        .agent-card:nth-child(6n+4)::before {
+            background: linear-gradient(90deg, #dc2626, #f87171)
+        }
+
+        .agent-card:nth-child(6n+5)::before {
+            background: linear-gradient(90deg, #7c3aed, #a78bfa)
+        }
+
+        .agent-card:nth-child(6n+6)::before {
+            background: linear-gradient(90deg, #0891b2, #22d3ee)
+        }
+
+        .agent-top {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.85rem;
+            margin-bottom: 0.85rem
+        }
+
+        .agent-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            flex-shrink: 0
+        }
+
+        .agent-info h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0 0 0.15rem
+        }
+
+        .agent-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-size: 0.62rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 10px
+        }
+
+        .status-active {
+            background: #ecfdf5;
+            color: #059669
+        }
+
+        .status-beta {
+            background: #eff6ff;
+            color: #1e3a8a
+        }
+
+        .status-soon {
+            background: #fef3c7;
+            color: #d97706
+        }
+
+        .agent-desc {
+            font-size: 0.78rem;
+            color: #6b7280;
+            line-height: 1.55;
+            margin-bottom: 1rem;
+            min-height: 3rem
+        }
+
+        .agent-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.3rem;
+            margin-bottom: 1rem
+        }
+
+        .agent-tag {
+            font-size: 0.65rem;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 6px;
+            background: #f1f5f9;
+            color: #64748b
+        }
+
+        .agent-card-divider {
+            height: 1px;
+            background: #f1f5f9;
+            margin: 0 -1.5rem 0.85rem
+        }
+
+        .agent-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem
+        }
+
+        .agent-btn {
+            flex: 1;
+            padding: 0.55rem;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.78rem;
+            cursor: pointer;
+            text-align: center;
+            transition: all .2s;
+            font-family: 'Inter', sans-serif;
+            text-decoration: none;
+            display: block
+        }
+
+        .agent-btn-primary {
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: #fff
+        }
+
+        .agent-btn-primary:hover {
+            box-shadow: 0 4px 14px rgba(30, 58, 138, .3);
+            transform: translateY(-1px)
+        }
+
+        .agent-btn-secondary {
+            background: #f1f5f9;
+            color: #374151;
+            border: 1px solid #e5e7eb
+        }
+
+        .agent-btn-secondary:hover {
+            background: #e5e7eb
+        }
+
+        .agent-btn:disabled,
+        .agent-btn-disabled {
+            opacity: .5;
+            cursor: not-allowed;
+            pointer-events: none
+        }
+
+        /* How It Works */
+        .hiw-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem
+        }
+
+        .hiw-card {
+            background: #fff;
+            border: 1px solid #f1f5f9;
+            border-radius: 12px;
+            padding: 1.15rem;
+            text-align: center;
+            transition: all .2s
+        }
+
+        .hiw-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 14px rgba(0, 0, 0, .04)
+        }
+
+        .hiw-num {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: #fff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.78rem;
+            font-weight: 800;
+            font-family: 'Outfit', sans-serif;
+            margin-bottom: 0.65rem
+        }
+
+        .hiw-card h4 {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0 0 0.2rem
+        }
+
+        .hiw-card p {
+            font-size: 0.72rem;
+            color: #6b7280;
+            line-height: 1.45;
+            margin: 0
+        }
+
+        /* CTA */
+        .ag-cta {
+            background: linear-gradient(135deg, #0f172a, #1e3a8a);
+            border-radius: 16px;
+            padding: 2rem 2.5rem;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+            margin-bottom: 2rem
+        }
+
+        .ag-cta h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 800;
+            margin: 0 0 0.3rem
+        }
+
+        .ag-cta p {
+            font-size: 0.82rem;
+            opacity: .8;
+            margin: 0;
+            max-width: 500px;
+            line-height: 1.5
+        }
+
+        .ag-cta-btn {
+            padding: 0.65rem 1.5rem;
+            background: #fff;
+            color: #1e3a8a;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all .2s;
+            font-family: 'Inter', sans-serif;
+            flex-shrink: 0
+        }
+
+        .ag-cta-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 14px rgba(255, 255, 255, .3)
+        }
+
+        @keyframes statusPulse {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: .5
+            }
+        }
+
+        .status-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: currentColor;
+            animation: statusPulse 2s ease-in-out infinite
+        }
+
+        @media(max-width:1100px) {
+            .ag-stats {
+                grid-template-columns: 1fr 1fr
+            }
+
+            .hiw-grid {
+                grid-template-columns: 1fr 1fr
+            }
+        }
+
+        @media(max-width:768px) {
+            .ag-sidebar {
+                display: none
+            }
+
+            .ag-main {
+                margin-left: 0
+            }
+
+            .ag-stats {
+                grid-template-columns: 1fr 1fr
+            }
+
+            .agent-grid {
+                grid-template-columns: 1fr
+            }
+
+            .hiw-grid {
+                grid-template-columns: 1fr
+            }
+
+            .ag-cta {
+                flex-direction: column;
+                text-align: center
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app-topbar" data-active="dashboard"></div>
+    <script src="app-topbar.js"></script>
+
+    <div class="ag-layout">
+        <!-- ══ LEFT SIDEBAR ══ -->
+        <aside class="ag-sidebar">
+            <div class="sb-section">
+                <div class="sb-section-label">Main</div>
+                <a href="clients.html" class="sb-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7" rx="1" />
+                        <rect x="14" y="3" width="7" height="7" rx="1" />
+                        <rect x="3" y="14" width="7" height="7" rx="1" />
+                        <rect x="14" y="14" width="7" height="7" rx="1" />
+                    </svg>
+                    Dashboard
+                </a>
+                <a href="#" class="sb-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                        <circle cx="9" cy="7" r="4" />
+                        <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                    </svg>
+                    Clients
+                </a>
+                <a href="ai-agents.html" class="sb-item active">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 8V4H8" />
+                        <rect x="2" y="2" width="20" height="8" rx="2" />
+                        <rect x="2" y="14" width="20" height="8" rx="2" />
+                        <path d="M6 18h.01" />
+                        <path d="M10 18h.01" />
+                        <path d="M6 6h.01" />
+                        <path d="M10 6h.01" />
+                    </svg>
+                    AI Agents
+                    <span class="sb-badge"
+                        style="background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff">NEW</span>
+                </a>
+            </div>
+            <div class="sb-divider"></div>
+            <div class="sb-section">
+                <div class="sb-section-label">Services</div>
+                <a href="ca-certificates.html" class="sb-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                        <polyline points="14 2 14 8 20 8" />
+                    </svg>
+                    CA Certificates
+                </a>
+                <a href="agreements.html" class="sb-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                        <polyline points="14 2 14 8 20 8" />
+                        <line x1="16" y1="13" x2="8" y2="13" />
+                        <line x1="16" y1="17" x2="8" y2="17" />
+                    </svg>
+                    Agreements
+                </a>
+                <a href="ai-gpt.html" class="sb-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2a3 3 0 0 0-3 3v4a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z" />
+                        <path d="M19 10v1a7 7 0 0 1-14 0v-1" />
+                        <line x1="12" y1="19" x2="12" y2="22" />
+                    </svg>
+                    AI GPT
+                </a>
+                <a href="tool-document-reader.html" class="sb-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+                        <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+                    </svg>
+                    Doc Reader
+                </a>
+                <a href="tool-hsn-locator.html" class="sb-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8" />
+                        <path d="m21 21-4.3-4.3" />
+                    </svg>
+                    HSN Lookup
+                </a>
+            </div>
+            <div class="sb-divider"></div>
+            <div class="sb-section">
+                <div class="sb-section-label">Other</div>
+                <a href="about-us.html" class="sb-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M12 16v-4" />
+                        <path d="M12 8h.01" />
+                    </svg>
+                    About Us
+                </a>
+                <a href="contact-us.html" class="sb-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                        <polyline points="22,6 12,13 2,6" />
+                    </svg>
+                    Contact
+                </a>
+                <a href="integrations.html" class="sb-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3" />
+                        <path
+                            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9v1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                    </svg>
+                    Settings
+                </a>
+            </div>
+        </aside>
+
+        <!-- ══ MAIN CONTENT ══ -->
+        <main class="ag-main">
+            <!-- Breadcrumb -->
+            <div class="ag-breadcrumb">
+                <a href="clients.html">Firm</a><span style="color:#d1d5db">›</span>
+                <span style="color:#374151;font-weight:600">AI Agents</span>
+            </div>
+
+            <!-- Page Header -->
+            <div class="ag-header">
+                <h1>AI <span>Agents</span></h1>
+                <p>Automate repetitive tasks with intelligent AI agents. From sending emails to reading attachments and
+                    extracting data — let AI handle the busy work while you focus on advisory.</p>
+            </div>
+
+            <!-- Stats -->
+            <div class="ag-stats">
+                <div class="ag-stat">
+                    <div class="ag-stat-icon" style="background:#eff6ff;color:#1e3a8a">🤖</div>
+                    <div>
+                        <div class="ag-stat-num">6</div>
+                        <div class="ag-stat-label">AI Agents</div>
+                    </div>
+                </div>
+                <div class="ag-stat">
+                    <div class="ag-stat-icon" style="background:#ecfdf5;color:#059669">⚡</div>
+                    <div>
+                        <div class="ag-stat-num">3</div>
+                        <div class="ag-stat-label">Active Now</div>
+                    </div>
+                </div>
+                <div class="ag-stat">
+                    <div class="ag-stat-icon" style="background:#fef3c7;color:#d97706">🔄</div>
+                    <div>
+                        <div class="ag-stat-num" style="font-size:1rem">Always On</div>
+                        <div class="ag-stat-label">24/7 Automation</div>
+                    </div>
+                </div>
+                <div class="ag-stat">
+                    <div class="ag-stat-icon" style="background:#f5f3ff;color:#7c3aed">🔐</div>
+                    <div>
+                        <div class="ag-stat-num" style="font-size:1rem">Secure</div>
+                        <div class="ag-stat-label">End-to-End</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- How It Works -->
+            <div class="section-label">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M12 16v-4" />
+                    <path d="M12 8h.01" />
+                </svg>
+                How AI Agents Work
+            </div>
+            <div class="hiw-grid">
+                <div class="hiw-card">
+                    <div class="hiw-num">1</div>
+                    <h4>Select an Agent</h4>
+                    <p>Choose the right AI agent for your task from our curated collection.</p>
+                </div>
+                <div class="hiw-card">
+                    <div class="hiw-num">2</div>
+                    <h4>Configure Rules</h4>
+                    <p>Set triggers, filters, and preferences. Define when and how the agent acts.</p>
+                </div>
+                <div class="hiw-card">
+                    <div class="hiw-num">3</div>
+                    <h4>Agent Executes</h4>
+                    <p>The AI autonomously performs the task — sending emails, reading docs, extracting data.</p>
+                </div>
+                <div class="hiw-card">
+                    <div class="hiw-num">4</div>
+                    <h4>Review Results</h4>
+                    <p>Get detailed logs and summaries. Approve, edit, or let the agent continue.</p>
+                </div>
+            </div>
+
+            <!-- Agent Cards -->
+            <div class="section-label">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 8V4H8" />
+                    <rect x="2" y="2" width="20" height="8" rx="2" />
+                    <rect x="2" y="14" width="20" height="8" rx="2" />
+                </svg>
+                Available AI Agents
+            </div>
+            <div class="agent-grid">
+                <!-- Auto Email Agent -->
+                <div class="agent-card">
+                    <div class="agent-top">
+                        <div class="agent-icon" style="background:linear-gradient(135deg,#eff6ff,#dbeafe)">📧</div>
+                        <div class="agent-info">
+                            <h3>Auto Email Agent</h3>
+                            <span class="agent-status status-active"><span class="status-dot"></span> Active</span>
+                        </div>
+                    </div>
+                    <p class="agent-desc">Automatically compose and send professional emails to clients — reminders,
+                        follow-ups, document requests, and compliance notifications.</p>
+                    <div class="agent-tags">
+                        <span class="agent-tag">Email Automation</span>
+                        <span class="agent-tag">Reminders</span>
+                        <span class="agent-tag">Follow-ups</span>
+                    </div>
+                    <div class="agent-card-divider"></div>
+                    <div class="agent-actions">
+                        <a href="agent-config.html?agent=auto-email" class="agent-btn agent-btn-primary">Launch Agent
+                            →</a>
+                    </div>
+                </div>
+
+                <!-- Email Extractor Agent -->
+                <div class="agent-card">
+                    <div class="agent-top">
+                        <div class="agent-icon" style="background:linear-gradient(135deg,#ecfdf5,#d1fae5)">📬</div>
+                        <div class="agent-info">
+                            <h3>Email Extractor Agent</h3>
+                            <span class="agent-status status-active"><span class="status-dot"></span> Active</span>
+                        </div>
+                    </div>
+                    <p class="agent-desc">Connect to client email accounts and intelligently extract specific types of
+                        emails — invoices, bank statements, tax notices, and compliance docs.</p>
+                    <div class="agent-tags">
+                        <span class="agent-tag">Email Parsing</span>
+                        <span class="agent-tag">Data Extraction</span>
+                        <span class="agent-tag">Filtering</span>
+                    </div>
+                    <div class="agent-card-divider"></div>
+                    <div class="agent-actions">
+                        <a href="agent-config.html?agent=email-extractor" class="agent-btn agent-btn-primary">Launch
+                            Agent →</a>
+                    </div>
+                </div>
+
+                <!-- Attachment Reader Agent -->
+                <div class="agent-card">
+                    <div class="agent-top">
+                        <div class="agent-icon" style="background:linear-gradient(135deg,#fffbeb,#fef3c7)">📎</div>
+                        <div class="agent-info">
+                            <h3>Attachment Reader Agent</h3>
+                            <span class="agent-status status-active"><span class="status-dot"></span> Active</span>
+                        </div>
+                    </div>
+                    <p class="agent-desc">Automatically reads and processes file attachments from emails — PDFs, Excel
+                        sheets, images. Extracts key data using OCR and AI summarization.</p>
+                    <div class="agent-tags">
+                        <span class="agent-tag">OCR</span>
+                        <span class="agent-tag">PDF Reader</span>
+                        <span class="agent-tag">Data Extraction</span>
+                    </div>
+                    <div class="agent-card-divider"></div>
+                    <div class="agent-actions">
+                        <a href="agent-config.html?agent=attachment-reader" class="agent-btn agent-btn-primary">Launch
+                            Agent →</a>
+                    </div>
+                </div>
+
+                <!-- Document Classifier Agent -->
+                <div class="agent-card">
+                    <div class="agent-top">
+                        <div class="agent-icon" style="background:linear-gradient(135deg,#fef2f2,#fecaca)">🗂️</div>
+                        <div class="agent-info">
+                            <h3>Document Classifier Agent</h3>
+                            <span class="agent-status status-beta"><span class="status-dot"></span> Beta</span>
+                        </div>
+                    </div>
+                    <p class="agent-desc">AI-powered document sorting that automatically classifies incoming documents
+                        into categories — invoices, contracts, notices, returns, and more.</p>
+                    <div class="agent-tags">
+                        <span class="agent-tag">Classification</span>
+                        <span class="agent-tag">Sorting</span>
+                        <span class="agent-tag">Organization</span>
+                    </div>
+                    <div class="agent-card-divider"></div>
+                    <div class="agent-actions">
+                        <a href="agent-config.html?agent=doc-classifier" class="agent-btn agent-btn-primary">Try Beta
+                            →</a>
+                    </div>
+                </div>
+
+                <!-- Compliance Reminder Agent -->
+                <div class="agent-card">
+                    <div class="agent-top">
+                        <div class="agent-icon" style="background:linear-gradient(135deg,#f5f3ff,#ede9fe)">🔔</div>
+                        <div class="agent-info">
+                            <h3>Compliance Reminder Agent</h3>
+                            <span class="agent-status status-beta"><span class="status-dot"></span> Beta</span>
+                        </div>
+                    </div>
+                    <p class="agent-desc">Never miss a filing deadline. This agent tracks GST, IT, ROC, and TDS due
+                        dates and sends automated reminders to clients and your team.</p>
+                    <div class="agent-tags">
+                        <span class="agent-tag">Deadlines</span>
+                        <span class="agent-tag">GST</span>
+                        <span class="agent-tag">Income Tax</span>
+                    </div>
+                    <div class="agent-card-divider"></div>
+                    <div class="agent-actions">
+                        <a href="agent-config.html?agent=compliance-reminder" class="agent-btn agent-btn-primary">Try
+                            Beta →</a>
+                    </div>
+                </div>
+
+                <!-- Data Reconciliation Agent -->
+                <div class="agent-card">
+                    <div class="agent-top">
+                        <div class="agent-icon" style="background:linear-gradient(135deg,#f0fdfa,#ccfbf1)">📊</div>
+                        <div class="agent-info">
+                            <h3>Data Reconciliation Agent</h3>
+                            <span class="agent-status status-soon">Coming Soon</span>
+                        </div>
+                    </div>
+                    <p class="agent-desc">Automatically reconcile GSTR-2B vs purchase register, bank statements vs
+                        books, and flag mismatches with AI-powered analysis.</p>
+                    <div class="agent-tags">
+                        <span class="agent-tag">Reconciliation</span>
+                        <span class="agent-tag">GSTR Matching</span>
+                        <span class="agent-tag">Bank Recon</span>
+                    </div>
+                    <div class="agent-card-divider"></div>
+                    <div class="agent-actions">
+                        <span class="agent-btn agent-btn-secondary agent-btn-disabled">Coming Soon</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CTA -->
+            <div class="ag-cta">
+                <div>
+                    <h3>🚀 Want a Custom AI Agent?</h3>
+                    <p>Tell us what repetitive task you want automated. Our team will build a custom AI agent tailored
+                        to your CA practice workflow.</p>
+                </div>
+                <a href="contact-us.html" class="ag-cta-btn" style="text-decoration:none">Request Custom Agent</a>
+            </div>
+        </main>
+    </div>
+
+    <script src="api_config.js"></script>
+    <script src="session-manager.js?v=2"></script>
+    <script>if (!requireAuth()) { }</script>
+</body>
+
+</html>

@@ -4,408 +4,1055 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>How It Works - Compliance AI Expert</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>How It Works — ComplianceAI Expert | AI Compliance Software for CAs, Lawyers & Tax Professionals in India
+    </title>
+    <meta name="description"
+        content="Learn how ComplianceAI Expert uses agentic AI to automate GST filing, income tax, audit compliance, CA certificates, and data entry for Chartered Accountants, lawyers, and tax professionals in India. Web View, AI Expert View, AI agents, client management, and enterprise-grade security.">
+    <meta name="keywords"
+        content="AI compliance software India, AI tool for Chartered Accountants, AI for CAs, AI for lawyers India, GST automation software, income tax AI tool, audit compliance AI, CA practice management software, AI tax filing India, agentic AI compliance, AI GPT for tax, CA certificate generator AI, compliance automation platform, best AI tool for CA firms India, AI-powered GST reconciliation, Tally integration AI, AI document reader GST, practice management software India">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="ComplianceAI Expert">
+    <link rel="canonical" href="https://complianceaiexpert.com/how-it-works.html">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="How ComplianceAI Expert Works — AI Compliance Platform for CAs & Lawyers">
+    <meta property="og:description"
+        content="Discover how agentic AI transforms compliance workflows for Chartered Accountants, lawyers, and tax professionals in India. GST, Income Tax, Audit, Certificates — all automated.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://complianceaiexpert.com/how-it-works.html">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="How ComplianceAI Expert Works — AI for CAs & Tax Professionals">
+    <meta name="twitter:description"
+        content="AI-powered compliance automation for Indian professionals. GST filing, reconciliation, certificates, audit — automated with agentic AI.">
+
+    <!-- Structured Data — SoftwareApplication -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "ComplianceAI Expert",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web",
+      "description": "AI-powered compliance automation platform for Chartered Accountants, lawyers, and tax professionals in India. Automates GST filing, income tax, audit compliance, CA certificates, and more using agentic AI.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "INR",
+        "description": "Free trial available"
+      },
+      "featureList": [
+        "GST Reconciliation & Filing",
+        "Income Tax Automation",
+        "Audit Compliance",
+        "CA Certificate Generator",
+        "AI Document Reader",
+        "AI GPT for Tax Queries",
+        "Tally Integration",
+        "Client Management",
+        "AI Agents for Workflow Automation"
+      ],
+      "audience": {
+        "@type": "Audience",
+        "audienceType": "Chartered Accountants, Tax Professionals, Lawyers, CA Firms, Accounting Firms"
+      }
+    }
+    </script>
+
+    <!-- Structured Data — HowTo -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "HowTo",
+      "name": "How to use ComplianceAI Expert for compliance automation",
+      "description": "Get started with ComplianceAI Expert in 4 simple steps — onboard clients, choose your view, deploy AI agents, and automate compliance.",
+      "step": [
+        {"@type": "HowToStep", "name": "Onboard Your Clients", "text": "Add clients, import data from Tally, and organize your firm's portfolio with client-level permissions and settings."},
+        {"@type": "HowToStep", "name": "Choose Your View", "text": "Pick Web View for structured workflows or AI Expert View for intelligent, AI-driven automation."},
+        {"@type": "HowToStep", "name": "Deploy AI Agents", "text": "Configure autonomous AI agents for auto-emails, document reading, smart filing, and data extraction."},
+        {"@type": "HowToStep", "name": "Review & Deliver", "text": "Review AI-generated outputs, approve with confidence, and deliver faster to your clients."}
+      ]
+    }
+    </script>
+
+    <!-- Structured Data — FAQ -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {"@type": "Question", "name": "What is ComplianceAI Expert?", "acceptedAnswer": {"@type": "Answer", "text": "ComplianceAI Expert is an AI-powered compliance automation platform for Chartered Accountants, lawyers, and tax professionals in India. It automates GST filing, income tax, audit, CA certificates, agreements, and more."}},
+        {"@type": "Question", "name": "How does agentic AI work in ComplianceAI?", "acceptedAnswer": {"@type": "Answer", "text": "Our agentic AI autonomously reads documents, extracts data, reconciles records, and generates compliance outputs without step-by-step human instruction. You supervise, AI executes."}},
+        {"@type": "Question", "name": "Is ComplianceAI suitable for lawyers?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. ComplianceAI supports agreement templates, FEMA compliance, company law documentation, and AI-powered document analysis relevant to legal professionals."}},
+        {"@type": "Question", "name": "Is my data secure on ComplianceAI?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. We use AES-256 encryption, role-based access control, SOC 2 aligned practices, and data residency in India to ensure enterprise-grade security."}}
+      ]
+    }
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@700;800&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap"
         rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
     <style>
-        .how-hero {
-            padding: 8rem 2rem 4rem;
-            background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%);
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            background: #fff;
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            color: #1e293b
+        }
+
+        /* Hero */
+        .hero {
+            padding: 5.5rem 2rem 2rem;
             text-align: center;
+            background: #fff;
+            position: relative
         }
 
-        .how-hero h1 {
-            font-size: 3.5rem;
-            margin-bottom: 1rem;
-            color: var(--gray-900);
+        .hero-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.3rem 0.9rem;
+            background: #eff6ff;
+            border: 1px solid #dbeafe;
+            border-radius: 999px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: #1e3a8a;
+            margin-bottom: 1rem
         }
 
-        .how-hero p {
-            font-size: 1.25rem;
-            color: var(--gray-600);
-            max-width: 700px;
+        .hero h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin: 0 0 0.75rem;
+            letter-spacing: -0.02em;
+            line-height: 1.15;
+            color: #111827
+        }
+
+        .hero h1 span {
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text
+        }
+
+        .hero p {
+            font-size: 1.05rem;
+            color: #6b7280;
+            max-width: 680px;
+            margin: 0 auto 1.25rem;
+            line-height: 1.65
+        }
+
+        .hero-badges {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0.5rem
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.35rem 0.85rem;
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: #475569
+        }
+
+        /* Section */
+        .section {
+            padding: 2.5rem 2rem;
+            max-width: 1100px;
+            margin: 0 auto
+        }
+
+        .section-alt {
+            background: #f9fafb;
+            padding: 2.5rem 2rem
+        }
+
+        .section-alt .section-inner {
+            max-width: 1100px;
+            margin: 0 auto
+        }
+
+        .section-head {
+            text-align: center;
+            margin-bottom: 1.75rem
+        }
+
+        .section-head .tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.25rem 0.75rem;
+            background: #eff6ff;
+            border: 1px solid #dbeafe;
+            border-radius: 999px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-bottom: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: .04em
+        }
+
+        .section-head h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.85rem;
+            font-weight: 800;
+            color: #111827;
+            margin: 0 0 0.4rem;
+            letter-spacing: -0.01em
+        }
+
+        .section-head h2 span {
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text
+        }
+
+        .section-head p {
+            font-size: 0.88rem;
+            color: #6b7280;
+            max-width: 560px;
             margin: 0 auto;
+            line-height: 1.6
         }
 
-        .steps-section {
-            padding: 6rem 2rem;
-            background: white;
-        }
-
-        .steps-container {
-            max-width: 1000px;
-            margin: 0 auto;
+        /* Steps */
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem
         }
 
         .step {
-            display: grid;
-            grid-template-columns: 100px 1fr;
-            gap: 3rem;
-            margin-bottom: 4rem;
+            text-align: center;
+            padding: 1.5rem 1rem;
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
             position: relative;
+            transition: all .2s
         }
 
-        .step:not(:last-child)::after {
-            content: '';
-            position: absolute;
-            left: 50px;
-            top: 100px;
-            bottom: -4rem;
-            width: 2px;
-            background: var(--gray-200);
+        .step:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, .05)
         }
 
-        .step-number {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary-blue), var(--primary-blue-dark));
-            color: white;
+        .step-num {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: #fff;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            font-size: 1.1rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 3rem;
-            font-weight: 800;
-            box-shadow: var(--shadow-lg);
-            position: relative;
-            z-index: 1;
+            margin: 0 auto .85rem
         }
 
-        .step-content h2 {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-            color: var(--gray-900);
+        .step h3 {
+            font-size: .88rem;
+            font-weight: 700;
+            color: #111827;
+            margin: 0 0 .3rem
         }
 
-        .step-content p {
-            font-size: 1.125rem;
-            color: var(--gray-600);
-            line-height: 1.7;
-            margin-bottom: 1.5rem;
+        .step p {
+            font-size: .75rem;
+            color: #6b7280;
+            line-height: 1.55;
+            margin: 0
         }
 
-        .step-features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
+        .step-arrow {
+            position: absolute;
+            right: -1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #d1d5db;
+            font-size: 1.2rem;
+            font-weight: 700
         }
 
-        .step-feature {
-            background: var(--gray-50);
-            padding: 1rem;
-            border-radius: var(--radius-lg);
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .step-feature .icon {
-            font-size: 1.5rem;
-        }
-
-        .views-section {
-            padding: 6rem 2rem;
-            background: var(--gray-50);
-        }
-
-        .views-container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .section-title {
-            text-align: center;
-            font-size: 2.5rem;
-            margin-bottom: 3rem;
-            color: var(--gray-900);
-        }
-
+        /* Views Grid */
         .views-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
-            gap: 3rem;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem
         }
 
         .view-card {
-            background: white;
-            border-radius: var(--radius-2xl);
-            padding: 3rem;
-            box-shadow: var(--shadow-xl);
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            padding: 1.75rem;
+            transition: all .2s;
+            position: relative;
+            overflow: hidden
         }
 
-        .view-card .icon {
-            font-size: 4rem;
-            margin-bottom: 1.5rem;
+        .view-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, .05)
+        }
+
+        .view-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px
+        }
+
+        .view-card.web::before {
+            background: linear-gradient(90deg, #1e3a8a, #3b82f6)
+        }
+
+        .view-card.ai::before {
+            background: linear-gradient(90deg, #7c3aed, #a78bfa)
+        }
+
+        .view-tag {
+            display: inline-flex;
+            padding: .2rem .55rem;
+            border-radius: 5px;
+            font-size: .6rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .04em;
+            margin-bottom: .65rem
+        }
+
+        .view-card.web .view-tag {
+            background: #eff6ff;
+            color: #1e3a8a
+        }
+
+        .view-card.ai .view-tag {
+            background: #f5f3ff;
+            color: #7c3aed
         }
 
         .view-card h3 {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-            color: var(--gray-900);
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #111827;
+            margin: 0 0 .15rem
         }
 
-        .view-card .subtitle {
-            font-size: 1.125rem;
-            color: var(--primary-blue);
-            margin-bottom: 1.5rem;
+        .view-card .view-sub {
+            font-size: .78rem;
             font-weight: 600;
+            margin: 0 0 .75rem
         }
 
-        .view-card p {
-            color: var(--gray-600);
-            line-height: 1.7;
-            margin-bottom: 1.5rem;
+        .view-card.web .view-sub {
+            color: #3b82f6
         }
 
-        .view-card ul {
+        .view-card.ai .view-sub {
+            color: #7c3aed
+        }
+
+        .view-card>p {
+            font-size: .8rem;
+            color: #6b7280;
+            line-height: 1.55;
+            margin: 0 0 1rem
+        }
+
+        .view-list {
             list-style: none;
-            margin-bottom: 2rem;
+            padding: 0;
+            margin: 0 0 1.25rem
         }
 
-        .view-card ul li {
-            padding: 0.75rem 0;
+        .view-list li {
+            padding: .35rem 0;
             display: flex;
             align-items: center;
-            gap: 0.75rem;
-            color: var(--gray-700);
+            gap: .5rem;
+            color: #374151;
+            font-size: .78rem
         }
 
-        .view-card ul li::before {
-            content: '✓';
-            color: var(--accent-green);
-            font-weight: bold;
-            font-size: 1.25rem;
+        .view-list .ck {
+            color: #059669;
+            font-weight: 700;
+            font-size: .85rem
         }
 
-        @media (max-width: 768px) {
-            .how-hero h1 {
-                font-size: 2.5rem;
+        /* Features Grid */
+        .feat-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.25rem
+        }
+
+        .feat {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 1.35rem;
+            transition: all .2s
+        }
+
+        .feat:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, .04)
+        }
+
+        .feat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            margin-bottom: .75rem
+        }
+
+        .feat h4 {
+            font-size: .85rem;
+            font-weight: 700;
+            color: #111827;
+            margin: 0 0 .2rem
+        }
+
+        .feat p {
+            font-size: .73rem;
+            color: #6b7280;
+            line-height: 1.55;
+            margin: 0
+        }
+
+        /* Security */
+        .sec-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem
+        }
+
+        .sec-card {
+            text-align: center;
+            padding: 1.35rem 1rem;
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            transition: all .2s
+        }
+
+        .sec-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, .04)
+        }
+
+        .sec-icon {
+            font-size: 1.5rem;
+            margin-bottom: .5rem
+        }
+
+        .sec-card h4 {
+            font-size: .82rem;
+            font-weight: 700;
+            color: #111827;
+            margin: 0 0 .2rem
+        }
+
+        .sec-card p {
+            font-size: .7rem;
+            color: #6b7280;
+            line-height: 1.5;
+            margin: 0
+        }
+
+        /* Audience */
+        .aud-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem
+        }
+
+        .aud-card {
+            text-align: center;
+            padding: 1.5rem 1rem;
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            transition: all .2s
+        }
+
+        .aud-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, .04);
+            border-color: #dbeafe
+        }
+
+        .aud-icon {
+            font-size: 2rem;
+            margin-bottom: .5rem
+        }
+
+        .aud-card h4 {
+            font-size: .85rem;
+            font-weight: 700;
+            color: #111827;
+            margin: 0 0 .2rem
+        }
+
+        .aud-card p {
+            font-size: .7rem;
+            color: #6b7280;
+            line-height: 1.5;
+            margin: 0
+        }
+
+        /* CTA */
+        .cta-section {
+            padding: 2.5rem 2rem;
+            text-align: center;
+            background: linear-gradient(135deg, #1e3a8a, #1e40af);
+            color: #fff;
+            position: relative;
+            overflow: hidden
+        }
+
+        .cta-section h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.85rem;
+            font-weight: 800;
+            margin: 0 0 .5rem
+        }
+
+        .cta-section p {
+            font-size: .92rem;
+            opacity: .85;
+            margin: 0 0 1.5rem;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto
+        }
+
+        .cta-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: .5rem;
+            padding: .7rem 1.75rem;
+            background: #fff;
+            color: #1e3a8a;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: .88rem;
+            text-decoration: none;
+            transition: all .2s;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, .15)
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, .2)
+        }
+
+        /* Footer */
+        .site-footer {
+            background: #0f172a;
+            color: #fff;
+            padding: 3rem 2rem 1.5rem
+        }
+
+        .footer-inner {
+            max-width: 1100px;
+            margin: 0 auto
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 2.5rem;
+            margin-bottom: 2rem
+        }
+
+        .footer-brand a {
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: .5rem
+        }
+
+        .footer-brand .f-logo {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center
+        }
+
+        .footer-brand .f-logo svg {
+            width: 16px;
+            height: 16px
+        }
+
+        .footer-brand .f-name {
+            font-weight: 700;
+            font-size: .95rem;
+            color: #fff
+        }
+
+        .footer-brand p {
+            color: #94a3b8;
+            font-size: .78rem;
+            line-height: 1.6;
+            margin: .75rem 0 0
+        }
+
+        .footer-col h4 {
+            font-size: .7rem;
+            font-weight: 700;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            margin: 0 0 .75rem
+        }
+
+        .footer-col a {
+            display: block;
+            color: #cbd5e1;
+            font-size: .78rem;
+            margin-bottom: .45rem;
+            text-decoration: none;
+            transition: color .15s
+        }
+
+        .footer-col a:hover {
+            color: #3b82f6
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, .06);
+            padding-top: 1.25rem;
+            text-align: center;
+            color: #64748b;
+            font-size: .72rem
+        }
+
+        /* Reveal */
+        .reveal {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity .6s, transform .6s
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0)
+        }
+
+        @media(max-width:900px) {
+            .steps {
+                grid-template-columns: 1fr 1fr
             }
 
-            .step {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
+            .step-arrow {
+                display: none
+            }
+        }
+
+        @media(max-width:768px) {
+            .hero h1 {
+                font-size: 2rem
             }
 
-            .step:not(:last-child)::after {
-                display: none;
+            .views-grid,
+            .feat-grid {
+                grid-template-columns: 1fr
             }
 
-            .step-number {
-                width: 80px;
-                height: 80px;
-                font-size: 2.5rem;
-                margin: 0 auto;
+            .sec-grid,
+            .aud-grid {
+                grid-template-columns: 1fr 1fr
             }
 
-            .views-grid {
-                grid-template-columns: 1fr;
+            .steps {
+                grid-template-columns: 1fr
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr 1fr
             }
         }
     </style>
 </head>
 
 <body>
-    <!-- Navigation -->
+    <!-- Nav -->
     <nav class="navbar">
         <div class="navbar-container">
-            <a href="index.html" class="logo">
-                <div class="logo-icon" style="background: #1e3a8a; padding: 4px 8px; border-radius: 4px; color: white;">
-                    CE</div>
-                <span style="font-weight: 700; color: #1e3a8a;">ComplianceAIexpert</span>
+            <a href="index.html" class="logo" style="text-decoration:none">
+                <div class="logo-icon">CE</div>
+                <span style="font-weight:700;font-size:1.15rem;color:var(--primary-blue)">ComplianceAI<span
+                        style="color:var(--primary-orange)">expert</span></span>
             </a>
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="features.html">Features</a></li>
-                <li><a href="how-it-works.html">How It Works</a></li>
+                <li><a href="how-it-works.html" style="color:var(--primary-blue);font-weight:600">How It Works</a></li>
                 <li><a href="pricing.html">Pricing</a></li>
                 <li><a href="sign-in.html" class="btn btn-primary btn-small">Sign In</a></li>
             </ul>
         </div>
     </nav>
 
-    <!-- How It Works Hero -->
-    <section class="how-hero">
-        <h1>How Compliance AI Expert Works</h1>
-        <p>Get started in three simple steps and transform your practice with AI-powered automation</p>
-    </section>
-
-    <!-- Steps Section -->
-    <section class="steps-section">
-        <div class="steps-container">
-            <!-- Step 1 -->
-            <div class="step">
-                <div class="step-number">1</div>
-                <div class="step-content">
-                    <h2>Connect Your Data</h2>
-                    <p>Securely integrate your existing systems and import client data to get started. Compliance AI
-                        Expert works
-                        seamlessly with your current tools.</p>
-                    <div class="step-features">
-                        <div class="step-feature">
-                            <span class="icon">🔗</span>
-                            <span>Tally Integration</span>
-                        </div>
-                        <div class="step-feature">
-                            <span class="icon">📤</span>
-                            <span>Document Upload</span>
-                        </div>
-                        <div class="step-feature">
-                            <span class="icon">👥</span>
-                            <span>Client Import</span>
-                        </div>
-                        <div class="step-feature">
-                            <span class="icon">🔒</span>
-                            <span>Secure Sync</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Step 2 -->
-            <div class="step">
-                <div class="step-number">2</div>
-                <div class="step-content">
-                    <h2>Configure Your Workflow</h2>
-                    <p>Choose your preferred working style. Switch between Web View for structured tasks or Semi-Chat
-                        View for guided conversations. Customize settings to match your practice needs.</p>
-                    <div class="step-features">
-                        <div class="step-feature">
-                            <span class="icon">⚙️</span>
-                            <span>Workflow Setup</span>
-                        </div>
-                        <div class="step-feature">
-                            <span class="icon">🎯</span>
-                            <span>View Selection</span>
-                        </div>
-                        <div class="step-feature">
-                            <span class="icon">📋</span>
-                            <span>Templates</span>
-                        </div>
-                        <div class="step-feature">
-                            <span class="icon">🎨</span>
-                            <span>Customization</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Step 3 -->
-            <div class="step">
-                <div class="step-number">3</div>
-                <div class="step-content">
-                    <h2>Start Working Smarter</h2>
-                    <p>Let AI handle the repetitive tasks while you focus on high-value advisory work. Get intelligent
-                        insights, automated calculations, and real-time compliance tracking.</p>
-                    <div class="step-features">
-                        <div class="step-feature">
-                            <span class="icon">🤖</span>
-                            <span>AI Automation</span>
-                        </div>
-                        <div class="step-feature">
-                            <span class="icon">📊</span>
-                            <span>Smart Insights</span>
-                        </div>
-                        <div class="step-feature">
-                            <span class="icon">⚡</span>
-                            <span>Quick Actions</span>
-                        </div>
-                        <div class="step-feature">
-                            <span class="icon">📈</span>
-                            <span>Progress Tracking</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-tag">⚡ AI-Powered Compliance Automation</div>
+        <h1>How <span>ComplianceAI Expert</span> Works</h1>
+        <p>The most advanced agentic AI platform for Chartered Accountants, tax professionals, and lawyers in India.
+            Automate GST, income tax, audit, certificates, and more — in minutes, not hours.</p>
+        <div class="hero-badges">
+            <div class="hero-badge">🏛️ Built for CAs</div>
+            <div class="hero-badge">⚖️ Lawyers & Legal</div>
+            <div class="hero-badge">📊 Tax Professionals</div>
+            <div class="hero-badge">🏢 CA Firms</div>
+            <div class="hero-badge">🇮🇳 Made for India</div>
         </div>
     </section>
 
-    <!-- Views Section -->
-    <section class="views-section">
-        <div class="views-container">
-            <h2 class="section-title">Choose Your Preferred View</h2>
+    <!-- 4-Step Process -->
+    <div class="section">
+        <div class="section-head reveal">
+            <div class="tag">🚀 Getting Started</div>
+            <h2>4 Simple Steps to <span>Transform</span> Your Practice</h2>
+            <p>From signup to full AI-powered compliance automation in under 10 minutes.</p>
+        </div>
+        <div class="steps">
+            <div class="step reveal">
+                <div class="step-num">1</div>
+                <h3>Onboard Clients</h3>
+                <p>Add your clients, import data from Tally, and organize your portfolio with firm-level management.</p>
+                <span class="step-arrow">→</span>
+            </div>
+            <div class="step reveal">
+                <div class="step-num">2</div>
+                <h3>Choose Your View</h3>
+                <p>Pick Web View for structured tasks or AI Expert View for intelligent, AI-driven workflows.</p>
+                <span class="step-arrow">→</span>
+            </div>
+            <div class="step reveal">
+                <div class="step-num">3</div>
+                <h3>Deploy AI Agents</h3>
+                <p>Configure autonomous AI agents for auto-emails, document extraction, data entry, and smart filing.
+                </p>
+                <span class="step-arrow">→</span>
+            </div>
+            <div class="step reveal">
+                <div class="step-num">4</div>
+                <h3>Review & Deliver</h3>
+                <p>Review AI-generated outputs with confidence scores, approve, and deliver 10x faster to clients.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Two Views -->
+    <div class="section-alt">
+        <div class="section-inner">
+            <div class="section-head reveal">
+                <div class="tag">💻 Platform Views</div>
+                <h2>Two Powerful Ways to <span>Work</span></h2>
+                <p>Choose the interface that matches your working style — structured panels or AI-powered intelligence.
+                </p>
+            </div>
             <div class="views-grid">
-                <!-- Web View -->
-                <div class="view-card">
-                    <div class="icon">💼</div>
+                <div class="view-card web reveal">
+                    <div class="view-tag">Standard</div>
                     <h3>Web View</h3>
-                    <p class="subtitle">Professional Mode</p>
-                    <p>A structured, checklist-driven interface perfect for complex compliance tasks and detailed
-                        workflow management.</p>
-                    <ul>
-                        <li>Structured checklists</li>
-                        <li>Professional task management</li>
-                        <li>Detailed service tracking</li>
-                        <li>Advanced reporting</li>
-                        <li>Team collaboration</li>
+                    <p class="view-sub">Professional Structured Interface</p>
+                    <p>A checklist-driven, panel-based interface for complex compliance tasks. Navigate services, manage
+                        clients, run GST tools, and track progress with detailed dashboards — all in a familiar,
+                        structured layout.</p>
+                    <ul class="view-list">
+                        <li><span class="ck">✓</span> Service-by-service checklists (GST, IT, Audit)</li>
+                        <li><span class="ck">✓</span> 15+ built-in GST reconciliation & filing tools</li>
+                        <li><span class="ck">✓</span> Real-time task tracking with status badges</li>
+                        <li><span class="ck">✓</span> Tally integration for one-click data sync</li>
+                        <li><span class="ck">✓</span> Team assignment & collaboration</li>
                     </ul>
-                    <a href="web-view.html" class="btn btn-primary" style="width: 100%;">Try Web View</a>
+                    <a href="sign-in.html" class="btn btn-primary" style="width:100%;text-align:center">Try Web View
+                        →</a>
                 </div>
-
-                <!-- Semi-Chat View -->
-                <div class="view-card">
-                    <div class="icon">💬</div>
-                    <h3>Semi-Chat View</h3>
-                    <p class="subtitle">Guided Simplicity</p>
-                    <p>A conversational AI interface that guides you through tasks with intelligent suggestions and
-                        natural language interactions.</p>
-                    <ul>
-                        <li>Guided conversations</li>
-                        <li>AI-powered assistance</li>
-                        <li>Quick consultations</li>
-                        <li>Natural language</li>
-                        <li>Contextual help</li>
+                <div class="view-card ai reveal">
+                    <div class="view-tag">AI-Powered</div>
+                    <h3>AI Expert View</h3>
+                    <p class="view-sub">Intelligent Autonomous Workflows</p>
+                    <p>An AI-first interface where intelligent agents handle the heavy lifting. Upload documents, and AI
+                        extracts data, validates entries, flags anomalies, and generates compliance-ready outputs — with
+                        minimal human intervention.</p>
+                    <ul class="view-list">
+                        <li><span class="ck">✓</span> Smart Upload with OCR & AI extraction</li>
+                        <li><span class="ck">✓</span> Confidence scores on every data point</li>
+                        <li><span class="ck">✓</span> Inline editing with auto-validation</li>
+                        <li><span class="ck">✓</span> One-click approval & Tally sync</li>
+                        <li><span class="ck">✓</span> AI chat assistant for contextual help</li>
                     </ul>
-                    <a href="semichat-view.html" class="btn btn-primary" style="width: 100%;">Try Semi-Chat View</a>
+                    <a href="sign-in.html" class="btn btn-primary"
+                        style="width:100%;text-align:center;background:linear-gradient(135deg,#7c3aed,#a78bfa)">Try AI
+                        Expert View →</a>
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- AI Agents -->
+    <div class="section">
+        <div class="section-head reveal">
+            <div class="tag">🤖 AI Agents</div>
+            <h2>Autonomous <span>AI Agents</span> That Work For You</h2>
+            <p>Deploy specialized AI agents that run 24/7 — reading emails, extracting data, generating reports, and
+                more.</p>
+        </div>
+        <div class="feat-grid">
+            <div class="feat reveal">
+                <div class="feat-icon" style="background:#eff6ff;color:#3b82f6">📧</div>
+                <h4>Auto Email Agent</h4>
+                <p>Automatically send compliance reminders, filing confirmations, and status updates to clients on
+                    schedule.</p>
+            </div>
+            <div class="feat reveal">
+                <div class="feat-icon" style="background:#f5f3ff;color:#7c3aed">📎</div>
+                <h4>Email Attachment Reader</h4>
+                <p>Scan incoming client emails, extract file attachments (invoices, FIRCs, shipping bills), and
+                    auto-file to the right client folder.</p>
+            </div>
+            <div class="feat reveal">
+                <div class="feat-icon" style="background:#ecfdf5;color:#059669">📖</div>
+                <h4>Document Reader Agent</h4>
+                <p>AI-powered OCR reads PDFs, images, and Excel files — extracting structured data from CSB, BRC,
+                    invoices, and more.</p>
+            </div>
+            <div class="feat reveal">
+                <div class="feat-icon" style="background:#fef3c7;color:#d97706">📊</div>
+                <h4>Smart Data Entry Agent</h4>
+                <p>Automatically fill data entry forms with AI-extracted values, confidence scoring, and anomaly
+                    detection.</p>
+            </div>
+            <div class="feat reveal">
+                <div class="feat-icon" style="background:#fdf2f8;color:#ec4899">⚖️</div>
+                <h4>Reconciliation Agent</h4>
+                <p>Autonomously match GSTR-2B with purchase registers, GSTR-1 with sales, and flag every mismatch for
+                    review.</p>
+            </div>
+            <div class="feat reveal">
+                <div class="feat-icon" style="background:#f0fdf4;color:#16a34a">🔧</div>
+                <h4>Custom AI Agents</h4>
+                <p>Tell us your workflow and we'll build a custom AI agent tailored to your firm's unique processes. <a
+                        href="contact-us.html" style="color:#1e3a8a;font-weight:600">Request one →</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Client Management -->
+    <div class="section-alt">
+        <div class="section-inner">
+            <div class="section-head reveal">
+                <div class="tag">👥 Client Management</div>
+                <h2>Firm-Level <span>Client Management</span></h2>
+                <p>Manage hundreds of clients with organized portfolios, per-client settings, and role-based access.</p>
+            </div>
+            <div class="feat-grid">
+                <div class="feat reveal">
+                    <div class="feat-icon" style="background:#eff6ff;color:#3b82f6">🏢</div>
+                    <h4>Multi-Client Dashboard</h4>
+                    <p>View all clients in one place with status indicators, service progress, and deadline tracking at
+                        a glance.</p>
+                </div>
+                <div class="feat reveal">
+                    <div class="feat-icon" style="background:#ecfdf5;color:#059669">⚙️</div>
+                    <h4>Per-Client Settings</h4>
+                    <p>Configure AI agents, services, and workflows individually for each client. Enable or disable
+                        features at client level.</p>
+                </div>
+                <div class="feat reveal">
+                    <div class="feat-icon" style="background:#f5f3ff;color:#7c3aed">👤</div>
+                    <h4>Team & Role Management</h4>
+                    <p>Assign team members to clients. Set roles — admin, manager, or staff — with granular access
+                        permissions.</p>
+                </div>
+                <div class="feat reveal">
+                    <div class="feat-icon" style="background:#fef3c7;color:#d97706">🔗</div>
+                    <h4>Tally Integration</h4>
+                    <p>One-click sync with Tally Prime/ERP 9. Pull trial balance, ledgers, and GST data directly without
+                        manual export.</p>
+                </div>
+                <div class="feat reveal">
+                    <div class="feat-icon" style="background:#fdf2f8;color:#ec4899">📁</div>
+                    <h4>Document Drive</h4>
+                    <p>Client-specific cloud storage for all documents — invoices, returns, certificates, and
+                        correspondence in one place.</p>
+                </div>
+                <div class="feat reveal">
+                    <div class="feat-icon" style="background:#f0fdf4;color:#16a34a">📋</div>
+                    <h4>Service Tracking</h4>
+                    <p>Track 12+ compliance services per client — GST, Income Tax, Audit, Payroll, Company Law, and more
+                        — with completion status.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data Security -->
+    <div class="section">
+        <div class="section-head reveal">
+            <div class="tag">🔒 Security & Privacy</div>
+            <h2>Enterprise-Grade <span>Data Security</span></h2>
+            <p>Your clients' financial data deserves the highest level of protection. We deliver it.</p>
+        </div>
+        <div class="sec-grid">
+            <div class="sec-card reveal">
+                <div class="sec-icon">🔐</div>
+                <h4>AES-256 Encryption</h4>
+                <p>All data encrypted at rest and in transit using industry-standard AES-256 encryption.</p>
+            </div>
+            <div class="sec-card reveal">
+                <div class="sec-icon">🛡️</div>
+                <h4>Role-Based Access</h4>
+                <p>Granular permissions ensure team members see only the data they need — nothing more.</p>
+            </div>
+            <div class="sec-card reveal">
+                <div class="sec-icon">🇮🇳</div>
+                <h4>India Data Residency</h4>
+                <p>All data stored on servers located in India, compliant with local data protection regulations.</p>
+            </div>
+            <div class="sec-card reveal">
+                <div class="sec-icon">📋</div>
+                <h4>Audit Trails</h4>
+                <p>Complete activity logs — every action tracked, timestamped, and attributable for compliance audits.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Who It's For -->
+    <div class="section-alt">
+        <div class="section-inner">
+            <div class="section-head reveal">
+                <div class="tag">🎯 Who It's For</div>
+                <h2>Built for <span>Every Professional</span></h2>
+                <p>Whether you're a solo CA or a 50-member firm, ComplianceAI adapts to your needs.</p>
+            </div>
+            <div class="aud-grid">
+                <div class="aud-card reveal">
+                    <div class="aud-icon">🏛️</div>
+                    <h4>Chartered Accountants</h4>
+                    <p>Automate GST filing, income tax, audit compliance, and CA certificate generation for your entire
+                        client base.</p>
+                </div>
+                <div class="aud-card reveal">
+                    <div class="aud-icon">⚖️</div>
+                    <h4>Lawyers & Legal Professionals</h4>
+                    <p>Draft agreements, manage FEMA compliance, generate company law documents, and analyze legal
+                        documents with AI.</p>
+                </div>
+                <div class="aud-card reveal">
+                    <div class="aud-icon">📊</div>
+                    <h4>Tax Consultants</h4>
+                    <p>Handle multi-client GST returns, reconciliation, ITR filing, and refund tracking with intelligent
+                        automation.</p>
+                </div>
+                <div class="aud-card reveal">
+                    <div class="aud-icon">🏢</div>
+                    <h4>Accounting Firms</h4>
+                    <p>Scale your practice with team management, document workflows, and AI-powered data entry across
+                        100s of clients.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA -->
+    <section class="cta-section reveal">
+        <h2>Ready to Transform Your Practice?</h2>
+        <p>Join thousands of CAs, lawyers, and tax professionals already saving 10+ hours per week with ComplianceAI
+            Expert.</p>
+        <a href="sign-up.html" class="cta-btn">Create Free Account →</a>
     </section>
 
     <!-- Footer -->
-    <footer style="background: var(--gray-900); color: white; padding: 4rem 2rem 2rem;">
-        <div class="container">
-            <div
-                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 3rem; margin-bottom: 3rem;">
-                <div>
-                    <div class="logo" style="color: white; margin-bottom: 1rem;">
-                        <div class="logo-icon">CE</div>
-                        <span style="font-weight: 700;">ComplianceAIexpert</span>
-                    </div>
-                    <p style="color: var(--gray-400); line-height: 1.7;">Intelligent compliance decisions, powered by
-                        AI.</p>
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="index.html">
+                        <div class="f-logo"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5">
+                                <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                                <path d="M2 17l10 5 10-5" />
+                                <path d="M2 12l10 5 10-5" />
+                            </svg></div>
+                        <span class="f-name">ComplianceAI Expert</span>
+                    </a>
+                    <p>India's most advanced AI-powered compliance automation platform for Chartered Accountants,
+                        lawyers, tax professionals, and accounting firms.</p>
                 </div>
-                <div>
-                    <h4 style="margin-bottom: 1rem; color: white;">Product</h4>
-                    <ul style="list-style: none;">
-                        <li style="margin-bottom: 0.75rem;"><a href="features.html"
-                                style="color: var(--gray-400);">Features</a></li>
-                        <li style="margin-bottom: 0.75rem;"><a href="pricing.html"
-                                style="color: var(--gray-400);">Pricing</a></li>
-                        <li style="margin-bottom: 0.75rem;"><a href="how-it-works.html"
-                                style="color: var(--gray-400);">How It Works</a></li>
-                    </ul>
+                <div class="footer-col">
+                    <h4>Product</h4>
+                    <a href="features.html">Features</a>
+                    <a href="pricing.html">Pricing</a>
+                    <a href="how-it-works.html">How It Works</a>
+                    <a href="ai-gpt.html">AI Assistant</a>
                 </div>
-                <div>
-                    <h4 style="margin-bottom: 1rem; color: white;">Company</h4>
-                    <ul style="list-style: none;">
-                        <li style="margin-bottom: 0.75rem;"><a href="#" style="color: var(--gray-400);">About Us</a>
-                        </li>
-                        <li style="margin-bottom: 0.75rem;"><a href="#" style="color: var(--gray-400);">Contact</a></li>
-                        <li style="margin-bottom: 0.75rem;"><a href="#" style="color: var(--gray-400);">Support</a></li>
-                    </ul>
+                <div class="footer-col">
+                    <h4>Company</h4>
+                    <a href="about-us.html">About Us</a>
+                    <a href="contact-us.html">Contact</a>
+                    <a href="contact-us.html">Request Custom AI Agent</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Legal</h4>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Security</a>
+                    <a href="#">Data Processing</a>
                 </div>
             </div>
-            <div
-                style="padding-top: 2rem; border-top: 1px solid var(--gray-800); text-align: center; color: var(--gray-400);">
-                <p>&copy; 2025 Compliance AI Expert. All rights reserved.</p>
+            <div class="footer-bottom">
+                <p>&copy; 2025 ComplianceAI Expert. All rights reserved. Made with ❤️ in India.</p>
             </div>
         </div>
     </footer>
+
+    <script>
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    </script>
 </body>
 
 </html>

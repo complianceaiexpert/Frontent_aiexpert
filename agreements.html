@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agreements — ComplianceAI Expert</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        *{box-sizing:border-box}
+        body{background:#f8fafc;margin:0;min-height:100vh}
+
+        /* ══ LAYOUT ══ */
+        .ag-layout{display:flex;min-height:100vh;padding-top:64px}
+
+        /* ── Sidebar ── */
+        .ag-sidebar{width:240px;background:#fff;border-right:1px solid #e5e7eb;position:fixed;top:64px;bottom:0;left:0;display:flex;flex-direction:column;z-index:90;overflow-y:auto}
+        .sb-section{padding:0.75rem 1rem}
+        .sb-section-label{font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#9ca3af;padding:0.5rem 0.75rem;margin-bottom:0.1rem}
+        .sb-item{display:flex;align-items:center;gap:0.6rem;padding:0.5rem 0.75rem;border-radius:8px;font-size:0.8rem;font-weight:500;color:#4b5563;cursor:pointer;transition:all .2s;text-decoration:none;margin-bottom:1px}
+        .sb-item:hover{background:#f1f5f9;color:#1e3a8a}
+        .sb-item.active{background:#eff6ff;color:#1e3a8a;font-weight:600}
+        .sb-item svg{flex-shrink:0;width:16px;height:16px}
+        .sb-badge{margin-left:auto;font-size:0.6rem;font-weight:700;background:#dbeafe;color:#1e3a8a;padding:1px 6px;border-radius:10px}
+        .sb-divider{height:1px;background:#f1f5f9;margin:0.4rem 1rem}
+        .sb-back{display:flex;align-items:center;gap:0.5rem;padding:0.85rem 1rem;border-top:1px solid #f1f5f9;font-size:0.8rem;font-weight:600;color:#6b7280;cursor:pointer;text-decoration:none;transition:all .2s;margin-top:auto}
+        .sb-back:hover{color:#1e3a8a;background:#f8fafc}
+        .sb-back svg{width:16px;height:16px}
+
+        /* ── Main ── */
+        .ag-main{margin-left:240px;flex:1;padding:1.5rem 2rem 3rem}
+
+        /* ── Breadcrumb ── */
+        .ag-breadcrumb{display:flex;align-items:center;gap:0.4rem;font-size:0.75rem;color:#9ca3af;margin-bottom:1.25rem}
+        .ag-breadcrumb a{color:#6b7280;text-decoration:none;font-weight:500}
+        .ag-breadcrumb a:hover{color:#1e3a8a}
+        .ag-breadcrumb .sep{font-size:0.65rem}
+
+        /* ── Page Header ── */
+        .ag-header{margin-bottom:1.5rem;display:flex;align-items:flex-start;justify-content:space-between;gap:1rem}
+        .ag-header-left h1{font-family:'Outfit',sans-serif;font-size:1.6rem;font-weight:800;color:#111827;margin:0 0 0.25rem;letter-spacing:-0.01em}
+        .ag-header-left h1 span{color:#eb6711}
+        .ag-header-left p{font-size:0.82rem;color:#6b7280;margin:0;line-height:1.5;max-width:520px}
+        .btn-create{display:flex;align-items:center;gap:0.4rem;padding:0.55rem 1.15rem;background:#1e3a8a;color:#fff;border:none;border-radius:10px;font-weight:600;font-size:0.82rem;cursor:pointer;font-family:inherit;transition:all .2s;text-decoration:none;box-shadow:0 2px 8px rgba(30,58,138,.15);flex-shrink:0}
+        .btn-create:hover{background:#1e40af;transform:translateY(-1px)}
+
+        /* ── Stats Row ── */
+        .ag-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.75rem}
+        .ag-stat{background:#fff;border:1px solid #f1f5f9;border-radius:12px;padding:1rem 1.15rem;display:flex;align-items:center;gap:0.85rem;transition:all .2s}
+        .ag-stat:hover{transform:translateY(-2px);box-shadow:0 4px 14px rgba(0,0,0,.05)}
+        .ag-stat-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+        .ag-stat-num{font-size:1.35rem;font-weight:800;font-family:'Outfit',sans-serif;color:#111827;line-height:1}
+        .ag-stat-label{font-size:0.65rem;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:#9ca3af;margin-top:0.1rem}
+
+        /* ── Categories Section ── */
+        .section-label{display:flex;align-items:center;gap:0.45rem;font-family:'Outfit',sans-serif;font-size:1.05rem;font-weight:700;color:#111827;margin-bottom:0.85rem}
+        .section-label svg{width:18px;height:18px;color:#6b7280}
+
+        .cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:0.85rem;margin-bottom:2rem}
+        .cat-card{background:#fff;border:1px solid #f1f5f9;border-radius:12px;padding:1.15rem;text-align:center;text-decoration:none;cursor:pointer;transition:all .25s;display:flex;flex-direction:column;align-items:center;gap:0.5rem;position:relative;overflow:hidden}
+        .cat-card::before{content:'';position:absolute;top:0;left:0;width:100%;height:3px;opacity:0;transition:opacity .2s}
+        .cat-card:hover::before{opacity:1}
+        .cat-card:nth-child(6n+1)::before{background:linear-gradient(90deg,#3b82f6,#60a5fa)}
+        .cat-card:nth-child(6n+2)::before{background:linear-gradient(90deg,#10b981,#34d399)}
+        .cat-card:nth-child(6n+3)::before{background:linear-gradient(90deg,#8b5cf6,#a78bfa)}
+        .cat-card:nth-child(6n+4)::before{background:linear-gradient(90deg,#f59e0b,#fbbf24)}
+        .cat-card:nth-child(6n+5)::before{background:linear-gradient(90deg,#ec4899,#f472b6)}
+        .cat-card:nth-child(6n+6)::before{background:linear-gradient(90deg,#14b8a6,#2dd4bf)}
+        .cat-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px -8px rgba(30,58,138,.10);border-color:#e5e7eb}
+        .cat-icon{font-size:1.75rem}
+        .cat-name{font-weight:700;font-size:0.88rem;color:#1e293b}
+        .cat-count{font-size:0.68rem;color:#6b7280;background:#f1f5f9;padding:2px 8px;border-radius:6px;font-weight:600}
+
+        /* ── Features Section ── */
+        .feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0.85rem;margin-bottom:1.5rem}
+        .feat-card{background:#fff;border:1px solid #f1f5f9;border-radius:12px;padding:1.15rem;transition:all .2s}
+        .feat-card:hover{transform:translateY(-2px);box-shadow:0 4px 14px rgba(0,0,0,.04)}
+        .feat-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1.05rem;margin-bottom:0.65rem}
+        .feat-name{font-weight:700;font-size:0.85rem;color:#1e293b;margin-bottom:0.25rem}
+        .feat-desc{font-size:0.75rem;color:#6b7280;line-height:1.5}
+
+        /* ── Recent Agreements ── */
+        .recent-list{display:flex;flex-direction:column;gap:0.5rem}
+        .recent-item{background:#fff;border:1px solid #f1f5f9;border-radius:10px;padding:0.85rem 1rem;display:flex;align-items:center;gap:0.85rem;transition:all .15s;cursor:pointer;text-decoration:none}
+        .recent-item:hover{background:#f8fafc;border-color:#e5e7eb}
+        .recent-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:0.9rem;flex-shrink:0}
+        .recent-name{font-size:0.82rem;font-weight:600;color:#1f2937}
+        .recent-meta{font-size:0.7rem;color:#9ca3af;margin-top:1px}
+        .recent-arrow{margin-left:auto;color:#d1d5db;transition:color .15s}
+        .recent-item:hover .recent-arrow{color:#1e3a8a}
+        .empty-state{text-align:center;padding:2rem 1rem;color:#9ca3af;font-size:0.82rem}
+
+        .loading-center{text-align:center;padding:2rem;color:#9ca3af;font-size:0.82rem}
+
+        /* ── Search Section ── */
+        .search-section{margin-bottom:1.5rem}
+        .search-wrap{position:relative}
+        .search-wrap input{width:100%;padding:0.7rem 1rem 0.7rem 2.6rem;border:1px solid #e5e7eb;border-radius:12px;font-size:0.85rem;font-family:inherit;background:#fff;transition:all .2s;box-shadow:0 1px 3px rgba(0,0,0,.02)}
+        .search-wrap input:focus{outline:none;border-color:#1e3a8a;box-shadow:0 0 0 3px rgba(30,58,138,.06)}
+        .search-wrap .s-icon{position:absolute;left:0.85rem;top:50%;transform:translateY(-50%);color:#9ca3af;pointer-events:none}
+        .search-wrap .s-clear{position:absolute;right:0.75rem;top:50%;transform:translateY(-50%);width:22px;height:22px;border-radius:6px;border:none;background:#f1f5f9;color:#9ca3af;display:none;align-items:center;justify-content:center;cursor:pointer;font-size:0.65rem;transition:all .15s}
+        .search-wrap .s-clear.show{display:flex}
+        .search-wrap .s-clear:hover{background:#e5e7eb;color:#374151}
+        .search-results{margin-top:0.65rem;display:none}
+        .search-results.show{display:block}
+        .search-results-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem}
+        .search-results-header span{font-size:0.75rem;color:#6b7280;font-weight:600}
+        .sr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:0.6rem}
+        .sr-item{background:#fff;border:1px solid #f1f5f9;border-radius:10px;padding:0.75rem 1rem;display:flex;align-items:center;gap:0.75rem;transition:all .2s;cursor:pointer;text-decoration:none}
+        .sr-item:hover{background:#f8fafc;border-color:#dbeafe;transform:translateY(-1px);box-shadow:0 2px 8px rgba(30,58,138,.06)}
+        .sr-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:0.85rem;flex-shrink:0}
+        .sr-name{font-size:0.82rem;font-weight:600;color:#1f2937}
+        .sr-cat{font-size:0.68rem;color:#9ca3af;margin-top:1px}
+        .sr-arrow{margin-left:auto;color:#d1d5db;flex-shrink:0}
+        .sr-item:hover .sr-arrow{color:#1e3a8a}
+        .sr-empty{text-align:center;padding:1.5rem;color:#9ca3af;font-size:0.82rem;background:#fff;border:1px solid #f1f5f9;border-radius:10px}
+
+        @media(max-width:1100px){.ag-stats{grid-template-columns:1fr 1fr 1fr}.feat-grid{grid-template-columns:1fr 1fr}}
+        @media(max-width:768px){.ag-sidebar{display:none}.ag-main{margin-left:0}.ag-stats{grid-template-columns:1fr}.cat-grid{grid-template-columns:1fr 1fr}.feat-grid{grid-template-columns:1fr}.sr-grid{grid-template-columns:1fr}}
+    </style>
+</head>
+<body>
+    <!-- Shared App Topbar -->
+    <div id="app-topbar" data-active="certificates"></div>
+    <script src="app-topbar.js"></script>
+
+    <div class="ag-layout">
+        <!-- ══ LEFT SIDEBAR ══ -->
+        <aside class="ag-sidebar">
+            <div class="sb-section">
+                <div class="sb-section-label">Agreements</div>
+                <a href="#" class="sb-item active" onclick="event.preventDefault()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                    All Templates
+                    <span class="sb-badge" id="sb-total-count">0</span>
+                </a>
+                <a href="agreement-editor.html" class="sb-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+                    Create New
+                </a>
+            </div>
+            <div class="sb-divider"></div>
+            <div class="sb-section">
+                <div class="sb-section-label">Popular Templates</div>
+                <a href="agreement-editor.html" class="sb-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    Rental Agreement
+                    <span class="sb-badge" style="background:#dcfce7;color:#16a34a">🔥</span>
+                </a>
+                <a href="agreement-editor.html" class="sb-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    Employment Agreement
+                </a>
+                <a href="agreement-editor.html" class="sb-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    Service Agreement
+                </a>
+                <a href="agreement-editor.html" class="sb-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    NDA
+                </a>
+                <a href="agreement-editor.html" class="sb-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    MOU
+                </a>
+                <a href="agreement-editor.html" class="sb-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    Offer Letter
+                </a>
+            </div>
+            <div class="sb-divider"></div>
+            <div class="sb-section">
+                <div class="sb-section-label">Recently Added</div>
+                <a href="agreement-editor.html" class="sb-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    Commission Agreement
+                    <span class="sb-badge" style="background:#fef3c7;color:#92400e">New</span>
+                </a>
+                <a href="agreement-editor.html" class="sb-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    Lease Agreement
+                    <span class="sb-badge" style="background:#fef3c7;color:#92400e">New</span>
+                </a>
+            </div>
+            <div class="sb-divider"></div>
+            <div class="sb-section">
+                <div class="sb-section-label">Tools</div>
+                <a href="ca-certificates.html" class="sb-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    CA Certificates
+                </a>
+                <a href="ai-gpt.html" class="sb-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v4a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
+                    AI GPT
+                </a>
+                <a href="tool-document-reader.html" class="sb-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                    Doc Reader
+                </a>
+            </div>
+            <a href="clients.html" class="sb-back">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+                Back to Firm
+            </a>
+        </aside>
+
+        <!-- ══ MAIN CONTENT ══ -->
+        <main class="ag-main">
+            <!-- Breadcrumb -->
+            <div class="ag-breadcrumb">
+                <a href="clients.html">Firm</a><span class="sep">›</span>
+                <span style="color:#374151;font-weight:600">Agreements</span>
+            </div>
+
+            <!-- Page Header -->
+            <div class="ag-header">
+                <div class="ag-header-left">
+                    <h1>Agreement <span>Templates</span></h1>
+                    <p>Create professionally drafted legal agreements in minutes. Choose from 30+ templates, customize clauses, and download as PDF.</p>
+                </div>
+                <a href="agreement-editor.html" class="btn-create">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+                    Create Agreement
+                </a>
+            </div>
+
+            <!-- Stats -->
+            <div class="ag-stats">
+                <div class="ag-stat">
+                    <div class="ag-stat-icon" style="background:#eff6ff;color:#3b82f6">📂</div>
+                    <div><div class="ag-stat-num" id="stat-categories">0</div><div class="ag-stat-label">Categories</div></div>
+                </div>
+                <div class="ag-stat">
+                    <div class="ag-stat-icon" style="background:#ecfdf5;color:#059669">📄</div>
+                    <div><div class="ag-stat-num" id="stat-templates">0</div><div class="ag-stat-label">Templates</div></div>
+                </div>
+                <div class="ag-stat">
+                    <div class="ag-stat-icon" style="background:#f5f3ff;color:#7c3aed">⚖️</div>
+                    <div><div class="ag-stat-num" style="font-size:1rem" id="stat-standard">Indian Law</div><div class="ag-stat-label">Compliance Standard</div></div>
+                </div>
+            </div>
+
+            <!-- Search -->
+            <div class="search-section">
+                <div class="section-label">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                    Find a Template
+                </div>
+                <div class="search-wrap">
+                    <span class="s-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
+                    <input type="text" id="template-search" placeholder="Search by name, keyword, or type… e.g. rental, NDA, employment">
+                    <button class="s-clear" id="search-clear" onclick="clearSearch()">✕</button>
+                </div>
+                <div class="search-results" id="search-results">
+                    <div class="search-results-header"><span id="sr-count">0 results</span></div>
+                    <div class="sr-grid" id="sr-grid"></div>
+                </div>
+            </div>
+
+            <!-- Categories -->
+            <div class="section-label" id="cat-section-label">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                Browse by Category
+            </div>
+            <div id="categories" class="cat-grid">
+                <div class="loading-center">Loading categories…</div>
+            </div>
+
+            <!-- Features -->
+            <div class="section-label" style="margin-top:0.5rem">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                Why Use Our Templates?
+            </div>
+            <div class="feat-grid">
+                <div class="feat-card">
+                    <div class="feat-icon" style="background:#eff6ff;color:#1e3a8a">📝</div>
+                    <div class="feat-name">Step-by-Step Wizard</div>
+                    <div class="feat-desc">Select category, choose type, fill details, and generate in 4 simple steps.</div>
+                </div>
+                <div class="feat-card">
+                    <div class="feat-icon" style="background:#ecfdf5;color:#059669">👁️</div>
+                    <div class="feat-name">Live Preview</div>
+                    <div class="feat-desc">See your agreement update in real-time as you fill in details and toggle clauses.</div>
+                </div>
+                <div class="feat-card">
+                    <div class="feat-icon" style="background:#f5f3ff;color:#7c3aed">✨</div>
+                    <div class="feat-name">AI-Selected Clauses</div>
+                    <div class="feat-desc">Let AI recommend the most relevant clauses for your agreement context.</div>
+                </div>
+                <div class="feat-card">
+                    <div class="feat-icon" style="background:#fffbeb;color:#d97706">💾</div>
+                    <div class="feat-name">Save & Reuse</div>
+                    <div class="feat-desc">Save drafts, customize templates, and reuse preferred formats for future use.</div>
+                </div>
+                <div class="feat-card">
+                    <div class="feat-icon" style="background:#fdf2f8;color:#db2777">📥</div>
+                    <div class="feat-name">Download PDF</div>
+                    <div class="feat-desc">Generate professional PDFs ready for printing, signing, and registration.</div>
+                </div>
+                <div class="feat-card">
+                    <div class="feat-icon" style="background:#f0fdfa;color:#0f766e">⚖️</div>
+                    <div class="feat-name">Indian Legal Standards</div>
+                    <div class="feat-desc">References Indian Contract Act, Transfer of Property Act, Companies Act, and more.</div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="api_config.js"></script>
+    <script src="session-manager.js?v=2"></script>
+    <script>
+        if (!requireAuth()) { }
+
+        function animateCounter(id, target) {
+            const el = document.getElementById(id); if (!el) return;
+            const dur = 500; const start = parseInt(el.textContent) || 0; const st = performance.now();
+            function step(now) { const p = Math.min((now - st) / dur, 1); const e = 1 - Math.pow(1 - p, 3); el.textContent = Math.round(start + (target - start) * e); if (p < 1) requestAnimationFrame(step) }
+            requestAnimationFrame(step);
+        }
+
+        const catColors = ['#eff6ff', '#ecfdf5', '#f5f3ff', '#fffbeb', '#fdf2f8', '#f0fdfa'];
+
+        // ====== SEARCH INDEX ======
+        let allTemplates = []; // {name, category, catIcon}
+        const srColors = ['#eff6ff','#ecfdf5','#f5f3ff','#fffbeb','#fdf2f8','#f0fdfa'];
+
+        function clearSearch(){
+            document.getElementById('template-search').value='';
+            document.getElementById('search-results').classList.remove('show');
+            document.getElementById('search-clear').classList.remove('show');
+        }
+
+        function performSearch(query){
+            const q = query.toLowerCase().trim();
+            const clearBtn = document.getElementById('search-clear');
+            const resultsDiv = document.getElementById('search-results');
+            const srGrid = document.getElementById('sr-grid');
+            const srCount = document.getElementById('sr-count');
+
+            if(!q){clearBtn.classList.remove('show');resultsDiv.classList.remove('show');return}
+            clearBtn.classList.add('show');
+
+            const matches = allTemplates.filter(t => {
+                const haystack = (t.name + ' ' + t.category).toLowerCase();
+                return q.split(/\s+/).every(word => haystack.includes(word));
+            });
+
+            srCount.textContent = matches.length + (matches.length===1?' result':' results');
+            if(matches.length===0){
+                srGrid.innerHTML = '<div class="sr-empty">No templates match your search. Try a different keyword or browse by category below.</div>';
+            } else {
+                srGrid.innerHTML = matches.map((t,i)=>`
+                    <a class="sr-item" href="agreement-editor.html">
+                        <div class="sr-icon" style="background:${srColors[i%6]}">${t.catIcon||'📄'}</div>
+                        <div><div class="sr-name">${highlightMatch(t.name,q)}</div><div class="sr-cat">${t.category}</div></div>
+                        <span class="sr-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></span>
+                    </a>
+                `).join('');
+            }
+            resultsDiv.classList.add('show');
+        }
+
+        function highlightMatch(text, query){
+            const words = query.split(/\s+/).filter(w=>w);
+            let result = text;
+            words.forEach(w=>{
+                const regex = new RegExp('('+w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi');
+                result = result.replace(regex,'<mark style="background:#fef08a;padding:0 1px;border-radius:2px">$1</mark>');
+            });
+            return result;
+        }
+
+        document.getElementById('template-search').addEventListener('input', e => performSearch(e.target.value));
+
+        (async () => {
+            try {
+                const resp = await authFetch('/agreements/categories');
+                if (!resp || !resp.ok) throw new Error();
+                const cats = await resp.json();
+
+                // Build search index
+                cats.forEach(c => {
+                    if(c.agreement_types){
+                        c.agreement_types.forEach(t => {
+                            allTemplates.push({name: typeof t==='object'?t.name:t, category: c.name, catIcon: c.icon||'📄'});
+                        });
+                    }
+                });
+
+                // Stats
+                animateCounter('stat-categories', cats.length);
+                animateCounter('stat-templates', allTemplates.length);
+                document.getElementById('sb-total-count').textContent = allTemplates.length;
+
+                // Categories grid
+                document.getElementById('categories').innerHTML = cats.map((c, i) => `
+                    <a class="cat-card" href="agreement-editor.html">
+                        <div class="cat-icon">${c.icon || '📄'}</div>
+                        <div class="cat-name">${c.name}</div>
+                        <div class="cat-count">${c.agreement_types.length} templates</div>
+                    </a>
+                `).join('');
+
+            } catch (e) {
+                document.getElementById('categories').innerHTML = '<div class="loading-center">Could not load categories. Please try again.</div>';
+            }
+        })();
+    </script>
+</body>
+</html>

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GST Workview - Compliance AI Expert</title>
+    <title>GST Workview — ComplianceAI Expert</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -27,19 +27,19 @@
         .app-layout {
             display: flex;
             height: 100vh;
-            padding-top: 70px;
+            padding-top: 56px;
         }
 
         /* ===== SIDEBAR ===== */
         .sidebar {
             width: 250px;
             min-width: 250px;
-            background: #ffffff;
+            background: #f8fafc;
             border-right: 1px solid #e5e7eb;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            padding: 1rem 0;
+            padding: 0.75rem 0;
         }
 
         .sidebar-nav {
@@ -56,10 +56,10 @@
             display: flex;
             align-items: center;
             gap: 0.75rem;
-            padding: 0.75rem 1.25rem;
-            color: #374151;
+            padding: 0.7rem 1.25rem;
+            color: #475569;
             text-decoration: none;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 500;
             cursor: pointer;
             transition: all 0.2s ease;
@@ -68,21 +68,21 @@
         }
 
         .sidebar-link:hover {
-            background: #f0f4ff;
-            color: #1E3A8A;
+            background: #eff6ff;
+            color: #1e3a8a;
         }
 
         .sidebar-link.active {
-            background: #EBF0FF;
-            color: #EB6711;
-            border-left-color: #EB6711;
+            background: #eff6ff;
+            color: #1e3a8a;
+            border-left-color: #1e3a8a;
             font-weight: 600;
         }
 
         .sidebar-link .link-icon {
             width: 20px;
             text-align: center;
-            font-size: 1rem;
+            font-size: 0.95rem;
             flex-shrink: 0;
         }
 
@@ -108,7 +108,7 @@
             max-height: 0;
             overflow: hidden;
             transition: max-height 0.3s ease;
-            background: #fafbfc;
+            background: #f1f5f9;
         }
 
         .sidebar-submenu.open {
@@ -117,23 +117,23 @@
 
         .sidebar-submenu li a {
             display: block;
-            padding: 0.55rem 1.25rem 0.55rem 3.25rem;
-            color: #6b7280;
+            padding: 0.5rem 1.25rem 0.5rem 3.25rem;
+            color: #64748b;
             text-decoration: none;
-            font-size: 0.84rem;
+            font-size: 0.82rem;
             font-weight: 450;
             transition: all 0.15s ease;
         }
 
         .sidebar-submenu li a:hover,
         .sidebar-submenu li a.active {
-            color: #EB6711;
-            background: #FFF7ED;
+            color: #1e3a8a;
+            background: #dbeafe;
         }
 
         .sidebar-divider {
             height: 1px;
-            background: #e5e7eb;
+            background: #e2e8f0;
             margin: 0.5rem 1rem;
         }
 
@@ -141,8 +141,8 @@
         .main-content {
             flex: 1;
             overflow-y: auto;
-            padding: 2rem 2.5rem;
-            background: #f8fafc;
+            padding: 1.5rem 2rem;
+            background: #fff;
         }
 
         .content-section {
@@ -221,14 +221,14 @@
         }
 
         .cat-btn:hover {
-            border-color: #EB6711;
-            background: #fffaf5;
+            border-color: #3b82f6;
+            background: #f0f5ff;
         }
 
         .cat-btn.selected {
-            border-color: #EB6711;
-            background: #fff7ed;
-            box-shadow: 0 0 0 2px rgba(235, 103, 17, 0.1);
+            border-color: #1e3a8a;
+            background: #eff6ff;
+            box-shadow: 0 0 0 2px rgba(30, 58, 138, 0.1);
         }
 
         .cat-btn .icon {
@@ -271,8 +271,9 @@
         }
 
         .form-group input:focus {
-            border-color: #EB6711;
+            border-color: #1e3a8a;
             outline: none;
+            box-shadow: 0 0 0 3px rgba(30, 58, 138, .06);
         }
 
         .wf-footer {
@@ -322,12 +323,12 @@
         }
 
         .btn-wf-primary {
-            background: #EB6711;
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
             color: #fff;
         }
 
         .btn-wf-primary:hover {
-            background: #d45a0f;
+            background: linear-gradient(135deg, #1e3a8a, #1e40af);
         }
 
         .btn-wf-outline {
@@ -357,8 +358,8 @@
         }
 
         .upload-zone:hover {
-            border-color: #EB6711;
-            background: #fffaf5;
+            border-color: #3b82f6;
+            background: #f0f5ff;
         }
 
         .upload-zone .icon {
@@ -427,22 +428,23 @@
 
         /* ===== SECTION HEADER ===== */
         .section-header {
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
         }
 
         .section-header h1 {
-            font-size: 1.75rem;
+            font-size: 1.35rem;
             font-weight: 700;
-            color: #1E3A8A;
+            color: #111827;
             display: flex;
             align-items: center;
-            gap: 0.75rem;
-            margin: 0 0 0.35rem 0;
+            gap: 0.6rem;
+            margin: 0 0 0.2rem 0;
+            font-family: 'Outfit', sans-serif;
         }
 
         .section-header .section-subtitle {
             color: #6b7280;
-            font-size: 0.95rem;
+            font-size: 0.82rem;
             margin: 0;
         }
 
@@ -450,42 +452,42 @@
         .category-header {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            margin: 2rem 0 0.35rem 0;
+            gap: 0.4rem;
+            margin: 1.5rem 0 0.25rem 0;
         }
 
         .category-header h2 {
-            font-size: 1.15rem;
+            font-size: 0.95rem;
             font-weight: 700;
             color: #1f2937;
             margin: 0;
         }
 
         .category-header .cat-icon {
-            font-size: 1.15rem;
+            font-size: 0.95rem;
         }
 
         .category-subtitle {
-            color: #EB6711;
-            font-size: 0.85rem;
+            color: #6b7280;
+            font-size: 0.78rem;
             font-weight: 500;
-            margin: 0 0 1rem 0;
+            margin: 0 0 0.85rem 0;
         }
 
         /* ===== TOOL CARDS GRID ===== */
         .cards-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 1.25rem;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 1rem;
             margin-bottom: 1rem;
         }
 
         .tool-card {
             background: #fff;
-            border: 1.5px solid #e5e7eb;
+            border: 1px solid #e5e7eb;
             border-radius: 12px;
-            padding: 1.5rem;
-            transition: all 0.25s ease;
+            padding: 1.25rem;
+            transition: all 0.2s ease;
             cursor: pointer;
             position: relative;
             display: flex;
@@ -493,8 +495,8 @@
         }
 
         .tool-card:hover {
-            border-color: #EB6711;
-            box-shadow: 0 4px 16px rgba(235, 103, 17, 0.10);
+            border-color: #3b82f6;
+            box-shadow: 0 4px 14px rgba(30, 58, 138, 0.06);
             transform: translateY(-2px);
         }
 
@@ -502,75 +504,75 @@
             display: flex;
             align-items: flex-start;
             justify-content: space-between;
-            margin-bottom: 0.75rem;
+            margin-bottom: 0.6rem;
         }
 
         .card-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            background: #EBF0FF;
+            width: 36px;
+            height: 36px;
+            border-radius: 9px;
+            background: #eff6ff;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.25rem;
-            color: #1E3A8A;
+            font-size: 1.1rem;
+            color: #1e3a8a;
         }
 
         .card-badge {
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            padding: 0.2rem 0.6rem;
+            padding: 0.15rem 0.5rem;
             border-radius: 4px;
-            background: #FFF7ED;
-            color: #EB6711;
-            border: 1px solid #FDBA74;
+            background: #eff6ff;
+            color: #1e3a8a;
+            border: 1px solid #93c5fd;
         }
 
         .card-badge.sales {
-            background: #F0F4FF;
-            color: #1E3A8A;
-            border-color: #93C5FD;
+            background: #f5f3ff;
+            color: #6d28d9;
+            border-color: #c4b5fd;
         }
 
         .card-title {
-            font-size: 1rem;
+            font-size: 0.88rem;
             font-weight: 700;
-            color: #1f2937;
-            margin: 0 0 0.4rem 0;
+            color: #111827;
+            margin: 0 0 0.25rem 0;
         }
 
         .card-desc {
-            font-size: 0.84rem;
+            font-size: 0.76rem;
             color: #6b7280;
             line-height: 1.5;
-            margin: 0 0 1.25rem 0;
+            margin: 0 0 1rem 0;
             flex: 1;
         }
 
         .card-action {
             display: inline-flex;
             align-items: center;
-            gap: 0.4rem;
-            font-size: 0.85rem;
+            gap: 0.35rem;
+            font-size: 0.78rem;
             font-weight: 600;
-            color: #374151;
-            padding: 0.5rem 1rem;
-            border: 1.5px solid #d1d5db;
-            border-radius: 8px;
+            color: #1e3a8a;
+            padding: 0.4rem 0.85rem;
+            border: 1px solid #dbeafe;
+            border-radius: 7px;
             cursor: pointer;
-            transition: all 0.2s ease;
-            background: #fff;
+            transition: all 0.15s ease;
+            background: #f8fafc;
             text-decoration: none;
             width: fit-content;
         }
 
         .card-action:hover {
-            border-color: #EB6711;
-            color: #EB6711;
-            background: #FFF7ED;
+            border-color: #1e3a8a;
+            color: #fff;
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
         }
 
         /* ===== COMING SOON OVERLAY ===== */
@@ -638,7 +640,7 @@
         }
 
         .stat-value.orange {
-            color: #EB6711;
+            color: #1e3a8a;
         }
 
         .stat-value.green {
@@ -665,8 +667,8 @@
         }
 
         .report-item:hover {
-            border-color: #EB6711;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border-color: #3b82f6;
+            box-shadow: 0 2px 8px rgba(30, 58, 138, 0.06);
         }
 
         .report-icon {
@@ -733,57 +735,6 @@
             color: #9ca3af;
         }
 
-        /* ===== DROPDOWN (navbar) ===== */
-        .navbar-profile {
-            position: relative;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-        }
-
-        .nav-dropdown {
-            position: absolute;
-            top: 120%;
-            right: 0;
-            background: white;
-            border: 1px solid #e5e7eb;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-            width: 200px;
-            display: none;
-            padding: 0.5rem 0;
-            z-index: 9999;
-            margin-top: 0.5rem;
-        }
-
-        .nav-dropdown.active {
-            display: block;
-        }
-
-        .dropdown-item {
-            padding: 0.75rem 1.5rem;
-            color: #374151;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            text-decoration: none;
-            transition: background 0.2s;
-            cursor: pointer;
-            font-size: 0.875rem;
-            font-weight: 500;
-        }
-
-        .dropdown-item:hover {
-            background: #f9fafb;
-            color: #1E3A8A;
-        }
-
-        .dropdown-divider {
-            height: 1px;
-            background: #f3f4f6;
-            margin: 0.5rem 0;
-        }
-
         /* ===== RESPONSIVE ===== */
         @media (max-width: 900px) {
             .sidebar {
@@ -805,42 +756,8 @@
 </head>
 
 <body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="navbar-container">
-            <div style="display: flex; align-items: center; gap: 2rem;">
-                <a href="clients.html" id="back-btn" class="logo"
-                    style="text-decoration: none; display: flex; align-items: center; gap: 0.75rem;">
-                    <div class="logo-icon"
-                        style="background: #1E3A8A; color: white; padding: 4px 10px; border-radius: 6px; font-weight: 800;">
-                        CE</div>
-                    <span id="nav-client-name" style="font-weight: 700; color: #1E3A8A; font-size: 1.1rem;">Compliance
-                        AI Expert</span>
-                </a>
-                <div style="height: 24px; width: 1px; background: #d1d5db;"></div>
-                <h3 id="nav-service-name" style="color: #1f2937; font-size: 1rem;">GST REFUND</h3>
-            </div>
-            <div class="navbar-profile" onclick="toggleProfileDropdown(event)">
-                <div style="display:flex; align-items:center; gap:0.75rem">
-                    <div class="user-avatar-small" id="nav-avatar"
-                        style="width:32px; height:32px; background:#1E3A8A; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-size:14px;">
-                        C</div>
-                </div>
-                <div class="nav-dropdown" id="profile-dropdown">
-                    <a href="profile.html" class="dropdown-item">
-                        <span>👤</span> My Profile
-                    </a>
-                    <a href="integrations.html" class="dropdown-item">
-                        <span>🔌</span> Integrations
-                    </a>
-                    <div class="dropdown-divider"></div>
-                    <div onclick="logout()" class="dropdown-item" style="color: #EF4444;">
-                        <span>🚪</span> Logout
-                    </div>
-                </div>
-            </div>
-        </div>
-    </nav>
+    <div id="app-topbar" data-active="dashboard"></div>
+    <script src="app-topbar.js?v=3"></script>
 
     <div class="app-layout">
         <!-- ===== LEFT SIDEBAR ===== -->
@@ -854,13 +771,6 @@
                     </a>
                 </li>
 
-                <!-- Notice Management -->
-                <li class="sidebar-item">
-                    <a class="sidebar-link" data-section="notice" onclick="navigateTo('notice', this)">
-                        <span class="link-icon">🔔</span>
-                        <span class="link-text">Notice Management</span>
-                    </a>
-                </li>
 
                 <!-- GST Refund (expandable) -->
                 <li class="sidebar-item">
@@ -878,6 +788,7 @@
                                 Refund</a></li>
                         <li><a onclick="navigateTo('track-request', this)" data-section="track-request">Track
                                 Request</a></li>
+                        <li><a onclick="navigateToTool('tool-hsn-locator.html')">HSN Locator</a></li>
                     </ul>
                 </li>
 
@@ -923,35 +834,12 @@
                     <div class="sidebar-divider"></div>
                 </li>
 
-                <!-- How It Works -->
-                <li class="sidebar-item">
-                    <a class="sidebar-link" href="how-it-works.html">
-                        <span class="link-icon">💡</span>
-                        <span class="link-text">How It Works</span>
-                    </a>
-                </li>
-
                 <!-- Support Tickets -->
                 <li class="sidebar-item">
                     <a class="sidebar-link" data-section="support" onclick="navigateTo('support', this)">
                         <span class="link-icon">🎫</span>
                         <span class="link-text">Support Tickets</span>
                     </a>
-                </li>
-
-                <!-- Master (expandable) -->
-                <li class="sidebar-item">
-                    <a class="sidebar-link" onclick="toggleSubmenu(this)">
-                        <span class="link-icon">⚙️</span>
-                        <span class="link-text">Master</span>
-                        <span class="chevron">▶</span>
-                    </a>
-                    <ul class="sidebar-submenu" id="sub-master">
-                        <li><a onclick="navigateTo('master-gstin', this)" data-section="master-gstin">GSTIN</a></li>
-                        <li><a onclick="navigateTo('master-pan', this)" data-section="master-pan">PAN</a></li>
-                        <li><a onclick="navigateTo('master-users', this)" data-section="master-users">User
-                                Management</a></li>
-                    </ul>
                 </li>
             </ul>
         </aside>
@@ -1370,6 +1258,16 @@
                             Register</p>
                         <a class="card-action">Explore →</a>
                     </div>
+                    <div class="tool-card" data-tool-name="hsn locator"
+                        onclick="navigateToTool('tool-hsn-locator.html')">
+                        <div class="card-top">
+                            <div class="card-icon">🔍</div>
+                        </div>
+                        <h3 class="card-title">HSN / SAC Locator</h3>
+                        <p class="card-desc">Find HSN/SAC codes by description — single lookup or bulk Excel validation
+                            with 22,000+ codes.</p>
+                        <a class="card-action">Explore →</a>
+                    </div>
                     <div class="tool-card" data-tool-name="hsn plotter"
                         onclick="navigateToTool('tool-hsn-plotter.html')">
                         <div class="card-top">
@@ -1453,46 +1351,17 @@
         let uploadedFiles = [];
         let activeJobs = {};
 
-        // UI Init
-        if (user) {
-            const initial = (user.firm_name || user.full_name || user.name || 'U').charAt(0).toUpperCase();
-            document.getElementById('nav-avatar').textContent = initial;
-        }
-
-        document.getElementById('nav-service-name').textContent = serviceName ? serviceName.toUpperCase().replace('-', ' ') : 'GST REFUND';
-        document.getElementById('back-btn').href = `services-dashboard.html?clientId=${clientId}`;
-
         // Section Persistence on Load
         window.addEventListener('load', () => {
             const sectionParam = urlParams.get('section');
             if (sectionParam) {
-                // Find the sidebar link corresponding to this section
                 const sidebarLink = document.querySelector(`[data-section="${sectionParam}"]`);
                 navigateTo(sectionParam, sidebarLink);
             } else {
-                // Default to reconciliation if no section specified
                 const defaultLink = document.querySelector('[data-section="reconciliation"]');
                 navigateTo('reconciliation', defaultLink);
             }
         });
-
-        // Profile Dropdown
-        window.toggleProfileDropdown = function (e) {
-            e.stopPropagation();
-            const dd = document.getElementById('profile-dropdown');
-            if (dd) dd.classList.toggle('active');
-        }
-
-        document.addEventListener('click', () => {
-            const dd = document.getElementById('profile-dropdown');
-            if (dd) dd.classList.remove('active');
-        });
-
-        window.logout = function () {
-            localStorage.removeItem('access_token');
-            localStorage.removeItem('user');
-            window.location.href = 'index.html';
-        }
 
         // ===== SIDEBAR NAVIGATION =====
         function navigateTo(sectionId, el) {
@@ -1882,6 +1751,7 @@
             });
         }
     </script>
+    <script src="app-topbar.js"></script>
 </body>
 
 </html>

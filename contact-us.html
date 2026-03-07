@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us — ComplianceAI Expert | AI Compliance Platform for CAs India</title>
+    <meta name="description"
+        content="Contact ComplianceAI Expert for demos, support, or partnerships. India's leading AI-powered compliance platform for Chartered Accountants, GST, income tax, and audit automation.">
+    <meta name="keywords"
+        content="ComplianceAI contact, CA software support, compliance demo India, AI platform CAs, GST automation support, chartered accountant software demo">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            background: #fff;
+            margin: 0;
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif
+        }
+
+        /* Page Header */
+        .page-header-section {
+            padding: 5.5rem 2rem 2rem;
+            max-width: 1100px;
+            margin: 0 auto
+        }
+
+        .page-header-section .tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.3rem 0.85rem;
+            background: #eff6ff;
+            border: 1px solid #dbeafe;
+            border-radius: 999px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: #1e3a8a;
+            margin-bottom: 0.85rem
+        }
+
+        .page-header-section h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2rem;
+            font-weight: 800;
+            color: #111827;
+            margin: 0 0 0.4rem;
+            letter-spacing: -0.01em
+        }
+
+        .page-header-section h1 span {
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text
+        }
+
+        .page-header-section p {
+            font-size: 0.88rem;
+            color: #6b7280;
+            max-width: 600px;
+            line-height: 1.6;
+            margin: 0
+        }
+
+        /* Layout */
+        .page-wrap {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 1.5rem 2rem 3rem
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.75rem;
+            margin-bottom: 2.5rem
+        }
+
+        /* Form */
+        .form-card {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            padding: 1.75rem
+        }
+
+        .form-card h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0 0 0.2rem
+        }
+
+        .form-card .sub {
+            font-size: 0.76rem;
+            color: #6b7280;
+            margin: 0 0 1.25rem
+        }
+
+        .form-group {
+            margin-bottom: 0.85rem
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: #475569;
+            margin-bottom: 0.3rem
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.6rem 0.85rem;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 0.82rem;
+            font-family: 'Inter', sans-serif;
+            color: #1e293b;
+            transition: all .2s;
+            background: #f9fafb;
+            outline: none
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            border-color: #1e3a8a;
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(30, 58, 138, .06)
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 90px
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 0.65rem;
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all .25s;
+            font-family: 'Inter', sans-serif
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(30, 58, 138, .2)
+        }
+
+        .form-success {
+            display: none;
+            text-align: center;
+            padding: 3rem 1.5rem
+        }
+
+        .form-success.active {
+            display: block
+        }
+
+        .form-success .check {
+            font-size: 2.5rem;
+            margin-bottom: 0.75rem
+        }
+
+        .form-success h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0 0 0.4rem
+        }
+
+        .form-success p {
+            color: #6b7280;
+            font-size: 0.82rem;
+            margin: 0
+        }
+
+        /* Info Cards */
+        .info-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem
+        }
+
+        .info-card {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 1.1rem;
+            display: flex;
+            gap: 0.85rem;
+            align-items: flex-start;
+            transition: all .2s
+        }
+
+        .info-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 14px rgba(0, 0, 0, .04)
+        }
+
+        .info-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.95rem;
+            flex-shrink: 0
+        }
+
+        .info-card h4 {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0 0 0.1rem
+        }
+
+        .info-card p {
+            font-size: 0.73rem;
+            color: #6b7280;
+            line-height: 1.55;
+            margin: 0
+        }
+
+        .info-card a {
+            color: #1e3a8a;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.75rem
+        }
+
+        .info-card a:hover {
+            text-decoration: underline
+        }
+
+        /* AI Agent Request Card */
+        .agent-card {
+            background: linear-gradient(135deg, #eff6ff, #f0f5ff);
+            border: 1.5px solid #dbeafe;
+            border-radius: 12px;
+            padding: 1.1rem;
+            display: flex;
+            gap: 0.85rem;
+            align-items: flex-start;
+            transition: all .2s
+        }
+
+        .agent-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(30, 58, 138, .08)
+        }
+
+        .agent-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 9px;
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.95rem;
+            flex-shrink: 0
+        }
+
+        .agent-card h4 {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: #1e3a8a;
+            margin: 0 0 0.1rem
+        }
+
+        .agent-card p {
+            font-size: 0.73rem;
+            color: #475569;
+            line-height: 1.55;
+            margin: 0
+        }
+
+        .agent-card a {
+            color: #1e3a8a;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.75rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem
+        }
+
+        .agent-card a:hover {
+            text-decoration: underline
+        }
+
+        /* Section Title */
+        .section-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #111827;
+            margin: 0 0 0.3rem
+        }
+
+        .section-subtitle {
+            font-size: 0.76rem;
+            color: #6b7280;
+            margin: 0 0 1.15rem
+        }
+
+        /* FAQ */
+        .faq-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.85rem;
+            margin-bottom: 2rem
+        }
+
+        .faq-card {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 1.1rem;
+            transition: all .2s
+        }
+
+        .faq-card:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, .03)
+        }
+
+        .faq-card h4 {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0 0 0.3rem
+        }
+
+        .faq-card p {
+            font-size: 0.73rem;
+            color: #6b7280;
+            line-height: 1.5;
+            margin: 0
+        }
+
+        @media(max-width:768px) {
+
+            .contact-grid,
+            .faq-grid {
+                grid-template-columns: 1fr
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app-topbar" data-active="dashboard"></div>
+    <script src="app-topbar.js"></script>
+
+    <!-- Page Header -->
+    <div class="page-header-section">
+        <div class="tag">📬 We'd Love to Hear From You</div>
+        <h1>Talk to <span>Us</span></h1>
+        <p>For a free demo of our agentic AI compliance platform, technical support, custom AI agent requests, or
+            partnership opportunities — reach out anytime.</p>
+    </div>
+
+    <div class="page-wrap">
+        <div class="contact-grid">
+            <!-- Contact Form -->
+            <div class="form-card">
+                <div id="contact-form-area">
+                    <h2>Send Us a Message</h2>
+                    <p class="sub">Fill out the form and we'll get back to you within 24 hours.</p>
+                    <form id="contact-form" onsubmit="handleContactSubmit(event)">
+                        <div class="form-row">
+                            <div class="form-group"><label>Full Name *</label><input type="text" name="name" required
+                                    placeholder="Your full name"></div>
+                            <div class="form-group"><label>Email Address *</label><input type="email" name="email"
+                                    required placeholder="you@example.com"></div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group"><label>Phone Number</label><input type="tel" name="phone"
+                                    placeholder="+91 98765 43210"></div>
+                            <div class="form-group">
+                                <label>Subject</label>
+                                <select name="subject">
+                                    <option value="">Select a topic</option>
+                                    <option>Free AI Demo</option>
+                                    <option>Custom AI Agent Request</option>
+                                    <option>GST & Tax Compliance</option>
+                                    <option>CA Certificate Generator</option>
+                                    <option>AI Assistant Platform</option>
+                                    <option>Technical Support</option>
+                                    <option>Partnership Inquiry</option>
+                                    <option>API / Integration</option>
+                                    <option>Other</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Message *</label>
+                            <textarea name="message" required
+                                placeholder="Tell us about your compliance needs, custom AI agent requirements, firm size, or what you'd like to see in a demo…"></textarea>
+                        </div>
+                        <button type="submit" class="submit-btn">Send Message →</button>
+                    </form>
+                </div>
+                <div class="form-success" id="form-success">
+                    <div class="check">✅</div>
+                    <h3>Message Sent Successfully!</h3>
+                    <p>Thank you for reaching out. Our team will respond within 24 hours with a tailored demo or support
+                        plan.</p>
+                </div>
+            </div>
+
+            <!-- Info Cards -->
+            <div class="info-stack">
+                <!-- Custom AI Agent Request — highlighted -->
+                <div class="agent-card">
+                    <div class="agent-icon">🤖</div>
+                    <div>
+                        <h4>Request a Custom AI Agent</h4>
+                        <p>Need a specialized AI agent for your firm? Tell us your workflow — auto-email, document
+                            extraction, smart filing, or anything else — and we'll build it for you.</p>
+                        <a href="mailto:complianceAIExpert@gmail.com?subject=Custom AI Agent Request">Submit Request
+                            →</a>
+                    </div>
+                </div>
+                <div class="info-card">
+                    <div class="info-icon" style="background:#eff6ff;color:#3b82f6">📧</div>
+                    <div>
+                        <h4>Email Support</h4>
+                        <p>Write to us anytime for product queries, demos, or technical support.</p>
+                        <a href="mailto:complianceAIExpert@gmail.com">complianceAIExpert@gmail.com</a>
+                    </div>
+                </div>
+                <div class="info-card">
+                    <div class="info-icon" style="background:#f1f5f9;color:#475569">📍</div>
+                    <div>
+                        <h4>Office Location</h4>
+                        <p>New Delhi, India — serving CA firms and tax professionals pan-India remotely.</p>
+                    </div>
+                </div>
+                <div class="info-card">
+                    <div class="info-icon" style="background:#f5f3ff;color:#7c3aed">🤖</div>
+                    <div>
+                        <h4>Request a Free AI Demo</h4>
+                        <p>See our agentic AI in action — GST reconciliation, CA certificate generation, AI GPT for tax
+                            queries, and more.</p>
+                        <a href="mailto:complianceAIExpert@gmail.com?subject=Free AI Demo Request">Schedule Demo</a>
+                    </div>
+                </div>
+                <div class="info-card">
+                    <div class="info-icon" style="background:#fdf2f8;color:#ec4899">🤝</div>
+                    <div>
+                        <h4>Partnerships & Integrations</h4>
+                        <p>Interested in integrating Tally, accounting platforms, or white-labeling our AI compliance
+                            engine?</p>
+                        <a href="mailto:complianceAIExpert@gmail.com?subject=Partnership Inquiry">Get in Touch</a>
+                    </div>
+                </div>
+                <div class="info-card">
+                    <div class="info-icon" style="background:#ecfdf5;color:#059669">💬</div>
+                    <div>
+                        <h4>Follow Us</h4>
+                        <p>Stay updated on new AI modules, compliance updates, and product launches.</p>
+                        <div style="display:flex;gap:0.65rem;margin-top:0.3rem">
+                            <a href="#">LinkedIn</a>
+                            <a href="#">Twitter</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FAQ -->
+        <h2 class="section-title">Frequently Asked Questions</h2>
+        <p class="section-subtitle">Quick answers about our AI-powered compliance platform for Chartered Accountants.
+        </p>
+        <div class="faq-grid">
+            <div class="faq-card">
+                <h4>How does the agentic AI work?</h4>
+                <p>Our AI agents autonomously read documents, extract data, reconcile records, and generate compliance
+                    outputs — all without step-by-step human instruction. You supervise, AI executes.</p>
+            </div>
+            <div class="faq-card">
+                <h4>What's the difference between Web View and Semi-Chat View?</h4>
+                <p>Web View gives you structured panels with checklists and forms. Semi-Chat View lets you interact with
+                    our AI GPT in a conversation. Both modes produce the same outputs.</p>
+            </div>
+            <div class="faq-card">
+                <h4>Is the platform compliant with Indian regulations?</h4>
+                <p>Yes — all templates reference Indian Contract Act, Companies Act, FEMA, RBI circulars, and ICAI
+                    standards. CA certificates support UDIN integration.</p>
+            </div>
+            <div class="faq-card">
+                <h4>How do I integrate Tally with ComplianceAI?</h4>
+                <p>Our one-click Tally sync pulls data from Tally Prime/ERP 9 running on port 9000. No plugins needed —
+                    just select the company and sync.</p>
+            </div>
+            <div class="faq-card">
+                <h4>Which compliance modules are available?</h4>
+                <p>GST Filing, Income Tax, Audit, CA Certificates, Agreements, Data Entry, Payroll, Company Law,
+                    Accounting, and more — with new AI modules added regularly.</p>
+            </div>
+            <div class="faq-card">
+                <h4>Can I request a custom AI agent?</h4>
+                <p>Absolutely! Tell us your workflow — like auto-sending emails, reading FIRC attachments, or smart
+                    document sorting — and we'll build a custom AI agent tailored to your practice.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function handleContactSubmit(e) {
+            e.preventDefault();
+            document.getElementById('contact-form-area').style.display = 'none';
+            document.getElementById('form-success').classList.add('active');
+        }
+    </script>
+    <script src="session-manager.js?v=2"></script>
+</body>
+
+</html>

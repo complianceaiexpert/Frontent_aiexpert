@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HSN / SAC Locator — ComplianceAI Expert</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="tool-layout.css">
+    <style>
+        .mode-tabs {
+            display: flex;
+            gap: .35rem;
+            background: #f1f5f9;
+            padding: .25rem;
+            border-radius: 10px;
+            margin-bottom: 1.25rem
+        }
+
+        .mode-tab {
+            flex: 1;
+            padding: .55rem;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            font-size: .82rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: #64748b;
+            font-family: inherit;
+            transition: all .2s
+        }
+
+        .mode-tab.active {
+            background: #fff;
+            color: #1e3a8a;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, .08)
+        }
+
+        .search-row {
+            display: flex;
+            gap: .5rem
+        }
+
+        .search-input {
+            flex: 1;
+            padding: .6rem .85rem;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: .85rem;
+            font-family: inherit;
+            background: #f9fafb;
+            transition: all .2s
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #1e3a8a;
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(30, 58, 138, .06)
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: .4rem;
+            padding: .55rem 1rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: .82rem;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all .2s
+        }
+
+        .btn-search {
+            background: #1e3a8a;
+            color: #fff
+        }
+
+        .btn-search:hover {
+            background: #1e40af
+        }
+
+        .btn-search:disabled {
+            opacity: .5;
+            cursor: not-allowed
+        }
+
+        .btn-outline {
+            background: #fff;
+            color: #64748b;
+            border: 1.5px solid #e5e7eb
+        }
+
+        .btn-outline:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1
+        }
+
+        .results-wrap {
+            display: none;
+            margin-top: 1rem
+        }
+
+        .results-wrap.visible {
+            display: block;
+            animation: fadeIn .3s
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .result-count {
+            font-size: .78rem;
+            font-weight: 600;
+            color: #64748b;
+            margin-bottom: .5rem
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: .8rem
+        }
+
+        .results-table th {
+            text-align: left;
+            padding: .55rem .6rem;
+            background: #f8fafc;
+            color: #6b7280;
+            font-weight: 600;
+            font-size: .72rem;
+            text-transform: uppercase;
+            letter-spacing: .04em;
+            border-bottom: 1px solid #e5e7eb
+        }
+
+        .results-table td {
+            padding: .5rem .6rem;
+            border-bottom: 1px solid #f1f5f9;
+            color: #374151;
+            vertical-align: middle
+        }
+
+        .results-table tr:hover td {
+            background: #fafbfd
+        }
+
+        .code-badge {
+            font-family: 'SF Mono', 'Consolas', monospace;
+            background: #eff6ff;
+            color: #1e3a8a;
+            padding: .15rem .45rem;
+            border-radius: 5px;
+            font-weight: 700;
+            font-size: .78rem
+        }
+
+        .type-badge {
+            display: inline-flex;
+            padding: .12rem .45rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: .68rem
+        }
+
+        .type-badge.hsn {
+            background: #dcfce7;
+            color: #16a34a
+        }
+
+        .type-badge.sac {
+            background: #fef9c3;
+            color: #a16207
+        }
+
+        .score-bar-wrap {
+            display: flex;
+            align-items: center;
+            gap: .5rem
+        }
+
+        .score-bar {
+            width: 60px;
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 3px;
+            overflow: hidden
+        }
+
+        .score-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width .3s
+        }
+
+        .score-text {
+            font-size: .72rem;
+            font-weight: 700;
+            min-width: 28px
+        }
+
+        .bulk-section {
+            display: none
+        }
+
+        .bulk-section.visible {
+            display: block;
+            animation: fadeIn .3s
+        }
+
+        .bulk-progress {
+            display: none;
+            padding: 1.25rem;
+            background: #fff;
+            border-radius: 10px;
+            border: 1px solid #e5e7eb;
+            text-align: center;
+            margin-bottom: 1rem
+        }
+
+        .bulk-progress.visible {
+            display: block
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 3px;
+            overflow: hidden;
+            margin: .75rem 0 .35rem
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            border-radius: 3px;
+            transition: width .3s;
+            width: 0
+        }
+
+        .progress-text {
+            font-size: .78rem;
+            color: #94a3b8
+        }
+
+        .download-area {
+            display: none;
+            text-align: center;
+            margin-top: 1rem
+        }
+
+        .download-area.visible {
+            display: block;
+            animation: fadeIn .3s
+        }
+
+        .spin {
+            width: 20px;
+            height: 20px;
+            border: 2.5px solid #e2e8f0;
+            border-top-color: #1e3a8a;
+            border-radius: 50%;
+            animation: sp .8s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: .4rem
+        }
+
+        @keyframes sp {
+            to {
+                transform: rotate(360deg)
+            }
+        }
+
+        .tool-toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: #1e293b;
+            color: #fff;
+            padding: .75rem 1.25rem;
+            border-radius: 10px;
+            font-size: .82rem;
+            font-weight: 500;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, .2);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all .3s;
+            z-index: 9999
+        }
+
+        .tool-toast.show {
+            transform: translateY(0);
+            opacity: 1
+        }
+
+        .tool-toast.error {
+            background: #dc2626
+        }
+
+        .tool-toast.success {
+            background: #059669
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app-topbar" data-active="dashboard"></div>
+    <script src="app-topbar.js"></script>
+
+    <div class="tool-layout">
+        <aside class="tool-sidebar" id="tool-sidebar"></aside>
+        <main class="tool-main">
+            <div class="tool-main-inner">
+                <div class="tool-bc">
+                    <a href="clients.html">Firm</a><span style="color:#d1d5db">›</span>
+                    <a href="javascript:goBackToWebView()">GST Workspace</a><span style="color:#d1d5db">›</span>
+                    <span style="color:#374151;font-weight:600">HSN Locator</span>
+                </div>
+                <div class="tool-page-header">
+                    <h1>🔍 HSN / SAC <span>Locator</span></h1>
+                    <p>Find the correct HSN or SAC code for any product or service description. Supports single lookup
+                        and bulk Excel validation.</p>
+                </div>
+
+                <!-- Mode Toggle -->
+                <div class="mode-tabs">
+                    <button class="mode-tab active" onclick="setMode('single')">🔎 Single Lookup</button>
+                    <button class="mode-tab" onclick="setMode('bulk')">📊 Bulk Validation</button>
+                </div>
+
+                <!-- Single Lookup -->
+                <div id="single-section">
+                    <div class="tool-card">
+                        <h3>Search HSN / SAC Code</h3>
+                        <p>Enter a product or service description — we'll fuzzy-match the closest HSN/SAC codes from
+                            22,000+ entries.</p>
+                        <div class="search-row">
+                            <input class="search-input" id="search-input" type="text"
+                                placeholder="e.g. cotton fabric, accounting services, steel bars..."
+                                onkeydown="if(event.key==='Enter')doSearch()">
+                            <button class="btn btn-search" id="btn-search" onclick="doSearch()">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2.5">
+                                    <circle cx="11" cy="11" r="8" />
+                                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                                </svg>
+                                Search
+                            </button>
+                        </div>
+                        <div class="results-wrap" id="results-wrap">
+                            <div class="result-count" id="result-count"></div>
+                            <table class="results-table">
+                                <thead>
+                                    <tr>
+                                        <th>Code</th>
+                                        <th>Type</th>
+                                        <th>Description</th>
+                                        <th>Match</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="results-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bulk Validation -->
+                <div class="bulk-section" id="bulk-section">
+                    <div class="tool-card">
+                        <h3>📊 Bulk HSN Validation</h3>
+                        <p>Upload an Excel file with an <strong>HSN_Description</strong> column. We'll find the best
+                            matching HSN/SAC code for each row and return an updated Excel.</p>
+                        <div class="tool-upload" id="upload-zone"
+                            onclick="document.getElementById('bulk-file').click()">
+                            <div class="t-icon">📁</div>
+                            <div class="t-title">Drop your Excel file here</div>
+                            <div class="t-sub">or click to browse — accepts .xlsx files</div>
+                            <div class="t-file" id="file-name" style="display:none"></div>
+                        </div>
+                        <input type="file" id="bulk-file" accept=".xlsx,.xls" style="display:none"
+                            onchange="onFileSelected(this)">
+                        <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1rem">
+                            <button class="btn btn-search" id="btn-validate" onclick="doBulkValidate()" disabled>
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <polyline points="9 11 12 14 22 4" />
+                                    <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+                                </svg>
+                                Validate & Download
+                            </button>
+                            <button class="btn btn-outline" onclick="resetBulk()">Clear</button>
+                        </div>
+                        <div class="bulk-progress" id="bulk-progress">
+                            <div class="spin"></div> <span id="progress-msg">Processing your file...</span>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="progress-fill"></div>
+                            </div>
+                            <div class="progress-text" id="progress-text">Matching descriptions...</div>
+                        </div>
+                        <div class="download-area" id="download-area">
+                            <div style="font-size:2rem;margin-bottom:.4rem">✅</div>
+                            <div style="font-weight:700;font-size:1rem;margin-bottom:.2rem">Validation Complete!</div>
+                            <div style="font-size:.8rem;color:#94a3b8">Your file has been downloaded with HSN codes
+                                filled in.</div>
+                        </div>
+                    </div>
+
+                    <div class="tool-card" style="background:#f8fafc;border-style:dashed">
+                        <h3 style="font-size:.88rem">📋 Expected Excel Format</h3>
+                        <p style="margin-bottom:.5rem">Your Excel should have one of these column headers:</p>
+                        <div style="display:flex;flex-wrap:wrap;gap:.4rem">
+                            <span class="code-badge">HSN_Description</span>
+                            <span class="code-badge">Description</span>
+                            <span class="code-badge">Product</span>
+                            <span class="code-badge">Item</span>
+                            <span class="code-badge">Item_Name</span>
+                        </div>
+                        <p style="margin-top:.6rem">Output columns added: <strong>HSN_Code</strong>,
+                            <strong>Matched_Description</strong>, <strong>Match_Type</strong>,
+                            <strong>Match_Score</strong></p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div class="tool-toast" id="toast"></div>
+
+    <script src="tool-sidebar.js"></script>
+    <script src="api_config.js"></script>
+    <script src="session-manager.js?v=2"></script>
+    <script>
+        if (!requireAuth()) { }
+        renderToolSidebar('hsn-locator');
+
+        let currentMode = 'single';
+        let selectedFile = null;
+
+        function setMode(mode) {
+            currentMode = mode;
+            document.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
+            document.querySelector(`.mode-tab[onclick*="${mode}"]`).classList.add('active');
+            document.getElementById('single-section').style.display = mode === 'single' ? 'block' : 'none';
+            document.getElementById('bulk-section').className = mode === 'bulk' ? 'bulk-section visible' : 'bulk-section';
+            if (mode === 'single') document.getElementById('search-input').focus();
+        }
+
+        async function doSearch() {
+            const q = document.getElementById('search-input').value.trim();
+            if (q.length < 2) { showToast('Enter at least 2 characters', 'error'); return; }
+            const btn = document.getElementById('btn-search');
+            btn.disabled = true; btn.innerHTML = '<span class="spin" style="width:14px;height:14px;border-width:2px;margin:0"></span> Searching...';
+            try {
+                const resp = await authFetch(`/hsn/search?q=${encodeURIComponent(q)}&limit=15&include_sac=true`);
+                if (!resp || !resp.ok) throw new Error('Search failed');
+                renderResults(await resp.json(), q);
+            } catch (err) { showToast('❌ Search failed: ' + err.message, 'error'); }
+            finally { btn.disabled = false; btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> Search`; }
+        }
+
+        function renderResults(data, query) {
+            const wrap = document.getElementById('results-wrap'), body = document.getElementById('results-body'), count = document.getElementById('result-count');
+            if (!data.length) { wrap.classList.add('visible'); count.textContent = 'No matches found'; body.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#94a3b8;padding:1.5rem">No matching HSN/SAC codes found. Try a different description.</td></tr>'; return; }
+            count.textContent = `${data.length} match${data.length > 1 ? 'es' : ''} for "${query}"`;
+            const sc = s => s >= 80 ? '#16a34a' : s >= 60 ? '#ca8a04' : '#ef4444';
+            body.innerHTML = data.map(r => `<tr><td><span class="code-badge">${r.code}</span></td><td><span class="type-badge ${r.type.toLowerCase()}">${r.type}</span></td><td>${highlightMatch(r.description, query)}</td><td><div class="score-bar-wrap"><div class="score-bar"><div class="score-fill" style="width:${r.score}%;background:${sc(r.score)}"></div></div><span class="score-text" style="color:${sc(r.score)}">${r.score}%</span></div></td></tr>`).join('');
+            wrap.classList.add('visible');
+        }
+
+        function highlightMatch(text, query) {
+            const words = query.toUpperCase().split(/\s+/); let result = escapeHTML(text);
+            for (const word of words) { if (word.length < 2) continue; result = result.replace(new RegExp(`(${word})`, 'gi'), '<strong style="color:#1e3a8a;background:#eff6ff;padding:0 2px;border-radius:2px">$1</strong>'); }
+            return result;
+        }
+
+        function onFileSelected(input) {
+            if (!input.files.length) return; selectedFile = input.files[0];
+            const zone = document.getElementById('upload-zone'); zone.classList.add('has-file');
+            const fn = document.getElementById('file-name'); fn.textContent = '📄 ' + selectedFile.name; fn.style.display = 'block';
+            document.getElementById('btn-validate').disabled = false;
+            document.getElementById('download-area').classList.remove('visible');
+        }
+
+        async function doBulkValidate() {
+            if (!selectedFile) return;
+            const btn = document.getElementById('btn-validate'); btn.disabled = true;
+            const progress = document.getElementById('bulk-progress'); progress.classList.add('visible');
+            document.getElementById('progress-fill').style.width = '40%';
+            try {
+                const fd = new FormData(); fd.append('file', selectedFile);
+                const token = localStorage.getItem('access_token');
+                const resp = await fetch(`${API_BASE_URL}/hsn/bulk-validate`, { method: 'POST', headers: { 'Authorization': `Bearer ${token}` }, body: fd });
+                document.getElementById('progress-fill').style.width = '80%';
+                if (!resp.ok) { const e = await resp.json().catch(() => ({})); throw new Error(e.detail || 'Validation failed'); }
+                document.getElementById('progress-fill').style.width = '100%';
+                document.getElementById('progress-text').textContent = 'Complete! Downloading...';
+                const blob = await resp.blob(); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `HSN_Validated_${selectedFile.name}`; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+                setTimeout(() => { progress.classList.remove('visible'); document.getElementById('download-area').classList.add('visible'); showToast('✅ Validated file downloaded!', 'success'); }, 500);
+            } catch (err) { showToast('❌ ' + err.message, 'error'); progress.classList.remove('visible'); }
+            finally { btn.disabled = false; }
+        }
+
+        function resetBulk() {
+            selectedFile = null; document.getElementById('bulk-file').value = '';
+            document.getElementById('upload-zone').classList.remove('has-file');
+            document.getElementById('file-name').style.display = 'none';
+            document.getElementById('btn-validate').disabled = true;
+            document.getElementById('bulk-progress').classList.remove('visible');
+            document.getElementById('download-area').classList.remove('visible');
+            document.getElementById('progress-fill').style.width = '0';
+        }
+
+        function escapeHTML(s) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+        function showToast(msg, type = '') { const t = document.getElementById('toast'); t.textContent = msg; t.className = `tool-toast show ${type}`; setTimeout(() => t.className = 'tool-toast', 3000); }
+
+        // Drag & drop
+        const zone = document.getElementById('upload-zone');
+        zone.addEventListener('dragover', e => { e.preventDefault(); zone.style.borderColor = '#3b82f6'; });
+        zone.addEventListener('dragleave', () => { zone.style.borderColor = ''; });
+        zone.addEventListener('drop', e => { e.preventDefault(); zone.style.borderColor = ''; if (e.dataTransfer.files.length > 0) { document.getElementById('bulk-file').files = e.dataTransfer.files; onFileSelected(document.getElementById('bulk-file')); } });
+
+        document.getElementById('search-input').focus();
+    </script>
+</body>
+
+</html>
