@@ -429,6 +429,131 @@
         </main>
     </div>
 
+    <!-- ═══ TOAST NOTIFICATION ═══ -->
+    <div id="toast-container"
+        style="position:fixed;top:1.5rem;right:1.5rem;z-index:9999;display:flex;flex-direction:column;gap:.5rem"></div>
+
+    <!-- ═══ TALLY PUSH MODAL ═══ -->
+    <div id="tally-modal-overlay"
+        style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:10000;display:none;align-items:center;justify-content:center">
+        <div
+            style="background:#fff;border-radius:16px;width:680px;max-height:85vh;overflow-y:auto;box-shadow:0 24px 48px rgba(0,0,0,.15);padding:0">
+            <div
+                style="padding:1.25rem 1.5rem;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;justify-content:space-between">
+                <div>
+                    <h2
+                        style="margin:0;font-family:'Outfit',sans-serif;font-size:1.15rem;font-weight:800;color:#111827">
+                        🔄 Push to Tally</h2>
+                    <p style="margin:.15rem 0 0;font-size:.75rem;color:#9ca3af">Map and send this voucher to Tally via
+                        the local connector</p>
+                </div>
+                <button onclick="closeTallyModal()"
+                    style="background:none;border:none;font-size:1.2rem;cursor:pointer;color:#9ca3af;padding:.25rem">✕</button>
+            </div>
+            <div style="padding:1.25rem 1.5rem">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem">
+                    <div>
+                        <label
+                            style="font-size:.68rem;font-weight:700;text-transform:uppercase;color:#9ca3af;letter-spacing:.04em;display:block;margin-bottom:.3rem">Company
+                            (Tally)</label>
+                        <select id="tm-company"
+                            style="width:100%;padding:.5rem .65rem;border:1px solid #e5e7eb;border-radius:8px;font-size:.82rem;font-family:inherit">
+                            <option value="">Loading companies...</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label
+                            style="font-size:.68rem;font-weight:700;text-transform:uppercase;color:#9ca3af;letter-spacing:.04em;display:block;margin-bottom:.3rem">Voucher
+                            Type</label>
+                        <select id="tm-type"
+                            style="width:100%;padding:.5rem .65rem;border:1px solid #e5e7eb;border-radius:8px;font-size:.82rem;font-family:inherit">
+                            <option>Sales</option>
+                            <option>Purchase</option>
+                            <option>Payment</option>
+                            <option>Receipt</option>
+                            <option>Journal</option>
+                            <option>Contra</option>
+                            <option>Credit Note</option>
+                            <option>Debit Note</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label
+                            style="font-size:.68rem;font-weight:700;text-transform:uppercase;color:#9ca3af;letter-spacing:.04em;display:block;margin-bottom:.3rem">Date</label>
+                        <input type="date" id="tm-date"
+                            style="width:100%;padding:.5rem .65rem;border:1px solid #e5e7eb;border-radius:8px;font-size:.82rem;font-family:inherit">
+                    </div>
+                    <div>
+                        <label
+                            style="font-size:.68rem;font-weight:700;text-transform:uppercase;color:#9ca3af;letter-spacing:.04em;display:block;margin-bottom:.3rem">Voucher
+                            Number</label>
+                        <input type="text" id="tm-voucherno"
+                            style="width:100%;padding:.5rem .65rem;border:1px solid #e5e7eb;border-radius:8px;font-size:.82rem;font-family:inherit">
+                    </div>
+                    <div style="grid-column:1/-1">
+                        <label
+                            style="font-size:.68rem;font-weight:700;text-transform:uppercase;color:#9ca3af;letter-spacing:.04em;display:block;margin-bottom:.3rem">Party
+                            Ledger Name (must match Tally exactly)</label>
+                        <input type="text" id="tm-party"
+                            style="width:100%;padding:.5rem .65rem;border:1px solid #e5e7eb;border-radius:8px;font-size:.82rem;font-family:inherit"
+                            list="tm-ledger-list">
+                        <datalist id="tm-ledger-list"></datalist>
+                    </div>
+                    <div style="grid-column:1/-1">
+                        <label
+                            style="font-size:.68rem;font-weight:700;text-transform:uppercase;color:#9ca3af;letter-spacing:.04em;display:block;margin-bottom:.3rem">Narration</label>
+                        <input type="text" id="tm-narration"
+                            style="width:100%;padding:.5rem .65rem;border:1px solid #e5e7eb;border-radius:8px;font-size:.82rem;font-family:inherit">
+                    </div>
+                </div>
+
+                <!-- Ledger Entries -->
+                <div style="margin-bottom:1rem">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem">
+                        <label
+                            style="font-size:.72rem;font-weight:700;text-transform:uppercase;color:#374151;letter-spacing:.04em">Ledger
+                            Entries</label>
+                        <button onclick="addLedgerRow()"
+                            style="padding:.3rem .7rem;font-size:.72rem;font-weight:600;border:1px solid #e5e7eb;background:#fff;border-radius:6px;cursor:pointer;font-family:inherit">+
+                            Add Row</button>
+                    </div>
+                    <table style="width:100%;border-collapse:collapse;font-size:.8rem" id="tm-entries-table">
+                        <thead>
+                            <tr style="background:#f9fafb">
+                                <th
+                                    style="text-align:left;padding:.45rem .5rem;font-size:.65rem;font-weight:700;text-transform:uppercase;color:#9ca3af;border-bottom:1px solid #e5e7eb">
+                                    Ledger Name</th>
+                                <th
+                                    style="text-align:right;padding:.45rem .5rem;font-size:.65rem;font-weight:700;text-transform:uppercase;color:#9ca3af;border-bottom:1px solid #e5e7eb;width:120px">
+                                    Amount</th>
+                                <th
+                                    style="text-align:center;padding:.45rem .5rem;font-size:.65rem;font-weight:700;text-transform:uppercase;color:#9ca3af;border-bottom:1px solid #e5e7eb;width:80px">
+                                    Side</th>
+                                <th style="width:40px;border-bottom:1px solid #e5e7eb"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="tm-entries-body"></tbody>
+                    </table>
+                    <div id="tm-balance-msg" style="margin-top:.5rem;font-size:.75rem;font-weight:600;text-align:right">
+                    </div>
+                </div>
+            </div>
+            <div
+                style="padding:1rem 1.5rem;border-top:1px solid #f1f5f9;display:flex;align-items:center;justify-content:space-between;background:#f9fafb;border-radius:0 0 16px 16px">
+                <label
+                    style="display:flex;align-items:center;gap:.4rem;font-size:.78rem;font-weight:500;color:#374151;cursor:pointer">
+                    <input type="checkbox" id="tm-auto-create" checked style="accent-color:#1e3a8a">
+                    Auto-create ledgers if not in Tally
+                </label>
+                <div style="display:flex;gap:.5rem">
+                    <button onclick="closeTallyModal()" class="de-btn" style="padding:.5rem 1rem">Cancel</button>
+                    <button onclick="submitTallyPush()" id="tm-submit-btn" class="de-btn primary"
+                        style="padding:.5rem 1.25rem">🔄 Push to Tally</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="api_config.js?v=2"></script>
     <script>
         // ═══ URL PARAMS ═══
@@ -634,6 +759,207 @@
             if (tab === 'ledger') loadLedgerData();
         }
 
+        // ═══ TOAST SYSTEM ═══
+        function showToast(msg, type = 'success') {
+            const c = document.getElementById('toast-container');
+            const colors = { success: '#059669', error: '#dc2626', warning: '#d97706' };
+            const icons = { success: '✓', error: '✕', warning: '⚠' };
+            const t = document.createElement('div');
+            t.style.cssText = `display:flex;align-items:center;gap:.6rem;padding:.75rem 1.15rem;background:#fff;border-left:4px solid ${colors[type] || colors.success};border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.12);font-size:.82rem;font-weight:500;color:#1e293b;min-width:280px;max-width:420px;animation:slideIn .3s ease`;
+            t.innerHTML = `<span style="width:22px;height:22px;border-radius:50%;background:${colors[type] || colors.success};color:#fff;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;flex-shrink:0">${icons[type] || icons.success}</span><span style="flex:1">${msg}</span>`;
+            c.appendChild(t);
+            setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateX(100%)'; t.style.transition = 'all .3s'; setTimeout(() => t.remove(), 300); }, 4000);
+        }
+
+        // ═══ TALLY MODAL STATE ═══
+        let tallyModalInvoiceId = null;
+        let tallyCompanies = [];
+        let tallyLedgerNames = [];
+
+        async function loadTallyCompanies() {
+            try {
+                const res = await authFetch('/tally/companies');
+                if (res.ok) tallyCompanies = await res.json();
+            } catch (e) { console.error('Load companies error:', e); }
+        }
+
+        async function loadTallyLedgerNames(companyName) {
+            try {
+                let url = '/tally/ledgers?per_page=200';
+                if (companyName) url += '&company_name=' + encodeURIComponent(companyName);
+                const res = await authFetch(url);
+                if (res.ok) {
+                    const d = await res.json();
+                    tallyLedgerNames = d.data.map(l => l.name);
+                    const dl = document.getElementById('tm-ledger-list');
+                    dl.innerHTML = tallyLedgerNames.map(n => `<option value="${n}">`).join('');
+                }
+            } catch (e) { console.error('Load ledger names error:', e); }
+        }
+
+        function openTallyModal(invoiceId) {
+            const tx = allInvoices.find(t => t.id === invoiceId);
+            if (!tx) return;
+            tallyModalInvoiceId = invoiceId;
+
+            // Populate company dropdown
+            const sel = document.getElementById('tm-company');
+            sel.innerHTML = tallyCompanies.length
+                ? tallyCompanies.map(c => `<option value="${c}">${c}</option>`).join('')
+                : '<option value="">No companies synced — sync from Tally first</option>';
+
+            // Pre-fill fields
+            const typeMap = { 'Sales': 'Sales', 'Purchase': 'Purchase', 'Banking': 'Payment', 'Journal': 'Journal' };
+            document.getElementById('tm-type').value = typeMap[tx.type] || 'Sales';
+
+            if (tx.date) {
+                const d = new Date(tx.date);
+                if (!isNaN(d)) document.getElementById('tm-date').value = d.toISOString().split('T')[0];
+            }
+            document.getElementById('tm-voucherno').value = tx.invoiceNo !== 'N/A' ? tx.invoiceNo : '';
+            document.getElementById('tm-party').value = tx.vendor !== 'Unknown' ? tx.vendor : '';
+            document.getElementById('tm-narration').value = `${tx.type} Invoice ${tx.invoiceNo}`;
+
+            // Build default ledger entries from flat invoice data
+            const amt = parseFloat(tx.totalAmount) || 0;
+            const baseAmt = parseFloat(tx.amount) || 0;
+            const gstAmt = parseFloat(tx.gstAmount) || 0;
+
+            const tbody = document.getElementById('tm-entries-body');
+            tbody.innerHTML = '';
+
+            // Debit: Party ledger
+            addLedgerRow(tx.vendor !== 'Unknown' ? tx.vendor : '', amt, true);
+            // Credit: Sales/Purchase account
+            const accountName = tx.type === 'Purchase' ? 'Purchase Account' : 'Sales Account';
+            addLedgerRow(accountName, baseAmt, false);
+            // Credit: GST (if any)
+            if (gstAmt > 0) {
+                const halfGst = Math.round(gstAmt / 2 * 100) / 100;
+                addLedgerRow('CGST', halfGst, false);
+                addLedgerRow('SGST', gstAmt - halfGst, false);
+            }
+
+            updateBalanceMsg();
+
+            // Load ledger autocomplete
+            if (tallyCompanies.length) loadTallyLedgerNames(tallyCompanies[0]);
+
+            // Show modal
+            const overlay = document.getElementById('tally-modal-overlay');
+            overlay.style.display = 'flex';
+        }
+
+        function closeTallyModal() {
+            document.getElementById('tally-modal-overlay').style.display = 'none';
+            tallyModalInvoiceId = null;
+        }
+
+        function addLedgerRow(name = '', amount = 0, isDebit = true) {
+            const tbody = document.getElementById('tm-entries-body');
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td style="padding:.35rem .5rem;border-bottom:1px solid #f1f5f9"><input type="text" value="${name}" list="tm-ledger-list" placeholder="Ledger name" style="width:100%;border:1px solid #e5e7eb;border-radius:6px;padding:.35rem .5rem;font-size:.8rem;font-family:inherit"></td>
+                <td style="padding:.35rem .5rem;border-bottom:1px solid #f1f5f9"><input type="number" value="${amount}" step="0.01" min="0" oninput="updateBalanceMsg()" style="width:100%;border:1px solid #e5e7eb;border-radius:6px;padding:.35rem .5rem;font-size:.8rem;text-align:right;font-family:inherit"></td>
+                <td style="padding:.35rem .5rem;border-bottom:1px solid #f1f5f9;text-align:center"><select onchange="updateBalanceMsg()" style="border:1px solid #e5e7eb;border-radius:6px;padding:.3rem;font-size:.75rem;font-family:inherit"><option value="Dr"${isDebit ? ' selected' : ''}>Dr</option><option value="Cr"${!isDebit ? ' selected' : ''}>Cr</option></select></td>
+                <td style="padding:.35rem;border-bottom:1px solid #f1f5f9;text-align:center"><button onclick="this.closest('tr').remove();updateBalanceMsg()" style="background:none;border:none;color:#dc2626;cursor:pointer;font-size:.85rem">✕</button></td>
+            `;
+            tbody.appendChild(tr);
+        }
+
+        function updateBalanceMsg() {
+            const rows = document.querySelectorAll('#tm-entries-body tr');
+            let totalDr = 0, totalCr = 0;
+            rows.forEach(r => {
+                const amt = parseFloat(r.querySelectorAll('input')[1]?.value) || 0;
+                const side = r.querySelector('select')?.value;
+                if (side === 'Dr') totalDr += amt; else totalCr += amt;
+            });
+            const diff = Math.abs(totalDr - totalCr);
+            const el = document.getElementById('tm-balance-msg');
+            if (diff < 0.01) {
+                el.innerHTML = `<span style="color:#059669">✓ Balanced — Dr: ₹${totalDr.toFixed(2)} = Cr: ₹${totalCr.toFixed(2)}</span>`;
+            } else {
+                el.innerHTML = `<span style="color:#dc2626">⚠ Unbalanced — Dr: ₹${totalDr.toFixed(2)} vs Cr: ₹${totalCr.toFixed(2)} (diff: ₹${diff.toFixed(2)})</span>`;
+            }
+        }
+
+        async function submitTallyPush() {
+            const company = document.getElementById('tm-company').value;
+            if (!company) { showToast('Please select a Tally company', 'error'); return; }
+
+            const dateVal = document.getElementById('tm-date').value;
+            if (!dateVal) { showToast('Please enter a date', 'error'); return; }
+
+            const rows = document.querySelectorAll('#tm-entries-body tr');
+            if (rows.length < 2) { showToast('At least 2 ledger entries required', 'error'); return; }
+
+            const ledger_entries = [];
+            let totalDr = 0, totalCr = 0;
+            for (const r of rows) {
+                const inputs = r.querySelectorAll('input');
+                const name = inputs[0]?.value?.trim();
+                const amt = parseFloat(inputs[1]?.value) || 0;
+                const side = r.querySelector('select')?.value;
+                if (!name) { showToast('All ledger names are required', 'error'); return; }
+                if (amt <= 0) { showToast('All amounts must be greater than 0', 'error'); return; }
+                ledger_entries.push({ ledger_name: name, amount: amt, is_debit: side === 'Dr' });
+                if (side === 'Dr') totalDr += amt; else totalCr += amt;
+            }
+
+            if (Math.abs(totalDr - totalCr) >= 0.01) { showToast(`Voucher is unbalanced (Dr: ₹${totalDr.toFixed(2)} vs Cr: ₹${totalCr.toFixed(2)})`, 'error'); return; }
+
+            const payload = {
+                company,
+                voucher_type: document.getElementById('tm-type').value,
+                date: dateVal.replace(/-/g, ''),
+                voucher_number: document.getElementById('tm-voucherno').value || undefined,
+                party_ledger: document.getElementById('tm-party').value || undefined,
+                narration: document.getElementById('tm-narration').value || '',
+                ledger_entries,
+                auto_create_ledgers: document.getElementById('tm-auto-create').checked
+            };
+
+            const btn = document.getElementById('tm-submit-btn');
+            btn.disabled = true; btn.textContent = '⏳ Pushing...';
+
+            try {
+                const res = await fetch('http://127.0.0.1:17890/tally/push-voucher', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (data.ok) {
+                    showToast('Voucher pushed to Tally successfully! ✓', 'success');
+                    // Mark as synced in backend
+                    if (tallyModalInvoiceId) {
+                        const token = localStorage.getItem('access_token');
+                        await fetch(`${API_BASE_URL}/invoices/${tallyModalInvoiceId}`, {
+                            method: 'PATCH',
+                            headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ synced_to_tally: true })
+                        });
+                        // Update local state
+                        const inv = allInvoices.find(t => t.id === tallyModalInvoiceId);
+                        if (inv) inv.status = 'Synced';
+                        renderTransactions();
+                    }
+                    closeTallyModal();
+                } else {
+                    if (data.error === 'TALLY_CONNECTION_FAILED') {
+                        showToast('Tally is not running on this machine', 'error');
+                    } else {
+                        showToast('Failed: ' + (data.details || data.error || 'Unknown error'), 'error');
+                    }
+                }
+            } catch (err) {
+                showToast('Connector not reachable. Is ComplianceAI connector running?', 'error');
+            } finally {
+                btn.disabled = false; btn.textContent = '🔄 Push to Tally';
+            }
+        }
+
         // ═══ TRANSACTIONS — FROM INVOICES ═══
         let allInvoices = [];
         let txSearch = '', txFilter = 'all', txSort = 'newest';
@@ -654,7 +980,7 @@
                     amount: inv.amount || 0,
                     gstAmount: inv.gst_amount || 0,
                     totalAmount: inv.total_amount || 0,
-                    status: 'Pending',
+                    status: inv.synced_to_tally ? 'Synced' : 'Pending',
                     raw: inv
                 }));
                 renderTransactions();
@@ -699,7 +1025,7 @@
                     <td><span class="de-badge ${badgeCls}">${tx.status}</span></td>
                     <td style="text-align:right;display:flex;gap:.4rem;justify-content:flex-end">
                         <button class="de-btn success" onclick="event.stopPropagation()">✓ Approve</button>
-                        <button class="de-btn primary" onclick="event.stopPropagation()" disabled>⟳ Sync</button>
+                        <button class="de-btn primary" onclick="event.stopPropagation();openTallyModal(${tx.id})" ${tx.status === 'Synced' ? 'disabled' : ''}>⟳ ${tx.status === 'Synced' ? 'Synced' : 'Sync'}</button>
                     </td>
                 </tr>`;
             });
@@ -747,7 +1073,8 @@
             await Promise.allSettled([
                 loadDashboardStats(),
                 loadTop5(),
-                loadInvoices()
+                loadInvoices(),
+                loadTallyCompanies()
             ]);
 
             const section = urlParams.get('section');
