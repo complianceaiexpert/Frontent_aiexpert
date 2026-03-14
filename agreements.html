@@ -699,7 +699,8 @@
             <!-- ═══ Page-Specific ═══ -->
             <div class="sb-section">
                 <div class="sb-section-label">Popular Templates</div>
-                <a href="agreement-editor.html" class="sb-item">
+                <a href="agreement-editor.html?category=Property%20%26%20Lease&template=Rent%20%2F%20Lease%20Agreement"
+                    class="sb-item">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                         <polyline points="14 2 14 8 20 8" />
@@ -707,28 +708,32 @@
                     Rental Agreement
                     <span class="sb-badge" style="background:#dcfce7;color:#16a34a">🔥</span>
                 </a>
-                <a href="agreement-editor.html" class="sb-item">
+                <a href="agreement-editor.html?category=Employment%20%26%20HR&template=Employment%20Agreement"
+                    class="sb-item">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                         <polyline points="14 2 14 8 20 8" />
                     </svg>
                     Employment Agreement
                 </a>
-                <a href="agreement-editor.html" class="sb-item">
+                <a href="agreement-editor.html?category=Service%20%26%20Professional&template=Service%20Agreement"
+                    class="sb-item">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                         <polyline points="14 2 14 8 20 8" />
                     </svg>
                     Service Agreement
                 </a>
-                <a href="agreement-editor.html" class="sb-item">
+                <a href="agreement-editor.html?category=Service%20%26%20Professional&template=Non-Disclosure%20Agreement%20(NDA)"
+                    class="sb-item">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                         <polyline points="14 2 14 8 20 8" />
                     </svg>
                     NDA
                 </a>
-                <a href="agreement-editor.html" class="sb-item">
+                <a href="agreement-editor.html?category=Business%20%26%20Partnership&template=Memorandum%20of%20Understanding%20(MOU)"
+                    class="sb-item">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                         <polyline points="14 2 14 8 20 8" />
@@ -916,7 +921,7 @@
                 srGrid.innerHTML = '<div class="sr-empty">No templates match your search. Try a different keyword or browse by category below.</div>';
             } else {
                 srGrid.innerHTML = matches.map((t, i) => `
-                    <a class="sr-item" href="agreement-editor.html">
+                    <a class="sr-item" href="agreement-editor.html?category=${encodeURIComponent(t.category)}&template=${encodeURIComponent(t.name)}">
                         <div class="sr-icon" style="background:${srColors[i % 6]}">${t.catIcon || '📄'}</div>
                         <div><div class="sr-name">${highlightMatch(t.name, q)}</div><div class="sr-cat">${t.category}</div></div>
                         <span class="sr-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></span>
@@ -960,7 +965,7 @@
 
                 // Categories grid
                 document.getElementById('categories').innerHTML = cats.map((c, i) => `
-                    <a class="cat-card" href="agreement-editor.html">
+                    <a class="cat-card" href="agreement-editor.html?category=${encodeURIComponent(c.name)}">
                         <div class="cat-icon">${c.icon || '📄'}</div>
                         <div class="cat-name">${c.name}</div>
                         <div class="cat-count">${c.agreement_types.length} templates</div>

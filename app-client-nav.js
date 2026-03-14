@@ -4,7 +4,7 @@
  * Injects a consistent "Client" navigation section at the top of every
  * service page's sidebar. This gives the user a quick way to jump between
  * client-level views (Overview, Services, Drive) and major services
- * (GST Refund, Data Entry, Income Tax, Audit) regardless of which
+ * (GST Refund, Data Entry) regardless of which
  * service page they are currently on.
  *
  * Usage:
@@ -40,12 +40,6 @@
             icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>'
         },
         {
-            id: 'services',
-            label: 'Services',
-            href: buildHref('services-dashboard.html') + (clientId ? '&section=services' : '?section=services'),
-            icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>'
-        },
-        {
             id: 'drive',
             label: 'Drive',
             href: buildHref('drive.html'),
@@ -57,7 +51,7 @@
         {
             id: 'gst-refund',
             label: 'GST Refund',
-            href: buildHref('web-view.html'),
+            href: buildHref('service-gst-refund-webview.html'),
             icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>',
             color: '#10b981'
         },
@@ -67,20 +61,6 @@
             href: buildHref('service-data-entry.html'),
             icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>',
             color: '#3b82f6'
-        },
-        {
-            id: 'income-tax',
-            label: 'Income Tax',
-            href: buildHref('service-income-tax.html'),
-            icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>',
-            color: '#f59e0b'
-        },
-        {
-            id: 'audit',
-            label: 'Audit',
-            href: buildHref('service-audit.html'),
-            icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>',
-            color: '#8b5cf6'
         }
     ];
 

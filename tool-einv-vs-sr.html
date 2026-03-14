@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,9 +8,12 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="tool-layout.css">
 </head>
+
 <body>
     <div id="app-topbar" data-active="dashboard"></div>
     <script src="app-topbar.js"></script>
@@ -25,10 +29,15 @@
                 </div>
                 <div class="tool-page-header">
                     <h1>⚖️ <span>E-Invoice vs SR</span></h1>
-                    <p>Reconcile your E-Invoices with your internal Sales Register (SR). Identify IRNs not generated or mismatches between billed amounts and portal data.</p>
+                    <p>Reconcile your E-Invoices with your internal Sales Register (SR). Identify IRNs not generated or
+                        mismatches between billed amounts and portal data.</p>
                 </div>
                 <div class="tool-card">
-                    <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> Upload Data</h3>
+                    <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                            <polyline points="17 8 12 3 7 8" />
+                            <line x1="12" y1="3" x2="12" y2="15" />
+                        </svg> Upload Data</h3>
                     <p>Upload both files to begin the reconciliation process.</p>
                     <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
                         <div class="tool-upload" onclick="document.getElementById('einv-file').click()">
@@ -44,16 +53,38 @@
                             <div class="t-file" id="sr-file-name" style="display:none"></div>
                         </div>
                     </div>
-                    <input type="file" id="einv-file" accept=".xlsx,.csv" style="display:none" onchange="updateFileName('f1', this)">
-                    <input type="file" id="sr-file" accept=".xlsx,.csv" style="display:none" onchange="updateFileName('f2', this)">
+                    <input type="file" id="einv-file" accept=".xlsx,.csv" style="display:none"
+                        onchange="updateFileName('f1', this)">
+                    <input type="file" id="sr-file" accept=".xlsx,.csv" style="display:none"
+                        onchange="updateFileName('f2', this)">
+                    <div style="text-align:center;margin-top:0.75rem">
+                        <button onclick="pickFromDrive('f1')"
+                            style="background:none;border:1px solid #e2e8f0;border-radius:8px;padding:0.35rem 0.75rem;font-size:0.72rem;font-weight:600;color:#3b82f6;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:0.3rem;transition:all .15s;margin-right:0.5rem"
+                            onmouseover="this.style.background='#eff6ff'" onmouseout="this.style.background='none'">📁
+                            E-Invoice from Drive</button>
+                        <button onclick="pickFromDrive('f2')"
+                            style="background:none;border:1px solid #e2e8f0;border-radius:8px;padding:0.35rem 0.75rem;font-size:0.72rem;font-weight:600;color:#3b82f6;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:0.3rem;transition:all .15s"
+                            onmouseover="this.style.background='#eff6ff'" onmouseout="this.style.background='none'">📁
+                            SR from Drive</button>
+                    </div>
                     <div style="margin-top:1.25rem">
-                        <button class="tbtn tbtn-primary" id="reconcile-btn" onclick="startReconciliation()" disabled>⚖️ Start Reconciliation</button>
+                        <button class="tbtn tbtn-primary" id="reconcile-btn" onclick="startReconciliation()" disabled>⚖️
+                            Start Reconciliation</button>
                     </div>
                 </div>
+                <!-- Recent Jobs -->
                 <div class="tool-card" id="recent-jobs-container" style="display:none">
-                    <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Recent Jobs</h3>
-                    <p>Track the status of your reconciliation tasks.</p>
-                    <div class="tool-jobs" id="jobs-list"></div>
+                    <div class="jobs-section-header">
+                        <h3>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10" />
+                                <polyline points="12 6 12 12 16 14" />
+                            </svg>
+                            Recent Jobs <span class="jobs-count" id="jobs-count">0</span>
+                        </h3>
+                        <button class="tbtn tbtn-secondary" onclick="loadJobs()" style="font-size:0.72rem;padding:0.35rem 0.75rem">↻ Refresh</button>
+                    </div>
+                    <div id="jobs-list"></div>
                 </div>
             </div>
         </main>
@@ -61,37 +92,44 @@
     <script src="tool-sidebar.js"></script>
     <script src="api_config.js?v=2"></script>
     <script src="session-manager.js"></script>
+    <script src="drive-picker.js"></script>
+    <script src="tool-jobs.js"></script>
     <script>
         renderToolSidebar('einv-vs-sr');
-        let file1=null,file2=null;
-        function updateFileName(type,input){
-            if(!input.files.length)return;
-            if(type==='f1'){file1=input.files[0];const el=document.getElementById('einv-file-name');el.textContent='📎 '+file1.name;el.style.display='';input.closest('.tool-upload').classList.add('has-file');}
-            else{file2=input.files[0];const el=document.getElementById('sr-file-name');el.textContent='📎 '+file2.name;el.style.display='';input.closest('.tool-upload').classList.add('has-file');}
-            document.getElementById('reconcile-btn').disabled=!(file1&&file2);
+        initToolJobs({ jobType: 'einv_vs_sr', jobLabel: 'E-Invoice vs SR Reconciliation', filePrefix: 'EInvoice_vs_SR_Report' });
+
+        let file1 = null, file2 = null;
+        function pickFromDrive(type) {
+            const cid = new URLSearchParams(window.location.search).get('clientId');
+            if (!cid) return;
+            openDrivePicker({
+                clientId: cid, accept: ['.xlsx', '.csv'], onSelect: (file) => {
+                    if (type === 'f1') { file1 = file; const el = document.getElementById('einv-file-name'); el.textContent = '📎 ' + file.name; el.style.display = ''; }
+                    else { file2 = file; const el = document.getElementById('sr-file-name'); el.textContent = '📎 ' + file.name; el.style.display = ''; }
+                    document.getElementById('reconcile-btn').disabled = !(file1 && file2);
+                }
+            });
         }
-        async function startReconciliation(){
-            const btn=document.getElementById('reconcile-btn');btn.disabled=true;btn.innerHTML='<span class="tool-spinner"></span> Processing...';
-            try{
-                const token=localStorage.getItem('access_token');const params=new URLSearchParams(window.location.search);const clientId=params.get('clientId');const fileKeys=[];
-                for(const file of[file1,file2]){const fd=new FormData();fd.append('file',file);const res=await fetch(`${API_BASE_URL}/jobs/upload`,{method:'POST',headers:{'Authorization':`Bearer ${token}`},body:fd});if(res.ok){const d=await res.json();fileKeys.push(d.file_key||d.file_path);}}
-                const jobRes=await fetch(`${API_BASE_URL}/jobs/`,{method:'POST',headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'},body:JSON.stringify({job_type:'einv_vs_sr',input_files:fileKeys,client_id:clientId})});
-                if(jobRes.ok){alert('Reconciliation job started!');loadJobs();}else{const err=await jobRes.json();alert('Failed: '+(err.detail||'Unknown error'));}
-            }catch(err){console.error(err);alert('Error: '+err.message);}
-            finally{btn.disabled=false;btn.textContent='⚖️ Start Reconciliation';}
+        function updateFileName(type, input) {
+            if (!input.files.length) return;
+            const ub = input.closest('.tool-upload');
+            if (type === 'f1') { file1 = input.files[0]; const el = document.getElementById('einv-file-name'); el.textContent = '📎 ' + file1.name; el.style.display = ''; if (ub) ub.classList.add('has-file'); }
+            else { file2 = input.files[0]; const el = document.getElementById('sr-file-name'); el.textContent = '📎 ' + file2.name; el.style.display = ''; if (ub) ub.classList.add('has-file'); }
+            document.getElementById('reconcile-btn').disabled = !(file1 && file2);
         }
-        let pollingInterval=null;
-        async function loadJobs(){
-            const params=new URLSearchParams(window.location.search);const clientId=params.get('clientId');if(!clientId)return;
-            try{const res=await authFetch(`/jobs/?skip=0&limit=50&client_id=${clientId}`);if(res.ok){const jobs=await res.json();const taskJobs=jobs.filter(j=>j.job_type==='einv_vs_sr');if(taskJobs.length>0){document.getElementById('recent-jobs-container').style.display='block';renderJobs(taskJobs);const hasIP=taskJobs.some(j=>j.status==='QUEUED'||j.status==='PROCESSING');if(hasIP&&!pollingInterval)pollingInterval=setInterval(loadJobs,5000);else if(!hasIP&&pollingInterval){clearInterval(pollingInterval);pollingInterval=null;}}}}catch(e){console.error(e)}
+        async function startReconciliation() {
+            const params = new URLSearchParams(window.location.search); const clientId = params.get('clientId');
+            if (!clientId) { alert('⚠️ No client selected. Please navigate from a client workspace.'); return; }
+            const btn = document.getElementById('reconcile-btn'); btn.disabled = true; btn.innerHTML = '<span class="tool-spinner"></span> Processing...';
+            try {
+                const token = localStorage.getItem('access_token'); const fileKeys = [];
+                for (const file of [file1, file2]) { const fd = new FormData(); fd.append('file', file); const res = await fetch(`${API_BASE_URL}/jobs/upload`, { method: 'POST', headers: { 'Authorization': `Bearer ${token}` }, body: fd }); if (res.ok) { const d = await res.json(); fileKeys.push(d.file_key || d.file_path); } }
+                const jobRes = await fetch(`${API_BASE_URL}/jobs/`, { method: 'POST', headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ job_type: 'einv_vs_sr', input_files: fileKeys, client_id: clientId }) });
+                if (jobRes.ok) { alert('Reconciliation job started!'); loadJobs(); } else { const err = await jobRes.json(); alert('Failed: ' + (err.detail || 'Unknown error')); }
+            } catch (err) { console.error(err); alert('Error: ' + err.message); }
+            finally { btn.disabled = false; btn.textContent = '⚖️ Start Reconciliation'; }
         }
-        function renderJobs(jobs){
-            document.getElementById('jobs-list').innerHTML=jobs.map(job=>{const date=new Date(job.created_at).toLocaleString();return `<div class="tool-job"><div class="tool-job-info"><span class="tool-job-name">E-Invoice vs SR Reconciliation</span><span class="tool-job-meta">Created: ${date}</span></div><div style="display:flex;align-items:center;gap:.75rem"><span class="tool-job-status tj-${job.status.toLowerCase()}">${job.status}</span>${job.status==='COMPLETED'?`<button class="tbtn tbtn-download" onclick="downloadJobFile('${job.id}')">⬇ Download</button>`:''}</div></div>`;}).join('');
-        }
-        async function downloadJobFile(jobId){
-            try{const response=await authFetch(`/jobs/${jobId}/download`);if(!response.ok){alert('Download failed');return;}const blob=await response.blob();const url=window.URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`EInvoice_vs_SR_Report_${jobId.substring(0,8)}.xlsx`;document.body.appendChild(a);a.click();window.URL.revokeObjectURL(url);document.body.removeChild(a);}catch(e){console.error(e);alert('Error downloading file');}
-        }
-        loadJobs();
     </script>
 </body>
+
 </html>

@@ -482,6 +482,120 @@
             margin-bottom: 1rem;
         }
 
+        /* ═══ Calculator Type Cards ═══ */
+        .calc-type-card {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: #fff;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 0.85rem 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .calc-type-card:hover {
+            border-color: #3b82f6;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(30, 58, 138, 0.08);
+        }
+
+        .ctc-icon {
+            font-size: 1.4rem;
+            flex-shrink: 0;
+        }
+
+        .ctc-title {
+            font-weight: 700;
+            color: #1f2937;
+            font-size: 0.85rem;
+        }
+
+        .ctc-desc {
+            font-size: 0.72rem;
+            color: #6b7280;
+        }
+
+        /* Calculator form fields */
+        .calc-field {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .calc-field label {
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: #4b5563;
+        }
+
+        .calc-field input {
+            padding: 0.55rem 0.75rem;
+            border: 1.5px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-family: 'Inter', sans-serif;
+            color: #1f2937;
+            transition: border-color 0.15s;
+        }
+
+        .calc-field input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .calc-field .field-hint {
+            font-size: 0.62rem;
+            color: #9ca3af;
+        }
+
+        .breakdown-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.78rem;
+        }
+
+        .breakdown-table th {
+            text-align: left;
+            padding: 0.5rem 0.75rem;
+            background: #f8fafc;
+            color: #6b7280;
+            font-weight: 600;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .breakdown-table td {
+            padding: 0.5rem 0.75rem;
+            color: #374151;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .breakdown-table tr:last-child td {
+            font-weight: 700;
+            color: #1e3a8a;
+            background: #eff6ff;
+            border-bottom: none;
+        }
+
+        .warning-box {
+            background: #fffbeb;
+            border: 1px solid #fcd34d;
+            border-radius: 8px;
+            padding: 0.65rem 0.85rem;
+            font-size: 0.78rem;
+            color: #92400e;
+            margin-bottom: 0.4rem;
+        }
+
+        .warning-box::before {
+            content: '⚠️ ';
+        }
+
         .tool-card {
             background: #fff;
             border: 1px solid #e5e7eb;
@@ -767,46 +881,37 @@
             <script src="app-client-nav.js"></script>
 
             <ul class="sidebar-nav">
-                <!-- Dashboard -->
+                <!-- Refund Dashboard -->
                 <li class="sidebar-item">
-                    <a class="sidebar-link" data-section="dashboard" onclick="navigateTo('dashboard', this)">
+                    <a class="sidebar-link active" data-section="dashboard" onclick="navigateTo('dashboard', this)">
                         <span class="link-icon">📊</span>
-                        <span class="link-text">Dashboard</span>
+                        <span class="link-text">Refund Dashboard</span>
                     </a>
                 </li>
 
-
-                <!-- GST Refund (expandable) -->
+                <!-- File GST Refund -->
                 <li class="sidebar-item">
-                    <a class="sidebar-link" onclick="toggleSubmenu(this)">
-                        <span class="link-icon">💰</span>
-                        <span class="link-text">GST Refund</span>
-                        <span class="chevron">▶</span>
+                    <a class="sidebar-link" onclick="navigateToTool('gst-refund.html')">
+                        <span class="link-icon">�</span>
+                        <span class="link-text">File GST Refund</span>
                     </a>
-                    <ul class="sidebar-submenu" id="sub-gst-refund">
-                        <li><a onclick="navigateTo('refund-dashboard', this)" data-section="refund-dashboard">Refund
-                                Dashboard</a></li>
-                        <li><a onclick="navigateTo('calculate-refund', this)" data-section="calculate-refund">Calculate
-                                GST Refund</a></li>
-                        <li><a onclick="navigateTo('know-refund', this)" data-section="know-refund">Know Your GST
-                                Refund</a></li>
-                        <li><a onclick="navigateTo('track-request', this)" data-section="track-request">Track
-                                Request</a></li>
-                        <li><a onclick="navigateToTool('tool-hsn-locator.html')">HSN Locator</a></li>
-                    </ul>
                 </li>
 
-                <!-- GST Returns (expandable) -->
+                <!-- Calculate Refund -->
                 <li class="sidebar-item">
-                    <a class="sidebar-link" onclick="toggleSubmenu(this)">
-                        <span class="link-icon">📋</span>
-                        <span class="link-text">GST Returns</span>
-                        <span class="chevron">▶</span>
+                    <a class="sidebar-link" data-section="calculate-refund"
+                        onclick="navigateTo('calculate-refund', this)">
+                        <span class="link-icon">🧮</span>
+                        <span class="link-text">Calculate Refund</span>
                     </a>
-                    <ul class="sidebar-submenu" id="sub-gst-returns">
-                        <li><a onclick="navigateTo('gstr1', this)" data-section="gstr1">GSTR-1</a></li>
-                        <li><a onclick="navigateTo('gstr3b', this)" data-section="gstr3b">GSTR-3B</a></li>
-                    </ul>
+                </li>
+
+                <!-- GST Reconciliation -->
+                <li class="sidebar-item">
+                    <a class="sidebar-link" data-section="reconciliation" onclick="navigateTo('reconciliation', this)">
+                        <span class="link-icon">⚖️</span>
+                        <span class="link-text">GST Reconciliation</span>
+                    </a>
                 </li>
 
                 <!-- Reports -->
@@ -814,15 +919,6 @@
                     <a class="sidebar-link" data-section="reports" onclick="navigateTo('reports', this)">
                         <span class="link-icon">📄</span>
                         <span class="link-text">Reports</span>
-                    </a>
-                </li>
-
-                <!-- GST Reconciliation -->
-                <li class="sidebar-item">
-                    <a class="sidebar-link active" data-section="reconciliation"
-                        onclick="navigateTo('reconciliation', this)">
-                        <span class="link-icon">⚖️</span>
-                        <span class="link-text">GST Reconciliation</span>
                     </a>
                 </li>
 
@@ -834,76 +930,79 @@
                     </a>
                 </li>
 
-                <li>
-                    <div class="sidebar-divider"></div>
-                </li>
-
-                <!-- Support Tickets -->
-                <li class="sidebar-item">
-                    <a class="sidebar-link" data-section="support" onclick="navigateTo('support', this)">
-                        <span class="link-icon">🎫</span>
-                        <span class="link-text">Support Tickets</span>
-                    </a>
-                </li>
             </ul>
         </aside>
 
         <!-- ===== MAIN CONTENT ===== -->
         <main class="main-content">
 
-            <!-- ========== DASHBOARD ========== -->
-            <div class="content-section" id="sec-dashboard">
+            <!-- ========== DASHBOARD (DEFAULT ACTIVE) ========== -->
+            <div class="content-section active" id="sec-dashboard">
                 <div class="section-header">
-                    <h1>📊 Dashboard</h1>
-                    <p class="section-subtitle">Overview of your GST compliance status</p>
+                    <h1>� GST Refund Service</h1>
+                    <p class="section-subtitle">End-to-end GST refund filing, calculation & reconciliation</p>
                 </div>
-                <div class="refund-stats">
-                    <div class="stat-card">
-                        <div class="stat-label">Total Clients</div>
-                        <div class="stat-value">—</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Pending Refunds</div>
-                        <div class="stat-value orange">—</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Completed</div>
-                        <div class="stat-value green">—</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Active Notices</div>
-                        <div class="stat-value">—</div>
-                    </div>
-                </div>
-                <p style="color:#9ca3af; text-align:center; margin-top:2rem;">Dashboard analytics coming soon.</p>
-            </div>
 
-            <!-- ========== NOTICE MANAGEMENT ========== -->
-            <div class="content-section" id="sec-notice">
-                <div class="section-header">
-                    <h1>🔔 Notice Management</h1>
-                    <p class="section-subtitle">Track and respond to GST notices efficiently</p>
+                <!-- Hero Banner -->
+                <div
+                    style="background:linear-gradient(135deg,#1e3a8a 0%,#3b82f6 100%);border-radius:16px;padding:2rem;color:#fff;margin-bottom:2rem;">
+                    <h2 style="font-size:1.3rem;font-weight:800;margin:0 0 0.5rem;font-family:'Outfit',sans-serif;">File
+                        GST Refund in Minutes ⚡</h2>
+                    <p style="font-size:0.88rem;opacity:0.9;margin:0 0 1.25rem;line-height:1.5;">Select your refund
+                        type, follow the guided workflow, use AI-powered tools for Statement 3, Reconciliation &
+                        Annexure B — all in one place.</p>
+                    <button onclick="navigateToTool('gst-refund.html')"
+                        style="background:#fff;color:#1e3a8a;border:none;border-radius:8px;padding:0.65rem 1.5rem;font-weight:700;font-size:0.88rem;cursor:pointer;">📝
+                        Start Filing Now →</button>
                 </div>
-                <div class="notice-empty">
-                    <div class="empty-icon">📭</div>
-                    <h3>No Active Notices</h3>
-                    <p>Notices from the GST portal will appear here once synced.</p>
-                </div>
-            </div>
 
-            <!-- ========== GST REFUND DASHBOARD ========== -->
-            <div class="content-section" id="sec-refund-dashboard">
-                <div class="section-header">
-                    <h1>💰 Refund Dashboard</h1>
-                    <p class="section-subtitle">Track all your GST refund claims in one place</p>
+                <!-- Quick Action Cards -->
+                <h3 style="font-size:0.9rem;font-weight:600;color:#374151;margin:0 0 1rem;">Quick Actions</h3>
+                <div class="cards-grid">
+                    <div class="tool-card" onclick="navigateToTool('gst-refund.html')">
+                        <div class="card-top">
+                            <div class="card-icon">📝</div>
+                        </div>
+                        <h3 class="card-title">File GST Refund</h3>
+                        <p class="card-desc">Step-by-step guided workflow for Export LUT, Inverted Duty, Deemed Export &
+                            more</p>
+                        <a class="card-action">Open Workflow →</a>
+                    </div>
+                    <div class="tool-card" onclick="navigateTo('calculate-refund', null)">
+                        <div class="card-top">
+                            <div class="card-icon">🧮</div>
+                        </div>
+                        <h3 class="card-title">Calculate Refund</h3>
+                        <p class="card-desc">AI-powered refund calculation using Rule 89(4) & 89(5) formulas</p>
+                        <a class="card-action">Calculate →</a>
+                    </div>
+                    <div class="tool-card" onclick="navigateTo('reconciliation', null)">
+                        <div class="card-top">
+                            <div class="card-icon">⚖️</div>
+                        </div>
+                        <h3 class="card-title">GST Reconciliation</h3>
+                        <p class="card-desc">GSTR-2B vs PR, GSTR-1 vs 3B, E-Invoice matching & more</p>
+                        <a class="card-action">Reconcile →</a>
+                    </div>
+                    <div class="tool-card" onclick="navigateTo('tools', null)">
+                        <div class="card-top">
+                            <div class="card-icon">🛠️</div>
+                        </div>
+                        <h3 class="card-title">GST Tools</h3>
+                        <p class="card-desc">Statement 3, Annexure B, GSTIN Validator, HSN Locator & more</p>
+                        <a class="card-action">View Tools →</a>
+                    </div>
                 </div>
+
+                <!-- Stats Row -->
+                <h3 style="font-size:0.9rem;font-weight:600;color:#374151;margin:2rem 0 1rem;">Refund Overview</h3>
                 <div class="refund-stats">
                     <div class="stat-card">
                         <div class="stat-label">Total Claims</div>
                         <div class="stat-value">—</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-label">Pending Amount</div>
+                        <div class="stat-label">Pending</div>
                         <div class="stat-value orange">—</div>
                     </div>
                     <div class="stat-card">
@@ -915,99 +1014,147 @@
                         <div class="stat-value" style="color:#ef4444">—</div>
                     </div>
                 </div>
-                <p style="color:#9ca3af; text-align:center; margin-top:2rem;">Detailed refund tracking will be available
-                    soon.</p>
             </div>
 
             <!-- ========== CALCULATE GST REFUND ========== -->
             <div class="content-section" id="sec-calculate-refund">
                 <div class="section-header">
                     <h1>🧮 Calculate GST Refund</h1>
-                    <p class="section-subtitle">AI-powered refund amount calculation using Rule 89(4) & 89(5)</p>
+                    <p class="section-subtitle">Compute your maximum admissible refund using Rule 89(4), 89(5), 96</p>
                 </div>
 
-                <div class="workflow-container">
-                    <!-- Step 1: Category Selection -->
-                    <div class="wf-step active" id="calc-step-1">
-                        <div class="wf-header">
-                            <h2>Select Refund Category</h2>
-                            <p>Choose the category of refund you want to calculate.</p>
+                <!-- Step 1: Category Selection -->
+                <div id="calc-step-1">
+                    <h3 style="font-size:0.88rem;font-weight:600;color:#374151;margin:0 0 1rem;">Select Refund Type</h3>
+                    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:0.75rem;">
+                        <div class="calc-type-card" onclick="selectCalcType('export_goods_lut')">
+                            <span class="ctc-icon">🚢</span>
+                            <div>
+                                <div class="ctc-title">Export of Goods — LUT</div>
+                                <div class="ctc-desc">Rule 89(4) • Without IGST</div>
+                            </div>
                         </div>
-                        <div class="cat-grid">
-                            <div class="cat-btn" onclick="selectRefundCategory('goods_lut')">
-                                <span class="icon">🚢</span>
-                                <span class="title">Export of Goods</span>
-                                <span class="desc">Under LUT - Without payment of tax (Rule 89(4))</span>
+                        <div class="calc-type-card" onclick="selectCalcType('export_service_lut')">
+                            <span class="ctc-icon">�</span>
+                            <div>
+                                <div class="ctc-title">Export of Services — LUT</div>
+                                <div class="ctc-desc">Rule 89(4) • IT/ITES</div>
                             </div>
-                            <div class="cat-btn" onclick="selectRefundCategory('service_lut')">
-                                <span class="icon">🧾</span>
-                                <span class="title">Export of Services</span>
-                                <span class="desc">Under LUT - Without payment of tax (Rule 89(4))</span>
+                        </div>
+                        <div class="calc-type-card" onclick="selectCalcType('export_igst')">
+                            <span class="ctc-icon">🧾</span>
+                            <div>
+                                <div class="ctc-title">Export with IGST Payment</div>
+                                <div class="ctc-desc">Rule 96 • Auto via Shipping Bill</div>
                             </div>
-                            <div class="cat-btn" onclick="selectRefundCategory('inverted')">
-                                <span class="icon">⚖️</span>
-                                <span class="title">Inverted Duty Structure</span>
-                                <span class="desc">Tax rate on inputs > rate on outputs (Rule 89(5))</span>
+                        </div>
+                        <div class="calc-type-card" onclick="selectCalcType('inverted_duty')">
+                            <span class="ctc-icon">⚖️</span>
+                            <div>
+                                <div class="ctc-title">Inverted Duty Structure</div>
+                                <div class="ctc-desc">Rule 89(5) • Input > Output rate</div>
                             </div>
-                            <div class="cat-btn" onclick="selectRefundCategory('deemed')">
-                                <span class="icon">📦</span>
-                                <span class="title">Deemed Exports</span>
-                                <span class="desc">Supplies which don't leave the country (Rule 89(4))</span>
+                        </div>
+                        <div class="calc-type-card" onclick="selectCalcType('deemed_export')">
+                            <span class="ctc-icon">📦</span>
+                            <div>
+                                <div class="ctc-title">Deemed Exports</div>
+                                <div class="ctc-desc">Rule 89(4) • SEZ/EOU</div>
+                            </div>
+                        </div>
+                        <div class="calc-type-card" onclick="selectCalcType('excess_cash')">
+                            <span class="ctc-icon">💵</span>
+                            <div>
+                                <div class="ctc-title">Excess Cash Ledger</div>
+                                <div class="ctc-desc">Direct Refund • No formula</div>
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Step 2: Automated File Upload -->
-                    <div class="wf-step" id="calc-step-2">
-                        <div class="wf-header">
-                            <h2 id="input-title">Upload Required Documents</h2>
-                            <p id="input-desc">Drag and drop or click to upload the files needed for your refund claim.
-                            </p>
-                        </div>
-
-                        <div id="upload-grid-wf"
-                            style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
-                            <!-- Dynamic upload zones will be shown here via JS -->
-                        </div>
-
-                        <div class="file-list-wf" id="calc-file-list">
-                            <!-- Selected files listed here -->
-                        </div>
-
-                        <input type="file" id="calc-file-input" style="display:none" multiple
-                            onchange="handleCalcFiles(this)">
-
-                        <div class="wf-footer">
-                            <button class="btn-wf btn-wf-outline" onclick="goToStep(1)">← Back</button>
-                            <button class="btn-wf btn-wf-primary" id="btn-process-calc"
-                                onclick="triggerBackendCalculation()" disabled>Process Calculation →</button>
+                <!-- Step 2: Input Form (dynamic per type) -->
+                <div id="calc-step-2" style="display:none;">
+                    <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1.25rem;">
+                        <button onclick="resetCalcToStep1()"
+                            style="background:none;border:1px solid #d1d5db;border-radius:8px;padding:0.35rem 0.75rem;cursor:pointer;font-size:0.78rem;color:#374151;font-weight:500;">←
+                            Change Type</button>
+                        <div>
+                            <div style="font-size:0.95rem;font-weight:700;color:#1e3a8a;" id="calc-type-title"></div>
+                            <div style="font-size:0.72rem;color:#6b7280;" id="calc-type-rule"></div>
                         </div>
                     </div>
 
-                    <!-- Step 3: Result & Status -->
-                    <div class="wf-step" id="calc-step-3">
-                        <div class="wf-header">
-                            <h2 id="result-title">Processing Calculation</h2>
-                            <p id="result-desc">Extracting data from your documents and computing refund amount...</p>
-                        </div>
+                    <!-- Formula Info Box -->
+                    <div id="calc-formula-box"
+                        style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:0.85rem 1rem;margin-bottom:1.25rem;">
+                        <div
+                            style="font-size:0.7rem;font-weight:700;color:#1e40af;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.2rem;">
+                            Formula</div>
+                        <div id="calc-formula-text" style="font-size:0.82rem;color:#1e3a8a;font-weight:600;"></div>
+                    </div>
 
-                        <div id="result-loader" class="result-box pulse" style="margin-bottom: 1.5rem;">
-                            <div class="result-label">ANALYZING DOCUMENTS</div>
-                            <div class="result-amount">...</div>
-                            <div class="formula-hint">This usually takes 15-30 seconds.</div>
-                        </div>
+                    <div id="calc-form-fields"
+                        style="display:grid;grid-template-columns:1fr 1fr;gap:0.85rem;margin-bottom:1.5rem;">
+                        <!-- Dynamic fields injected by JS -->
+                    </div>
 
-                        <div id="result-content" class="result-box" style="display:none; margin-bottom: 1.5rem;">
-                            <div class="result-label">MAXIMUM REFUND AMOUNT</div>
-                            <div class="result-amount" id="final-amount">₹ 0.00</div>
-                            <p id="calc-summary" style="font-size: 0.85rem; color: #64748b; margin-top: 0.5rem;"></p>
-                            <div class="formula-hint" id="formula-display">Calculation based on (B * A / C)</div>
-                        </div>
+                    <div style="display:flex;gap:0.75rem;">
+                        <button id="calc-btn" onclick="runCalculation()"
+                            style="background:linear-gradient(135deg,#1e3a8a,#3b82f6);color:#fff;border:none;border-radius:8px;padding:0.6rem 1.5rem;font-weight:700;font-size:0.85rem;cursor:pointer;transition:all 0.2s;">
+                            🧮 Calculate Refund
+                        </button>
+                        <button onclick="clearCalcForm()"
+                            style="background:none;border:1px solid #d1d5db;border-radius:8px;padding:0.6rem 1.25rem;font-weight:500;font-size:0.82rem;cursor:pointer;color:#6b7280;">
+                            Clear
+                        </button>
+                    </div>
+                </div>
 
-                        <div class="wf-footer">
-                            <button class="btn-wf btn-wf-outline" onclick="goToStep(2)">← Edit Uploads</button>
-                            <button class="btn-wf btn-wf-primary" onclick="resetCalculator()">Start New →</button>
+                <!-- Step 3: Results -->
+                <div id="calc-step-3" style="display:none;">
+                    <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1.25rem;">
+                        <button onclick="backToCalcForm()"
+                            style="background:none;border:1px solid #d1d5db;border-radius:8px;padding:0.35rem 0.75rem;cursor:pointer;font-size:0.78rem;color:#374151;font-weight:500;">←
+                            Edit Values</button>
+                        <div style="font-size:0.95rem;font-weight:700;color:#1e3a8a;" id="result-type-title"></div>
+                    </div>
+
+                    <!-- Result Card -->
+                    <div
+                        style="background:linear-gradient(135deg,#1e3a8a 0%,#3b82f6 100%);border-radius:14px;padding:1.5rem;color:white;margin-bottom:1.25rem;text-align:center;">
+                        <div
+                            style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;opacity:0.85;margin-bottom:0.35rem;">
+                            Maximum Admissible Refund</div>
+                        <div id="result-amount" style="font-size:2rem;font-weight:800;font-family:'Outfit',sans-serif;">
+                            ₹ 0.00</div>
+                        <div id="result-rule-tag"
+                            style="display:inline-block;background:rgba(255,255,255,0.2);padding:0.2rem 0.6rem;border-radius:20px;font-size:0.68rem;font-weight:600;margin-top:0.35rem;">
                         </div>
+                    </div>
+
+                    <!-- Formula Applied -->
+                    <div id="result-formula"
+                        style="background:#f8fafc;border:1px solid #e5e7eb;border-radius:10px;padding:1rem;margin-bottom:1rem;">
+                        <div
+                            style="font-size:0.7rem;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.3rem;">
+                            Formula Applied</div>
+                        <div id="result-formula-display"
+                            style="font-size:0.82rem;color:#1e3a8a;font-weight:600;margin-bottom:0.3rem;"></div>
+                        <div id="result-formula-values" style="font-size:0.78rem;color:#4b5563;font-family:monospace;">
+                        </div>
+                    </div>
+
+                    <!-- Breakdown Table -->
+                    <div id="result-breakdown" style="margin-bottom:1rem;"></div>
+
+                    <!-- Warnings -->
+                    <div id="result-warnings" style="margin-bottom:1rem;"></div>
+
+                    <div style="display:flex;gap:0.75rem;">
+                        <button onclick="resetCalcToStep1()"
+                            style="background:linear-gradient(135deg,#1e3a8a,#3b82f6);color:#fff;border:none;border-radius:8px;padding:0.6rem 1.25rem;font-weight:700;font-size:0.82rem;cursor:pointer;">
+                            New Calculation
+                        </button>
                     </div>
                 </div>
             </div>
@@ -1025,43 +1172,6 @@
                 </div>
             </div>
 
-            <!-- ========== TRACK REQUEST ========== -->
-            <div class="content-section" id="sec-track-request">
-                <div class="section-header">
-                    <h1>📍 Track Request</h1>
-                    <p class="section-subtitle">Monitor the status of your refund applications</p>
-                </div>
-                <div class="notice-empty">
-                    <div class="empty-icon">🔍</div>
-                    <h3>No Active Requests</h3>
-                    <p>Submit a refund claim to start tracking its progress here.</p>
-                </div>
-            </div>
-
-            <!-- ========== GST RETURNS ========== -->
-            <div class="content-section" id="sec-gstr1">
-                <div class="section-header">
-                    <h1>📋 GSTR-1</h1>
-                    <p class="section-subtitle">Outward supply return management</p>
-                </div>
-                <div class="notice-empty">
-                    <div class="empty-icon">📝</div>
-                    <h3>GSTR-1 Filing</h3>
-                    <p>GSTR-1 management features coming soon.</p>
-                </div>
-            </div>
-
-            <div class="content-section" id="sec-gstr3b">
-                <div class="section-header">
-                    <h1>📋 GSTR-3B</h1>
-                    <p class="section-subtitle">Summary return management</p>
-                </div>
-                <div class="notice-empty">
-                    <div class="empty-icon">📝</div>
-                    <h3>GSTR-3B Filing</h3>
-                    <p>GSTR-3B management features coming soon.</p>
-                </div>
-            </div>
 
             <!-- ========== REPORTS ========== -->
             <div class="content-section" id="sec-reports">
@@ -1106,7 +1216,7 @@
             </div>
 
             <!-- ========== GST RECONCILIATION (DEFAULT ACTIVE) ========== -->
-            <div class="content-section active" id="sec-reconciliation">
+            <div class="content-section" id="sec-reconciliation">
                 <div class="section-header">
                     <h1>⚖️ GST Reconciliations</h1>
                     <p class="section-subtitle">Automated tools for accurate GST compliance</p>
@@ -1293,18 +1403,6 @@
                 </div>
             </div>
 
-            <!-- ========== SUPPORT ========== -->
-            <div class="content-section" id="sec-support">
-                <div class="section-header">
-                    <h1>🎫 Support Tickets</h1>
-                    <p class="section-subtitle">Get help from our compliance experts</p>
-                </div>
-                <div class="notice-empty">
-                    <div class="empty-icon">💬</div>
-                    <h3>Need Help?</h3>
-                    <p>Create a support ticket and our team will respond within 24 hours.</p>
-                </div>
-            </div>
 
             <!-- ========== MASTER SECTIONS ========== -->
             <div class="content-section" id="sec-master-gstin">
@@ -1362,8 +1460,8 @@
                 const sidebarLink = document.querySelector(`[data-section="${sectionParam}"]`);
                 navigateTo(sectionParam, sidebarLink);
             } else {
-                const defaultLink = document.querySelector('[data-section="reconciliation"]');
-                navigateTo('reconciliation', defaultLink);
+                const defaultLink = document.querySelector('[data-section="dashboard"]');
+                navigateTo('dashboard', defaultLink);
             }
         });
 
@@ -1550,229 +1648,228 @@
             window.location.href = page + '?' + params.toString();
         }
 
-        /* ===== CALCULATE GST REFUND LOGIC (FILE-DRIVEN) ===== */
-        let currentCalcCategory = '';
-        let selectedCalcFiles = {}; // { zoneId: File }
-        let currentTargetZone = '';
+        /* ===== GST REFUND CALCULATOR ===== */
+        let calcCurrentType = '';
 
-        const calcConfigs = {
-            goods_lut: {
-                title: "Export of Goods (LUT)",
-                desc: "Upload Shipping Bills, Purchase Register, and GSTR-2B.",
-                zones: [
-                    { id: 'sb', label: 'Shipping Bills', icon: '🚢', sub: 'Excel with SB details' },
-                    { id: 'pr', label: 'Purchase Register', icon: '📥', sub: 'Input invoices data' },
-                    { id: '2b', label: 'GSTR-2B', icon: '📋', sub: 'Portal Excel/JSON' }
+        const calcTypeConfigs = {
+            export_goods_lut: {
+                title: 'Export of Goods — LUT', rule: 'Rule 89(4)',
+                formula: '(Zero-Rated Turnover ÷ Adjusted Total Turnover) × Net ITC',
+                fields: [
+                    { id: 'turnover_zero_rated_goods', label: 'Turnover of Zero-Rated Goods (₹)', hint: 'FOB value of exported goods' },
+                    { id: 'total_turnover', label: 'Total Turnover in State (₹)', hint: 'From GSTR-3B Table 3.1' },
+                    { id: 'exempt_turnover', label: 'Exempt Turnover (₹)', hint: 'Excluding zero-rated supply' },
+                    { id: 'itc_availed', label: 'Total ITC Availed (₹)', hint: 'From GSTR-3B Table 4' },
+                    { id: 'itc_capital_goods', label: 'ITC on Capital Goods (₹)', hint: 'Excluded from Net ITC' },
+                    { id: 'blocked_credit', label: 'Blocked Credit u/s 17(5) (₹)', hint: 'Personal, food, etc.' },
+                    { id: 'itc_input_services', label: 'ITC on Input Services (₹)', hint: 'Excluded for goods export per Circular 135' },
                 ]
             },
-            service_lut: {
-                title: "Export of Services (LUT)",
-                desc: "Upload Invoices, BRC/FIRC, and Purchase Register.",
-                zones: [
-                    { id: 'inv', label: 'Export Invoices', icon: '🧾', sub: 'Excel/PDF invoices' },
-                    { id: 'brc', label: 'BRC / FIRC', icon: '🏦', sub: 'Realisation certificates' },
-                    { id: 'pr', label: 'Purchase Register', icon: '📥', sub: 'Input invoices data' }
+            export_service_lut: {
+                title: 'Export of Services — LUT', rule: 'Rule 89(4)',
+                formula: '(Zero-Rated Turnover ÷ Adjusted Total Turnover) × Net ITC',
+                fields: [
+                    { id: 'turnover_zero_rated_services', label: 'Turnover of Zero-Rated Services (₹)', hint: 'Exported service value' },
+                    { id: 'total_turnover', label: 'Total Turnover in State (₹)', hint: 'From GSTR-3B Table 3.1' },
+                    { id: 'exempt_turnover', label: 'Exempt Turnover (₹)', hint: 'Excluding zero-rated supply' },
+                    { id: 'itc_availed', label: 'Total ITC Availed (₹)', hint: 'From GSTR-3B Table 4' },
+                    { id: 'itc_capital_goods', label: 'ITC on Capital Goods (₹)', hint: 'Excluded from Net ITC' },
+                    { id: 'blocked_credit', label: 'Blocked Credit u/s 17(5) (₹)', hint: 'Personal, food, etc.' },
                 ]
             },
-            inverted: {
-                title: "Inverted Duty Structure",
-                desc: "Upload Sales Register, Purchase Register, and GSTR-2B.",
-                zones: [
-                    { id: 'sr', label: 'Sales Register', icon: '📤', sub: 'Inverted supply sales' },
-                    { id: 'pr', label: 'Purchase Register', icon: '📥', sub: 'Input invoices data' },
-                    { id: '2b', label: 'GSTR-2B', icon: '📋', sub: 'Portal Excel/JSON' }
+            export_igst: {
+                title: 'Export with IGST Payment', rule: 'Rule 96',
+                formula: 'IGST Paid on Exports − Withheld Amount',
+                fields: [
+                    { id: 'igst_paid_on_exports', label: 'IGST Paid on Export of Goods (₹)', hint: 'From tax invoices' },
+                    { id: 'igst_paid_on_services', label: 'IGST Paid on Export of Services (₹)', hint: 'If any' },
+                    { id: 'shipping_bills_total', label: 'Total Shipping Bills Filed', hint: 'Number of SBs' },
+                    { id: 'shipping_bills_matched', label: 'Shipping Bills Matched (ICEGATE)', hint: 'Matched with GSTR-1' },
+                    { id: 'withheld_amount', label: 'Withheld Amount (₹)', hint: 'Risky exporter flag, mismatches' },
                 ]
             },
-            deemed: {
-                title: "Deemed Exports",
-                desc: "Upload Invoices and Proof of Receipt.",
-                zones: [
-                    { id: 'inv', label: 'Tax Invoices', icon: '📦', sub: 'Deemed export invoices' },
-                    { id: 'proof', label: 'Proof of Receipt', icon: '✅', sub: 'Signed acknowledgement' }
+            inverted_duty: {
+                title: 'Inverted Duty Structure', rule: 'Rule 89(5)',
+                formula: '[(Inverted Turnover × Net ITC) ÷ Adjusted Total Turnover] − Tax Payable on Inverted Supply',
+                fields: [
+                    { id: 'turnover_inverted', label: 'Turnover of Inverted Rated Supply (₹)', hint: 'Output on which lower rate is charged' },
+                    { id: 'total_turnover', label: 'Total Turnover in State (₹)', hint: 'From GSTR-3B' },
+                    { id: 'exempt_turnover', label: 'Exempt Turnover (₹)', hint: 'Excluding inverted supply' },
+                    { id: 'itc_availed', label: 'Total ITC Availed on Inputs (₹)', hint: 'Higher rate inputs' },
+                    { id: 'itc_capital_goods', label: 'ITC on Capital Goods (₹)', hint: 'Excluded from Net ITC' },
+                    { id: 'blocked_credit', label: 'Blocked Credit u/s 17(5) (₹)', hint: 'Non-deductible ITC' },
+                    { id: 'tax_payable_inverted', label: 'Tax Payable on Inverted Supply (₹)', hint: 'Output tax at lower rate' },
+                ]
+            },
+            deemed_export: {
+                title: 'Deemed Exports', rule: 'Rule 89(4)',
+                formula: '(Zero-Rated Turnover ÷ Adjusted Total Turnover) × Net ITC',
+                fields: [
+                    { id: 'turnover_zero_rated_goods', label: 'Turnover of Deemed Export (₹)', hint: 'SEZ/EOU supply value' },
+                    { id: 'total_turnover', label: 'Total Turnover in State (₹)', hint: 'From GSTR-3B' },
+                    { id: 'exempt_turnover', label: 'Exempt Turnover (₹)', hint: 'Excluding deemed export' },
+                    { id: 'itc_availed', label: 'Total ITC Availed (₹)', hint: 'From GSTR-3B Table 4' },
+                    { id: 'itc_capital_goods', label: 'ITC on Capital Goods (₹)', hint: 'Excluded from Net ITC' },
+                    { id: 'blocked_credit', label: 'Blocked Credit u/s 17(5) (₹)', hint: '' },
+                ]
+            },
+            excess_cash: {
+                title: 'Excess Cash Ledger Balance', rule: 'Direct Refund',
+                formula: 'Cash Ledger Balance − Earmarked Amount',
+                fields: [
+                    { id: 'cash_ledger_balance', label: 'Electronic Cash Ledger Balance (₹)', hint: 'From GST Portal' },
+                    { id: 'amount_earmarked', label: 'Amount Earmarked Against Demand (₹)', hint: 'Recovery/demand block' },
+                    { id: 'refund_amount', label: 'Claim Amount (₹)', hint: 'Leave 0 for max available' },
                 ]
             }
         };
 
-        function selectRefundCategory(cat) {
-            currentCalcCategory = cat;
-            selectedCalcFiles = {};
-            const config = calcConfigs[cat];
+        function selectCalcType(type) {
+            calcCurrentType = type;
+            const cfg = calcTypeConfigs[type];
+            if (!cfg) return;
 
-            document.getElementById('input-title').textContent = config.title;
-            document.getElementById('input-desc').textContent = config.desc;
+            document.getElementById('calc-step-1').style.display = 'none';
+            document.getElementById('calc-step-2').style.display = 'block';
+            document.getElementById('calc-step-3').style.display = 'none';
 
-            const grid = document.getElementById('upload-grid-wf');
-            grid.innerHTML = config.zones.map(z => `
-                <div class="upload-zone" onclick="triggerCalcUpload('${z.id}')">
-                    <div class="icon">${z.icon}</div>
-                    <div class="text"><strong>${z.label}</strong><br><span>${z.sub}</span></div>
+            document.getElementById('calc-type-title').textContent = cfg.title;
+            document.getElementById('calc-type-rule').textContent = cfg.rule;
+            document.getElementById('calc-formula-text').textContent = cfg.formula;
+
+            // Render form fields
+            const container = document.getElementById('calc-form-fields');
+            container.innerHTML = cfg.fields.map(f => `
+                <div class="calc-field">
+                    <label for="cf-${f.id}">${f.label}</label>
+                    <input type="number" id="cf-${f.id}" placeholder="0" step="any" min="0">
+                    ${f.hint ? `<div class="field-hint">${f.hint}</div>` : ''}
                 </div>
             `).join('');
-
-            renderCalcFileList();
-            goToStep(2);
         }
 
-        function triggerCalcUpload(zoneId) {
-            currentTargetZone = zoneId;
-            document.getElementById('calc-file-input').click();
+        function resetCalcToStep1() {
+            document.getElementById('calc-step-1').style.display = 'block';
+            document.getElementById('calc-step-2').style.display = 'none';
+            document.getElementById('calc-step-3').style.display = 'none';
+            calcCurrentType = '';
         }
 
-        function handleCalcFiles(input) {
-            if (input.files.length > 0 && currentTargetZone) {
-                selectedCalcFiles[currentTargetZone] = input.files[0];
-                renderCalcFileList();
-                input.value = ''; // Reset input for same file upload
-
-                // Enable button if all required zones have files (or at least one for flexibility)
-                const config = calcConfigs[currentCalcCategory];
-                const btn = document.getElementById('btn-process-calc');
-                btn.disabled = Object.keys(selectedCalcFiles).length < config.zones.length;
-            }
+        function clearCalcForm() {
+            document.querySelectorAll('#calc-form-fields input').forEach(i => i.value = '');
         }
 
-        function removeCalcFile(zoneId) {
-            delete selectedCalcFiles[zoneId];
-            renderCalcFileList();
-            document.getElementById('btn-process-calc').disabled = true;
+        function backToCalcForm() {
+            document.getElementById('calc-step-2').style.display = 'block';
+            document.getElementById('calc-step-3').style.display = 'none';
         }
 
-        function renderCalcFileList() {
-            const list = document.getElementById('calc-file-list');
-            const config = calcConfigs[currentCalcCategory];
-            if (!config) return;
+        async function runCalculation() {
+            const cfg = calcTypeConfigs[calcCurrentType];
+            if (!cfg) return;
 
-            let html = '';
-            config.zones.forEach(z => {
-                if (selectedCalcFiles[z.id]) {
-                    html += `
-                        <div class="file-item-wf">
-                            <span class="name">${z.icon} ${z.label}: ${selectedCalcFiles[z.id].name}</span>
-                            <span class="remove" onclick="removeCalcFile('${z.id}')">✕</span>
-                        </div>
-                    `;
-                }
+            // Collect values
+            const payload = { refund_type: calcCurrentType };
+            cfg.fields.forEach(f => {
+                const el = document.getElementById(`cf-${f.id}`);
+                payload[f.id] = parseFloat(el?.value || 0) || 0;
             });
-            list.innerHTML = html;
-        }
 
-        function goToStep(step) {
-            document.querySelectorAll('.wf-step').forEach(s => s.classList.remove('active'));
-            document.getElementById(`calc-step-${step}`).classList.add('active');
-        }
-
-        async function triggerBackendCalculation() {
-            const btn = document.getElementById('btn-process-calc');
+            const btn = document.getElementById('calc-btn');
             btn.disabled = true;
-            btn.innerHTML = '<span class="loading-spinner"></span> Processing...';
-
-            goToStep(3);
-            document.getElementById('result-loader').style.display = 'block';
-            document.getElementById('result-content').style.display = 'none';
+            btn.textContent = '⏳ Calculating...';
 
             try {
-                const token = localStorage.getItem('access_token');
-                const fileKeys = [];
-                const filesToUpload = Object.values(selectedCalcFiles);
-
-                for (const file of filesToUpload) {
-                    const fd = new FormData();
-                    fd.append('file', file);
-                    fd.append('client_id', clientId);
-                    fd.append('scope', 'CLIENT');
-
-                    const res = await fetch(`${API_BASE_URL}/jobs/upload`, {
-                        method: 'POST',
-                        headers: { 'Authorization': `Bearer ${token}` },
-                        body: fd
-                    });
-                    if (res.ok) {
-                        const d = await res.json();
-                        fileKeys.push(d.file_key || d.file_path);
-                    }
-                }
-
-                const jobRes = await fetch(`${API_BASE_URL}/jobs/`, {
+                const response = await authFetch('/reconciliation/calculate-refund', {
                     method: 'POST',
-                    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        job_type: 'gst_refund_calc',
-                        input_files: fileKeys,
-                        client_id: parseInt(clientId),
-                        metadata: { refund_type: currentCalcCategory }
-                    })
+                    body: JSON.stringify(payload),
                 });
 
-                if (jobRes.ok) {
-                    const jobData = await jobRes.json();
-                    document.getElementById('result-title').textContent = "Calculation Started";
-                    document.getElementById('result-desc').textContent = "Your documents are being processed. Analysis will be available shortly.";
-
-                    // Start Polling for results
-                    pollJobStatus(jobData.id);
-
-                } else {
-                    const err = await jobRes.json();
-                    alert('Failed to start calculation: ' + (err.detail || 'Error'));
-                    goToStep(2);
+                if (!response.ok) {
+                    const err = await response.json();
+                    alert('Calculation error: ' + (err.detail || 'Unknown error'));
+                    btn.disabled = false;
+                    btn.textContent = '🧮 Calculate Refund';
+                    return;
                 }
-            } catch (err) {
-                console.error(err);
-                alert('Error: ' + err.message);
-                goToStep(2);
+
+                const result = await response.json();
+                showCalcResult(result);
+
+            } catch (e) {
+                console.error('Calc error:', e);
+                alert('Error: ' + e.message);
             } finally {
-                btn.innerHTML = 'Process Calculation →';
+                btn.disabled = false;
+                btn.textContent = '🧮 Calculate Refund';
             }
         }
 
-        async function pollJobStatus(jobId) {
-            const pollInterval = setInterval(async () => {
-                try {
-                    const res = await authFetch(`/jobs/${jobId}`);
-                    if (res.ok) {
-                        const job = await res.json();
-                        if (job.status === 'completed') {
-                            clearInterval(pollInterval);
-                            displayJobResult(job);
-                        } else if (job.status === 'failed') {
-                            clearInterval(pollInterval);
-                            document.getElementById('result-loader').style.display = 'none';
-                            document.getElementById('result-content').style.display = 'block';
-                            document.getElementById('result-title').textContent = "Calculation Failed";
-                            document.getElementById('result-desc').textContent = "There was an error processing your documents.";
-                            document.getElementById('final-amount').textContent = "Error";
-                        }
-                    }
-                } catch (e) {
-                    console.error("Polling error", e);
-                }
-            }, 2000);
-        }
+        function showCalcResult(result) {
+            document.getElementById('calc-step-2').style.display = 'none';
+            document.getElementById('calc-step-3').style.display = 'block';
 
-        function displayJobResult(job) {
-            document.getElementById('result-loader').style.display = 'none';
-            document.getElementById('result-content').style.display = 'block';
-            document.getElementById('result-title').textContent = "Calculation Complete";
-            document.getElementById('result-desc').textContent = job.results?.message || "The maximum refund amount has been computed.";
+            // Title & Amount
+            document.getElementById('result-type-title').textContent = result.type_label || '';
+            const formatted = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 2 }).format(result.max_refund);
+            document.getElementById('result-amount').textContent = formatted;
+            document.getElementById('result-rule-tag').textContent = result.rule || '';
 
-            if (job.results && job.results.refund_amount !== undefined) {
-                const formattedAmount = new Intl.NumberFormat('en-IN', {
-                    style: 'currency',
-                    currency: 'INR'
-                }).format(job.results.refund_amount);
+            // Formula
+            document.getElementById('result-formula-display').textContent = result.formula_display || '';
+            document.getElementById('result-formula-values').textContent = result.formula || '';
 
-                document.getElementById('final-amount').textContent = formattedAmount;
-                document.getElementById('calc-summary').textContent = `Export: ₹${job.results.export_turnover.toLocaleString()} | Total: ₹${job.results.adjusted_total_turnover.toLocaleString()} | ITC: ₹${job.results.net_itc.toLocaleString()}`;
-                document.getElementById('formula-display').textContent = `${job.results.formula} Applied`;
-            } else {
-                document.getElementById('final-amount').textContent = "Processing Done";
+            // Breakdown Table
+            const bd = result.breakdown || {};
+            const labelMap = {
+                turnover_zero_rated_goods: 'Zero-Rated Goods Turnover',
+                turnover_zero_rated_services: 'Zero-Rated Services Turnover',
+                turnover_zero_rated: 'Total Zero-Rated Turnover',
+                turnover_inverted: 'Inverted Rated Supply Turnover',
+                total_turnover: 'Total Turnover in State',
+                exempt_turnover: 'Exempt Turnover',
+                adjusted_total_turnover: 'Adjusted Total Turnover',
+                itc_availed: 'ITC Availed (Total)',
+                itc_capital_goods: 'Less: ITC on Capital Goods',
+                blocked_credit: 'Less: Blocked Credit u/s 17(5)',
+                itc_input_services: 'Less: ITC on Input Services',
+                net_itc: 'Net ITC',
+                ratio: 'Ratio (Turnover ÷ Adjusted)',
+                part_a: 'Part A (Turnover × ITC ÷ Adj.)',
+                tax_payable_inverted: 'Less: Tax Payable on Inverted',
+                igst_paid_on_exports: 'IGST Paid on Exports',
+                igst_paid_on_services: 'IGST Paid on Services',
+                total_igst: 'Total IGST',
+                withheld_amount: 'Less: Withheld',
+                shipping_bills_matched: 'Shipping Bills Matched',
+                shipping_bills_total: 'Total Shipping Bills',
+                cash_ledger_balance: 'Cash Ledger Balance',
+                amount_earmarked: 'Less: Earmarked Against Demand',
+                available_for_refund: 'Available for Refund',
+                claim_amount: 'Claim Amount',
+            };
+
+            let tableHtml = '<table class="breakdown-table"><thead><tr><th>Component</th><th style="text-align:right;">Amount</th></tr></thead><tbody>';
+            const skipKeys = ['net_itc_note'];
+            Object.entries(bd).forEach(([key, val]) => {
+                if (skipKeys.includes(key)) return;
+                const label = labelMap[key] || key.replace(/_/g, ' ');
+                const isNum = typeof val === 'number';
+                const display = isNum ? (key === 'ratio' ? val.toFixed(6) : '₹ ' + val.toLocaleString('en-IN', { minimumFractionDigits: 2 })) : val;
+                tableHtml += `<tr><td>${label}</td><td style="text-align:right;font-family:monospace;">${display}</td></tr>`;
+            });
+            tableHtml += `<tr><td>Maximum Refund</td><td style="text-align:right;font-family:monospace;">${formatted}</td></tr>`;
+            tableHtml += '</tbody></table>';
+            document.getElementById('result-breakdown').innerHTML = tableHtml;
+
+            // Warnings
+            const warnHtml = (result.warnings || []).map(w => `<div class="warning-box">${w}</div>`).join('');
+            document.getElementById('result-warnings').innerHTML = warnHtml;
+
+            // Note
+            if (result.note) {
+                document.getElementById('result-warnings').innerHTML += `<div style="background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:0.65rem 0.85rem;font-size:0.78rem;color:#166534;">💡 ${result.note}</div>`;
             }
-        }
-
-        function resetCalculator() {
-            selectedCalcFiles = {};
-            currentCalcCategory = '';
-            goToStep(1);
         }
 
         function filterTools(query) {

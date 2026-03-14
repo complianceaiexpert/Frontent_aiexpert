@@ -670,14 +670,21 @@
         }
 
         // ═══ STEP 1 — CATEGORIES ═══
+        // Lean fetch — data only, no DOM rendering
+        async function fetchCategoriesData() {
+            if (categories.length > 0) return; // already loaded
+            const resp = await authFetch('/agreements/categories');
+            if (!resp || !resp.ok) throw new Error('Failed to load categories');
+            categories = await resp.json();
+        }
+
+        // Full load — fetch + render step 1 DOM
         async function loadCategories() {
             const el = document.getElementById('step-1');
             el.innerHTML = '<div class="loading-center"><div class="spin"></div><p>Loading categories...</p></div>';
 
             try {
-                const resp = await authFetch('/agreements/categories');
-                if (!resp || !resp.ok) throw new Error('Failed');
-                categories = await resp.json();
+                await fetchCategoriesData();
 
                 el.innerHTML = `
                 <h2 class="step-title">Choose Agreement Category</h2>
@@ -732,9 +739,12 @@
         `;
         }
 
-        async function selectType(typeId) {
-            document.querySelectorAll('#step-2 .sel-card').forEach(c => c.classList.remove('selected'));
-            document.querySelector(`#step-2 .sel-card[data-id="${typeId}"]`).classList.add('selected');
+        async function selectType(typeId, instant = false) {
+            const card = document.querySelector(`#step-2 .sel-card[data-id="${typeId}"]`);
+            if (card) {
+                document.querySelectorAll('#step-2 .sel-card').forEach(c => c.classList.remove('selected'));
+                card.classList.add('selected');
+            }
 
             // Fetch type details (with template_fields and clauses)
             try {
@@ -752,10 +762,15 @@
                     fetchTemplatePreview(selectedType.id);
                 }
 
-                setTimeout(() => {
+                if (instant) {
                     renderStep3();
                     goToStep(3);
-                }, 300);
+                } else {
+                    setTimeout(() => {
+                        renderStep3();
+                        goToStep(3);
+                    }, 300);
+                }
             } catch (err) {
                 showToast('❌ Failed to load template', 'error');
             }
@@ -1081,6 +1096,17 @@
                 return;
             }
 
+            // If this type HAS a docx template but it hasn't loaded yet, show loading
+            if (selectedType._hasDocxTemplate) {
+                const pb = document.getElementById('preview-body');
+                pb.innerHTML = `
+                    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:60%;color:var(--g400);">
+                        <div class="spin"></div>
+                        <p style="margin-top:0.75rem;font-size:0.88rem;">Loading document template…</p>
+                    </div>`;
+                return;
+            }
+
             // Fallback: clause-based preview via backend
             updateClausePreview();
         }
@@ -1320,24 +1346,75 @@
 
         // ═══ INIT ═══
         renderStepper();
-        loadCategories();
 
-        // Check URL params for direct type access
+        // Check URL params for direct access
         const urlParams = new URLSearchParams(window.location.search);
         const directTypeId = urlParams.get('typeId');
+        const directCategory = urlParams.get('category');
+        const directTemplate = urlParams.get('template');
+
+        // If URL params exist, skip step 1 — show step 3 with inline loading
+        if (directTypeId || directCategory) {
+            document.getElementById('step-1').classList.remove('visible');
+            // Show step 3 area with a subtle inline loader
+            const step3 = document.getElementById('step-3');
+            step3.classList.add('visible');
+            step3.innerHTML = '<div class="loading-center"><div class="spin"></div><p>Loading template…</p></div>';
+            // Advance stepper visually to step 3
+            currentStep = 3;
+            renderStepper();
+        }
+
+        function clearDirectLoading() { /* no-op now */ }
+
         if (directTypeId) {
-            // Load categories then auto-select
+            // Direct type ID — load then auto-select (instant)
             (async () => {
-                await loadCategories();
+                await fetchCategoriesData();
                 for (const cat of categories) {
                     const found = cat.agreement_types.find(t => t.id === directTypeId);
                     if (found) {
                         selectedCategory = cat;
-                        await selectType(directTypeId);
+                        await selectType(directTypeId, true);
                         break;
                     }
                 }
+                clearDirectLoading();
             })();
+        } else if (directCategory && directTemplate) {
+            // Both category + template — jump straight to step 3 (fastest)
+            (async () => {
+                await fetchCategoriesData();
+                const matchedCat = categories.find(c => c.name.toLowerCase() === directCategory.toLowerCase());
+                if (matchedCat) {
+                    selectedCategory = matchedCat;
+                    const matchedType = matchedCat.agreement_types.find(
+                        t => t.name.toLowerCase() === directTemplate.toLowerCase()
+                    );
+                    if (matchedType) {
+                        await selectType(matchedType.id, true);
+                    } else {
+                        renderStep2();
+                        goToStep(2);
+                    }
+                }
+                clearDirectLoading();
+            })();
+        } else if (directCategory) {
+            // Only category — jump to step 2
+            (async () => {
+                await fetchCategoriesData();
+                const matchedCat = categories.find(c => c.name.toLowerCase() === directCategory.toLowerCase());
+                if (matchedCat) {
+                    selectedCategory = matchedCat;
+                    renderStep2();
+                    goToStep(2);
+                }
+                clearDirectLoading();
+            })();
+        } else {
+            // No URL params — normal flow, show step 1
+            loadCategories();
         }
     </script>
     <script src="app-topbar.js"></script>

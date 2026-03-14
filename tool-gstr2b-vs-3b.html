@@ -1,15 +1,812 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GSTR-2B vs 3B — ComplianceAI Expert</title>
+    <title>GSTR-2B vs GSTR-3B — ITC Reconciliation | ComplianceAI Expert</title>
+    <meta name="description"
+        content="Compare ITC available in GSTR-2B with ITC claimed in GSTR-3B. Identify over/under claims instantly.">
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="tool-layout.css">
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+    <style>
+        .tool-main {
+            background: #f8fafc;
+            padding: 0;
+        }
+
+        .sb-page-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem 3rem;
+        }
+
+        /* ── How it works ── */
+        .how-strip {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.75rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .how-step {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+            position: relative;
+            transition: all 0.2s;
+        }
+
+        .how-step:hover {
+            border-color: #93c5fd;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+        }
+
+        .how-step::after {
+            content: '→';
+            position: absolute;
+            right: -12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1rem;
+            color: #cbd5e1;
+            font-weight: 700;
+        }
+
+        .how-step:last-child::after {
+            display: none;
+        }
+
+        .how-num {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: #fff;
+            font-size: 0.6rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 0.5rem;
+        }
+
+        .how-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.35rem;
+        }
+
+        .how-title {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .how-desc {
+            font-size: 0.65rem;
+            color: #9ca3af;
+            line-height: 1.4;
+        }
+
+        /* ── Upload Grid ── */
+        .upload-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.25rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .upload-panel {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        .up-header {
+            padding: 1rem 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .up-header.blue {
+            background: linear-gradient(135deg, #eff6ff, #dbeafe);
+            border-bottom: 1px solid #bfdbfe;
+        }
+
+        .up-header.amber {
+            background: linear-gradient(135deg, #fffbeb, #fef3c7);
+            border-bottom: 1px solid #fde68a;
+        }
+
+        .up-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: 800;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .up-icon.blue {
+            background: #1e3a8a;
+            color: #fff;
+        }
+
+        .up-icon.amber {
+            background: #d97706;
+            color: #fff;
+        }
+
+        .up-title {
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .up-sub {
+            font-size: 0.68rem;
+            color: #6b7280;
+        }
+
+        .up-body {
+            padding: 1.25rem;
+        }
+
+        .dropzone {
+            border: 2px dashed #d1d5db;
+            border-radius: 12px;
+            padding: 1.75rem 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #fafbfc;
+        }
+
+        .dropzone:hover {
+            border-color: #3b82f6;
+            background: #f0f5ff;
+        }
+
+        .dropzone.drag-over {
+            border-color: #3b82f6;
+            background: #eff6ff;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        }
+
+        .dropzone.has-file {
+            border-color: #22c55e;
+            border-style: solid;
+            background: #f0fdf4;
+        }
+
+        .dz-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .dz-title {
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: #374151;
+            margin-bottom: 0.15rem;
+        }
+
+        .dz-sub {
+            font-size: 0.72rem;
+            color: #9ca3af;
+        }
+
+        .dz-sub strong {
+            color: #3b82f6;
+            cursor: pointer;
+        }
+
+        .dz-formats {
+            display: flex;
+            justify-content: center;
+            gap: 0.4rem;
+            margin-top: 0.6rem;
+        }
+
+        .fmt-tag {
+            font-size: 0.58rem;
+            font-weight: 700;
+            padding: 0.12rem 0.4rem;
+            border-radius: 4px;
+            background: #f1f5f9;
+            color: #64748b;
+            text-transform: uppercase;
+        }
+
+        .dz-file {
+            display: none;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #16a34a;
+            margin-top: 0.6rem;
+            justify-content: center;
+        }
+
+        .dz-file.visible {
+            display: flex;
+        }
+
+        /* Extracted preview */
+        .extracted-preview {
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .extracted-preview.visible {
+            display: block;
+        }
+
+        .ext-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.78rem;
+        }
+
+        .ext-table th {
+            text-align: left;
+            font-size: 0.6rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: #9ca3af;
+            padding: 0.35rem 0.5rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .ext-table th:not(:first-child) {
+            text-align: right;
+        }
+
+        .ext-table td {
+            padding: 0.35rem 0.5rem;
+            border-bottom: 1px solid #f1f5f9;
+            color: #374151;
+        }
+
+        .ext-table td:not(:first-child) {
+            text-align: right;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+        }
+
+        .ext-table tfoot td {
+            font-weight: 800;
+            border-top: 2px solid #e5e7eb;
+            padding-top: 0.5rem;
+        }
+
+        .ext-total-blue {
+            color: #1e3a8a;
+        }
+
+        .ext-total-amber {
+            color: #d97706;
+        }
+
+        /* ── Action Bar ── */
+        .action-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            padding: 1rem 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .action-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .ready-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #d1d5db;
+        }
+
+        .ready-dot.active {
+            background: #22c55e;
+            box-shadow: 0 0 8px rgba(34, 197, 94, 0.4);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1)
+            }
+
+            50% {
+                opacity: .5;
+                transform: scale(1.5)
+            }
+        }
+
+        .ready-text {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #6b7280;
+        }
+
+        .ready-text.active {
+            color: #16a34a;
+        }
+
+        .fi {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.25rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.68rem;
+            font-weight: 600;
+        }
+
+        .fi.pending {
+            background: #f3f4f6;
+            color: #9ca3af;
+        }
+
+        .fi.done {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .compare-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.65rem 1.5rem;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 2px 10px rgba(30, 58, 138, 0.2);
+        }
+
+        .compare-btn:hover:not(:disabled) {
+            box-shadow: 0 4px 18px rgba(30, 58, 138, 0.35);
+            transform: translateY(-1px);
+        }
+
+        .compare-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* ── Results ── */
+        .results-dash {
+            display: none;
+            animation: fadeUp 0.4s ease-out;
+        }
+
+        .results-dash.visible {
+            display: block;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(12px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .results-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #111827;
+            margin: 0 0 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .risk-card {
+            border-radius: 14px;
+            padding: 1.5rem;
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            border: 1px solid;
+        }
+
+        .risk-card.low {
+            background: #f0fdf4;
+            border-color: #bbf7d0;
+        }
+
+        .risk-card.medium {
+            background: #fffbeb;
+            border-color: #fde68a;
+        }
+
+        .risk-card.high {
+            background: #fef2f2;
+            border-color: #fecaca;
+        }
+
+        .risk-card.neutral {
+            background: #f0f9ff;
+            border-color: #bae6fd;
+        }
+
+        .risk-icon {
+            font-size: 2.5rem;
+            flex-shrink: 0;
+        }
+
+        .risk-body {
+            flex: 1;
+        }
+
+        .risk-label {
+            font-size: 0.62rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 0.2rem;
+        }
+
+        .risk-label.low {
+            color: #166534;
+        }
+
+        .risk-label.medium {
+            color: #92400e;
+        }
+
+        .risk-label.high {
+            color: #991b1b;
+        }
+
+        .risk-label.neutral {
+            color: #0c4a6e;
+        }
+
+        .risk-heading {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: #111827;
+            margin-bottom: 0.2rem;
+        }
+
+        .risk-desc {
+            font-size: 0.78rem;
+            color: #6b7280;
+            line-height: 1.5;
+        }
+
+        .risk-amount {
+            text-align: right;
+            flex-shrink: 0;
+        }
+
+        .ra-num {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.75rem;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .ra-num.over {
+            color: #dc2626;
+        }
+
+        .ra-num.under {
+            color: #d97706;
+        }
+
+        .ra-num.ok {
+            color: #16a34a;
+        }
+
+        .ra-pct {
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: #6b7280;
+        }
+
+        .var-table-wrap {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            overflow: hidden;
+            margin-bottom: 1.25rem;
+        }
+
+        .var-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .var-table thead th {
+            background: #f8fafc;
+            padding: 0.75rem 1rem;
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #6b7280;
+            text-align: right;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .var-table thead th:first-child {
+            text-align: left;
+        }
+
+        .var-table tbody td {
+            padding: 0.75rem 1rem;
+            font-size: 0.85rem;
+            text-align: right;
+            border-bottom: 1px solid #f1f5f9;
+            color: #374151;
+        }
+
+        .var-table tbody td:first-child {
+            text-align: left;
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .var-table tfoot td {
+            padding: 0.85rem 1rem;
+            font-weight: 800;
+            font-size: 0.88rem;
+            border-top: 2px solid #e5e7eb;
+            text-align: right;
+            color: #111827;
+            background: #f8fafc;
+        }
+
+        .var-table tfoot td:first-child {
+            text-align: left;
+        }
+
+        .v-pos {
+            color: #dc2626;
+            font-weight: 700;
+        }
+
+        .v-neg {
+            color: #d97706;
+            font-weight: 700;
+        }
+
+        .v-ok {
+            color: #16a34a;
+            font-weight: 700;
+        }
+
+        .chart-panel {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            padding: 1.5rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .chart-panel h3 {
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: #111827;
+            margin: 0 0 1rem;
+        }
+
+        .chart-legend {
+            display: flex;
+            gap: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .chart-legend span {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: #6b7280;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 3px;
+        }
+
+        .dot-2b {
+            background: #1e3a8a;
+        }
+
+        .dot-3b {
+            background: #f59e0b;
+        }
+
+        .bar-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
+        }
+
+        .bar-row {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .bar-label {
+            width: 70px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #6b7280;
+            text-align: right;
+            flex-shrink: 0;
+        }
+
+        .bar-track {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .bar-line {
+            height: 22px;
+            border-radius: 6px;
+            position: relative;
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            min-width: 2px;
+        }
+
+        .bar-2b {
+            background: linear-gradient(90deg, #1e3a8a, #3b82f6);
+        }
+
+        .bar-3b {
+            background: linear-gradient(90deg, #d97706, #f59e0b);
+        }
+
+        .bar-val {
+            position: absolute;
+            right: 8px;
+            font-size: 0.62rem;
+            font-weight: 700;
+            color: #fff;
+            white-space: nowrap;
+        }
+
+        .actions-panel {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            padding: 1.5rem;
+        }
+
+        .actions-panel h3 {
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: #111827;
+            margin: 0 0 1rem;
+        }
+
+        .action-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.85rem 1rem;
+            border: 1px solid #f1f5f9;
+            border-radius: 10px;
+            margin-bottom: 0.5rem;
+        }
+
+        .action-item:hover {
+            background: #f8fafc;
+            border-color: #e5e7eb;
+        }
+
+        .ai-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.95rem;
+            flex-shrink: 0;
+        }
+
+        .ai-icon.red {
+            background: #fef2f2;
+        }
+
+        .ai-icon.yellow {
+            background: #fffbeb;
+        }
+
+        .ai-icon.green {
+            background: #f0fdf4;
+        }
+
+        .ai-icon.blue {
+            background: #eff6ff;
+        }
+
+        .ai-text {
+            flex: 1;
+        }
+
+        .ai-text strong {
+            display: block;
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 0.1rem;
+        }
+
+        .ai-text span {
+            font-size: 0.72rem;
+            color: #6b7280;
+            line-height: 1.45;
+        }
+
+        @media (max-width:900px) {
+            .upload-grid {
+                grid-template-columns: 1fr
+            }
+
+            .how-strip {
+                grid-template-columns: repeat(2, 1fr)
+            }
+
+            .how-step::after {
+                display: none
+            }
+        }
+    </style>
 </head>
+
 <body>
     <div id="app-topbar" data-active="dashboard"></div>
     <script src="app-topbar.js"></script>
@@ -17,81 +814,432 @@
     <div class="tool-layout">
         <aside class="tool-sidebar" id="tool-sidebar"></aside>
         <main class="tool-main">
-            <div class="tool-main-inner">
+            <div class="sb-page-inner">
+
                 <div class="tool-bc">
                     <a href="clients.html">Firm</a><span style="color:#d1d5db">›</span>
                     <a href="javascript:goBackToWebView()">GST Workspace</a><span style="color:#d1d5db">›</span>
-                    <span style="color:#374151;font-weight:600">GSTR-2B vs 3B</span>
+                    <span style="color:#374151;font-weight:600">GSTR-2B vs GSTR-3B</span>
                 </div>
-                <div class="tool-page-header">
-                    <h1>⚖️ <span>GSTR-2B vs 3B</span></h1>
-                    <p>Compare the ITC available in GSTR-2B with the ITC claimed in GSTR-3B. Ensure compliance and avoid notices due to excess ITC claims.</p>
+
+                <!-- How it works -->
+                <div class="how-strip">
+                    <div class="how-step">
+                        <div class="how-num">1</div>
+                        <div class="how-icon">📤</div>
+                        <div class="how-title">Upload Files</div>
+                        <div class="how-desc">Upload GSTR-2B & GSTR-3B from GST portal</div>
+                    </div>
+                    <div class="how-step">
+                        <div class="how-num">2</div>
+                        <div class="how-icon">🔍</div>
+                        <div class="how-title">Auto-Extract</div>
+                        <div class="how-desc">AI reads ITC totals from both files</div>
+                    </div>
+                    <div class="how-step">
+                        <div class="how-num">3</div>
+                        <div class="how-icon">📊</div>
+                        <div class="how-title">Compare</div>
+                        <div class="how-desc">Instant variance calculation per component</div>
+                    </div>
+                    <div class="how-step">
+                        <div class="how-num">4</div>
+                        <div class="how-icon">🎯</div>
+                        <div class="how-title">Action Report</div>
+                        <div class="how-desc">Risk assessment & recommended actions</div>
+                    </div>
                 </div>
-                <div class="tool-card">
-                    <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> Upload Data</h3>
-                    <p>Upload both files to begin the reconciliation process.</p>
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
-                        <div class="tool-upload" onclick="document.getElementById('gstr2b-file').click()">
-                            <div class="t-icon">📊</div>
-                            <div class="t-title">GSTR-2B Data</div>
-                            <div class="t-sub">Click to upload (.xlsx, .csv)</div>
-                            <div class="t-file" id="gstr2b-file-name" style="display:none"></div>
+
+                <!-- Upload -->
+                <div class="upload-grid">
+                    <div class="upload-panel">
+                        <div class="up-header blue">
+                            <div class="up-icon blue">2B</div>
+                            <div>
+                                <div class="up-title">GSTR-2B Data</div>
+                                <div class="up-sub">Auto-drafted ITC statement from GST portal</div>
+                            </div>
                         </div>
-                        <div class="tool-upload" onclick="document.getElementById('gstr3b-file').click()">
-                            <div class="t-icon">📈</div>
-                            <div class="t-title">GSTR-3B Data</div>
-                            <div class="t-sub">Click to upload (.xlsx, .csv)</div>
-                            <div class="t-file" id="gstr3b-file-name" style="display:none"></div>
+                        <div class="up-body">
+                            <div class="dropzone" id="dz-2b" onclick="document.getElementById('file-2b').click()"
+                                ondragover="event.preventDefault();this.classList.add('drag-over')"
+                                ondragleave="this.classList.remove('drag-over')"
+                                ondrop="event.preventDefault();this.classList.remove('drag-over');handleFile(event.dataTransfer.files[0],'2b')">
+                                <div class="dz-icon">📊</div>
+                                <div class="dz-title">Drop your GSTR-2B file here</div>
+                                <div class="dz-sub">or <strong>browse files</strong></div>
+                                <div class="dz-formats"><span class="fmt-tag">.xlsx</span><span
+                                        class="fmt-tag">.csv</span><span class="fmt-tag">.json</span></div>
+                                <div class="dz-file" id="dz-file-2b"><span>✓</span><span id="fn-2b"></span></div>
+                            </div>
+                            <input type="file" id="file-2b" accept=".xlsx,.csv,.json" style="display:none"
+                                onchange="handleFile(this.files[0],'2b')">
+                            <div style="text-align:center;margin-top:0.5rem">
+                                <button onclick="event.stopPropagation();pickFromDrive('2b')"
+                                    style="background:none;border:1px solid #e2e8f0;border-radius:8px;padding:0.4rem 0.85rem;font-size:0.75rem;font-weight:600;color:#3b82f6;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:0.35rem;transition:all .15s"
+                                    onmouseover="this.style.background='#eff6ff';this.style.borderColor='#3b82f6'"
+                                    onmouseout="this.style.background='none';this.style.borderColor='#e2e8f0'">📁 Pick
+                                    from Drive</button>
+                            </div>
+                            <div class="extracted-preview" id="preview-2b"></div>
                         </div>
                     </div>
-                    <input type="file" id="gstr2b-file" accept=".xlsx,.csv" style="display:none" onchange="updateFileName('f1', this)">
-                    <input type="file" id="gstr3b-file" accept=".xlsx,.csv" style="display:none" onchange="updateFileName('f2', this)">
-                    <div style="margin-top:1.25rem">
-                        <button class="tbtn tbtn-primary" id="reconcile-btn" onclick="startReconciliation()" disabled>⚖️ Start Reconciliation</button>
+
+                    <div class="upload-panel">
+                        <div class="up-header amber">
+                            <div class="up-icon amber">3B</div>
+                            <div>
+                                <div class="up-title">GSTR-3B Data</div>
+                                <div class="up-sub">Filed return — Table 4A (ITC claimed)</div>
+                            </div>
+                        </div>
+                        <div class="up-body">
+                            <div class="dropzone" id="dz-3b" onclick="document.getElementById('file-3b').click()"
+                                ondragover="event.preventDefault();this.classList.add('drag-over')"
+                                ondragleave="this.classList.remove('drag-over')"
+                                ondrop="event.preventDefault();this.classList.remove('drag-over');handleFile(event.dataTransfer.files[0],'3b')">
+                                <div class="dz-icon">📈</div>
+                                <div class="dz-title">Drop your GSTR-3B file here</div>
+                                <div class="dz-sub">or <strong>browse files</strong></div>
+                                <div class="dz-formats"><span class="fmt-tag">.xlsx</span><span
+                                        class="fmt-tag">.csv</span><span class="fmt-tag">.json</span></div>
+                                <div class="dz-file" id="dz-file-3b"><span>✓</span><span id="fn-3b"></span></div>
+                            </div>
+                            <input type="file" id="file-3b" accept=".xlsx,.csv,.json" style="display:none"
+                                onchange="handleFile(this.files[0],'3b')">
+                            <div style="text-align:center;margin-top:0.5rem">
+                                <button onclick="event.stopPropagation();pickFromDrive('3b')"
+                                    style="background:none;border:1px solid #e2e8f0;border-radius:8px;padding:0.4rem 0.85rem;font-size:0.75rem;font-weight:600;color:#3b82f6;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:0.35rem;transition:all .15s"
+                                    onmouseover="this.style.background='#eff6ff';this.style.borderColor='#3b82f6'"
+                                    onmouseout="this.style.background='none';this.style.borderColor='#e2e8f0'">📁 Pick
+                                    from Drive</button>
+                            </div>
+                            <div class="extracted-preview" id="preview-3b"></div>
+                        </div>
                     </div>
                 </div>
-                <div class="tool-card" id="recent-jobs-container" style="display:none">
-                    <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Recent Jobs</h3>
-                    <p>Track the status of your reconciliation tasks.</p>
-                    <div class="tool-jobs" id="jobs-list"></div>
+
+                <!-- Action Bar -->
+                <div class="action-bar">
+                    <div class="action-info">
+                        <div style="display:flex;align-items:center;gap:0.5rem">
+                            <span class="ready-dot" id="ready-dot"></span>
+                            <span class="ready-text" id="ready-text">Upload both files to proceed</span>
+                        </div>
+                        <div style="display:flex;gap:0.5rem">
+                            <span class="fi pending" id="fi-2b">📊 2B: Not uploaded</span>
+                            <span class="fi pending" id="fi-3b">📈 3B: Not uploaded</span>
+                        </div>
+                    </div>
+                    <button class="compare-btn" id="compare-btn" onclick="runComparison()" disabled>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                            <polyline points="22 4 12 14.01 9 11.01" />
+                        </svg>
+                        Compare ITC
+                    </button>
                 </div>
+
+                <!-- Results -->
+                <div class="results-dash" id="results-dash">
+                    <div class="results-title">📊 ITC Reconciliation Results</div>
+                    <div class="risk-card" id="risk-card">
+                        <div class="risk-icon" id="risk-icon"></div>
+                        <div class="risk-body">
+                            <div class="risk-label" id="risk-label"></div>
+                            <div class="risk-heading" id="risk-heading"></div>
+                            <div class="risk-desc" id="risk-desc"></div>
+                        </div>
+                        <div class="risk-amount">
+                            <div class="ra-num" id="risk-num"></div>
+                            <div class="ra-pct" id="risk-pct"></div>
+                        </div>
+                    </div>
+                    <div class="var-table-wrap">
+                        <table class="var-table">
+                            <thead>
+                                <tr>
+                                    <th>Tax Component</th>
+                                    <th>GSTR-2B (Available)</th>
+                                    <th>GSTR-3B (Claimed)</th>
+                                    <th>Variance</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="var-tbody"></tbody>
+                            <tfoot id="var-tfoot"></tfoot>
+                        </table>
+                    </div>
+                    <div class="chart-panel">
+                        <h3>📊 Visual Comparison</h3>
+                        <div class="chart-legend"><span><span class="dot dot-2b"></span> GSTR-2B
+                                (Available)</span><span><span class="dot dot-3b"></span> GSTR-3B (Claimed)</span></div>
+                        <div class="bar-group" id="bar-group"></div>
+                    </div>
+                    <div class="actions-panel">
+                        <h3>🎯 Recommended Actions</h3>
+                        <div id="action-items"></div>
+                    </div>
+                </div>
+
             </div>
         </main>
     </div>
+    <div class="tool-toast" id="toast"></div>
+
     <script src="tool-sidebar.js"></script>
     <script src="api_config.js?v=2"></script>
     <script src="session-manager.js"></script>
+    <script src="drive-picker.js"></script>
     <script>
         renderToolSidebar('gstr2b-vs-3b');
-        let file1=null,file2=null;
-        function updateFileName(type,input){
-            if(!input.files.length)return;
-            if(type==='f1'){file1=input.files[0];const el=document.getElementById('gstr2b-file-name');el.textContent='📎 '+file1.name;el.style.display='';input.closest('.tool-upload').classList.add('has-file');}
-            else{file2=input.files[0];const el=document.getElementById('gstr3b-file-name');el.textContent='📎 '+file2.name;el.style.display='';input.closest('.tool-upload').classList.add('has-file');}
-            document.getElementById('reconcile-btn').disabled=!(file1&&file2);
+
+        // State
+        let parsed2B = null, parsed3B = null;
+
+        function fmt(n) { return '₹' + Math.abs(n).toLocaleString('en-IN', { maximumFractionDigits: 0 }); }
+
+        function pickFromDrive(type) {
+            const params = new URLSearchParams(window.location.search);
+            const cid = params.get('clientId');
+            if (!cid) { showToast('No client context', 'error'); return; }
+            openDrivePicker({
+                clientId: cid,
+                accept: ['.xlsx', '.csv', '.json'],
+                onSelect: (file) => handleFile(file, type)
+            });
         }
-        async function startReconciliation(){
-            const btn=document.getElementById('reconcile-btn');btn.disabled=true;btn.innerHTML='<span class="tool-spinner"></span> Processing...';
-            try{
-                const token=localStorage.getItem('access_token');const params=new URLSearchParams(window.location.search);const clientId=params.get('clientId');const fileKeys=[];
-                for(const file of[file1,file2]){const fd=new FormData();fd.append('file',file);const res=await fetch(`${API_BASE_URL}/jobs/upload`,{method:'POST',headers:{'Authorization':`Bearer ${token}`},body:fd});if(res.ok){const d=await res.json();fileKeys.push(d.file_key||d.file_path);}}
-                const jobRes=await fetch(`${API_BASE_URL}/jobs/`,{method:'POST',headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'},body:JSON.stringify({job_type:'gstr2b_vs_3b',input_files:fileKeys,client_id:clientId})});
-                if(jobRes.ok){alert('Reconciliation job started!');loadJobs();}else{const err=await jobRes.json();alert('Failed: '+(err.detail||'Unknown error'));}
-            }catch(err){console.error(err);alert('Error: '+err.message);}
-            finally{btn.disabled=false;btn.textContent='⚖️ Start Reconciliation';}
+
+        // ── File handling ──
+        function handleFile(file, type) {
+            if (!file) return;
+            const dz = document.getElementById(`dz-${type}`);
+            const dzFile = document.getElementById(`dz-file-${type}`);
+            const fnEl = document.getElementById(`fn-${type}`);
+            const fi = document.getElementById(`fi-${type}`);
+
+            dz.classList.add('has-file');
+            dzFile.classList.add('visible');
+            fnEl.textContent = file.name;
+            fi.className = 'fi done';
+            fi.textContent = (type === '2b' ? '📊 2B: ✓ ' : '📈 3B: ✓ ') + file.name;
+
+            // Parse
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                try {
+                    let data;
+                    if (file.name.endsWith('.json')) {
+                        data = JSON.parse(e.target.result);
+                        if (type === '2b') parsed2B = extractFromJSON_2B(data);
+                        else parsed3B = extractFromJSON_3B(data);
+                    } else {
+                        const wb = XLSX.read(e.target.result, { type: 'array' });
+                        if (type === '2b') parsed2B = extractFromExcel_2B(wb);
+                        else parsed3B = extractFromExcel_3B(wb);
+                    }
+                    showPreview(type);
+                    checkReady();
+                    showToast(`${file.name} parsed successfully!`, 'success');
+                } catch (err) {
+                    console.error(err);
+                    showToast('Error parsing file: ' + err.message, 'error');
+                }
+            };
+            if (file.name.endsWith('.json')) reader.readAsText(file);
+            else reader.readAsArrayBuffer(file);
         }
-        let pollingInterval=null;
-        async function loadJobs(){
-            const params=new URLSearchParams(window.location.search);const clientId=params.get('clientId');if(!clientId)return;
-            try{const res=await authFetch(`/jobs/?skip=0&limit=50&client_id=${clientId}`);if(res.ok){const jobs=await res.json();const taskJobs=jobs.filter(j=>j.job_type==='gstr2b_vs_3b');if(taskJobs.length>0){document.getElementById('recent-jobs-container').style.display='block';renderJobs(taskJobs);const hasIP=taskJobs.some(j=>j.status==='QUEUED'||j.status==='PROCESSING');if(hasIP&&!pollingInterval)pollingInterval=setInterval(loadJobs,5000);else if(!hasIP&&pollingInterval){clearInterval(pollingInterval);pollingInterval=null;}}}}catch(e){console.error(e)}
+
+        // ── Extract from Excel ──
+        function extractFromExcel_2B(wb) {
+            const result = { igst: 0, cgst: 0, sgst: 0, cess: 0, rows: [] };
+            // Try to find ITC summary data from any sheet
+            for (const name of wb.SheetNames) {
+                const sheet = wb.Sheets[name];
+                const json = XLSX.utils.sheet_to_json(sheet, { defval: 0 });
+                if (!json.length) continue;
+                // Look for rows with tax component columns
+                for (const row of json) {
+                    const keys = Object.keys(row).map(k => k.toLowerCase());
+                    const hasIGST = keys.some(k => k.includes('igst') || k.includes('integrated'));
+                    const hasCGST = keys.some(k => k.includes('cgst') || k.includes('central'));
+                    if (hasIGST || hasCGST) {
+                        let label = '', igst = 0, cgst = 0, sgst = 0, cess = 0;
+                        for (const [k, v] of Object.entries(row)) {
+                            const kl = k.toLowerCase();
+                            if (kl.includes('description') || kl.includes('type') || kl.includes('category') || kl.includes('particular') || kl.includes('heading')) label = v;
+                            if (kl.includes('igst') || kl.includes('integrated')) igst = parseFloat(v) || 0;
+                            if (kl.includes('cgst') || kl.includes('central')) cgst = parseFloat(v) || 0;
+                            if ((kl.includes('sgst') || kl.includes('state') || kl.includes('utgst')) && !kl.includes('igst')) sgst = parseFloat(v) || 0;
+                            if (kl.includes('cess')) cess = parseFloat(v) || 0;
+                        }
+                        if (igst || cgst || sgst || cess) {
+                            result.rows.push({ label: label || `Row ${result.rows.length + 1}`, igst, cgst, sgst, cess });
+                            result.igst += igst; result.cgst += cgst; result.sgst += sgst; result.cess += cess;
+                        }
+                    }
+                }
+                if (result.rows.length > 0) break;
+            }
+            // Fallback: if no structured data found, sum all numeric columns
+            if (result.rows.length === 0) {
+                const sheet = wb.Sheets[wb.SheetNames[0]];
+                const json = XLSX.utils.sheet_to_json(sheet, { defval: 0 });
+                json.forEach((row, i) => {
+                    const vals = Object.values(row).filter(v => typeof v === 'number' && v > 0);
+                    if (vals.length >= 2) {
+                        const keys = Object.keys(row);
+                        result.rows.push({ label: row[keys[0]] || `Row ${i + 1}`, igst: vals[0] || 0, cgst: vals[1] || 0, sgst: vals[2] || 0, cess: vals[3] || 0 });
+                        result.igst += vals[0] || 0; result.cgst += vals[1] || 0; result.sgst += vals[2] || 0; result.cess += vals[3] || 0;
+                    }
+                });
+            }
+            return result;
         }
-        function renderJobs(jobs){
-            document.getElementById('jobs-list').innerHTML=jobs.map(job=>{const date=new Date(job.created_at).toLocaleString();return `<div class="tool-job"><div class="tool-job-info"><span class="tool-job-name">GSTR-2B vs GSTR-3B Reconciliation</span><span class="tool-job-meta">Created: ${date}</span></div><div style="display:flex;align-items:center;gap:.75rem"><span class="tool-job-status tj-${job.status.toLowerCase()}">${job.status}</span>${job.status==='COMPLETED'?`<button class="tbtn tbtn-download" onclick="downloadJobFile('${job.id}')">⬇ Download</button>`:''}</div></div>`;}).join('');
+
+        function extractFromExcel_3B(wb) {
+            // Same approach — look for ITC-related data
+            return extractFromExcel_2B(wb); // Same parser works; structure is similar
         }
-        async function downloadJobFile(jobId){
-            try{const response=await authFetch(`/jobs/${jobId}/download`);if(!response.ok){alert('Download failed');return;}const blob=await response.blob();const url=window.URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`GSTR2B_vs_3B_Report_${jobId.substring(0,8)}.xlsx`;document.body.appendChild(a);a.click();window.URL.revokeObjectURL(url);document.body.removeChild(a);}catch(e){console.error(e);alert('Error downloading file');}
+
+        // ── Extract from JSON ──
+        function extractFromJSON_2B(data) {
+            const result = { igst: 0, cgst: 0, sgst: 0, cess: 0, rows: [] };
+            // GST portal JSON format: data.data.docdata or similar
+            const walk = (obj, path = '') => {
+                if (!obj || typeof obj !== 'object') return;
+                if (Array.isArray(obj)) { obj.forEach((item, i) => walk(item, `${path}[${i}]`)); return; }
+                // Check if this object has tax fields
+                const keys = Object.keys(obj).map(k => k.toLowerCase());
+                if (keys.some(k => k.includes('igst') || k.includes('iamt'))) {
+                    const igst = parseFloat(obj.igst || obj.iamt || obj.IGST || obj.IAMT || 0);
+                    const cgst = parseFloat(obj.cgst || obj.camt || obj.CGST || obj.CAMT || 0);
+                    const sgst = parseFloat(obj.sgst || obj.samt || obj.SGST || obj.SAMT || 0);
+                    const cess = parseFloat(obj.cess || obj.csamt || obj.CESS || obj.CSAMT || 0);
+                    if (igst || cgst || sgst || cess) {
+                        result.rows.push({ label: obj.typ || obj.inv_typ || obj.ctin || path, igst, cgst, sgst, cess });
+                        result.igst += igst; result.cgst += cgst; result.sgst += sgst; result.cess += cess;
+                    }
+                }
+                for (const v of Object.values(obj)) walk(v, path);
+            };
+            walk(data);
+            return result;
         }
-        loadJobs();
+
+        function extractFromJSON_3B(data) { return extractFromJSON_2B(data); }
+
+        // ── Show preview ──
+        function showPreview(type) {
+            const parsed = type === '2b' ? parsed2B : parsed3B;
+            if (!parsed || !parsed.rows.length) return;
+            const preview = document.getElementById(`preview-${type}`);
+            const colorClass = type === '2b' ? 'ext-total-blue' : 'ext-total-amber';
+            let html = `<table class="ext-table"><thead><tr><th>Category</th><th>IGST</th><th>CGST</th><th>SGST</th><th>Cess</th></tr></thead><tbody>`;
+            parsed.rows.slice(0, 8).forEach(r => {
+                html += `<tr><td>${r.label}</td><td>${fmt(r.igst)}</td><td>${fmt(r.cgst)}</td><td>${fmt(r.sgst)}</td><td>${fmt(r.cess)}</td></tr>`;
+            });
+            if (parsed.rows.length > 8) html += `<tr><td colspan="5" style="color:#9ca3af;text-align:center;font-size:0.72rem">... and ${parsed.rows.length - 8} more rows</td></tr>`;
+            html += `</tbody><tfoot><tr><td class="${colorClass}">Total</td><td class="${colorClass}">${fmt(parsed.igst)}</td><td class="${colorClass}">${fmt(parsed.cgst)}</td><td class="${colorClass}">${fmt(parsed.sgst)}</td><td class="${colorClass}">${fmt(parsed.cess)}</td></tr></tfoot></table>`;
+            preview.innerHTML = html;
+            preview.classList.add('visible');
+        }
+
+        function checkReady() {
+            const btn = document.getElementById('compare-btn');
+            const dot = document.getElementById('ready-dot');
+            const text = document.getElementById('ready-text');
+            if (parsed2B && parsed3B) {
+                btn.disabled = false; dot.classList.add('active');
+                text.textContent = 'Ready to compare'; text.classList.add('active');
+            }
+        }
+
+        // ── Comparison ──
+        function runComparison() {
+            if (!parsed2B || !parsed3B) return;
+            const COMPS = ['igst', 'cgst', 'sgst', 'cess'];
+            const labels = { igst: 'IGST', cgst: 'CGST', sgst: 'SGST/UTGST', cess: 'Cess' };
+            const icons = { igst: '🔵', cgst: '🟢', sgst: '🟠', cess: '🟣' };
+
+            let total2b = 0, total3b = 0;
+            const data = {};
+            COMPS.forEach(c => {
+                data[c] = { available: parsed2B[c], claimed: parsed3B[c], variance: parsed3B[c] - parsed2B[c] };
+                total2b += parsed2B[c]; total3b += parsed3B[c];
+            });
+            const totalVariance = total3b - total2b;
+            const pct = total2b > 0 ? Math.abs(totalVariance / total2b * 100) : 0;
+
+            // Variance table
+            let tbody = '';
+            COMPS.forEach(c => {
+                const d = data[c];
+                const cls = d.variance > 0 ? 'v-pos' : d.variance < 0 ? 'v-neg' : 'v-ok';
+                const status = d.variance > 0 ? '🔴 Over-claimed' : d.variance < 0 ? '🟡 Under-claimed' : '✅ Matched';
+                tbody += `<tr><td>${icons[c]} ${labels[c]}</td><td>${fmt(d.available)}</td><td>${fmt(d.claimed)}</td><td class="${cls}">${d.variance >= 0 ? '+' : '-'}${fmt(d.variance)}</td><td style="font-size:0.75rem">${status}</td></tr>`;
+            });
+            const tCls = totalVariance > 0 ? 'v-pos' : totalVariance < 0 ? 'v-neg' : 'v-ok';
+            document.getElementById('var-tbody').innerHTML = tbody;
+            document.getElementById('var-tfoot').innerHTML = `<tr><td><strong>TOTAL</strong></td><td><strong>${fmt(total2b)}</strong></td><td><strong>${fmt(total3b)}</strong></td><td class="${tCls}"><strong>${totalVariance >= 0 ? '+' : '-'}${fmt(totalVariance)}</strong></td><td style="font-size:0.72rem;font-weight:700">${pct.toFixed(1)}%</td></tr>`;
+
+            // Risk
+            let risk, riskIcon, riskHeading, riskDesc, numClass;
+            if (totalVariance > 0) {
+                numClass = 'over';
+                if (totalVariance > 2500000 || pct > 20) { risk = 'high'; riskIcon = '🔴'; riskHeading = 'HIGH RISK — Excess ITC Claimed'; riskDesc = 'You claimed significantly more ITC than available in GSTR-2B. This will likely trigger a notice u/s 73/74. Immediate reversal with interest recommended.'; }
+                else if (totalVariance > 500000 || pct > 10) { risk = 'medium'; riskIcon = '🟡'; riskHeading = 'MEDIUM RISK — ITC Over-claim'; riskDesc = 'Moderate excess ITC claimed. Reverse the excess in your next GSTR-3B to avoid interest and scrutiny.'; }
+                else { risk = 'low'; riskIcon = '🟢'; riskHeading = 'LOW RISK — Minor Over-claim'; riskDesc = 'Small variance. Correct in next return period.'; }
+            } else if (totalVariance < 0) {
+                risk = 'neutral'; riskIcon = '💸'; riskHeading = 'Under-claimed ITC — You\'re Losing Money!'; riskDesc = `You haven't claimed ${fmt(totalVariance)} of available ITC. Claim in the next GSTR-3B or GSTR-9.`; numClass = 'under';
+            } else { risk = 'low'; riskIcon = '✅'; riskHeading = 'Perfect Match!'; riskDesc = 'ITC in GSTR-3B exactly matches GSTR-2B. No action needed.'; numClass = 'ok'; }
+
+            document.getElementById('risk-card').className = `risk-card ${risk}`;
+            document.getElementById('risk-icon').textContent = riskIcon;
+            document.getElementById('risk-label').className = `risk-label ${risk}`;
+            document.getElementById('risk-label').textContent = risk.toUpperCase() + ' RISK';
+            document.getElementById('risk-heading').textContent = riskHeading;
+            document.getElementById('risk-desc').textContent = riskDesc;
+            document.getElementById('risk-num').className = `ra-num ${numClass}`;
+            document.getElementById('risk-num').textContent = (totalVariance >= 0 ? '+' : '-') + fmt(totalVariance);
+            document.getElementById('risk-pct').textContent = pct.toFixed(1) + '% variance';
+
+            // Bars
+            const maxVal = Math.max(total2b, total3b, 1);
+            document.getElementById('bar-group').innerHTML = COMPS.map(c => {
+                const d = data[c];
+                return `<div class="bar-row"><div class="bar-label">${labels[c]}</div><div class="bar-track">
+                    <div class="bar-line bar-2b" style="width:${Math.max(d.available / maxVal * 100, d.available > 0 ? 3 : 0)}%">${d.available > 0 ? `<span class="bar-val">${fmt(d.available)}</span>` : ''}</div>
+                    <div class="bar-line bar-3b" style="width:${Math.max(d.claimed / maxVal * 100, d.claimed > 0 ? 3 : 0)}%">${d.claimed > 0 ? `<span class="bar-val">${fmt(d.claimed)}</span>` : ''}</div>
+                </div></div>`;
+            }).join('');
+
+            // Actions
+            let actions = '';
+            if (totalVariance > 0) {
+                actions += `<div class="action-item"><div class="ai-icon red">⚠️</div><div class="ai-text"><strong>Reverse Excess ITC of ${fmt(totalVariance)}</strong><span>Reduce ITC in next GSTR-3B Table 4B(2) to avoid interest u/s 50.</span></div></div>`;
+                actions += `<div class="action-item"><div class="ai-icon yellow">💰</div><div class="ai-text"><strong>Calculate Interest Liability</strong><span>Interest @ 18% p.a. applicable on excess ITC from filing date.</span></div></div>`;
+            }
+            if (totalVariance < 0) {
+                actions += `<div class="action-item"><div class="ai-icon blue">📋</div><div class="ai-text"><strong>Claim Missed ITC of ${fmt(totalVariance)}</strong><span>Add under-claimed amount in next GSTR-3B Table 4A. Deadline: September return of next FY.</span></div></div>`;
+            }
+            if (totalVariance === 0) actions += `<div class="action-item"><div class="ai-icon green">✅</div><div class="ai-text"><strong>No Action Required</strong><span>ITC perfectly reconciled.</span></div></div>`;
+            actions += `<div class="action-item"><div class="ai-icon blue">📄</div><div class="ai-text"><strong>Save for GSTR-9 Annual Return</strong><span>This reconciliation feeds into Table 8 of GSTR-9.</span></div></div>`;
+            document.getElementById('action-items').innerHTML = actions;
+
+            document.getElementById('results-dash').classList.add('visible');
+            document.getElementById('results-dash').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            showToast('ITC comparison complete!', 'success');
+        }
+
+        function showToast(msg, type) {
+            const t = document.getElementById('toast');
+            t.textContent = (type === 'success' ? '✓ ' : '✕ ') + msg;
+            t.className = 'tool-toast ' + type; t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 3000);
+        }
     </script>
 </body>
+
 </html>

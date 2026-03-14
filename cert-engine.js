@@ -108,6 +108,7 @@ function selectTemplate(name) {
     isPDF = selectedTemplate.extension === '.pdf';
     pdfURL = null;
     rawContent = null;
+    dynamicFields = []; // reset
 
     renderStep2();
     goToStep(2);
@@ -117,6 +118,175 @@ function selectTemplate(name) {
     if (pb) pb.innerHTML = '<div class="loading-center" style="height:100%;"><div class="spin"></div><p>Generating live preview...</p></div>';
 
     fetchTemplateForPreview(selectedTemplate.path);
+}
+
+// Auto-extract fields from template HTML by scanning for ___ blanks and context
+let dynamicFields = [];
+let dynamicSections = []; // grouped sections for nice UI
+const _useManualFields = typeof USE_MANUAL_FIELDS !== 'undefined' && USE_MANUAL_FIELDS;
+
+// Known CA certificate blank patterns: context text → { name, label, section, placeholder }
+const KNOWN_PATTERNS = [
+    // CA Firm Letterhead (always first 8 blanks in all templates)
+    { ctx: /M\/s\./i, name: 'ca_firm_name', label: 'CA Firm Name', section: 'firm', placeholder: 'e.g. Gupta & Associates', required: true },
+    { ctx: /^_{3,}$/i, name: 'ca_address', label: 'CA Firm Address', section: 'firm', placeholder: 'Full office address', fullWidth: true },
+    { ctx: /Tel/i, name: 'ca_tel', label: 'Telephone', section: 'firm', placeholder: 'e.g. 022-12345678' },
+    { ctx: /Email/i, name: 'ca_email', label: 'Email', section: 'firm', placeholder: 'e.g. ca@firm.com' },
+    { ctx: /FRN/i, name: 'frn', label: 'FRN', section: 'firm', placeholder: 'e.g. 123456N' },
+    { ctx: /GSTIN/i, name: 'gstin_firm', label: 'GSTIN', section: 'firm', placeholder: 'e.g. 27AABCU9603R1ZM' },
+    { ctx: /Ref\.?\s*No/i, name: 'ref_no', label: 'Reference No.', section: 'ref', placeholder: 'e.g. CERT/2024/001' },
+    { ctx: /Date/i, name: 'cert_date', label: 'Date', section: 'ref', placeholder: 'DD/MM/YYYY' },
+    // Subject Entity
+    { ctx: /Name of (Applicant|Company|Individual|Entity|Remitter|Grantee|Institution|Remittee|Trust)/i, name: 'entity_name', label: 'Name', section: 'entity', placeholder: 'Full name', required: true },
+    { ctx: /Shri\s*\/\s*Smt|M\/s\./i, name: 'entity_name', label: 'Name of Person / Entity', section: 'entity', placeholder: 'Full name', required: true },
+    { ctx: /\bPAN\b/i, name: 'pan', label: 'PAN', section: 'entity', placeholder: 'e.g. ABCDE1234F' },
+    { ctx: /Aadhaar/i, name: 'aadhaar', label: 'Aadhaar No.', section: 'entity', placeholder: 'e.g. 1234 5678 9012' },
+    { ctx: /\bCIN\b/i, name: 'cin', label: 'CIN', section: 'entity', placeholder: 'e.g. U74999MH2020PTC345678' },
+    { ctx: /\bTAN\b/i, name: 'tan', label: 'TAN', section: 'entity', placeholder: 'e.g. MUMA12345A' },
+    { ctx: /LLP No/i, name: 'llp_no', label: 'CIN / LLP No.', section: 'entity', placeholder: 'e.g. AAA-1234' },
+    { ctx: /Address/i, name: 'entity_address', label: 'Address', section: 'entity', placeholder: 'Full registered address', fullWidth: true },
+    { ctx: /Registered Address/i, name: 'entity_address', label: 'Registered Address', section: 'entity', placeholder: 'Full registered address', fullWidth: true },
+    { ctx: /Assessment Year/i, name: 'assessment_year', label: 'Assessment Year', section: 'entity', placeholder: 'e.g. 2024-25' },
+    { ctx: /Financial Year/i, name: 'financial_year', label: 'Financial Year', section: 'details', placeholder: 'e.g. 2023-24' },
+    { ctx: /Valuation Date/i, name: 'valuation_date', label: 'Valuation Date', section: 'details', placeholder: 'DD/MM/YYYY' },
+    { ctx: /Class of Shares/i, name: 'share_class', label: 'Class of Shares', section: 'details', placeholder: 'Equity / Preference' },
+    { ctx: /Paid.?up Shares/i, name: 'total_shares', label: 'Total Paid-up Shares', section: 'details', placeholder: 'e.g. 10,000' },
+    { ctx: /Purpose/i, name: 'purpose', label: 'Purpose', section: 'details', placeholder: 'Purpose of certificate', fullWidth: true },
+    { ctx: /Nature of Income/i, name: 'income_nature', label: 'Nature of Income / Payments', section: 'details', placeholder: 'e.g. Professional fees', fullWidth: true },
+    { ctx: /TDS Section/i, name: 'tds_section', label: 'Applicable TDS Section', section: 'details', placeholder: 'e.g. 194J' },
+    { ctx: /Normal Rate/i, name: 'normal_tds_rate', label: 'Normal Rate of TDS (%)', section: 'details', placeholder: 'e.g. 10' },
+    { ctx: /Rate of/i, name: 'sought_rate', label: 'Sought Rate (%)', section: 'details', placeholder: 'e.g. 2 / NIL' },
+    { ctx: /Amount.*certificate/i, name: 'cert_amount', label: 'Amount (₹)', section: 'details', placeholder: 'e.g. 50,00,000' },
+    { ctx: /Status/i, name: 'entity_status', label: 'Status', section: 'entity', placeholder: 'Individual / Company / Firm' },
+    { ctx: /Principal Place/i, name: 'principal_place', label: 'Place of Business', section: 'entity', placeholder: 'e.g. Mumbai', fullWidth: true },
+    { ctx: /Country/i, name: 'country', label: 'Country', section: 'details', placeholder: 'e.g. United States' },
+    { ctx: /Registration No/i, name: 'reg_no', label: 'Registration No.', section: 'entity', placeholder: 'e.g. REG/2024/001' },
+    { ctx: /Grant.*Scheme/i, name: 'grant_scheme', label: 'Grant / Scheme Name', section: 'details', placeholder: 'e.g. CSR Grant 2024', fullWidth: true },
+    { ctx: /Grantor|Funding/i, name: 'grantor_name', label: 'Grantor / Funding Agency', section: 'details', placeholder: 'e.g. Ministry of Finance', fullWidth: true },
+    { ctx: /Grant Received|Amount of Grant/i, name: 'grant_amount', label: 'Grant Amount (₹)', section: 'details', placeholder: 'e.g. 10,00,000' },
+    { ctx: /Period/i, name: 'period_from', label: 'Period From', section: 'details', placeholder: 'DD/MM/YYYY' },
+    // Financial details
+    { ctx: /Rs\.|Rupees/i, name: 'amount', label: 'Amount (₹)', section: 'details', placeholder: 'e.g. 50,00,000' },
+    { ctx: /years\)/i, name: 'num_years', label: 'No. of Years', section: 'details', placeholder: 'e.g. 3' },
+    { ctx: /only\)/i, name: 'amount_words', label: 'Amount (in words)', section: 'details', placeholder: 'e.g. Fifty Lakhs only', fullWidth: true },
+    { ctx: /as at/i, name: 'statements_date', label: 'Statements Date', section: 'details', placeholder: 'DD/MM/YYYY' },
+    { ctx: /as on/i, name: 'cert_as_on_date', label: 'Certificate Date', section: 'details', placeholder: 'DD/MM/YYYY' },
+    // Signatory (always last 6-7 blanks)
+    { ctx: /For M\/s/i, name: 'sign_firm', label: 'CA Firm Name', section: 'sign', placeholder: 'e.g. Gupta & Associates' },
+    { ctx: /Partner|Proprietor/i, name: 'ca_signatory', label: 'CA Signatory Name', section: 'sign', placeholder: 'Name of signing CA' },
+    { ctx: /M\.\s*No/i, name: 'membership_no', label: 'Membership No.', section: 'sign', placeholder: 'e.g. 123456' },
+    { ctx: /Place/i, name: 'sign_place', label: 'Place', section: 'sign', placeholder: 'e.g. Mumbai' },
+    { ctx: /UDIN/i, name: 'udin', label: 'UDIN', section: 'sign', placeholder: 'e.g. 24123456ABCDEF1234', fullWidth: true },
+];
+
+// Section definitions for organizing the form
+const SECTION_DEFS = {
+    firm: { title: '🏢 CA / Firm Letterhead', order: 1 },
+    ref: { title: '📋 Reference & Date', order: 2 },
+    entity: { title: '👤 Subject / Entity Details', order: 3 },
+    details: { title: '💰 Certificate Details', order: 4 },
+    sign: { title: '✍️ Signatory', order: 5 },
+};
+
+function extractFieldsFromTemplate(html) {
+    if (_useManualFields) return [];
+
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+    const fields = [];
+    const usedNames = new Set();
+    let detailCounter = 1;
+
+    // Collect all blanks with their surrounding text context
+    const blanks = [];
+    const allElements = doc.body.querySelectorAll('p, td, th, h1, h2, h3, li');
+
+    allElements.forEach(el => {
+        const text = el.textContent;
+        const blankRx = /_{3,}/g;
+        if (!blankRx.test(text)) return;
+        blankRx.lastIndex = 0;
+
+        let lastEnd = 0;
+        let m;
+        while ((m = blankRx.exec(text)) !== null) {
+            const before = text.substring(Math.max(0, lastEnd), m.index).trim();
+            const after = text.substring(m.index + m[0].length, m.index + m[0].length + 60).trim();
+            const fullContext = before + ' ' + after;
+            blanks.push({ before, after, fullContext, element: el.tagName });
+            lastEnd = m.index + m[0].length;
+        }
+    });
+
+    // Match each blank against known patterns
+    for (const blank of blanks) {
+        let matched = false;
+        for (const pat of KNOWN_PATTERNS) {
+            if (pat.ctx.test(blank.before) || pat.ctx.test(blank.after) || pat.ctx.test(blank.fullContext)) {
+                let name = pat.name;
+                // Avoid duplicates
+                if (usedNames.has(name)) {
+                    name = `${name}_${usedNames.size}`;
+                }
+                usedNames.add(name);
+                fields.push({
+                    name,
+                    label: pat.label,
+                    type: /amount|income|tax|worth|shares|grant/i.test(pat.label) ? 'number' : 'text',
+                    placeholder: pat.placeholder || '',
+                    section: pat.section,
+                    required: pat.required || false,
+                    fullWidth: pat.fullWidth || false,
+                });
+                matched = true;
+                break;
+            }
+        }
+        if (!matched) {
+            // Try to extract a simple label from context
+            let label = '';
+            const beforeClean = blank.before.replace(/_{2,}/g, '').replace(/[|,;]/g, '').trim();
+            if (beforeClean.length > 2) {
+                // Take last meaningful segment
+                const parts = beforeClean.split(/\s{2,}|\t/);
+                label = parts[parts.length - 1].replace(/[:.]$/, '').trim();
+            }
+            if (!label || label.length < 2) {
+                const afterClean = blank.after.replace(/_{2,}/g, '').replace(/^[-–—]\s*/, '').trim();
+                if (afterClean.length > 2 && afterClean.length < 40) {
+                    label = afterClean.split(/[,;|]/)[0].replace(/[:.]$/, '').trim();
+                }
+            }
+            if (!label || label.length < 2) label = `Detail ${detailCounter++}`;
+
+            let name = label.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '').substring(0, 30) || `detail_${detailCounter}`;
+            if (usedNames.has(name)) name = `${name}_${usedNames.size}`;
+            usedNames.add(name);
+
+            fields.push({
+                name, label,
+                type: /amount|income|tax|worth|value/i.test(label) ? 'number' : 'text',
+                placeholder: '', section: 'details',
+                required: false, fullWidth: false,
+            });
+        }
+    }
+
+    // Group into sections
+    dynamicSections = [];
+    const sectionMap = {};
+    for (const f of fields) {
+        const sec = f.section || 'details';
+        if (!sectionMap[sec]) sectionMap[sec] = [];
+        sectionMap[sec].push(f);
+    }
+    for (const [key, def] of Object.entries(SECTION_DEFS)) {
+        if (sectionMap[key] && sectionMap[key].length > 0) {
+            dynamicSections.push({ title: def.title, fields: sectionMap[key] });
+        }
+    }
+
+    return fields;
 }
 
 async function fetchTemplateForPreview(filePath) {
@@ -133,6 +303,26 @@ async function fetchTemplateForPreview(filePath) {
             if (!previewRes.ok) throw new Error("Failed to get remote template preview from Python backend");
             const { html } = await previewRes.json();
             rawContent = html;
+
+            // Auto-extract fields from the actual template and re-render form
+            // (only if page does NOT define USE_MANUAL_FIELDS = true)
+            if (!_useManualFields) {
+                dynamicFields = extractFieldsFromTemplate(html);
+                if (dynamicFields.length > 0) {
+                    const today = new Date().toLocaleDateString('en-IN');
+                    for (const f of dynamicFields) {
+                        if (!(f.name in fieldValues)) {
+                            // Set default date for date fields
+                            if (f.name === 'cert_date' || f.name === 'sign_date') {
+                                fieldValues[f.name] = today;
+                            } else {
+                                fieldValues[f.name] = '';
+                            }
+                        }
+                    }
+                    renderStep2();
+                }
+            }
         }
         updatePreview();
     } catch (err) {
@@ -147,7 +337,15 @@ function renderStep2() {
     if (!selectedTemplate) return;
     const el = document.getElementById('step-2');
 
-    const fieldSections = getFieldSections();
+    // Use dynamic fields from template if available, otherwise fall back to static getFieldSections
+    let fieldSections;
+    if (dynamicSections && dynamicSections.length > 0) {
+        fieldSections = dynamicSections;
+    } else if (dynamicFields && dynamicFields.length > 0) {
+        fieldSections = [{ title: '📝 Document Fields', fields: dynamicFields }];
+    } else {
+        fieldSections = getFieldSections();
+    }
 
     let formHtml = '';
     for (const section of fieldSections) {
@@ -155,7 +353,7 @@ function renderStep2() {
                     <div style="font-weight:700;font-size:0.92rem;color:var(--g700);margin-bottom:0.6rem;padding-bottom:0.4rem;border-bottom:1px solid var(--g200);">${section.title}</div>
                     <div class="form-grid">`;
         for (const f of section.fields) {
-            const isFullWidth = f.name === 'applicant_address' || f.name === 'ca_office_address' || f.name === 'gst_office_address';
+            const isFullWidth = f.fullWidth || f.name === 'applicant_address' || f.name === 'ca_office_address' || f.name === 'gst_office_address' || f.name === 'address';
             formHtml += `<div class="form-group ${isFullWidth ? 'full' : ''}">
                         <label class="form-label">${f.label}${f.required ? '<span class="req">*</span>' : ''}</label>
                         ${f.type === 'select'
@@ -319,12 +517,39 @@ async function updatePreview() {
     let html = rawContent || '';
     if (!html) return;
 
-    // Build replacement map: each blank pattern → field value or placeholder label
-    // These map the actual ___ blanks in the DOCX HTML to our form fields
-    const replacements = getReplacements(mkSpan);
+    // Use dynamic fields to replace ___ blanks in document order (1:1 mapping)
+    if (dynamicFields && dynamicFields.length > 0) {
+        let dynIdx = 0;
+        html = html.replace(/_{3,}/g, (match) => {
+            if (dynIdx < dynamicFields.length) {
+                const f = dynamicFields[dynIdx++];
+                return mkSpan(f.name, f.label);
+            }
+            return match; // leave as-is if no more fields
+        });
+    } else {
+        // Legacy path: use getReplacements regex (works for cert-gst etc.)
+        const replacements = getReplacements(mkSpan);
+        for (const r of replacements) {
+            html = html.replace(r.find, r.replace());
+        }
 
-    for (const r of replacements) {
-        html = html.replace(r.find, r.replace());
+        // Then auto-detect remaining ___ blanks with unused static fields
+        const allFields = getFieldSections().flatMap(s => s.fields.map(f => f.name));
+        const usedFields = new Set();
+        html.replace(/data-field="([^"]+)"/g, (_, f) => { usedFields.add(f); return _; });
+        const unusedFields = allFields.filter(f => !usedFields.has(f));
+        let unusedIdx = 0;
+
+        html = html.replace(/_{3,}/g, (match) => {
+            if (unusedIdx < unusedFields.length) {
+                const fname = unusedFields[unusedIdx++];
+                const label = fname.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+                return mkSpan(fname, label);
+            }
+            const gname = `blank_${unusedIdx++}`;
+            return mkSpan(gname, '___');
+        });
     }
 
     // Write to iframe
@@ -394,9 +619,8 @@ async function updatePreview() {
 // Helper: create a placeholder span
 function mkSpan(fieldName, label) {
     const val = fieldValues[fieldName];
-    const displayVal = fieldName === 'refund_amount' || fieldName === 'tax_amount_paid'
-        ? (val ? formatINR(val) : '')
-        : (val || '');
+    const isMoneyField = /amount|worth|turnover|value|deposit|rent|fee|salary|charges/i.test(fieldName);
+    const displayVal = isMoneyField ? (val ? formatINR(val) : '') : (val || '');
     const isFilled = !!displayVal;
     const cls = isFilled ? 'tpl-ph filled' : 'tpl-ph';
     return `<span class="${cls}" data-field="${fieldName}" data-label="${label}">${isFilled ? displayVal : label}</span>`;

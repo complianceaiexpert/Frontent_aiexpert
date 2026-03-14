@@ -397,6 +397,12 @@
                         </div>
                         <input type="file" id="bulk-file" accept=".xlsx,.xls" style="display:none"
                             onchange="onFileSelected(this)">
+                        <div style="text-align:center;margin-top:0.5rem">
+                            <button onclick="pickFromDrive()"
+                                style="background:none;border:1px solid #e2e8f0;border-radius:8px;padding:0.35rem 0.75rem;font-size:0.72rem;font-weight:600;color:#3b82f6;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:0.3rem;transition:all .15s"
+                                onmouseover="this.style.background='#eff6ff'"
+                                onmouseout="this.style.background='none'">📁 Pick from Drive</button>
+                        </div>
                         <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1rem">
                             <button class="btn btn-search" id="btn-validate" onclick="doBulkValidate()" disabled>
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -435,7 +441,8 @@
                         </div>
                         <p style="margin-top:.6rem">Output columns added: <strong>HSN_Code</strong>,
                             <strong>Matched_Description</strong>, <strong>Match_Type</strong>,
-                            <strong>Match_Score</strong></p>
+                            <strong>Match_Score</strong>
+                        </p>
                     </div>
                 </div>
             </div>
@@ -447,12 +454,27 @@
     <script src="tool-sidebar.js"></script>
     <script src="api_config.js"></script>
     <script src="session-manager.js?v=2"></script>
+    <script src="drive-picker.js"></script>
     <script>
         if (!requireAuth()) { }
         renderToolSidebar('hsn-locator');
 
         let currentMode = 'single';
         let selectedFile = null;
+
+        function pickFromDrive() {
+            const cid = new URLSearchParams(window.location.search).get('clientId');
+            if (!cid) return;
+            openDrivePicker({
+                clientId: cid, accept: ['.xlsx', '.xls'], onSelect: (file) => {
+                    selectedFile = file;
+                    const zone = document.getElementById('upload-zone'); zone.classList.add('has-file');
+                    const fn = document.getElementById('file-name'); fn.textContent = '📄 ' + file.name; fn.style.display = 'block';
+                    document.getElementById('btn-validate').disabled = false;
+                    document.getElementById('download-area').classList.remove('visible');
+                }
+            });
+        }
 
         function setMode(mode) {
             currentMode = mode;

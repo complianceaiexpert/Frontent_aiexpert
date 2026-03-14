@@ -1,15 +1,802 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GSTR-1 vs 3B — ComplianceAI Expert</title>
+    <title>GSTR-1 vs GSTR-3B — Tax Liability Reconciliation | ComplianceAI Expert</title>
+    <meta name="description"
+        content="Compare outward supply tax in GSTR-1 with liability declared in GSTR-3B. Detect under/over declaration and avoid ASMT-10 notices.">
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="tool-layout.css">
+    <style>
+        .tool-main {
+            background: #f8fafc;
+            padding: 0;
+        }
+
+        .sb-page-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem 3rem;
+        }
+
+        .how-strip {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.75rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .how-step {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+            position: relative;
+            transition: all 0.2s;
+        }
+
+        .how-step:hover {
+            border-color: #86efac;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+        }
+
+        .how-step::after {
+            content: '→';
+            position: absolute;
+            right: -12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1rem;
+            color: #cbd5e1;
+            font-weight: 700;
+        }
+
+        .how-step:last-child::after {
+            display: none;
+        }
+
+        .how-num {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #166534, #22c55e);
+            color: #fff;
+            font-size: 0.6rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 0.5rem;
+        }
+
+        .how-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.35rem;
+        }
+
+        .how-title {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .how-desc {
+            font-size: 0.65rem;
+            color: #9ca3af;
+            line-height: 1.4;
+        }
+
+        .upload-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.25rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .upload-panel {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        .up-header {
+            padding: 1rem 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .up-header.green {
+            background: linear-gradient(135deg, #ecfdf5, #dcfce7);
+            border-bottom: 1px solid #bbf7d0;
+        }
+
+        .up-header.purple {
+            background: linear-gradient(135deg, #f5f3ff, #ede9fe);
+            border-bottom: 1px solid #c4b5fd;
+        }
+
+        .up-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: 800;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .up-icon.green {
+            background: #166534;
+            color: #fff;
+        }
+
+        .up-icon.purple {
+            background: #6d28d9;
+            color: #fff;
+        }
+
+        .up-title {
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .up-sub {
+            font-size: 0.68rem;
+            color: #6b7280;
+        }
+
+        .up-body {
+            padding: 1.25rem;
+        }
+
+        .dropzone {
+            border: 2px dashed #d1d5db;
+            border-radius: 12px;
+            padding: 1.75rem 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #fafbfc;
+        }
+
+        .dropzone:hover {
+            border-color: #22c55e;
+            background: #f0fdf4;
+        }
+
+        .dropzone.drag-over {
+            border-color: #22c55e;
+            background: #ecfdf5;
+            box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.1);
+        }
+
+        .dropzone.has-file {
+            border-color: #22c55e;
+            border-style: solid;
+            background: #f0fdf4;
+        }
+
+        .dz-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .dz-title {
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: #374151;
+            margin-bottom: 0.15rem;
+        }
+
+        .dz-sub {
+            font-size: 0.72rem;
+            color: #9ca3af;
+        }
+
+        .dz-sub strong {
+            color: #22c55e;
+            cursor: pointer;
+        }
+
+        .dz-formats {
+            display: flex;
+            justify-content: center;
+            gap: 0.4rem;
+            margin-top: 0.6rem;
+        }
+
+        .fmt-tag {
+            font-size: 0.58rem;
+            font-weight: 700;
+            padding: 0.12rem 0.4rem;
+            border-radius: 4px;
+            background: #f1f5f9;
+            color: #64748b;
+            text-transform: uppercase;
+        }
+
+        .dz-file {
+            display: none;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #16a34a;
+            margin-top: 0.6rem;
+            justify-content: center;
+        }
+
+        .dz-file.visible {
+            display: flex;
+        }
+
+        .extracted-preview {
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .extracted-preview.visible {
+            display: block;
+        }
+
+        .ext-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.78rem;
+        }
+
+        .ext-table th {
+            text-align: left;
+            font-size: 0.6rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: #9ca3af;
+            padding: 0.35rem 0.5rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .ext-table th:not(:first-child) {
+            text-align: right;
+        }
+
+        .ext-table td {
+            padding: 0.35rem 0.5rem;
+            border-bottom: 1px solid #f1f5f9;
+            color: #374151;
+        }
+
+        .ext-table td:not(:first-child) {
+            text-align: right;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+        }
+
+        .ext-table tfoot td {
+            font-weight: 800;
+            border-top: 2px solid #e5e7eb;
+            padding-top: 0.5rem;
+        }
+
+        .action-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            padding: 1rem 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .action-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .ready-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #d1d5db;
+        }
+
+        .ready-dot.active {
+            background: #22c55e;
+            box-shadow: 0 0 8px rgba(34, 197, 94, 0.4);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1)
+            }
+
+            50% {
+                opacity: .5;
+                transform: scale(1.5)
+            }
+        }
+
+        .ready-text {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #6b7280;
+        }
+
+        .ready-text.active {
+            color: #16a34a;
+        }
+
+        .fi {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.25rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.68rem;
+            font-weight: 600;
+        }
+
+        .fi.pending {
+            background: #f3f4f6;
+            color: #9ca3af;
+        }
+
+        .fi.done {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .compare-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.65rem 1.5rem;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #166534, #22c55e);
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 2px 10px rgba(22, 101, 52, 0.2);
+        }
+
+        .compare-btn:hover:not(:disabled) {
+            box-shadow: 0 4px 18px rgba(22, 101, 52, 0.35);
+            transform: translateY(-1px);
+        }
+
+        .compare-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .results-dash {
+            display: none;
+            animation: fadeUp 0.4s ease-out;
+        }
+
+        .results-dash.visible {
+            display: block;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(12px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .results-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #111827;
+            margin: 0 0 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .risk-card {
+            border-radius: 14px;
+            padding: 1.5rem;
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            border: 1px solid;
+        }
+
+        .risk-card.low {
+            background: #f0fdf4;
+            border-color: #bbf7d0;
+        }
+
+        .risk-card.medium {
+            background: #fffbeb;
+            border-color: #fde68a;
+        }
+
+        .risk-card.high {
+            background: #fef2f2;
+            border-color: #fecaca;
+        }
+
+        .risk-card.neutral {
+            background: #f0f9ff;
+            border-color: #bae6fd;
+        }
+
+        .risk-icon {
+            font-size: 2.5rem;
+            flex-shrink: 0;
+        }
+
+        .risk-body {
+            flex: 1;
+        }
+
+        .risk-label {
+            font-size: 0.62rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 0.2rem;
+        }
+
+        .risk-label.low {
+            color: #166534;
+        }
+
+        .risk-label.medium {
+            color: #92400e;
+        }
+
+        .risk-label.high {
+            color: #991b1b;
+        }
+
+        .risk-label.neutral {
+            color: #0c4a6e;
+        }
+
+        .risk-heading {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: #111827;
+            margin-bottom: 0.2rem;
+        }
+
+        .risk-desc {
+            font-size: 0.78rem;
+            color: #6b7280;
+            line-height: 1.5;
+        }
+
+        .risk-amount {
+            text-align: right;
+            flex-shrink: 0;
+        }
+
+        .ra-num {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.75rem;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .ra-num.over {
+            color: #dc2626;
+        }
+
+        .ra-num.under {
+            color: #d97706;
+        }
+
+        .ra-num.ok {
+            color: #16a34a;
+        }
+
+        .ra-pct {
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: #6b7280;
+        }
+
+        .var-table-wrap {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            overflow: hidden;
+            margin-bottom: 1.25rem;
+        }
+
+        .var-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .var-table thead th {
+            background: #f8fafc;
+            padding: 0.75rem 1rem;
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #6b7280;
+            text-align: right;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .var-table thead th:first-child {
+            text-align: left;
+        }
+
+        .var-table tbody td {
+            padding: 0.75rem 1rem;
+            font-size: 0.85rem;
+            text-align: right;
+            border-bottom: 1px solid #f1f5f9;
+            color: #374151;
+        }
+
+        .var-table tbody td:first-child {
+            text-align: left;
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .var-table tfoot td {
+            padding: 0.85rem 1rem;
+            font-weight: 800;
+            font-size: 0.88rem;
+            border-top: 2px solid #e5e7eb;
+            text-align: right;
+            color: #111827;
+            background: #f8fafc;
+        }
+
+        .var-table tfoot td:first-child {
+            text-align: left;
+        }
+
+        .v-pos {
+            color: #dc2626;
+            font-weight: 700;
+        }
+
+        .v-neg {
+            color: #d97706;
+            font-weight: 700;
+        }
+
+        .v-ok {
+            color: #16a34a;
+            font-weight: 700;
+        }
+
+        .chart-panel {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            padding: 1.5rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .chart-panel h3 {
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: #111827;
+            margin: 0 0 1rem;
+        }
+
+        .chart-legend {
+            display: flex;
+            gap: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .chart-legend span {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: #6b7280;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 3px;
+        }
+
+        .dot-g1 {
+            background: #166534;
+        }
+
+        .dot-3b {
+            background: #7c3aed;
+        }
+
+        .bar-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
+        }
+
+        .bar-row {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .bar-label {
+            width: 70px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #6b7280;
+            text-align: right;
+            flex-shrink: 0;
+        }
+
+        .bar-track {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .bar-line {
+            height: 22px;
+            border-radius: 6px;
+            position: relative;
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            min-width: 2px;
+        }
+
+        .bar-g1 {
+            background: linear-gradient(90deg, #166534, #22c55e);
+        }
+
+        .bar-3b {
+            background: linear-gradient(90deg, #6d28d9, #8b5cf6);
+        }
+
+        .bar-val {
+            position: absolute;
+            right: 8px;
+            font-size: 0.62rem;
+            font-weight: 700;
+            color: #fff;
+            white-space: nowrap;
+        }
+
+        .actions-panel {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            padding: 1.5rem;
+        }
+
+        .actions-panel h3 {
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: #111827;
+            margin: 0 0 1rem;
+        }
+
+        .action-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.85rem 1rem;
+            border: 1px solid #f1f5f9;
+            border-radius: 10px;
+            margin-bottom: 0.5rem;
+        }
+
+        .action-item:hover {
+            background: #f8fafc;
+            border-color: #e5e7eb;
+        }
+
+        .ai-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.95rem;
+            flex-shrink: 0;
+        }
+
+        .ai-icon.red {
+            background: #fef2f2;
+        }
+
+        .ai-icon.yellow {
+            background: #fffbeb;
+        }
+
+        .ai-icon.green {
+            background: #f0fdf4;
+        }
+
+        .ai-icon.blue {
+            background: #eff6ff;
+        }
+
+        .ai-icon.purple {
+            background: #f5f3ff;
+        }
+
+        .ai-text {
+            flex: 1;
+        }
+
+        .ai-text strong {
+            display: block;
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 0.1rem;
+        }
+
+        .ai-text span {
+            font-size: 0.72rem;
+            color: #6b7280;
+            line-height: 1.45;
+        }
+
+        @media (max-width:900px) {
+            .upload-grid {
+                grid-template-columns: 1fr
+            }
+
+            .how-strip {
+                grid-template-columns: repeat(2, 1fr)
+            }
+
+            .how-step::after {
+                display: none
+            }
+        }
+    </style>
 </head>
+
 <body>
     <div id="app-topbar" data-active="dashboard"></div>
     <script src="app-topbar.js"></script>
@@ -17,81 +804,397 @@
     <div class="tool-layout">
         <aside class="tool-sidebar" id="tool-sidebar"></aside>
         <main class="tool-main">
-            <div class="tool-main-inner">
+            <div class="sb-page-inner">
+
                 <div class="tool-bc">
                     <a href="clients.html">Firm</a><span style="color:#d1d5db">›</span>
                     <a href="javascript:goBackToWebView()">GST Workspace</a><span style="color:#d1d5db">›</span>
-                    <span style="color:#374151;font-weight:600">GSTR-1 vs 3B</span>
+                    <span style="color:#374151;font-weight:600">GSTR-1 vs GSTR-3B</span>
                 </div>
-                <div class="tool-page-header">
-                    <h1>⚖️ <span>GSTR-1 vs 3B</span></h1>
-                    <p>Match your GSTR-1 outward supplies with your GSTR-3B summary. Detect tax liability mismatches before filing deadlines.</p>
+
+                <div class="how-strip">
+                    <div class="how-step">
+                        <div class="how-num">1</div>
+                        <div class="how-icon">📤</div>
+                        <div class="how-title">Upload Files</div>
+                        <div class="how-desc">Upload GSTR-1 & GSTR-3B from GST portal</div>
+                    </div>
+                    <div class="how-step">
+                        <div class="how-num">2</div>
+                        <div class="how-icon">🔍</div>
+                        <div class="how-title">Auto-Extract</div>
+                        <div class="how-desc">AI reads tax liability from both files</div>
+                    </div>
+                    <div class="how-step">
+                        <div class="how-num">3</div>
+                        <div class="how-icon">📊</div>
+                        <div class="how-title">Compare</div>
+                        <div class="how-desc">Instant liability variance calculation</div>
+                    </div>
+                    <div class="how-step">
+                        <div class="how-num">4</div>
+                        <div class="how-icon">🎯</div>
+                        <div class="how-title">Action Report</div>
+                        <div class="how-desc">ASMT-10 risk assessment & next steps</div>
+                    </div>
                 </div>
-                <div class="tool-card">
-                    <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> Upload Data</h3>
-                    <p>Upload both files to begin the reconciliation process.</p>
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
-                        <div class="tool-upload" onclick="document.getElementById('gstr1-file').click()">
-                            <div class="t-icon">📈</div>
-                            <div class="t-title">GSTR-1 Data</div>
-                            <div class="t-sub">Click to upload (.xlsx, .csv)</div>
-                            <div class="t-file" id="gstr1-file-name" style="display:none"></div>
+
+                <div class="upload-grid">
+                    <div class="upload-panel">
+                        <div class="up-header green">
+                            <div class="up-icon green">G1</div>
+                            <div>
+                                <div class="up-title">GSTR-1 Data</div>
+                                <div class="up-sub">Outward supply return (detailed sales)</div>
+                            </div>
                         </div>
-                        <div class="tool-upload" onclick="document.getElementById('gstr3b-file').click()">
-                            <div class="t-icon">📊</div>
-                            <div class="t-title">GSTR-3B Data</div>
-                            <div class="t-sub">Click to upload (.xlsx, .csv)</div>
-                            <div class="t-file" id="gstr3b-file-name" style="display:none"></div>
+                        <div class="up-body">
+                            <div class="dropzone" id="dz-g1" onclick="document.getElementById('file-g1').click()"
+                                ondragover="event.preventDefault();this.classList.add('drag-over')"
+                                ondragleave="this.classList.remove('drag-over')"
+                                ondrop="event.preventDefault();this.classList.remove('drag-over');handleFile(event.dataTransfer.files[0],'g1')">
+                                <div class="dz-icon">📋</div>
+                                <div class="dz-title">Drop your GSTR-1 file here</div>
+                                <div class="dz-sub">or <strong>browse files</strong></div>
+                                <div class="dz-formats"><span class="fmt-tag">.xlsx</span><span
+                                        class="fmt-tag">.csv</span><span class="fmt-tag">.json</span></div>
+                                <div class="dz-file" id="dz-file-g1"><span>✓</span><span id="fn-g1"></span></div>
+                            </div>
+                            <input type="file" id="file-g1" accept=".xlsx,.csv,.json" style="display:none"
+                                onchange="handleFile(this.files[0],'g1')">
+                            <div style="text-align:center;margin-top:0.5rem">
+                                <button onclick="event.stopPropagation();pickFromDrive('g1')"
+                                    style="background:none;border:1px solid #e2e8f0;border-radius:8px;padding:0.4rem 0.85rem;font-size:0.75rem;font-weight:600;color:#3b82f6;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:0.35rem;transition:all .15s"
+                                    onmouseover="this.style.background='#eff6ff';this.style.borderColor='#3b82f6'"
+                                    onmouseout="this.style.background='none';this.style.borderColor='#e2e8f0'">📁 Pick
+                                    from Drive</button>
+                            </div>
+                            <div class="extracted-preview" id="preview-g1"></div>
                         </div>
                     </div>
-                    <input type="file" id="gstr1-file" accept=".xlsx,.csv" style="display:none" onchange="updateFileName('f1', this)">
-                    <input type="file" id="gstr3b-file" accept=".xlsx,.csv" style="display:none" onchange="updateFileName('f2', this)">
-                    <div style="margin-top:1.25rem">
-                        <button class="tbtn tbtn-primary" id="reconcile-btn" onclick="startReconciliation()" disabled>⚖️ Start Reconciliation</button>
+
+                    <div class="upload-panel">
+                        <div class="up-header purple">
+                            <div class="up-icon purple">3B</div>
+                            <div>
+                                <div class="up-title">GSTR-3B Data</div>
+                                <div class="up-sub">Summary return — Table 3.1 (Tax liability)</div>
+                            </div>
+                        </div>
+                        <div class="up-body">
+                            <div class="dropzone" id="dz-3b" onclick="document.getElementById('file-3b').click()"
+                                ondragover="event.preventDefault();this.classList.add('drag-over')"
+                                ondragleave="this.classList.remove('drag-over')"
+                                ondrop="event.preventDefault();this.classList.remove('drag-over');handleFile(event.dataTransfer.files[0],'3b')">
+                                <div class="dz-icon">📊</div>
+                                <div class="dz-title">Drop your GSTR-3B file here</div>
+                                <div class="dz-sub">or <strong>browse files</strong></div>
+                                <div class="dz-formats"><span class="fmt-tag">.xlsx</span><span
+                                        class="fmt-tag">.csv</span><span class="fmt-tag">.json</span></div>
+                                <div class="dz-file" id="dz-file-3b"><span>✓</span><span id="fn-3b"></span></div>
+                            </div>
+                            <input type="file" id="file-3b" accept=".xlsx,.csv,.json" style="display:none"
+                                onchange="handleFile(this.files[0],'3b')">
+                            <div style="text-align:center;margin-top:0.5rem">
+                                <button onclick="event.stopPropagation();pickFromDrive('3b')"
+                                    style="background:none;border:1px solid #e2e8f0;border-radius:8px;padding:0.4rem 0.85rem;font-size:0.75rem;font-weight:600;color:#3b82f6;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:0.35rem;transition:all .15s"
+                                    onmouseover="this.style.background='#eff6ff';this.style.borderColor='#3b82f6'"
+                                    onmouseout="this.style.background='none';this.style.borderColor='#e2e8f0'">📁 Pick
+                                    from Drive</button>
+                            </div>
+                            <div class="extracted-preview" id="preview-3b"></div>
+                        </div>
                     </div>
                 </div>
-                <div class="tool-card" id="recent-jobs-container" style="display:none">
-                    <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Recent Jobs</h3>
-                    <p>Track the status of your reconciliation tasks.</p>
-                    <div class="tool-jobs" id="jobs-list"></div>
+
+                <div class="action-bar">
+                    <div class="action-info">
+                        <div style="display:flex;align-items:center;gap:0.5rem">
+                            <span class="ready-dot" id="ready-dot"></span>
+                            <span class="ready-text" id="ready-text">Upload both files to proceed</span>
+                        </div>
+                        <div style="display:flex;gap:0.5rem">
+                            <span class="fi pending" id="fi-g1">📋 G1: Not uploaded</span>
+                            <span class="fi pending" id="fi-3b">📊 3B: Not uploaded</span>
+                        </div>
+                    </div>
+                    <button class="compare-btn" id="compare-btn" onclick="runComparison()" disabled>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                            <polyline points="22 4 12 14.01 9 11.01" />
+                        </svg>
+                        Compare Liability
+                    </button>
+                </div>
+
+                <div class="results-dash" id="results-dash">
+                    <div class="results-title">📋 Tax Liability Reconciliation Results</div>
+                    <div class="risk-card" id="risk-card">
+                        <div class="risk-icon" id="risk-icon"></div>
+                        <div class="risk-body">
+                            <div class="risk-label" id="risk-label"></div>
+                            <div class="risk-heading" id="risk-heading"></div>
+                            <div class="risk-desc" id="risk-desc"></div>
+                        </div>
+                        <div class="risk-amount">
+                            <div class="ra-num" id="risk-num"></div>
+                            <div class="ra-pct" id="risk-pct"></div>
+                        </div>
+                    </div>
+                    <div class="var-table-wrap">
+                        <table class="var-table">
+                            <thead>
+                                <tr>
+                                    <th>Tax Component</th>
+                                    <th>GSTR-1 (Outward)</th>
+                                    <th>GSTR-3B (Liability)</th>
+                                    <th>Variance (G1 − 3B)</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="var-tbody"></tbody>
+                            <tfoot id="var-tfoot"></tfoot>
+                        </table>
+                    </div>
+                    <div class="chart-panel">
+                        <h3>📊 Visual Comparison</h3>
+                        <div class="chart-legend"><span><span class="dot dot-g1"></span> GSTR-1
+                                (Outward)</span><span><span class="dot dot-3b"></span> GSTR-3B (Liability)</span></div>
+                        <div class="bar-group" id="bar-group"></div>
+                    </div>
+                    <div class="actions-panel">
+                        <h3>🎯 Recommended Actions</h3>
+                        <div id="action-items"></div>
+                    </div>
                 </div>
             </div>
         </main>
     </div>
+    <div class="tool-toast" id="toast"></div>
+
     <script src="tool-sidebar.js"></script>
     <script src="api_config.js?v=2"></script>
     <script src="session-manager.js"></script>
+    <script src="drive-picker.js"></script>
     <script>
         renderToolSidebar('gstr1-vs-3b');
-        let file1=null,file2=null;
-        function updateFileName(type,input){
-            if(!input.files.length)return;
-            if(type==='f1'){file1=input.files[0];const el=document.getElementById('gstr1-file-name');el.textContent='📎 '+file1.name;el.style.display='';input.closest('.tool-upload').classList.add('has-file');}
-            else{file2=input.files[0];const el=document.getElementById('gstr3b-file-name');el.textContent='📎 '+file2.name;el.style.display='';input.closest('.tool-upload').classList.add('has-file');}
-            document.getElementById('reconcile-btn').disabled=!(file1&&file2);
+        let fileG1 = null, file3B = null, lastResult = null;
+        function fmt(n) { return '₹' + Math.abs(n).toLocaleString('en-IN', { maximumFractionDigits: 0 }); }
+
+        // ═══ AUTH FETCH ═══
+        async function authFetch(path, opts = {}) {
+            const token = localStorage.getItem('access_token');
+            opts.headers = { ...(opts.headers || {}), 'Authorization': `Bearer ${token}` };
+            return fetch(API_BASE_URL + path, opts);
         }
-        async function startReconciliation(){
-            const btn=document.getElementById('reconcile-btn');btn.disabled=true;btn.innerHTML='<span class="tool-spinner"></span> Processing...';
-            try{
-                const token=localStorage.getItem('access_token');const params=new URLSearchParams(window.location.search);const clientId=params.get('clientId');const fileKeys=[];
-                for(const file of[file1,file2]){const fd=new FormData();fd.append('file',file);const res=await fetch(`${API_BASE_URL}/jobs/upload`,{method:'POST',headers:{'Authorization':`Bearer ${token}`},body:fd});if(res.ok){const d=await res.json();fileKeys.push(d.file_key||d.file_path);}}
-                const jobRes=await fetch(`${API_BASE_URL}/jobs/`,{method:'POST',headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'},body:JSON.stringify({job_type:'gstr1_vs_3b',input_files:fileKeys,client_id:clientId})});
-                if(jobRes.ok){alert('Reconciliation job started!');loadJobs();}else{const err=await jobRes.json();alert('Failed: '+(err.detail||'Unknown error'));}
-            }catch(err){console.error(err);alert('Error: '+err.message);}
-            finally{btn.disabled=false;btn.textContent='⚖️ Start Reconciliation';}
+
+        // ═══ FILE HANDLING ═══
+        function handleFile(file, type) {
+            if (!file) return;
+            const dz = document.getElementById(`dz-${type}`);
+            const dzFile = document.getElementById(`dz-file-${type}`);
+            const fnEl = document.getElementById(`fn-${type}`);
+            const fi = document.getElementById(`fi-${type}`);
+            dz.classList.add('has-file'); dzFile.classList.add('visible'); fnEl.textContent = file.name;
+            fi.className = 'fi done';
+            fi.textContent = (type === 'g1' ? '📋 G1: ✓ ' : '📊 3B: ✓ ') + file.name;
+
+            if (type === 'g1') fileG1 = file;
+            else file3B = file;
+
+            checkReady();
+            showToast(`${file.name} selected`, 'success');
         }
-        let pollingInterval=null;
-        async function loadJobs(){
-            const params=new URLSearchParams(window.location.search);const clientId=params.get('clientId');if(!clientId)return;
-            try{const res=await authFetch(`/jobs/?skip=0&limit=50&client_id=${clientId}`);if(res.ok){const jobs=await res.json();const taskJobs=jobs.filter(j=>j.job_type==='gstr1_vs_3b');if(taskJobs.length>0){document.getElementById('recent-jobs-container').style.display='block';renderJobs(taskJobs);const hasIP=taskJobs.some(j=>j.status==='QUEUED'||j.status==='PROCESSING');if(hasIP&&!pollingInterval)pollingInterval=setInterval(loadJobs,5000);else if(!hasIP&&pollingInterval){clearInterval(pollingInterval);pollingInterval=null;}}}}catch(e){console.error(e)}
+
+        function pickFromDrive(type) {
+            const params = new URLSearchParams(window.location.search);
+            const cid = params.get('clientId');
+            if (!cid) { showToast('No client context — open from client workspace', 'error'); return; }
+            openDrivePicker({
+                clientId: cid,
+                accept: ['.xlsx', '.csv', '.json'],
+                onSelect: (file) => handleFile(file, type)
+            });
         }
-        function renderJobs(jobs){
-            document.getElementById('jobs-list').innerHTML=jobs.map(job=>{const date=new Date(job.created_at).toLocaleString();return `<div class="tool-job"><div class="tool-job-info"><span class="tool-job-name">GSTR-1 vs GSTR-3B Reconciliation</span><span class="tool-job-meta">Created: ${date}</span></div><div style="display:flex;align-items:center;gap:.75rem"><span class="tool-job-status tj-${job.status.toLowerCase()}">${job.status}</span>${job.status==='COMPLETED'?`<button class="tbtn tbtn-download" onclick="downloadJobFile('${job.id}')">⬇ Download</button>`:''}</div></div>`;}).join('');
+
+        function checkReady() {
+            const btn = document.getElementById('compare-btn');
+            const dot = document.getElementById('ready-dot');
+            const text = document.getElementById('ready-text');
+            if (fileG1 && file3B) {
+                btn.disabled = false;
+                dot.classList.add('active');
+                text.textContent = 'Ready to compare';
+                text.classList.add('active');
+            }
         }
-        async function downloadJobFile(jobId){
-            try{const response=await authFetch(`/jobs/${jobId}/download`);if(!response.ok){alert('Download failed');return;}const blob=await response.blob();const url=window.URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`GSTR1_vs_3B_Report_${jobId.substring(0,8)}.xlsx`;document.body.appendChild(a);a.click();window.URL.revokeObjectURL(url);document.body.removeChild(a);}catch(e){console.error(e);alert('Error downloading file');}
+
+        // ═══ RUN COMPARISON — Backend call ═══
+        async function runComparison() {
+            if (!fileG1 || !file3B) return;
+
+            const btn = document.getElementById('compare-btn');
+            btn.disabled = true;
+            btn.innerHTML = '⏳ Comparing...';
+
+            try {
+                const formData = new FormData();
+                formData.append('file1', fileG1);
+                formData.append('file2', file3B);
+
+                const params = new URLSearchParams(window.location.search);
+                const clientId = params.get('clientId');
+                if (clientId) formData.append('client_id', clientId);
+
+                const res = await authFetch('/reconciliation/gstr1-vs-3b', {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                if (!res.ok) {
+                    const err = await res.json();
+                    throw new Error(err.detail || 'Reconciliation failed');
+                }
+
+                const data = await res.json();
+                lastResult = data;
+
+                renderResults(data);
+                showToast('Liability comparison complete!', 'success');
+            } catch (e) {
+                console.error(e);
+                showToast('Error: ' + e.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Compare Liability`;
+            }
         }
-        loadJobs();
+
+        // ═══ RENDER RESULTS ═══
+        function renderResults(data) {
+            const COMPS = ['igst', 'cgst', 'sgst', 'cess'];
+            const labels = { igst: 'IGST', cgst: 'CGST', sgst: 'SGST/UTGST', cess: 'Cess' };
+            const icons = { igst: '🔵', cgst: '🟢', sgst: '🟠', cess: '🟣' };
+
+            const g1 = data.gstr1_totals;
+            const g3b = data.gstr3b_totals;
+            const variance = data.variance;
+            const totalG1 = data.total_tax_g1;
+            const total3B = data.total_tax_3b;
+            const totalVar = data.total_variance;
+            const pct = data.variance_pct;
+
+            // Variance table
+            let tbody = '';
+            COMPS.forEach(c => {
+                const v = variance[c] || 0;
+                const cls = v > 1 ? 'v-pos' : v < -1 ? 'v-neg' : 'v-ok';
+                const status = v > 1 ? '🔴 Under-declared' : v < -1 ? '💸 Over-declared' : '✅ Matched';
+                tbody += `<tr>
+                    <td>${icons[c]} ${labels[c]}</td>
+                    <td>${fmt(g1[c] || 0)}</td>
+                    <td>${fmt(g3b[c] || 0)}</td>
+                    <td class="${cls}">${v >= 0 ? '+' : '-'}${fmt(v)}</td>
+                    <td style="font-size:0.75rem">${status}</td>
+                </tr>`;
+            });
+            document.getElementById('var-tbody').innerHTML = tbody;
+            document.getElementById('var-tfoot').innerHTML = `<tr>
+                <td><strong>TOTAL</strong></td>
+                <td><strong>${fmt(totalG1)}</strong></td>
+                <td><strong>${fmt(total3B)}</strong></td>
+                <td class="${totalVar > 1 ? 'v-pos' : totalVar < -1 ? 'v-neg' : 'v-ok'}"><strong>${totalVar >= 0 ? '+' : '-'}${fmt(totalVar)}</strong></td>
+                <td style="font-size:0.72rem;font-weight:700">${pct}%</td>
+            </tr>`;
+
+            // Risk card
+            const risk = data.risk;
+            const riskLevel = risk.level === 'perfect' ? 'low' : risk.level;
+            document.getElementById('risk-card').className = `risk-card ${riskLevel}`;
+            document.getElementById('risk-icon').textContent = risk.icon;
+            document.getElementById('risk-label').className = `risk-label ${riskLevel}`;
+            document.getElementById('risk-label').textContent = (risk.level || 'LOW').toUpperCase() + ' RISK';
+            document.getElementById('risk-heading').textContent = risk.heading;
+            document.getElementById('risk-desc').textContent = risk.description;
+
+            const numClass = totalVar > 0 ? 'over' : totalVar < 0 ? 'under' : 'ok';
+            document.getElementById('risk-num').className = `ra-num ${numClass}`;
+            document.getElementById('risk-num').textContent = (totalVar >= 0 ? '+' : '-') + fmt(totalVar);
+            document.getElementById('risk-pct').textContent = pct + '% variance';
+
+            // Bar chart
+            const maxVal = Math.max(totalG1, total3B, 1);
+            document.getElementById('bar-group').innerHTML = COMPS.map(c => {
+                const g1v = g1[c] || 0, g3bv = g3b[c] || 0;
+                return `<div class="bar-row"><div class="bar-label">${labels[c]}</div><div class="bar-track">
+                    <div class="bar-line bar-g1" style="width:${Math.max(g1v / maxVal * 100, g1v > 0 ? 3 : 0)}%">${g1v > 0 ? `<span class="bar-val">${fmt(g1v)}</span>` : ''}</div>
+                    <div class="bar-line bar-3b" style="width:${Math.max(g3bv / maxVal * 100, g3bv > 0 ? 3 : 0)}%">${g3bv > 0 ? `<span class="bar-val">${fmt(g3bv)}</span>` : ''}</div>
+                </div></div>`;
+            }).join('');
+
+            // Actions
+            const colorMap = { red: '#fee2e2', yellow: '#fef9c3', blue: '#dbeafe', green: '#dcfce7', purple: '#f3e8ff' };
+            document.getElementById('action-items').innerHTML = data.actions.map(a => `
+                <div class="action-item">
+                    <div class="ai-icon ${a.color}">${a.icon}</div>
+                    <div class="ai-text">
+                        <strong>${a.title}</strong>
+                        <span>${a.description}</span>
+                    </div>
+                </div>
+            `).join('');
+
+            // Download button (add if not exists)
+            if (!document.getElementById('download-report-btn')) {
+                const actionsPanel = document.querySelector('.actions-panel');
+                if (actionsPanel) {
+                    const dlBtn = document.createElement('button');
+                    dlBtn.id = 'download-report-btn';
+                    dlBtn.className = 'compare-btn';
+                    dlBtn.style.cssText = 'margin-top:1rem;background:linear-gradient(135deg,#1e40af,#3b82f6);';
+                    dlBtn.innerHTML = '📥 Download Excel Report';
+                    dlBtn.onclick = downloadReport;
+                    actionsPanel.appendChild(dlBtn);
+                }
+            }
+
+            document.getElementById('results-dash').classList.add('visible');
+            document.getElementById('results-dash').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // ═══ DOWNLOAD ═══
+        async function downloadReport() {
+            if (!lastResult || !lastResult.job_id) return;
+            try {
+                const res = await authFetch(`/jobs/${lastResult.job_id}/download`);
+                if (!res.ok) { showToast('Download failed', 'error'); return; }
+                const blob = await res.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url; a.download = 'GSTR1_vs_3B_Report.xlsx';
+                document.body.appendChild(a); a.click();
+                window.URL.revokeObjectURL(url); document.body.removeChild(a);
+                showToast('Report downloaded!', 'success');
+            } catch (e) { console.error(e); showToast('Download error', 'error'); }
+        }
+
+        // ═══ NAVIGATION ═══
+        function goBackToWebView() {
+            const params = new URLSearchParams(window.location.search);
+            const clientId = params.get('clientId');
+            if (clientId) window.location.href = `file-gst-refund.html?clientId=${clientId}&section=gst-recon`;
+            else window.location.href = 'file-gst-refund.html?section=gst-recon';
+        }
+
+        // ═══ TOAST ═══
+        function showToast(msg, type) {
+            const t = document.getElementById('toast');
+            t.textContent = (type === 'success' ? '✓ ' : '✕ ') + msg;
+            t.className = 'tool-toast ' + type; t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 3000);
+        }
     </script>
 </body>
+
 </html>

@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notice Management — ComplianceAI Expert</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="notice-management.css">
+</head>
+
+<body>
+    <div id="app-topbar" data-active="notices"></div>
+    <script src="app-topbar.js"></script>
+
+    <div class="nm-layout">
+        <aside class="nm-sidebar">
+            <div id="app-sidebar-main" data-active="notices"></div>
+            <script src="app-sidebar.js"></script>
+            <div class="sb-section">
+                <div class="sb-section-label">Authorities</div>
+                <a href="#" class="sb-item active" onclick="event.preventDefault();filterByAuthority('all',this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7" rx="1" />
+                        <rect x="14" y="3" width="7" height="7" rx="1" />
+                        <rect x="3" y="14" width="7" height="7" rx="1" />
+                        <rect x="14" y="14" width="7" height="7" rx="1" />
+                    </svg>
+                    All Notices
+                    <span class="sb-badge" id="sb-all-count">0</span>
+                </a>
+                <a href="#" class="sb-item" onclick="event.preventDefault();filterByAuthority('gst',this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="1" x2="12" y2="23" />
+                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                    </svg>
+                    GST Notices
+                </a>
+                <a href="#" class="sb-item" onclick="event.preventDefault();filterByAuthority('income-tax',this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
+                        <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+                    </svg>
+                    Income Tax
+                </a>
+                <a href="#" class="sb-item" onclick="event.preventDefault();filterByAuthority('tds',this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                        <polyline points="14 2 14 8 20 8" />
+                    </svg>
+                    TDS / TCS
+                </a>
+                <a href="#" class="sb-item" onclick="event.preventDefault();filterByAuthority('roc',this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 21h18" />
+                        <path d="M3 7v1a3 3 0 0 0 6 0V7m0 1a3 3 0 0 0 6 0V7m0 1a3 3 0 0 0 6 0V7H3l2-4h14l2 4" />
+                    </svg>
+                    ROC / MCA
+                </a>
+                <a href="#" class="sb-item" onclick="event.preventDefault();filterByAuthority('customs',this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10" />
+                        <line x1="2" y1="12" x2="22" y2="12" />
+                        <path
+                            d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                    </svg>
+                    Customs / FEMA
+                </a>
+            </div>
+            <div class="sb-divider"></div>
+            <div class="sb-section">
+                <div class="sb-section-label">Quick Filters</div>
+                <a href="#" class="sb-item" onclick="event.preventDefault();filterByStatus('overdue',this)">
+                    🔴 Overdue
+                </a>
+                <a href="#" class="sb-item" onclick="event.preventDefault();filterByStatus('due-soon',this)">
+                    🟡 Due in 7 Days
+                </a>
+                <a href="#" class="sb-item" onclick="event.preventDefault();filterByStatus('responded',this)">
+                    🟢 Responded
+                </a>
+            </div>
+        </aside>
+
+        <main class="nm-main">
+            <div class="nm-breadcrumb">
+                <a href="clients.html">Firm</a><span class="sep">›</span>
+                <span style="color:#374151;font-weight:600">Notice Management</span>
+            </div>
+
+            <div class="nm-header">
+                <div class="nm-header-left">
+                    <h1>📋 Notice <span>Management</span></h1>
+                    <p>Track, respond to, and manage all regulatory notices across GST, Income Tax, TDS, ROC, and more —
+                        with AI-powered response drafting and deadline alerts.</p>
+                </div>
+                <div class="nm-header-actions">
+                    <button class="nm-btn nm-btn-outline" onclick="openImportModal()">📥 Import Notice</button>
+                    <button class="nm-btn nm-btn-primary" onclick="openAddNoticeModal()">+ Add Notice</button>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="nm-stats">
+                <div class="nm-stat">
+                    <div class="nm-stat-icon" style="background:#eff6ff;color:#3b82f6">📋</div>
+                    <div>
+                        <div class="nm-stat-num" id="stat-total">0</div>
+                        <div class="nm-stat-label">Total Notices</div>
+                    </div>
+                </div>
+                <div class="nm-stat">
+                    <div class="nm-stat-icon" style="background:#fef3c7;color:#d97706">⏳</div>
+                    <div>
+                        <div class="nm-stat-num" id="stat-pending">0</div>
+                        <div class="nm-stat-label">Pending Response</div>
+                    </div>
+                </div>
+                <div class="nm-stat urgent">
+                    <div class="nm-stat-icon" style="background:#fee2e2;color:#dc2626">🚨</div>
+                    <div>
+                        <div class="nm-stat-num" id="stat-overdue">0</div>
+                        <div class="nm-stat-label">Overdue</div>
+                    </div>
+                </div>
+                <div class="nm-stat">
+                    <div class="nm-stat-icon" style="background:#ecfdf5;color:#059669">✅</div>
+                    <div>
+                        <div class="nm-stat-num" id="stat-responded">0</div>
+                        <div class="nm-stat-label">Responded</div>
+                    </div>
+                </div>
+                <div class="nm-stat">
+                    <div class="nm-stat-icon" style="background:#f5f3ff;color:#7c3aed">🤖</div>
+                    <div>
+                        <div class="nm-stat-num" id="stat-ai">AI</div>
+                        <div class="nm-stat-label">Draft Ready</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Features Banner -->
+            <div class="nm-ai-banner">
+                <div class="nm-ai-left">
+                    <div class="nm-ai-icon">🤖</div>
+                    <div>
+                        <h3>AI-Powered Notice Intelligence</h3>
+                        <p>Auto-classify notices, extract deadlines, draft responses using legal precedents, and get
+                            risk assessment — all powered by ComplianceAI.</p>
+                    </div>
+                </div>
+                <div class="nm-ai-features">
+                    <span class="nm-ai-chip">📖 Auto-Classification</span>
+                    <span class="nm-ai-chip">⏰ Deadline Extraction</span>
+                    <span class="nm-ai-chip">✍️ Response Drafting</span>
+                    <span class="nm-ai-chip">⚖️ Risk Assessment</span>
+                </div>
+            </div>
+
+            <!-- Upcoming Deadlines -->
+            <div class="nm-section-label">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10" />
+                    <polyline points="12 6 12 12 16 14" />
+                </svg>
+                Upcoming Deadlines
+            </div>
+            <div class="nm-timeline" id="deadlines-timeline">
+                <div class="nm-tl-item overdue">
+                    <div class="nm-tl-date"><span class="nm-tl-day">05</span><span class="nm-tl-month">Mar</span></div>
+                    <div class="nm-tl-dot"></div>
+                    <div class="nm-tl-card">
+                        <div class="nm-tl-header">
+                            <span class="nm-tag tag-gst">GST</span>
+                            <span class="nm-tag tag-overdue">OVERDUE</span>
+                        </div>
+                        <h4>Show Cause Notice — ASMT-10</h4>
+                        <p>M/s Sharma Enterprises • Mismatch in GSTR-3B vs GSTR-1 for FY 2023-24</p>
+                        <div class="nm-tl-actions">
+                            <button class="nm-btn-sm" onclick="openAiDraft('gst-asmt10')">🤖 AI Draft</button>
+                            <button class="nm-btn-sm outline">📎 View Notice</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="nm-tl-item due-soon">
+                    <div class="nm-tl-date"><span class="nm-tl-day">12</span><span class="nm-tl-month">Mar</span></div>
+                    <div class="nm-tl-dot"></div>
+                    <div class="nm-tl-card">
+                        <div class="nm-tl-header">
+                            <span class="nm-tag tag-it">Income Tax</span>
+                            <span class="nm-tag tag-due-soon">DUE IN 4 DAYS</span>
+                        </div>
+                        <h4>Scrutiny Notice u/s 143(2)</h4>
+                        <p>Rajesh Kumar (HUF) • AY 2023-24 — Details of capital gains and deductions u/s 80C</p>
+                        <div class="nm-tl-actions">
+                            <button class="nm-btn-sm" onclick="openAiDraft('it-143')">🤖 AI Draft</button>
+                            <button class="nm-btn-sm outline">📎 View Notice</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="nm-tl-item">
+                    <div class="nm-tl-date"><span class="nm-tl-day">20</span><span class="nm-tl-month">Mar</span></div>
+                    <div class="nm-tl-dot"></div>
+                    <div class="nm-tl-card">
+                        <div class="nm-tl-header">
+                            <span class="nm-tag tag-tds">TDS</span>
+                            <span class="nm-tag tag-pending">PENDING</span>
+                        </div>
+                        <h4>Intimation u/s 200A — TDS Mismatch</h4>
+                        <p>ABC Pvt Ltd • Q2 FY 2024-25 — Short deduction demand of ₹24,500</p>
+                        <div class="nm-tl-actions">
+                            <button class="nm-btn-sm" onclick="openAiDraft('tds-200a')">🤖 AI Draft</button>
+                            <button class="nm-btn-sm outline">📎 View Notice</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="nm-tl-item">
+                    <div class="nm-tl-date"><span class="nm-tl-day">28</span><span class="nm-tl-month">Mar</span></div>
+                    <div class="nm-tl-dot"></div>
+                    <div class="nm-tl-card">
+                        <div class="nm-tl-header">
+                            <span class="nm-tag tag-roc">ROC</span>
+                            <span class="nm-tag tag-pending">PENDING</span>
+                        </div>
+                        <h4>Notice for Non-Filing of Annual Return</h4>
+                        <p>XYZ Solutions LLP • FY 2023-24 — Form 11 not filed within due date</p>
+                        <div class="nm-tl-actions">
+                            <button class="nm-btn-sm" onclick="openAiDraft('roc-annual')">🤖 AI Draft</button>
+                            <button class="nm-btn-sm outline">📎 View Notice</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- All Notices Table -->
+            <div class="nm-section-label" style="margin-top:2rem">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                    <polyline points="14 2 14 8 20 8" />
+                </svg>
+                All Notices
+            </div>
+            <div class="nm-table-card">
+                <div class="nm-filter-bar">
+                    <input type="text" class="nm-search" id="notice-search"
+                        placeholder="Search by client, notice type, section…" oninput="filterNotices()">
+                    <select class="nm-select" id="filter-authority" onchange="filterNotices()">
+                        <option value="">All Authorities</option>
+                        <option value="gst">GST</option>
+                        <option value="income-tax">Income Tax</option>
+                        <option value="tds">TDS / TCS</option>
+                        <option value="roc">ROC / MCA</option>
+                        <option value="customs">Customs / FEMA</option>
+                    </select>
+                    <select class="nm-select" id="filter-status" onchange="filterNotices()">
+                        <option value="">All Status</option>
+                        <option value="overdue">Overdue</option>
+                        <option value="pending">Pending</option>
+                        <option value="in-progress">In Progress</option>
+                        <option value="responded">Responded</option>
+                        <option value="closed">Closed</option>
+                    </select>
+                    <select class="nm-select" id="filter-priority" onchange="filterNotices()">
+                        <option value="">All Priority</option>
+                        <option value="critical">🔴 Critical</option>
+                        <option value="high">🟠 High</option>
+                        <option value="medium">🟡 Medium</option>
+                        <option value="low">🟢 Low</option>
+                    </select>
+                </div>
+                <div class="nm-table-wrap">
+                    <table class="nm-table">
+                        <thead>
+                            <tr>
+                                <th>Notice</th>
+                                <th>Client</th>
+                                <th>Authority</th>
+                                <th>Section</th>
+                                <th>Due Date</th>
+                                <th>Priority</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="notices-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Notice Type Cards -->
+            <div class="nm-section-label" style="margin-top:2rem">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon
+                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                </svg>
+                Common Notice Types in India
+            </div>
+            <div class="nm-types-grid">
+                <div class="nm-type-card">
+                    <div class="nm-type-icon" style="background:#eff6ff">💰</div>
+                    <h4>GST Show Cause (ASMT-10)</h4>
+                    <p>Discrepancy notices for GSTR-1 vs 3B mismatch, ITC reversal, or non-filing</p>
+                </div>
+                <div class="nm-type-card">
+                    <div class="nm-type-icon" style="background:#fef3c7">📋</div>
+                    <h4>IT Scrutiny u/s 143(2)</h4>
+                    <p>Detailed scrutiny of income tax returns — document submission required</p>
+                </div>
+                <div class="nm-type-card">
+                    <div class="nm-type-icon" style="background:#ecfdf5">🔔</div>
+                    <h4>Intimation u/s 143(1)</h4>
+                    <p>CPC processed return with adjustments — demand or refund intimation</p>
+                </div>
+                <div class="nm-type-card">
+                    <div class="nm-type-icon" style="background:#fee2e2">⚠️</div>
+                    <h4>Demand Notice u/s 156</h4>
+                    <p>Tax demand raised after assessment — requires payment or appeal</p>
+                </div>
+                <div class="nm-type-card">
+                    <div class="nm-type-icon" style="background:#f5f3ff">📑</div>
+                    <h4>TDS Default (200A / 201)</h4>
+                    <p>Short deduction, late filing penalty, or interest on TDS defaults</p>
+                </div>
+                <div class="nm-type-card">
+                    <div class="nm-type-icon" style="background:#fdf2f8">🏢</div>
+                    <h4>ROC Non-Compliance</h4>
+                    <p>Penalty for annual return delay, AOC-4/MGT-7 non-filing</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add Notice Modal -->
+    <div class="nm-modal-overlay" id="add-notice-modal" style="display:none"
+        onclick="if(event.target===this)closeAddNoticeModal()">
+        <div class="nm-modal">
+            <div class="nm-modal-header">
+                <h2>Add New Notice</h2>
+                <button class="nm-modal-close" onclick="closeAddNoticeModal()">✕</button>
+            </div>
+            <div class="nm-modal-body">
+                <div class="nm-form-row">
+                    <div class="nm-form-group">
+                        <label>Authority</label>
+                        <select id="new-authority" class="nm-input">
+                            <option value="gst">GST</option>
+                            <option value="income-tax">Income Tax</option>
+                            <option value="tds">TDS / TCS</option>
+                            <option value="roc">ROC / MCA</option>
+                            <option value="customs">Customs / FEMA</option>
+                        </select>
+                    </div>
+                    <div class="nm-form-group">
+                        <label>Notice Type</label>
+                        <select id="new-type" class="nm-input">
+                            <option>Show Cause Notice</option>
+                            <option>Scrutiny Notice</option>
+                            <option>Demand Notice</option>
+                            <option>Intimation</option>
+                            <option>Penalty Notice</option>
+                            <option>Best Judgment Assessment</option>
+                            <option>Reassessment Notice</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="nm-form-row">
+                    <div class="nm-form-group">
+                        <label>Section / Rule</label>
+                        <input type="text" class="nm-input" id="new-section" placeholder="e.g. 143(2), 73, 74, ASMT-10">
+                    </div>
+                    <div class="nm-form-group">
+                        <label>Client</label>
+                        <select id="new-client" class="nm-input">
+                            <option>Select Client…</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="nm-form-row">
+                    <div class="nm-form-group">
+                        <label>Notice Date</label>
+                        <input type="date" class="nm-input" id="new-date">
+                    </div>
+                    <div class="nm-form-group">
+                        <label>Response Due Date</label>
+                        <input type="date" class="nm-input" id="new-due-date">
+                    </div>
+                </div>
+                <div class="nm-form-row">
+                    <div class="nm-form-group">
+                        <label>Priority</label>
+                        <select id="new-priority" class="nm-input">
+                            <option value="critical">🔴 Critical</option>
+                            <option value="high">🟠 High</option>
+                            <option value="medium" selected>🟡 Medium</option>
+                            <option value="low">🟢 Low</option>
+                        </select>
+                    </div>
+                    <div class="nm-form-group">
+                        <label>Demand Amount (₹)</label>
+                        <input type="number" class="nm-input" id="new-amount" placeholder="0">
+                    </div>
+                </div>
+                <div class="nm-form-group" style="width:100%">
+                    <label>Description / Subject</label>
+                    <textarea class="nm-input" id="new-desc" rows="3"
+                        placeholder="Brief description of the notice…"></textarea>
+                </div>
+                <div class="nm-form-group" style="width:100%">
+                    <label>Upload Notice Document</label>
+                    <div class="nm-upload-zone" onclick="document.getElementById('notice-file').click()">
+                        <span>📄</span> Click to upload PDF / Image
+                        <input type="file" id="notice-file" accept=".pdf,.jpg,.jpeg,.png" style="display:none">
+                    </div>
+                </div>
+            </div>
+            <div class="nm-modal-footer">
+                <button class="nm-btn nm-btn-outline" onclick="closeAddNoticeModal()">Cancel</button>
+                <button class="nm-btn nm-btn-primary" onclick="saveNotice()">Save Notice</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="api_config.js"></script>
+    <script src="session-manager.js?v=2"></script>
+    <script>
+        if (!requireAuth()) { }
+
+        // Demo data
+        const demoNotices = [
+            { id: 1, type: 'Show Cause Notice', authority: 'gst', section: 'ASMT-10', client: 'Sharma Enterprises', dueDate: '2026-03-05', priority: 'critical', status: 'overdue', amount: 450000, desc: 'GSTR-3B vs GSTR-1 mismatch FY 2023-24' },
+            { id: 2, type: 'Scrutiny Notice', authority: 'income-tax', section: '143(2)', client: 'Rajesh Kumar (HUF)', dueDate: '2026-03-12', priority: 'high', status: 'pending', amount: 0, desc: 'Capital gains and 80C deductions AY 2023-24' },
+            { id: 3, type: 'Intimation', authority: 'tds', section: '200A', client: 'ABC Pvt Ltd', dueDate: '2026-03-20', priority: 'medium', status: 'pending', amount: 24500, desc: 'Short deduction demand Q2 FY 2024-25' },
+            { id: 4, type: 'Non-Filing Notice', authority: 'roc', section: 'Form 11', client: 'XYZ Solutions LLP', dueDate: '2026-03-28', priority: 'medium', status: 'pending', amount: 10000, desc: 'Annual return not filed for FY 2023-24' },
+            { id: 5, type: 'Demand Notice', authority: 'income-tax', section: '156', client: 'Priya Industries', dueDate: '2026-02-15', priority: 'critical', status: 'overdue', amount: 875000, desc: 'Demand raised after assessment AY 2022-23' },
+            { id: 6, type: 'DRC-01', authority: 'gst', section: '73', client: 'Global Exports', dueDate: '2026-04-10', priority: 'high', status: 'in-progress', amount: 320000, desc: 'ITC wrongly availed — reversal demanded' },
+            { id: 7, type: 'Scrutiny Notice', authority: 'income-tax', section: '143(2)', client: 'Mehta & Sons', dueDate: '2026-01-20', priority: 'high', status: 'responded', amount: 0, desc: 'Business expenditure verification AY 2023-24' },
+            { id: 8, type: 'Show Cause Notice', authority: 'customs', section: '28', client: 'Indo-Pacific Trading', dueDate: '2026-04-05', priority: 'medium', status: 'pending', amount: 145000, desc: 'Customs duty short payment on imports' },
+        ];
+
+        function init() {
+            renderNoticesTable(demoNotices);
+            updateStats(demoNotices);
+            loadClientsDropdown();
+        }
+
+        function updateStats(notices) {
+            document.getElementById('stat-total').textContent = notices.length;
+            document.getElementById('stat-pending').textContent = notices.filter(n => n.status === 'pending' || n.status === 'in-progress').length;
+            document.getElementById('stat-overdue').textContent = notices.filter(n => n.status === 'overdue').length;
+            document.getElementById('stat-responded').textContent = notices.filter(n => n.status === 'responded' || n.status === 'closed').length;
+            document.getElementById('sb-all-count').textContent = notices.length;
+        }
+
+        function renderNoticesTable(notices) {
+            const tbody = document.getElementById('notices-tbody');
+            const authorityLabels = { 'gst': 'GST', 'income-tax': 'Income Tax', 'tds': 'TDS/TCS', 'roc': 'ROC/MCA', 'customs': 'Customs' };
+            const authorityColors = { 'gst': '#3b82f6', 'income-tax': '#f59e0b', 'tds': '#8b5cf6', 'roc': '#10b981', 'customs': '#ec4899' };
+            const statusLabels = { 'overdue': 'Overdue', 'pending': 'Pending', 'in-progress': 'In Progress', 'responded': 'Responded', 'closed': 'Closed' };
+            const statusClasses = { 'overdue': 'st-overdue', 'pending': 'st-pending', 'in-progress': 'st-progress', 'responded': 'st-responded', 'closed': 'st-closed' };
+            const priorityIcons = { 'critical': '🔴', 'high': '🟠', 'medium': '🟡', 'low': '🟢' };
+
+            tbody.innerHTML = notices.map(n => {
+                const dueDate = new Date(n.dueDate);
+                const isOverdue = dueDate < new Date() && n.status !== 'responded' && n.status !== 'closed';
+                const effectiveStatus = isOverdue ? 'overdue' : n.status;
+                const amountStr = n.amount ? '₹' + n.amount.toLocaleString('en-IN') : '—';
+                return `<tr>
+                    <td><div class="nm-notice-name">${n.type}</div><div class="nm-notice-desc">${n.desc}</div></td>
+                    <td><strong>${n.client}</strong></td>
+                    <td><span class="nm-auth-tag" style="background:${authorityColors[n.authority]}15;color:${authorityColors[n.authority]};border:1px solid ${authorityColors[n.authority]}30">${authorityLabels[n.authority]}</span></td>
+                    <td><code>${n.section}</code></td>
+                    <td>${dueDate.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</td>
+                    <td>${priorityIcons[n.priority]} ${n.priority.charAt(0).toUpperCase() + n.priority.slice(1)}</td>
+                    <td><span class="nm-status ${statusClasses[effectiveStatus]}">${statusLabels[effectiveStatus]}</span></td>
+                    <td>
+                        <button class="nm-btn-sm" onclick="openAiDraft('${n.id}')" title="AI Draft Response">🤖</button>
+                        <button class="nm-btn-sm outline" title="View Details">👁️</button>
+                    </td>
+                </tr>`;
+            }).join('');
+        }
+
+        function filterNotices() {
+            const search = document.getElementById('notice-search').value.toLowerCase();
+            const auth = document.getElementById('filter-authority').value;
+            const status = document.getElementById('filter-status').value;
+            const priority = document.getElementById('filter-priority').value;
+            let filtered = demoNotices.filter(n => {
+                if (search && !(n.client.toLowerCase().includes(search) || n.type.toLowerCase().includes(search) || n.section.toLowerCase().includes(search) || n.desc.toLowerCase().includes(search))) return false;
+                if (auth && n.authority !== auth) return false;
+                if (status && n.status !== status) return false;
+                if (priority && n.priority !== priority) return false;
+                return true;
+            });
+            renderNoticesTable(filtered);
+        }
+
+        function filterByAuthority(auth, el) {
+            document.querySelectorAll('.nm-sidebar .sb-item').forEach(i => i.classList.remove('active'));
+            el.classList.add('active');
+            document.getElementById('filter-authority').value = auth === 'all' ? '' : auth;
+            filterNotices();
+        }
+
+        function filterByStatus(status, el) {
+            document.querySelectorAll('.nm-sidebar .sb-item').forEach(i => i.classList.remove('active'));
+            el.classList.add('active');
+            document.getElementById('filter-status').value = status === 'overdue' ? 'overdue' : status === 'due-soon' ? 'pending' : 'responded';
+            filterNotices();
+        }
+
+        function openAddNoticeModal() { document.getElementById('add-notice-modal').style.display = 'flex'; }
+        function closeAddNoticeModal() { document.getElementById('add-notice-modal').style.display = 'none'; }
+        function openImportModal() { alert('Import from GST Portal / IT Portal coming soon!'); }
+
+        function openAiDraft(noticeId) {
+            alert('🤖 AI is analyzing the notice and drafting a response using relevant sections, case laws, and CBDT/CBIC circulars…\n\nThis feature will connect to the ComplianceAI backend for intelligent response generation.');
+        }
+
+        function saveNotice() {
+            alert('Notice saved successfully!');
+            closeAddNoticeModal();
+        }
+
+        async function loadClientsDropdown() {
+            try {
+                const res = await authFetch('/clients/?skip=0&limit=100');
+                if (res.ok) {
+                    const clients = await res.json();
+                    const sel = document.getElementById('new-client');
+                    sel.innerHTML = '<option>Select Client…</option>' + clients.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+                }
+            } catch (e) { }
+        }
+
+        init();
+    </script>
+</body>
+
+</html>

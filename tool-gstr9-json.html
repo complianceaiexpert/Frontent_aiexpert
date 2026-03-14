@@ -105,6 +105,12 @@
                     </div>
                     <input type="file" id="data-file" accept=".xlsx,.csv" style="display:none"
                         onchange="handleFile(this)">
+                    <div style="text-align:center;margin-top:0.5rem">
+                        <button onclick="pickFromDrive()"
+                            style="background:none;border:1px solid #e2e8f0;border-radius:8px;padding:0.35rem 0.75rem;font-size:0.72rem;font-weight:600;color:#3b82f6;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:0.3rem;transition:all .15s"
+                            onmouseover="this.style.background='#eff6ff'" onmouseout="this.style.background='none'">📁
+                            Pick from Drive</button>
+                    </div>
                     <div style="margin-top:1.25rem">
                         <button class="tbtn tbtn-primary" id="generate-btn" onclick="generateJSON()" disabled>📄
                             Generate JSON</button>
@@ -117,34 +123,41 @@
     <script src="tool-sidebar.js"></script>
     <script src="api_config.js?v=2"></script>
     <script src="session-manager.js"></script>
+    <script src="drive-picker.js"></script>
     <script>
         renderToolSidebar('gstr9-json');
 
         let uploadedFile = null;
+        function pickFromDrive() {
+            const cid = new URLSearchParams(window.location.search).get('clientId');
+            if (!cid) return;
+            openDrivePicker({
+                clientId: cid, accept: ['.xlsx', '.csv'], onSelect: (file) => {
+                    uploadedFile = file;
+                    const el = document.getElementById('file-name'); el.textContent = '📎 ' + file.name; el.style.display = '';
+                    document.getElementById('generate-btn').disabled = false;
+                }
+            });
+        }
         function handleFile(input) {
             if (input.files.length) {
                 uploadedFile = input.files[0];
                 const el = document.getElementById('file-name');
                 el.textContent = '📎 ' + uploadedFile.name; el.style.display = '';
-                input.closest('.tool-upload').classList.add('has-file');
+                const ub = input.closest('.tool-upload'); if (ub) ub.classList.add('has-file');
                 document.getElementById('generate-btn').disabled = false;
             }
         }
 
         async function generateJSON() {
             if (!uploadedFile) return;
+            const params = new URLSearchParams(window.location.search);
+            const clientId = params.get('clientId');
+            if (!clientId) { alert('⚠️ No client selected. Please navigate from a client workspace.'); return; }
             const btn = document.getElementById('generate-btn');
-<<<<<<< HEAD
-            const originalText = btn.innerHTML;
-            btn.disabled = true;
-            btn.innerHTML = '<span class="loading-spinner"></span> Generating...';
-=======
             btn.disabled = true; btn.innerHTML = '<span class="tool-spinner"></span> Generating...';
->>>>>>> ea8664237128fffa4ca00ea0ee0946ce90945ffa
             try {
                 const token = localStorage.getItem('access_token');
-                const params = new URLSearchParams(window.location.search);
-                const clientId = params.get('clientId');
                 const fd = new FormData(); fd.append('file', uploadedFile);
                 const uploadRes = await fetch(`${API_BASE_URL}/jobs/upload`, { method: 'POST', headers: { 'Authorization': `Bearer ${token}` }, body: fd });
                 if (uploadRes.ok) {
@@ -153,57 +166,11 @@
                         method: 'POST', headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
                         body: JSON.stringify({ job_type: 'gstr9_json', input_files: [d.file_key || d.file_path], client_id: clientId, metadata: { fy: document.getElementById('fy-select').value, gstin: document.getElementById('gstin-input').value.toUpperCase() } })
                     });
-
-                    if (!jobRes.ok) {
-                        const err = await jobRes.json();
-                        throw new Error(err.detail || 'Failed to start job');
-                    }
-
-                    const jobData = await jobRes.json();
-                    const jobId = jobData.id;
-
-                    // Poll for Completion
-                    let completed = false;
-                    let attempts = 0;
-                    const maxAttempts = 60;
-
-                    while (!completed && attempts < maxAttempts) {
-                        attempts++;
-                        btn.innerHTML = `<span class="loading-spinner"></span> Processing... (${attempts}s)`;
-                        await new Promise(r => setTimeout(r, 2000));
-
-                        const pollRes = await fetch(`${API_BASE_URL}/jobs/${jobId}`, {
-                            headers: { 'Authorization': `Bearer ${token}` }
-                        });
-
-                        if (pollRes.ok) {
-                            const statusData = await pollRes.json();
-                            if (statusData.status === 'completed') {
-                                completed = true;
-                                btn.innerHTML = '<span class="loading-spinner"></span> Downloading...';
-
-                                const downloadUrl = `${API_BASE_URL}/jobs/${jobId}/download`;
-                                const dlFetch = await fetch(downloadUrl, {
-                                    headers: { 'Authorization': `Bearer ${token}` }
-                                });
-                                const blob = await dlFetch.blob();
-                                const url = window.URL.createObjectURL(blob);
-                                const a = document.createElement('a');
-                                a.href = url;
-                                a.download = `GSTR9_${clientId}.json`;
-                                document.body.appendChild(a);
-                                a.click();
-                                window.URL.revokeObjectURL(url);
-                                document.body.removeChild(a);
-                            } else if (statusData.status === 'failed') {
-                                throw new Error("Job failed: " + (statusData.error || "Unknown error"));
-                            }
-                        }
-                    }
-                    if (!completed) alert('Processing is taking longer than expected.');
+                    if (jobRes.ok) { alert('GSTR-9 JSON generation started!'); }
+                    else { const err = await jobRes.json(); alert('Failed: ' + (err.detail || 'Error')); }
                 }
             } catch (err) { console.error(err); alert('Error: ' + err.message); }
-            finally { btn.disabled = false; btn.innerHTML = originalText; }
+            finally { btn.disabled = false; btn.textContent = '📄 Generate JSON'; }
         }
     </script>
 </body>

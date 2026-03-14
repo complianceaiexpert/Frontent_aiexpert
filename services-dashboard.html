@@ -1040,8 +1040,7 @@
             'GST Filing': { icon: '🧾', color: 'blue', desc: 'GST return filing with automated reconciliation and AI-powered error detection for maximum refunds.' },
             'Invoice': { icon: '📝', color: 'green', desc: 'Professional invoice generation with GST-compliant templates and payment tracking.' },
             'Taxation': { icon: '📊', color: 'purple', desc: 'Comprehensive tax planning covering direct and indirect taxes with AI analysis.' },
-            'Income Tax': { icon: '💰', color: 'orange', desc: 'End-to-end ITR filing with intelligent deduction optimization.' },
-            'Audit': { icon: '🔍', color: 'teal', desc: 'Statutory, Internal, Tax, GST, and Stock Audit with AI anomaly detection.' },
+
             'Payroll': { icon: '👥', color: 'pink', desc: 'Complete payroll processing with PF, ESI, TDS computation, and Form 16.' },
             'Company Law': { icon: '📋', color: 'blue', desc: 'Corporate compliance including ROC filings and annual compliance.' },
             'Accounting': { icon: '📊', color: 'green', desc: 'Professional bookkeeping with bank reconciliation and MIS reports.' },
@@ -1151,11 +1150,9 @@
                 closeModal('view-modal');
                 return;
             }
-            let webPage = 'web-view.html', chatPage = 'service-gst-refund.html';
-            if (currentService.name.includes('Income Tax')) { webPage = 'web-view-income-tax.html'; chatPage = 'service-income-tax.html' }
-            else if (currentService.name.includes('Audit')) { webPage = 'web-view-audit.html'; chatPage = 'service-audit.html' }
-            else if (currentService.name === 'CA Certificates') { window.location.href = `ca-certificates.html?clientId=${clientId}&serviceId=${currentService.id}`; return }
-            else if (currentService.name === 'Data Entry') { const dePage = viewType === 'web' ? 'service-data-entry.html' : 'service-data-entry-ai.html'; window.location.href = `${dePage}?clientId=${clientId}&serviceId=${currentService.id}`; return }
+            let webPage = 'service-gst-refund-webview.html', chatPage = 'file-gst-refund.html';
+            if (currentService.name === 'CA Certificates') { window.location.href = `ca-certificates.html?clientId=${clientId}&serviceId=${currentService.id}`; return }
+            if (currentService.name === 'Data Entry') { const dePage = viewType === 'web' ? 'service-data-entry.html' : 'service-data-entry-ai.html'; window.location.href = `${dePage}?clientId=${clientId}&serviceId=${currentService.id}`; return }
             const page = viewType === 'web' ? webPage : chatPage;
             const vp = viewType === 'chat' ? '&view=semi-chat' : '';
             window.location.href = `${page}?clientId=${clientId}&serviceId=${currentService.id}${vp}`;

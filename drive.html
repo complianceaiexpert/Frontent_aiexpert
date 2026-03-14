@@ -964,6 +964,31 @@
                 grid-template-columns: 1fr
             }
         }
+
+        .loading-center {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            color: #94a3b8;
+            font-size: 0.85rem;
+        }
+
+        .spin {
+            width: 28px;
+            height: 28px;
+            border: 3px solid #e2e8f0;
+            border-top-color: #3b82f6;
+            border-radius: 50%;
+            animation: spinAnim 0.7s linear infinite;
+        }
+
+        @keyframes spinAnim {
+            to {
+                transform: rotate(360deg);
+            }
+        }
     </style>
 </head>
 
@@ -1190,48 +1215,42 @@
     </div>
 
     <script src="api_config.js"></script>
+    <script src="session-manager.js?v=2"></script>
     <script>
+        if (!requireAuth()) { }
+
         const urlParams = new URLSearchParams(window.location.search);
         const clientId = urlParams.get('clientId');
         if (!clientId) window.location.href = 'clients.html';
 
         let currentFolder = null; // null = root
+        let folders = [];         // fetched from API
         let selectedUploadFiles = [];
 
-        // ── Default folders (CA-specific) ──
-        const defaultFolders = [
-            { id: 'all-docs', name: 'All Documents', icon: '📁', color: '#3b82f6', bg: '#eff6ff', files: [] },
-            {
-                id: 'gst-returns', name: 'GST Returns', icon: '🧾', color: '#059669', bg: '#ecfdf5', files: [
-                    { name: 'GSTR-1_Oct2025.pdf', type: 'pdf', size: '1.2 MB', date: 'Oct 15, 2025' },
-                    { name: 'GSTR-3B_Oct2025.pdf', type: 'pdf', size: '864 KB', date: 'Oct 20, 2025' },
-                ]
-            },
-            {
-                id: 'income-tax', name: 'Income Tax', icon: '💰', color: '#d97706', bg: '#fef3c7', files: [
-                    { name: 'ITR-3_AY2025-26.pdf', type: 'pdf', size: '2.4 MB', date: 'Jul 31, 2025' },
-                    { name: 'Form26AS_2025.pdf', type: 'pdf', size: '1.1 MB', date: 'Jun 10, 2025' },
-                ]
-            },
-            {
-                id: 'invoices', name: 'Invoices', icon: '📝', color: '#7c3aed', bg: '#f5f3ff', files: [
-                    { name: 'INV-001_ServiceFees.pdf', type: 'pdf', size: '340 KB', date: 'Nov 1, 2025' },
-                ]
-            },
-            { id: 'certificates', name: 'CA Certificates', icon: '📜', color: '#1e3a8a', bg: '#eff6ff', files: [] },
-            { id: 'agreements', name: 'Agreements', icon: '⚖️', color: '#0f766e', bg: '#f0fdfa', files: [] },
-            { id: 'banking', name: 'Banking', icon: '🏦', color: '#0369a1', bg: '#e0f2fe', files: [] },
-            {
-                id: 'kyc', name: 'KYC Documents', icon: '🛡️', color: '#dc2626', bg: '#fef2f2', files: [
-                    { name: 'PAN_Card.jpg', type: 'image', size: '520 KB', date: 'Jan 5, 2025' },
-                    { name: 'Aadhaar_Card.jpg', type: 'image', size: '680 KB', date: 'Jan 5, 2025' },
-                    { name: 'GST_Registration.pdf', type: 'pdf', size: '1.8 MB', date: 'Apr 2, 2024' },
-                ]
-            },
-            { id: 'audit', name: 'Audit Reports', icon: '🔍', color: '#7c3aed', bg: '#faf5ff', files: [] },
-            { id: 'miscellaneous', name: 'Miscellaneous', icon: '📎', color: '#64748b', bg: '#f1f5f9', files: [] },
-            { id: 'trash', name: 'Trash', icon: '🗑️', color: '#ef4444', bg: '#fef2f2', files: [] },
-        ];
+        // ── Helpers ──
+        function formatSize(bytes) {
+            if (!bytes || bytes === 0) return '0 B';
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+            if (bytes < 1073741824) return (bytes / 1048576).toFixed(1) + ' MB';
+            return (bytes / 1073741824).toFixed(2) + ' GB';
+        }
+
+        function fileEmoji(type) {
+            if (type === 'pdf') return '📕';
+            if (type === 'image') return '🖼️';
+            if (type === 'spreadsheet') return '📊';
+            if (type === 'doc') return '📝';
+            if (type === 'archive') return '📦';
+            return '📄';
+        }
+        function fileIconBg(type) {
+            if (type === 'pdf') return '#fef2f2';
+            if (type === 'image') return '#fffbeb';
+            if (type === 'spreadsheet') return '#ecfdf5';
+            if (type === 'doc') return '#eff6ff';
+            return '#f1f5f9';
+        }
 
         // ── Load client info ──
         async function loadClient() {
@@ -1253,19 +1272,65 @@
             window.location.href = `services-dashboard.html?clientId=${clientId}`;
         }
 
-        // ── Render Folders ──
-        function renderFolders() {
+        // ── Fetch Folders from API ──
+        async function fetchFolders() {
+            try {
+                const r = await authFetch(`/drive/${clientId}/folders`);
+                if (!r || !r.ok) throw new Error('Failed to fetch folders');
+                folders = await r.json();
+            } catch (e) {
+                console.error(e);
+                folders = [];
+            }
+        }
+
+        // ── Fetch Stats from API ──
+        async function fetchStats() {
+            try {
+                const r = await authFetch(`/drive/${clientId}/stats`);
+                if (!r || !r.ok) return;
+                const stats = await r.json();
+                document.getElementById('stat-folders').textContent = stats.total_folders;
+                document.getElementById('stat-files').textContent = stats.total_files;
+                document.getElementById('stat-storage').textContent = formatSize(stats.total_size_bytes);
+                document.getElementById('stat-updated').textContent = stats.last_updated
+                    ? new Date(stats.last_updated).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+                    : 'Never';
+            } catch (e) { console.error(e); }
+        }
+
+        let _folderStack = []; // for nested navigation
+
+        // ── Render Folders (optionally inside a parent) ──
+        async function renderFolders(parentId, parentName) {
             currentFolder = null;
             document.getElementById('folders-container').style.display = '';
             document.getElementById('files-container').style.display = 'none';
-            document.getElementById('bc-current').textContent = 'Drive';
+            document.getElementById('bc-current').textContent = parentName || 'Drive';
+
+            if (parentId) {
+                // Fetch sub-folders
+                try {
+                    const r = await authFetch(`/drive/${clientId}/folders/${parentId}/subfolders`);
+                    if (r && r.ok) folders = await r.json();
+                    else folders = [];
+                } catch (e) { folders = []; }
+            } else {
+                _folderStack = [];
+                await fetchFolders();
+            }
+            await fetchStats();
 
             const grid = document.getElementById('folder-grid');
             grid.innerHTML = '';
-            let totalFiles = 0;
 
-            defaultFolders.forEach(folder => {
-                totalFiles += folder.files.length;
+            if (folders.length === 0 && !parentId) {
+                grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem;color:#94a3b8;font-size:0.9rem;">No folders yet. Create one to get started!</div>';
+            } else if (folders.length === 0 && parentId) {
+                grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem;color:#94a3b8;font-size:0.9rem;">No sub-folders here</div>';
+            }
+
+            folders.forEach(folder => {
                 const card = document.createElement('div');
                 card.className = 'folder-card';
                 card.style.setProperty('--folder-accent', `linear-gradient(90deg, ${folder.color}, ${folder.color}88)`);
@@ -1276,43 +1341,54 @@
                     </div>
                     <div class="folder-info">
                         <div class="folder-name">${folder.name}</div>
-                        <div class="folder-meta">${folder.files.length} file${folder.files.length !== 1 ? 's' : ''}</div>
+                        <div class="folder-meta">${folder.file_count} file${folder.file_count !== 1 ? 's' : ''}${folder.total_size ? ' • ' + formatSize(folder.total_size) : ''}</div>
                     </div>
                     <div class="folder-actions">
-                        <button class="folder-action-btn" title="Lock" onclick="event.stopPropagation()">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                        </button>
-                        <button class="folder-action-btn" title="Download" onclick="event.stopPropagation()">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                        <button class="folder-action-btn" title="Delete" onclick="event.stopPropagation();deleteFolder('${folder.id}','${folder.name}')" style="color:#ef4444">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
                         </button>
                     </div>`;
                 grid.appendChild(card);
             });
 
-            document.getElementById('stat-folders').textContent = defaultFolders.length;
-            document.getElementById('folder-count-tag').textContent = defaultFolders.length;
-            document.getElementById('stat-files').textContent = totalFiles;
-            document.getElementById('stat-storage').textContent = '4.8 MB';
+            document.getElementById('folder-count-tag').textContent = folders.length;
 
-            // Populate upload folder select
+            // Populate upload folder select (get all folders including nested)
             const sel = document.getElementById('upload-folder-select');
             sel.innerHTML = '';
-            defaultFolders.filter(f => f.id !== 'trash' && f.id !== 'all-docs').forEach(f => {
+            folders.forEach(f => {
                 sel.innerHTML += `<option value="${f.id}">${f.icon} ${f.name}</option>`;
             });
         }
 
         // ── Open a Folder ──
-        function openFolder(folder) {
+        async function openFolder(folder) {
+            // If folder has sub-folders, show them as a folder grid
+            if (folder.has_children) {
+                _folderStack.push(folder);
+                await renderFolders(folder.id, folder.name);
+                return;
+            }
+
             currentFolder = folder;
             document.getElementById('folders-container').style.display = 'none';
             document.getElementById('files-container').style.display = '';
             document.getElementById('bc-current').textContent = folder.name;
             document.getElementById('files-section-title').textContent = folder.name;
-            document.getElementById('file-count-badge').textContent = `${folder.files.length} file${folder.files.length !== 1 ? 's' : ''}`;
 
             const list = document.getElementById('files-list');
-            if (folder.files.length === 0) {
+            list.innerHTML = '<div class="loading-center" style="padding:2rem;"><div class="spin"></div><p>Loading files…</p></div>';
+
+            // Fetch files from API
+            let files = [];
+            try {
+                const r = await authFetch(`/drive/${clientId}/folders/${folder.id}/files`);
+                if (r && r.ok) files = await r.json();
+            } catch (e) { console.error(e); }
+
+            document.getElementById('file-count-badge').textContent = `${files.length} file${files.length !== 1 ? 's' : ''}`;
+
+            if (files.length === 0) {
                 list.innerHTML = `
                     <div class="empty-state">
                         <div class="empty-icon">📂</div>
@@ -1328,19 +1404,18 @@
 
             let html = `<div class="files-table">
                 <div class="files-table-head"><span></span><span>Name</span><span>Size</span><span>Date</span><span></span></div>`;
-            folder.files.forEach(file => {
-                const iconBg = file.type === 'pdf' ? '#fef2f2' : file.type === 'image' ? '#fffbeb' : '#f0fdfa';
-                const iconEmoji = file.type === 'pdf' ? '📕' : file.type === 'image' ? '🖼️' : '📄';
+            files.forEach(file => {
+                const dateStr = new Date(file.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
                 html += `<div class="file-row">
-                    <div class="file-icon" style="background:${iconBg}">${iconEmoji}</div>
+                    <div class="file-icon" style="background:${fileIconBg(file.file_type)}">${fileEmoji(file.file_type)}</div>
                     <div class="file-name">${file.name}</div>
-                    <div class="file-detail">${file.size}</div>
-                    <div class="file-detail">${file.date}</div>
+                    <div class="file-detail">${formatSize(file.size_bytes)}</div>
+                    <div class="file-detail">${dateStr}</div>
                     <div style="display:flex;gap:0.25rem">
-                        <button class="file-action-btn" title="Download">
+                        <button class="file-action-btn" title="Download" onclick="downloadFile('${file.id}')">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                         </button>
-                        <button class="file-action-btn" title="Delete" style="color:#ef4444">
+                        <button class="file-action-btn" title="Delete" style="color:#ef4444" onclick="deleteFile('${file.id}','${file.name}')">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
                         </button>
                     </div>
@@ -1352,8 +1427,69 @@
 
         // ── Navigate Back ──
         function navigateBack() {
-            if (currentFolder) { renderFolders(); }
-            else { goToOverview(); }
+            if (currentFolder) {
+                // Back from file list — go to parent folder or root
+                if (_folderStack.length > 0) {
+                    const parent = _folderStack[_folderStack.length - 1];
+                    currentFolder = null;
+                    renderFolders(parent.id, parent.name);
+                } else {
+                    renderFolders();
+                }
+            } else if (_folderStack.length > 0) {
+                // Back from sub-folder view
+                _folderStack.pop();
+                if (_folderStack.length > 0) {
+                    const parent = _folderStack[_folderStack.length - 1];
+                    renderFolders(parent.id, parent.name);
+                } else {
+                    renderFolders();
+                }
+            } else {
+                goToOverview();
+            }
+        }
+
+        // ── Download ──
+        async function downloadFile(fileId) {
+            const url = `${API_BASE_URL}/drive/${clientId}/files/${fileId}/download`;
+            const token = localStorage.getItem('access_token');
+            try {
+                const r = await fetch(url, { headers: { 'Authorization': `Bearer ${token}` } });
+                if (!r.ok) throw new Error('Download failed');
+                const blob = await r.blob();
+                const cd = r.headers.get('content-disposition');
+                let filename = 'download';
+                if (cd) {
+                    const m = cd.match(/filename="?(.+?)"?$/);
+                    if (m) filename = m[1];
+                }
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = filename;
+                a.click();
+                URL.revokeObjectURL(a.href);
+            } catch (e) { alert('Download failed: ' + e.message); }
+        }
+
+        // ── Delete File ──
+        async function deleteFile(fileId, fileName) {
+            if (!confirm(`Delete "${fileName}"?`)) return;
+            try {
+                const r = await authFetch(`/drive/${clientId}/files/${fileId}`, { method: 'DELETE' });
+                if (r && r.ok) {
+                    if (currentFolder) openFolder(currentFolder);
+                }
+            } catch (e) { alert('Failed to delete file'); }
+        }
+
+        // ── Delete Folder ──
+        async function deleteFolder(folderId, folderName) {
+            if (!confirm(`Delete folder "${folderName}" and all its files?`)) return;
+            try {
+                const r = await authFetch(`/drive/${clientId}/folders/${folderId}`, { method: 'DELETE' });
+                if (r && r.ok) renderFolders();
+            } catch (e) { alert('Failed to delete folder'); }
         }
 
         // ── Modals ──
@@ -1380,41 +1516,65 @@
             const list = document.getElementById('upload-file-list');
             list.innerHTML = selectedUploadFiles.map(f =>
                 `<div style="display:flex;align-items:center;gap:0.5rem;padding:0.45rem 0.65rem;background:#f8fafc;border-radius:8px;margin-bottom:0.35rem;font-size:0.78rem;font-weight:500;color:#374151">
-                    <span>📄</span><span style="flex:1">${f.name}</span><span style="color:#94a3b8;font-size:0.7rem">${(f.size / 1024).toFixed(0)} KB</span>
+                    <span>📄</span><span style="flex:1">${f.name}</span><span style="color:#94a3b8;font-size:0.7rem">${formatSize(f.size)}</span>
                 </div>`
             ).join('');
         }
 
-        function uploadFiles() {
+        // ── Upload Files to API ──
+        async function uploadFiles() {
             if (!selectedUploadFiles.length) return;
-            // Simulate upload — in production, call API
             const folderId = document.getElementById('upload-folder-select').value;
-            const folder = defaultFolders.find(f => f.id === folderId);
-            if (folder) {
-                selectedUploadFiles.forEach(f => {
-                    folder.files.push({
-                        name: f.name,
-                        type: f.name.endsWith('.pdf') ? 'pdf' : f.name.match(/\.(jpg|jpeg|png)$/i) ? 'image' : 'doc',
-                        size: (f.size / 1024).toFixed(0) + ' KB',
-                        date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+            const btn = document.getElementById('btn-upload');
+            btn.disabled = true;
+            btn.textContent = 'Uploading…';
+
+            let uploadedCount = 0;
+            for (const file of selectedUploadFiles) {
+                try {
+                    const formData = new FormData();
+                    formData.append('file', file);
+
+                    const token = localStorage.getItem('access_token');
+                    const r = await fetch(`${API_BASE_URL}/drive/${clientId}/folders/${folderId}/upload`, {
+                        method: 'POST',
+                        headers: { 'Authorization': `Bearer ${token}` },
+                        body: formData,
                     });
-                });
+                    if (r.ok) uploadedCount++;
+                    else console.error('Upload failed for', file.name, await r.text());
+                } catch (e) { console.error('Upload error:', e); }
             }
+
+            btn.disabled = false;
+            btn.textContent = 'Upload';
             selectedUploadFiles = [];
             document.getElementById('upload-file-list').innerHTML = '';
             closeModal('upload-modal');
-            if (currentFolder && currentFolder.id === folderId) openFolder(currentFolder);
-            else renderFolders();
+
+            if (uploadedCount > 0) {
+                if (currentFolder && currentFolder.id === folderId) openFolder(currentFolder);
+                else renderFolders();
+            }
         }
 
-        function createFolder() {
+        // ── Create Folder via API ──
+        async function createFolder() {
             const name = document.getElementById('new-folder-name').value.trim();
             if (!name) return;
-            defaultFolders.splice(defaultFolders.length - 1, 0, {
-                id: 'custom-' + Date.now(), name, icon: '📁', color: '#3b82f6', bg: '#eff6ff', files: []
-            });
-            closeModal('new-folder-modal');
-            renderFolders();
+            try {
+                const r = await authFetch(`/drive/${clientId}/folders`, {
+                    method: 'POST',
+                    body: JSON.stringify({ name }),
+                });
+                if (r && r.ok) {
+                    closeModal('new-folder-modal');
+                    renderFolders();
+                } else {
+                    const err = await r.json();
+                    alert(err.detail || 'Failed to create folder');
+                }
+            } catch (e) { alert('Failed to create folder'); }
         }
 
         document.addEventListener('keydown', e => {
@@ -1428,8 +1588,6 @@
         loadClient();
         renderFolders();
     </script>
-    <script src="session-manager.js?v=2"></script>
-    <script>if (!requireAuth()) { }</script>
 </body>
 
 </html>

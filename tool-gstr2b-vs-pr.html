@@ -1,15 +1,1003 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GSTR-2B vs PR — ComplianceAI Expert</title>
+    <title>GSTR-2B vs Purchase Register — GST Reconciliation | ComplianceAI Expert</title>
+    <meta name="description"
+        content="AI-powered GST Reconciliation: Match your Purchase Register with GSTR-2B automatically. Identify mismatches, claim correct ITC, and generate GSTR-3B Table 4.">
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="tool-layout.css">
+    <style>
+        /* ═══ PAGE-SPECIFIC OVERRIDES ═══ */
+        .tool-main {
+            background: #f8fafc;
+            padding: 0;
+        }
+
+        .recon-page-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem 3rem;
+        }
+
+        /* ═══ HOW IT WORKS STRIP ═══ */
+        .how-it-works {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .hiw-step {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 1.25rem;
+            text-align: center;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .hiw-step:hover {
+            border-color: #93c5fd;
+            box-shadow: 0 4px 16px rgba(30, 58, 138, 0.06);
+            transform: translateY(-2px);
+        }
+
+        .hiw-step::after {
+            content: '→';
+            position: absolute;
+            right: -14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.1rem;
+            color: #cbd5e1;
+            font-weight: 700;
+        }
+
+        .hiw-step:last-child::after {
+            display: none;
+        }
+
+        .hiw-num {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 0.65rem;
+        }
+
+        .hiw-icon {
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .hiw-title {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 0.2rem;
+        }
+
+        .hiw-desc {
+            font-size: 0.7rem;
+            color: #9ca3af;
+            line-height: 1.4;
+        }
+
+        /* ═══ UPLOAD GRID — Side-by-side cards ═══ */
+        .recon-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* ═══ UPLOAD CARDS ═══ */
+        .upload-card {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            padding: 1.5rem;
+            transition: all 0.2s;
+        }
+
+        .upload-card:hover {
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+        }
+
+        .upload-card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .upload-card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .uci-blue {
+            background: linear-gradient(135deg, #dbeafe, #eff6ff);
+            border: 1px solid #bfdbfe;
+        }
+
+        .uci-green {
+            background: linear-gradient(135deg, #dcfce7, #f0fdf4);
+            border: 1px solid #bbf7d0;
+        }
+
+        .upload-card-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .upload-card-subtitle {
+            font-size: 0.72rem;
+            color: #9ca3af;
+            font-weight: 500;
+        }
+
+        .upload-dropzone {
+            border: 2px dashed #d1d5db;
+            border-radius: 12px;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #fafbfc;
+            position: relative;
+        }
+
+        .upload-dropzone:hover {
+            border-color: #3b82f6;
+            background: #f0f5ff;
+        }
+
+        .upload-dropzone.drag-over {
+            border-color: #3b82f6;
+            background: #eff6ff;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        }
+
+        .upload-dropzone.has-file {
+            border-color: #22c55e;
+            border-style: solid;
+            background: #f0fdf4;
+        }
+
+        .dropzone-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.75rem;
+            display: block;
+        }
+
+        .dropzone-title {
+            font-weight: 700;
+            font-size: 0.88rem;
+            color: #374151;
+            margin-bottom: 0.25rem;
+        }
+
+        .dropzone-sub {
+            font-size: 0.75rem;
+            color: #9ca3af;
+        }
+
+        .dropzone-sub strong {
+            color: #3b82f6;
+            cursor: pointer;
+        }
+
+        .dropzone-file {
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #16a34a;
+            margin-top: 0.65rem;
+            justify-content: center;
+        }
+
+        .dropzone-file.visible {
+            display: flex;
+        }
+
+        .dropzone-formats {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+        }
+
+        .format-tag {
+            font-size: 0.6rem;
+            font-weight: 700;
+            padding: 0.15rem 0.45rem;
+            border-radius: 4px;
+            background: #f1f5f9;
+            color: #64748b;
+            text-transform: uppercase;
+        }
+
+
+        /* ═══ ACTION STRIP ═══ */
+        .action-strip {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+
+        .action-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .action-info .ready-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .ready-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #d1d5db;
+        }
+
+        .ready-dot.active {
+            background: #22c55e;
+            box-shadow: 0 0 8px rgba(34, 197, 94, 0.4);
+            animation: pulseDot 2s infinite;
+        }
+
+        .action-info .ready-text {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #6b7280;
+        }
+
+        .action-info .ready-text.active {
+            color: #16a34a;
+        }
+
+        .file-indicators {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .file-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.3rem 0.65rem;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .file-indicator.pending {
+            background: #f3f4f6;
+            color: #9ca3af;
+        }
+
+        .file-indicator.uploaded {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .reconcile-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.7rem 1.75rem;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.88rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(30, 58, 138, 0.2);
+        }
+
+        .reconcile-btn:hover:not(:disabled) {
+            box-shadow: 0 4px 18px rgba(30, 58, 138, 0.35);
+            transform: translateY(-1px);
+        }
+
+        .reconcile-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .reconcile-btn .btn-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: toolSpin 0.6s linear infinite;
+        }
+
+        /* ═══ FEATURES GRID ═══ */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-card {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 1.25rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            border-radius: 12px 12px 0 0;
+        }
+
+        .feature-card.fc-blue::before {
+            background: linear-gradient(90deg, #3b82f6, #6366f1);
+        }
+
+        .feature-card.fc-green::before {
+            background: linear-gradient(90deg, #22c55e, #14b8a6);
+        }
+
+        .feature-card.fc-amber::before {
+            background: linear-gradient(90deg, #f59e0b, #ef4444);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .fc-icon {
+            font-size: 1.75rem;
+            margin-bottom: 0.6rem;
+        }
+
+        .fc-title {
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 0.3rem;
+        }
+
+        .fc-desc {
+            font-size: 0.75rem;
+            color: #6b7280;
+            line-height: 1.5;
+        }
+
+        .fc-tag {
+            display: inline-block;
+            font-size: 0.6rem;
+            font-weight: 700;
+            padding: 0.15rem 0.5rem;
+            border-radius: 4px;
+            margin-top: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        .fc-tag-blue {
+            background: #dbeafe;
+            color: #1e3a8a;
+        }
+
+        .fc-tag-green {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .fc-tag-amber {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        /* ═══ RESULTS SECTION ═══ */
+        .results-section {
+            display: none;
+            animation: fadeInUp 0.4s ease-out;
+        }
+
+        .results-section.visible {
+            display: block;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .results-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .results-header h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #111827;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .results-stats {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 0.75rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .rstat {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        .rstat:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+        }
+
+        .rstat .rs-num {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .rstat .rs-label {
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-top: 0.3rem;
+        }
+
+        .rs-green {
+            color: #16a34a;
+        }
+
+        .rs-blue {
+            color: #1e3a8a;
+        }
+
+        .rs-amber {
+            color: #d97706;
+        }
+
+        .rs-red {
+            color: #dc2626;
+        }
+
+        .rs-purple {
+            color: #7c3aed;
+        }
+
+        .results-tabs {
+            display: flex;
+            gap: 0.25rem;
+            background: #f1f5f9;
+            border-radius: 10px;
+            padding: 0.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .rtab {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            border: none;
+            background: transparent;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .rtab.active {
+            background: #fff;
+            color: #1e3a8a;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+
+        .rtab:hover:not(.active) {
+            color: #374151;
+        }
+
+        .rtab .rtab-count {
+            font-size: 0.6rem;
+            background: #dbeafe;
+            color: #1e3a8a;
+            padding: 0.1rem 0.4rem;
+            border-radius: 4px;
+            font-weight: 700;
+        }
+
+        .rtab.active .rtab-count {
+            background: #1e3a8a;
+            color: #fff;
+        }
+
+        /* ═══ RECENT JOBS ═══ */
+        .jobs-section {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .jobs-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .jobs-header h3 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #111827;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .jobs-header h3 svg {
+            width: 18px;
+            height: 18px;
+            color: #6b7280;
+        }
+
+        .jobs-count {
+            font-size: 0.62rem;
+            font-weight: 700;
+            background: #dbeafe;
+            color: #1e3a8a;
+            padding: 0.15rem 0.45rem;
+            border-radius: 6px;
+            margin-left: 0.25rem;
+        }
+
+        .job-row {
+            display: flex;
+            align-items: center;
+            padding: 0.85rem 1rem;
+            border: 1px solid #f1f5f9;
+            border-radius: 10px;
+            margin-bottom: 0.5rem;
+            transition: all 0.15s;
+            gap: 1rem;
+        }
+
+        .job-row:hover {
+            background: #f8fafc;
+            border-color: #e5e7eb;
+        }
+
+        .job-row.has-drive {
+            border-left: 3px solid #0891b2;
+        }
+
+        .job-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 9px;
+            background: #eff6ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .job-details {
+            flex: 1;
+        }
+
+        .job-name {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 0.15rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .job-drive-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.2rem;
+            font-size: 0.58rem;
+            font-weight: 700;
+            color: #0891b2;
+            background: #ecfeff;
+            padding: 0.12rem 0.4rem;
+            border-radius: 5px;
+            border: 1px solid #cffafe;
+            animation: driveTagPulse 0.6s ease-out;
+        }
+
+        @keyframes driveTagPulse {
+            0% { transform: scale(0.8); opacity: 0; }
+            60% { transform: scale(1.05); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .job-meta {
+            font-size: 0.7rem;
+            color: #9ca3af;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            flex-wrap: wrap;
+        }
+
+        .job-meta-sep {
+            color: #d1d5db;
+        }
+
+        .job-time {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.2rem;
+        }
+
+        .job-file-tag {
+            background: #f1f5f9;
+            padding: 0.1rem 0.35rem;
+            border-radius: 4px;
+            font-size: 0.62rem;
+            color: #64748b;
+        }
+
+        .job-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+        }
+
+        .job-status {
+            font-size: 0.62rem;
+            font-weight: 700;
+            padding: 0.2rem 0.55rem;
+            border-radius: 9999px;
+            text-transform: uppercase;
+        }
+
+        .job-status.queued {
+            background: #f3f4f6;
+            color: #4b5563;
+        }
+
+        .job-status.processing {
+            background: #dbeafe;
+            color: #1e3a8a;
+        }
+
+        .job-status.completed {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .job-status.failed {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .job-download {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.3rem 0.7rem;
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: #fff;
+            border: none;
+            border-radius: 7px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .job-download:hover {
+            box-shadow: 0 2px 8px rgba(30, 58, 138, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .job-view-drive {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.3rem 0.65rem;
+            background: #ecfeff;
+            color: #0891b2;
+            border: 1px solid #cffafe;
+            border-radius: 7px;
+            font-size: 0.68rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .job-view-drive:hover {
+            background: #cffafe;
+            border-color: #0891b2;
+        }
+
+        .jobs-empty {
+            text-align: center;
+            padding: 2.5rem 1rem;
+            color: #9ca3af;
+        }
+
+        .jobs-empty .empty-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.75rem;
+            opacity: 0.4;
+        }
+
+        .jobs-empty p {
+            font-size: 0.82rem;
+            margin: 0;
+        }
+
+        /* ═══ Drive Save Notification Banner ═══ */
+        .drive-save-banner {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.85rem 1.25rem;
+            background: linear-gradient(135deg, #ecfeff, #f0fdfa);
+            border: 1px solid #0891b233;
+            border-radius: 12px;
+            margin-bottom: 1.25rem;
+            animation: slideBannerIn 0.5s ease-out;
+        }
+
+        .drive-save-banner .dsb-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: #0891b2;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .drive-save-banner .dsb-text {
+            flex: 1;
+        }
+
+        .drive-save-banner .dsb-title {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: #0e7490;
+            margin-bottom: 0.1rem;
+        }
+
+        .drive-save-banner .dsb-desc {
+            font-size: 0.72rem;
+            color: #6b7280;
+        }
+
+        .drive-save-banner .dsb-link {
+            padding: 0.35rem 0.85rem;
+            background: #0891b2;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .drive-save-banner .dsb-link:hover {
+            background: #0e7490;
+        }
+
+        @keyframes slideBannerIn {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ═══ MATCHING RULES INFO ═══ */
+        .rules-info {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            padding: 1.5rem;
+        }
+
+        .rules-info h3 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #111827;
+            margin: 0 0 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .rules-info>p {
+            font-size: 0.75rem;
+            color: #9ca3af;
+            margin: 0 0 1rem;
+        }
+
+        .rule-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+
+        .rule-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.6rem;
+            padding: 0.85rem;
+            background: #f8fafc;
+            border-radius: 10px;
+            border: 1px solid #f1f5f9;
+        }
+
+        .rule-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 7px;
+            background: #eff6ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+
+        .rule-text {
+            flex: 1;
+        }
+
+        .rule-text strong {
+            display: block;
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: #374151;
+            margin-bottom: 0.15rem;
+        }
+
+        .rule-text span {
+            font-size: 0.7rem;
+            color: #9ca3af;
+            line-height: 1.4;
+        }
+
+        /* ═══ RESPONSIVE ═══ */
+        @media (max-width: 1100px) {
+            .recon-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .how-it-works {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .results-stats {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .how-it-works {
+                grid-template-columns: 1fr;
+            }
+
+            .hiw-step::after {
+                display: none;
+            }
+
+            .hero-content {
+                flex-direction: column;
+            }
+
+            .hero-stats {
+                width: 100%;
+                justify-content: space-around;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .results-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .rule-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
+
 <body>
     <div id="app-topbar" data-active="dashboard"></div>
     <script src="app-topbar.js"></script>
@@ -17,81 +1005,779 @@
     <div class="tool-layout">
         <aside class="tool-sidebar" id="tool-sidebar"></aside>
         <main class="tool-main">
-            <div class="tool-main-inner">
+            <div class="recon-page-inner">
+
+                <!-- ═══ BREADCRUMB ═══ -->
                 <div class="tool-bc">
                     <a href="clients.html">Firm</a><span style="color:#d1d5db">›</span>
                     <a href="javascript:goBackToWebView()">GST Workspace</a><span style="color:#d1d5db">›</span>
-                    <span style="color:#374151;font-weight:600">GSTR-2B vs PR</span>
+                    <span style="color:#374151;font-weight:600">GSTR-2B vs Purchase Register</span>
                 </div>
-                <div class="tool-page-header">
-                    <h1>⚖️ <span>GSTR-2B vs PR</span></h1>
-                    <p>Reconcile your auto-generated GSTR-2B with your internal Purchase Register (PR). Ensure you are claiming all eligible ITC and identify discrepancies early.</p>
-                </div>
-                <div class="tool-card">
-                    <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> Upload Data</h3>
-                    <p>Upload both files to begin the reconciliation process.</p>
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
-                        <div class="tool-upload" onclick="document.getElementById('gstr2b-file').click()">
-                            <div class="t-icon">📊</div>
-                            <div class="t-title">GSTR-2B Data</div>
-                            <div class="t-sub">Click to upload (.xlsx, .csv)</div>
-                            <div class="t-file" id="gstr2b-file-name" style="display:none"></div>
-                        </div>
-                        <div class="tool-upload" onclick="document.getElementById('pr-file').click()">
-                            <div class="t-icon">📥</div>
-                            <div class="t-title">Purchase Register</div>
-                            <div class="t-sub">Click to upload (.xlsx, .csv)</div>
-                            <div class="t-file" id="pr-file-name" style="display:none"></div>
+
+                <!-- ═══ HOW IT WORKS ═══ -->
+                <div class="how-it-works">
+                    <div class="hiw-step">
+                        <div class="hiw-num">1</div>
+                        <div class="hiw-icon">📤</div>
+                        <div class="hiw-title">Upload Files</div>
+                        <div class="hiw-desc">Upload your GSTR-2B and Purchase Register in Excel or CSV format</div>
+                    </div>
+                    <div class="hiw-step">
+                        <div class="hiw-num">2</div>
+                        <div class="hiw-icon">🤖</div>
+                        <div class="hiw-title">AI Matching</div>
+                        <div class="hiw-desc">Our AI matches invoices by GSTIN, invoice number, date & taxable value
                         </div>
                     </div>
-                    <input type="file" id="gstr2b-file" accept=".xlsx,.csv" style="display:none" onchange="updateFileName('f1', this)">
-                    <input type="file" id="pr-file" accept=".xlsx,.csv" style="display:none" onchange="updateFileName('f2', this)">
-                    <div style="margin-top:1.25rem">
-                        <button class="tbtn tbtn-primary" id="reconcile-btn" onclick="startReconciliation()" disabled>⚖️ Start Reconciliation</button>
+                    <div class="hiw-step">
+                        <div class="hiw-num">3</div>
+                        <div class="hiw-icon">📊</div>
+                        <div class="hiw-title">Review Mismatches</div>
+                        <div class="hiw-desc">See matched, mismatched, and missing invoices at a glance</div>
+                    </div>
+                    <div class="hiw-step">
+                        <div class="hiw-num">4</div>
+                        <div class="hiw-icon">✅</div>
+                        <div class="hiw-title">Download Report</div>
+                        <div class="hiw-desc">Get a detailed reconciliation report with actionable insights</div>
                     </div>
                 </div>
-                <div class="tool-card" id="recent-jobs-container" style="display:none">
-                    <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Recent Jobs</h3>
-                    <p>Track the status of your reconciliation tasks.</p>
-                    <div class="tool-jobs" id="jobs-list"></div>
+
+                <!-- ═══ UPLOAD SECTION — Side-by-side ═══ -->
+                <div class="recon-grid">
+                    <!-- GSTR-2B Upload -->
+                    <div class="upload-card">
+                        <div class="upload-card-header">
+                            <div class="upload-card-icon uci-blue">📊</div>
+                            <div>
+                                <div class="upload-card-title">GSTR-2B Data</div>
+                                <div class="upload-card-subtitle">Auto-drafted ITC statement from GST portal</div>
+                            </div>
+                        </div>
+                        <div class="upload-dropzone" id="dropzone-2b"
+                            onclick="document.getElementById('gstr2b-file').click()" ondragover="handleDragOver(event)"
+                            ondragleave="handleDragLeave(event)" ondrop="handleDrop(event,'2b')">
+                            <span class="dropzone-icon">📄</span>
+                            <div class="dropzone-title">Drop your GSTR-2B file here</div>
+                            <div class="dropzone-sub">or <strong>browse files</strong> to upload</div>
+                            <div class="dropzone-formats">
+                                <span class="format-tag">.xlsx</span>
+                                <span class="format-tag">.csv</span>
+                                <span class="format-tag">.json</span>
+                            </div>
+                            <div class="dropzone-file" id="file-name-2b">
+                                <span>✓</span>
+                                <span id="file-label-2b"></span>
+                            </div>
+                        </div>
+                        <input type="file" id="gstr2b-file" accept=".xlsx,.csv,.json" style="display:none"
+                            onchange="handleFileSelect(this, '2b')">
+                        <div style="text-align:center;margin-top:0.5rem">
+                            <button onclick="event.stopPropagation();pickFromDrive('2b')"
+                                style="background:none;border:1px solid #e2e8f0;border-radius:8px;padding:0.4rem 0.85rem;font-size:0.75rem;font-weight:600;color:#3b82f6;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:0.35rem;transition:all .15s"
+                                onmouseover="this.style.background='#eff6ff';this.style.borderColor='#3b82f6'"
+                                onmouseout="this.style.background='none';this.style.borderColor='#e2e8f0'">📁 Pick from
+                                Drive</button>
+                        </div>
+                    </div>
+
+                    <!-- Purchase Register Upload -->
+                    <div class="upload-card">
+                        <div class="upload-card-header">
+                            <div class="upload-card-icon uci-green">📥</div>
+                            <div>
+                                <div class="upload-card-title">Purchase Register</div>
+                                <div class="upload-card-subtitle">Your internal purchase/expense book</div>
+                            </div>
+                        </div>
+                        <div class="upload-dropzone" id="dropzone-pr"
+                            onclick="document.getElementById('pr-file').click()" ondragover="handleDragOver(event)"
+                            ondragleave="handleDragLeave(event)" ondrop="handleDrop(event,'pr')">
+                            <span class="dropzone-icon">📋</span>
+                            <div class="dropzone-title">Drop your Purchase Register here</div>
+                            <div class="dropzone-sub">or <strong>browse files</strong> to upload</div>
+                            <div class="dropzone-formats">
+                                <span class="format-tag">.xlsx</span>
+                                <span class="format-tag">.csv</span>
+                            </div>
+                            <div class="dropzone-file" id="file-name-pr">
+                                <span>✓</span>
+                                <span id="file-label-pr"></span>
+                            </div>
+                        </div>
+                        <input type="file" id="pr-file" accept=".xlsx,.csv" style="display:none"
+                            onchange="handleFileSelect(this, 'pr')">
+                        <div style="text-align:center;margin-top:0.5rem">
+                            <button onclick="event.stopPropagation();pickFromDrive('pr')"
+                                style="background:none;border:1px solid #e2e8f0;border-radius:8px;padding:0.4rem 0.85rem;font-size:0.75rem;font-weight:600;color:#3b82f6;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:0.35rem;transition:all .15s"
+                                onmouseover="this.style.background='#eff6ff';this.style.borderColor='#3b82f6'"
+                                onmouseout="this.style.background='none';this.style.borderColor='#e2e8f0'">📁 Pick from
+                                Drive</button>
+                        </div>
+                    </div>
                 </div>
+
+                <!-- ═══ ACTION STRIP ═══ -->
+                <div class="action-strip">
+                    <div class="action-info">
+                        <div class="ready-indicator">
+                            <span class="ready-dot" id="ready-dot"></span>
+                            <span class="ready-text" id="ready-text">Upload both files to proceed</span>
+                        </div>
+                        <div class="file-indicators">
+                            <span class="file-indicator pending" id="fi-2b">📊 GSTR-2B: Not uploaded</span>
+                            <span class="file-indicator pending" id="fi-pr">📥 PR: Not uploaded</span>
+                        </div>
+                    </div>
+                    <button class="reconcile-btn" id="reconcile-btn" onclick="startReconciliation()" disabled>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                            <polyline points="22 4 12 14.01 9 11.01" />
+                        </svg>
+                        Start Reconciliation
+                    </button>
+                </div>
+
+                <!-- ═══ RESULTS DASHBOARD ═══ -->
+                <div class="recon-results" id="recon-results" style="display:none">
+                    <!-- Drive Save Banner (inserted dynamically) -->
+                    <div id="drive-save-banner-slot"></div>
+
+                    <!-- Summary Cards -->
+                    <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:1rem">
+                        <h2
+                            style="font-family:'Outfit',sans-serif;font-size:1.15rem;font-weight:800;color:#111827;margin:0">
+                            📊 Reconciliation Results</h2>
+                        <button onclick="downloadReport()"
+                            style="margin-left:auto;padding:0.45rem 1rem;border:none;border-radius:8px;background:linear-gradient(135deg,#1e3a8a,#3b82f6);color:#fff;font-family:'Inter',sans-serif;font-size:0.78rem;font-weight:700;cursor:pointer">⬇
+                            Download Excel Report</button>
+                    </div>
+                    <div id="summary-cards"
+                        style="display:grid;grid-template-columns:repeat(5,1fr);gap:0.75rem;margin-bottom:1.25rem">
+                    </div>
+
+                    <!-- Tax Variance Table -->
+                    <div
+                        style="background:#fff;border:1px solid #e5e7eb;border-radius:14px;overflow:hidden;margin-bottom:1.25rem">
+                        <div
+                            style="padding:1rem 1.25rem;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;gap:0.5rem">
+                            <span style="font-size:0.92rem;font-weight:700;color:#111827">💰 Tax Component
+                                Variance</span>
+                        </div>
+                        <table style="width:100%;border-collapse:collapse;font-size:0.82rem" id="tax-variance-table">
+                            <thead>
+                                <tr style="background:#f8fafc">
+                                    <th
+                                        style="text-align:left;padding:0.65rem 1rem;font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#6b7280">
+                                        Component</th>
+                                    <th
+                                        style="text-align:right;padding:0.65rem 1rem;font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#6b7280">
+                                        GSTR-2B</th>
+                                    <th
+                                        style="text-align:right;padding:0.65rem 1rem;font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#6b7280">
+                                        Purchase Register</th>
+                                    <th
+                                        style="text-align:right;padding:0.65rem 1rem;font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#6b7280">
+                                        Difference</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tax-var-body"></tbody>
+                        </table>
+                    </div>
+
+                    <!-- Blocked ITC Alert -->
+                    <div id="blocked-itc-alert" style="display:none"></div>
+
+                    <!-- Detailed Rows Table -->
+                    <div style="background:#fff;border:1px solid #e5e7eb;border-radius:14px;overflow:hidden">
+                        <div
+                            style="padding:1rem 1.25rem;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;justify-content:space-between">
+                            <span style="font-size:0.92rem;font-weight:700;color:#111827">📋 Invoice-Level
+                                Details</span>
+                            <div style="display:flex;gap:0.5rem" id="filter-btns"></div>
+                        </div>
+                        <div style="overflow-x:auto;max-height:500px;overflow-y:auto">
+                            <table style="width:100%;border-collapse:collapse;font-size:0.75rem" id="detail-table">
+                                <thead id="detail-thead"></thead>
+                                <tbody id="detail-tbody"></tbody>
+                            </table>
+                        </div>
+                        <div id="detail-footer"
+                            style="padding:0.75rem 1.25rem;border-top:1px solid #f1f5f9;font-size:0.72rem;color:#9ca3af;text-align:center">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ═══ FEATURES ═══ -->
+                <div class="features-grid">
+                    <div class="feature-card fc-blue">
+                        <div class="fc-icon">🎯</div>
+                        <div class="fc-title">Intelligent Invoice Matching</div>
+                        <div class="fc-desc">
+                            AI matches invoices across GSTR-2B and your PR using GSTIN, invoice number,
+                            taxable value, and date with configurable tolerance.
+                        </div>
+                        <span class="fc-tag fc-tag-blue">AI Matching</span>
+                    </div>
+                    <div class="feature-card fc-green">
+                        <div class="fc-icon">📋</div>
+                        <div class="fc-title">ITC Claim Validation</div>
+                        <div class="fc-desc">
+                            Identify excess ITC claims, missed credits, and invoices present
+                            in GSTR-2B but missing from your books. Autocomplete Table 4 of GSTR-3B.
+                        </div>
+                        <span class="fc-tag fc-tag-green">ITC Accuracy</span>
+                    </div>
+                    <div class="feature-card fc-amber">
+                        <div class="fc-icon">⚠️</div>
+                        <div class="fc-title">Mismatch Detection</div>
+                        <div class="fc-desc">
+                            Flag discrepancies like amount differences, GSTIN mismatches,
+                            or missing invoices — with suggestions for resolution.
+                        </div>
+                        <span class="fc-tag fc-tag-amber">Risk Alerts</span>
+                    </div>
+                </div>
+
+                <!-- ═══ RECENT JOBS ═══ -->
+                <div class="jobs-section" id="jobs-section">
+                    <div class="jobs-header">
+                        <h3>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10" />
+                                <polyline points="12 6 12 12 16 14" />
+                            </svg>
+                            Recent Reconciliation Jobs
+                            <span class="jobs-count" id="jobs-count">0</span>
+                        </h3>
+                        <button class="tbtn tbtn-secondary" onclick="loadJobs()"
+                            style="font-size:0.72rem;padding:0.35rem 0.75rem;">
+                            ↻ Refresh
+                        </button>
+                    </div>
+                    <div id="jobs-list">
+                        <div class="jobs-empty">
+                            <div class="empty-icon">📂</div>
+                            <p>No reconciliation jobs yet. Upload files and start a reconciliation above.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ═══ MATCHING RULES INFO ═══ -->
+                <div class="rules-info">
+                    <h3>🧠 How AI Matching Works</h3>
+                    <p>Our reconciliation engine uses multiple strategies to match invoices accurately</p>
+                    <div class="rule-grid">
+                        <div class="rule-item">
+                            <div class="rule-icon">🔍</div>
+                            <div class="rule-text">
+                                <strong>GSTIN Matching</strong>
+                                <span>Exact match on supplier GSTIN ensures the right vendor is identified</span>
+                            </div>
+                        </div>
+                        <div class="rule-item">
+                            <div class="rule-icon">🧾</div>
+                            <div class="rule-text">
+                                <strong>Invoice Number Fuzzy Match</strong>
+                                <span>Handles prefix/suffix variations, leading zeros, and formatting differences</span>
+                            </div>
+                        </div>
+                        <div class="rule-item">
+                            <div class="rule-icon">💰</div>
+                            <div class="rule-text">
+                                <strong>Taxable Value Tolerance</strong>
+                                <span>Configurable tolerance (default ₹1) for minor rounding differences</span>
+                            </div>
+                        </div>
+                        <div class="rule-item">
+                            <div class="rule-icon">📅</div>
+                            <div class="rule-text">
+                                <strong>Date Range Matching</strong>
+                                <span>Allows configurable day tolerance for invoice date matching</span>
+                            </div>
+                        </div>
+                        <div class="rule-item">
+                            <div class="rule-icon">⚖️</div>
+                            <div class="rule-text">
+                                <strong>Tax Component Split</strong>
+                                <span>Validates CGST, SGST, IGST components individually for accuracy</span>
+                            </div>
+                        </div>
+                        <div class="rule-item">
+                            <div class="rule-icon">🏷️</div>
+                            <div class="rule-text">
+                                <strong>Classification Mapping</strong>
+                                <span>Maps invoice types (B2B, CDNR, ISD) across both data sources</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </main>
     </div>
+
+    <div class="tool-toast" id="toast"></div>
+
     <script src="tool-sidebar.js"></script>
     <script src="api_config.js?v=2"></script>
     <script src="session-manager.js"></script>
+    <script src="drive-picker.js"></script>
     <script>
+        // ═══ INIT ═══
         renderToolSidebar('gstr2b-vs-pr');
-        let file1=null,file2=null;
-        function updateFileName(type,input){
-            if(!input.files.length)return;
-            if(type==='f1'){file1=input.files[0];const el=document.getElementById('gstr2b-file-name');el.textContent='📎 '+file1.name;el.style.display='';input.closest('.tool-upload').classList.add('has-file');}
-            else{file2=input.files[0];const el=document.getElementById('pr-file-name');el.textContent='📎 '+file2.name;el.style.display='';input.closest('.tool-upload').classList.add('has-file');}
-            document.getElementById('reconcile-btn').disabled=!(file1&&file2);
+
+        let file2b = null, filePR = null;
+
+        function pickFromDrive(type) {
+            const params = new URLSearchParams(window.location.search);
+            const cid = params.get('clientId');
+            if (!cid) return;
+            const accept = type === 'pr' ? ['.xlsx', '.csv'] : ['.xlsx', '.csv', '.json'];
+            openDrivePicker({
+                clientId: cid,
+                accept,
+                onSelect: (file) => {
+                    // Simulate setting the file via the picker
+                    if (type === '2b') { file2b = file; updateDropzone('2b', file); }
+                    else { filePR = file; updateDropzone('pr', file); }
+                    checkReady();
+                }
+            });
         }
-        async function startReconciliation(){
-            const btn=document.getElementById('reconcile-btn');btn.disabled=true;btn.innerHTML='<span class="tool-spinner"></span> Processing...';
-            try{
-                const token=localStorage.getItem('access_token');const params=new URLSearchParams(window.location.search);const clientId=params.get('clientId');const fileKeys=[];
-                for(const file of[file1,file2]){const fd=new FormData();fd.append('file',file);const res=await fetch(`${API_BASE_URL}/jobs/upload`,{method:'POST',headers:{'Authorization':`Bearer ${token}`},body:fd});if(res.ok){const d=await res.json();fileKeys.push(d.file_key||d.file_path);}}
-                const jobRes=await fetch(`${API_BASE_URL}/jobs/`,{method:'POST',headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'},body:JSON.stringify({job_type:'gstr2b_vs_pr',input_files:fileKeys,client_id:clientId})});
-                if(jobRes.ok){alert('Reconciliation job started!');loadJobs();}else{const err=await jobRes.json();alert('Failed: '+(err.detail||'Unknown error'));}
-            }catch(err){console.error(err);alert('Error: '+err.message);}
-            finally{btn.disabled=false;btn.textContent='⚖️ Start Reconciliation';}
+
+        // ═══ DRAG & DROP ═══
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.currentTarget.classList.add('drag-over');
         }
-        let pollingInterval=null;
-        async function loadJobs(){
-            const params=new URLSearchParams(window.location.search);const clientId=params.get('clientId');if(!clientId)return;
-            try{const res=await authFetch(`/jobs/?skip=0&limit=50&client_id=${clientId}`);if(res.ok){const jobs=await res.json();const taskJobs=jobs.filter(j=>j.job_type==='gstr2b_vs_pr');if(taskJobs.length>0){document.getElementById('recent-jobs-container').style.display='block';renderJobs(taskJobs);const hasIP=taskJobs.some(j=>j.status==='QUEUED'||j.status==='PROCESSING');if(hasIP&&!pollingInterval)pollingInterval=setInterval(loadJobs,5000);else if(!hasIP&&pollingInterval){clearInterval(pollingInterval);pollingInterval=null;}}}}catch(e){console.error(e)}
+
+        function handleDragLeave(e) {
+            e.currentTarget.classList.remove('drag-over');
         }
-        function renderJobs(jobs){
-            document.getElementById('jobs-list').innerHTML=jobs.map(job=>{const date=new Date(job.created_at).toLocaleString();return `<div class="tool-job"><div class="tool-job-info"><span class="tool-job-name">GSTR-2B vs PR Reconciliation</span><span class="tool-job-meta">Created: ${date}</span></div><div style="display:flex;align-items:center;gap:.75rem"><span class="tool-job-status tj-${job.status.toLowerCase()}">${job.status}</span>${job.status==='COMPLETED'?`<button class="tbtn tbtn-download" onclick="downloadJobFile('${job.id}')">⬇ Download</button>`:''}</div></div>`;}).join('');
+
+        function handleDrop(e, type) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('drag-over');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                if (type === '2b') {
+                    file2b = files[0];
+                    updateDropzone('2b', file2b);
+                } else {
+                    filePR = files[0];
+                    updateDropzone('pr', filePR);
+                }
+                checkReady();
+            }
         }
-        async function downloadJobFile(jobId){
-            try{const response=await authFetch(`/jobs/${jobId}/download`);if(!response.ok){alert('Download failed');return;}const blob=await response.blob();const url=window.URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`GSTR2B_vs_PR_Report_${jobId.substring(0,8)}.xlsx`;document.body.appendChild(a);a.click();window.URL.revokeObjectURL(url);document.body.removeChild(a);}catch(e){console.error(e);alert('Error downloading file');}
+
+        // ═══ FILE SELECT ═══
+        function handleFileSelect(input, type) {
+            if (!input.files.length) return;
+            if (type === '2b') {
+                file2b = input.files[0];
+                updateDropzone('2b', file2b);
+            } else {
+                filePR = input.files[0];
+                updateDropzone('pr', filePR);
+            }
+            checkReady();
         }
+
+        function updateDropzone(type, file) {
+            const dropzone = document.getElementById(`dropzone-${type}`);
+            const fileNameEl = document.getElementById(`file-name-${type}`);
+            const fileLabelEl = document.getElementById(`file-label-${type}`);
+            const indicator = document.getElementById(`fi-${type}`);
+
+            dropzone.classList.add('has-file');
+            fileNameEl.classList.add('visible');
+            fileLabelEl.textContent = file.name;
+
+            if (type === '2b') {
+                indicator.className = 'file-indicator uploaded';
+                indicator.textContent = '📊 GSTR-2B: ✓ ' + file.name;
+            } else {
+                indicator.className = 'file-indicator uploaded';
+                indicator.textContent = '📥 PR: ✓ ' + file.name;
+            }
+        }
+
+        function checkReady() {
+            const btn = document.getElementById('reconcile-btn');
+            const dot = document.getElementById('ready-dot');
+            const text = document.getElementById('ready-text');
+
+            if (file2b && filePR) {
+                btn.disabled = false;
+                dot.classList.add('active');
+                text.textContent = 'Ready to reconcile';
+                text.classList.add('active');
+            } else {
+                btn.disabled = true;
+                dot.classList.remove('active');
+                text.textContent = 'Upload both files to proceed';
+                text.classList.remove('active');
+            }
+        }
+
+        // ═══ RECONCILIATION ═══
+        let lastReconResult = null;
+
+        async function startReconciliation() {
+            const btn = document.getElementById('reconcile-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="btn-spinner"></span> Reconciling...';
+
+            try {
+                const token = localStorage.getItem('access_token');
+                const params = new URLSearchParams(window.location.search);
+                const clientId = params.get('clientId');
+
+                // Send files directly to the sync reconciliation endpoint
+                const fd = new FormData();
+                fd.append('file1', file2b);
+                fd.append('file2', filePR);
+                fd.append('job_type', 'gstr2b_vs_pr');
+                if (clientId) fd.append('client_id', clientId);
+
+                const res = await fetch(`${API_BASE_URL}/reconciliation/run`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    body: fd
+                });
+
+                if (!res.ok) {
+                    const err = await res.json();
+                    throw new Error(err.detail || 'Reconciliation failed');
+                }
+
+                const data = await res.json();
+                lastReconResult = data;
+                displayResults(data);
+
+                // Show drive save notification
+                showDriveSaveBanner(data);
+                showToast('Reconciliation complete! Report saved to Drive.', 'success');
+                loadJobs();
+
+            } catch (err) {
+                console.error(err);
+                showToast('Error: ' + err.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                    <polyline points="22 4 12 14.01 9 11.01"/>
+                </svg> Start Reconciliation`;
+                checkReady();
+            }
+        }
+
+        function showDriveSaveBanner(data) {
+            const slot = document.getElementById('drive-save-banner-slot');
+            if (!slot) return;
+            const params = new URLSearchParams(window.location.search);
+            const clientId = params.get('clientId');
+            const driveUrl = clientId ? `drive.html?clientId=${clientId}` : '#';
+            slot.innerHTML = `
+                <div class="drive-save-banner">
+                    <div class="dsb-icon">📁</div>
+                    <div class="dsb-text">
+                        <div class="dsb-title">✅ Report auto-saved to Client Drive</div>
+                        <div class="dsb-desc">GSTR-2B vs PR Reconciliation report has been saved to the "GST Returns" folder in the client's drive.</div>
+                    </div>
+                    <a href="${driveUrl}" class="dsb-link">Open Drive →</a>
+                </div>
+            `;
+        }
+
+        function fmt(n) { return '₹' + Math.abs(n).toLocaleString('en-IN', { maximumFractionDigits: 0 }); }
+
+        function displayResults(data) {
+            const s = data.summary;
+            const resultsEl = document.getElementById('recon-results');
+            resultsEl.style.display = 'block';
+
+            // Summary cards
+            const cardData = [
+                { label: 'Total Invoices', value: s.total_invoices, icon: '📄', color: '#3b82f6', bg: '#eff6ff' },
+                { label: 'Matched', value: s.matched, icon: '✅', color: '#16a34a', bg: '#f0fdf4' },
+                { label: 'Mismatched', value: s.mismatched, icon: '⚠️', color: '#d97706', bg: '#fffbeb' },
+                { label: `Only in ${s.source1_label}`, value: s.missing_in_source2, icon: '🔴', color: '#dc2626', bg: '#fef2f2' },
+                { label: `Only in ${s.source2_label}`, value: s.missing_in_source1, icon: '🟡', color: '#9333ea', bg: '#faf5ff' },
+            ];
+            document.getElementById('summary-cards').innerHTML = cardData.map(c => `
+                <div style="background:${c.bg};border:1px solid ${c.color}22;border-radius:12px;padding:1rem;text-align:center">
+                    <div style="font-size:1.75rem;margin-bottom:0.3rem">${c.icon}</div>
+                    <div style="font-family:'Outfit',sans-serif;font-size:1.5rem;font-weight:800;color:${c.color}">${c.value}</div>
+                    <div style="font-size:0.68rem;font-weight:600;color:#6b7280;margin-top:0.15rem">${c.label}</div>
+                </div>
+            `).join('');
+
+            // Tax variance table
+            const taxLabels = { taxable: 'Taxable Value', igst: 'IGST', cgst: 'CGST', sgst: 'SGST', cess: 'Cess' };
+            const taxIcons = { taxable: '💰', igst: '🔵', cgst: '🟢', sgst: '🟠', cess: '🟣' };
+            let taxHtml = '';
+            for (const [key, label] of Object.entries(taxLabels)) {
+                const t = data.tax_summary[key];
+                if (!t) continue;
+                const diffCls = t.difference > 1 ? 'color:#dc2626;font-weight:700' : t.difference < -1 ? 'color:#d97706;font-weight:700' : 'color:#16a34a;font-weight:700';
+                taxHtml += `<tr>
+                    <td style="padding:0.6rem 1rem;border-bottom:1px solid #f1f5f9;font-weight:600;color:#374151">${taxIcons[key] || '📊'} ${label}</td>
+                    <td style="padding:0.6rem 1rem;border-bottom:1px solid #f1f5f9;text-align:right">${fmt(t.source1)}</td>
+                    <td style="padding:0.6rem 1rem;border-bottom:1px solid #f1f5f9;text-align:right">${fmt(t.source2)}</td>
+                    <td style="padding:0.6rem 1rem;border-bottom:1px solid #f1f5f9;text-align:right;${diffCls}">${t.difference >= 0 ? '+' : '-'}${fmt(t.difference)}</td>
+                </tr>`;
+            }
+            document.getElementById('tax-var-body').innerHTML = taxHtml;
+
+            // Blocked ITC alert
+            const blockedEl = document.getElementById('blocked-itc-alert');
+            if (data.blocked_itc && data.blocked_itc.count > 0) {
+                blockedEl.style.display = 'block';
+                blockedEl.innerHTML = `
+                    <div style="display:flex;align-items:center;gap:0.5rem;padding:0.75rem 1rem;background:#fffbeb;border:1px solid #f59e0b33;border-radius:10px;margin-bottom:1rem">
+                        <span style="font-size:1.1rem">🚫</span>
+                        <div>
+                            <div style="font-size:0.78rem;font-weight:700;color:#92400e">Blocked ITC Excluded</div>
+                            <div style="font-size:0.72rem;color:#a16207">${data.blocked_itc.count} invoice(s) with ITC Eligible = No were excluded from the comparison. Total tax: ${fmt(data.blocked_itc.total_tax)}</div>
+                        </div>
+                    </div>`;
+            } else {
+                blockedEl.style.display = 'none';
+            }
+
+            // Filter buttons
+            document.getElementById('filter-btns').innerHTML = [
+                { label: `All (${s.total_invoices})`, filter: 'all' },
+                { label: `Matched (${s.matched})`, filter: 'MATCHED' },
+                { label: `Mismatch (${s.mismatched})`, filter: 'MISMATCH' },
+                { label: `Missing (${s.missing_in_source2 + s.missing_in_source1})`, filter: 'MISSING' },
+            ].map(b => `<button onclick="filterRows('${b.filter}')" style="padding:0.3rem 0.65rem;border:1px solid #e5e7eb;border-radius:6px;background:#fff;font-size:0.68rem;font-weight:600;color:#6b7280;cursor:pointer;font-family:'Inter',sans-serif">${b.label}</button>`).join('');
+
+            // Detailed table
+            renderDetailTable(data.rows, data.columns);
+
+            document.getElementById('detail-footer').textContent = `Showing ${Math.min(data.rows.length, 500)} of ${data.total_rows} invoices`;
+
+            // Scroll to results
+            resultsEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        let allRows = [], allCols = [];
+
+        function renderDetailTable(rows, columns) {
+            allRows = rows;
+            allCols = columns;
+            const thead = document.getElementById('detail-thead');
+            const tbody = document.getElementById('detail-tbody');
+
+            thead.innerHTML = '<tr>' + columns.map(c =>
+                `<th style="position:sticky;top:0;background:#f8fafc;padding:0.55rem 0.75rem;font-size:0.58rem;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#6b7280;text-align:left;white-space:nowrap;border-bottom:1px solid #e5e7eb">${c}</th>`
+            ).join('') + '</tr>';
+
+            renderRows(rows);
+        }
+
+        function renderRows(rows) {
+            document.getElementById('detail-tbody').innerHTML = rows.map(row => {
+                const status = row['Status'] || '';
+                let bg = '#fff';
+                if (status === 'MATCHED') bg = '#f0fdf4';
+                else if (status.includes('MISMATCH')) bg = '#fffbeb';
+                else if (status.includes('MISSING')) bg = '#fef2f2';
+                return '<tr style="background:' + bg + '">' + allCols.map(c => {
+                    let v = row[c];
+                    if (v === null || v === undefined) v = '—';
+                    let style = 'padding:0.45rem 0.75rem;border-bottom:1px solid #f1f5f9;white-space:nowrap;';
+                    if (c === 'Status') {
+                        if (status === 'MATCHED') style += 'color:#16a34a;font-weight:700;';
+                        else if (status.includes('MISMATCH')) style += 'color:#d97706;font-weight:700;';
+                        else style += 'color:#dc2626;font-weight:700;';
+                    }
+                    return `<td style="${style}">${v}</td>`;
+                }).join('') + '</tr>';
+            }).join('');
+        }
+
+        function filterRows(filter) {
+            if (filter === 'all') renderRows(allRows);
+            else renderRows(allRows.filter(r => (r['Status'] || '').includes(filter)));
+        }
+
+        async function downloadReport() {
+            if (!lastReconResult) return;
+            try {
+                const response = await authFetch(`/jobs/${lastReconResult.job_id}/download`);
+                if (!response.ok) { showToast('Download failed', 'error'); return; }
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url; a.download = `GSTR2B_vs_PR_Report.xlsx`;
+                document.body.appendChild(a); a.click();
+                window.URL.revokeObjectURL(url); document.body.removeChild(a);
+                showToast('Report downloaded!', 'success');
+            } catch (e) { console.error(e); showToast('Download error', 'error'); }
+        }
+
+        // ═══ JOBS ═══
+        let pollingInterval = null;
+
+        function timeAgo(dateStr) {
+            const now = new Date();
+            const date = new Date(dateStr);
+            const diffMs = now - date;
+            const diffSec = Math.floor(diffMs / 1000);
+            const diffMin = Math.floor(diffSec / 60);
+            const diffHr = Math.floor(diffMin / 60);
+            const diffDay = Math.floor(diffHr / 24);
+            if (diffSec < 60) return 'Just now';
+            if (diffMin < 60) return `${diffMin} min${diffMin > 1 ? 's' : ''} ago`;
+            if (diffHr < 24) return `${diffHr} hr${diffHr > 1 ? 's' : ''} ago`;
+            if (diffDay === 1) return 'Yesterday';
+            if (diffDay < 7) return `${diffDay} days ago`;
+            return date.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+        }
+
+        async function loadJobs() {
+            const params = new URLSearchParams(window.location.search);
+            const clientId = params.get('clientId');
+
+            try {
+                // Fetch jobs — with clientId if available, otherwise all jobs for this user
+                const url = clientId
+                    ? `/jobs/?skip=0&limit=50&client_id=${clientId}`
+                    : `/jobs/?skip=0&limit=50`;
+                const res = await authFetch(url);
+                if (res && res.ok) {
+                    const jobs = await res.json();
+                    const taskJobs = jobs.filter(j => j.job_type === 'gstr2b_vs_pr');
+                    renderJobs(taskJobs);
+
+                    const hasInProgress = taskJobs.some(j => j.status === 'QUEUED' || j.status === 'PROCESSING');
+                    if (hasInProgress && !pollingInterval) {
+                        pollingInterval = setInterval(loadJobs, 5000);
+                    } else if (!hasInProgress && pollingInterval) {
+                        clearInterval(pollingInterval);
+                        pollingInterval = null;
+                    }
+                }
+            } catch (e) {
+                console.error('Error loading jobs:', e);
+            }
+        }
+
+        function renderJobs(jobs) {
+            const list = document.getElementById('jobs-list');
+            if (!jobs || jobs.length === 0) {
+                list.innerHTML = `
+                    <div class="jobs-empty">
+                        <div class="empty-icon">📂</div>
+                        <p>No reconciliation jobs yet. Upload files and start a reconciliation above.</p>
+                    </div>`;
+                return;
+            }
+
+            // Update the header count
+            const countEl = document.getElementById('jobs-count');
+            if (countEl) countEl.textContent = jobs.length;
+
+            list.innerHTML = jobs.map(job => {
+                const relTime = timeAgo(job.created_at);
+                const fullDate = new Date(job.created_at).toLocaleString('en-IN', {
+                    day: '2-digit', month: 'short', year: 'numeric',
+                    hour: '2-digit', minute: '2-digit'
+                });
+                const statusClass = job.status.toLowerCase();
+                const statusIcon = {
+                    'QUEUED': '⏳',
+                    'PROCESSING': '⚙️',
+                    'COMPLETED': '✅',
+                    'FAILED': '❌'
+                }[job.status] || '📄';
+
+                const hasDrive = !!job.drive_folder_name;
+                const driveTag = hasDrive
+                    ? `<span class="job-drive-tag">📁 Saved to ${job.drive_folder_name}</span>`
+                    : '';
+
+                // Show input file names if available
+                const files = (job.input_files || []).map(f => {
+                    const name = typeof f === 'string' ? f.split('/').pop() : 'file';
+                    return `<span class="job-file-tag">📄 ${name}</span>`;
+                }).join(' ');
+
+                // Drive view button
+                const params = new URLSearchParams(window.location.search);
+                const clientId = params.get('clientId');
+                const driveBtn = hasDrive && clientId
+                    ? `<a href="drive.html?clientId=${clientId}" class="job-view-drive">📁 Drive</a>`
+                    : '';
+
+                return `
+                    <div class="job-row${hasDrive ? ' has-drive' : ''}">
+                        <div class="job-icon">${statusIcon}</div>
+                        <div class="job-details">
+                            <div class="job-name">GSTR-2B vs Purchase Register ${driveTag}</div>
+                            <div class="job-meta">
+                                <span class="job-time" title="${fullDate}">🕐 ${relTime}</span>
+                                <span class="job-meta-sep">•</span>
+                                <span>ID: ${job.id.substring(0, 8)}</span>
+                                ${files ? `<span class="job-meta-sep">•</span> ${files}` : ''}
+                            </div>
+                        </div>
+                        <div class="job-actions">
+                            <span class="job-status ${statusClass}">${job.status}</span>
+                            ${driveBtn}
+                            ${job.status === 'COMPLETED'
+                        ? `<button class="job-download" onclick="downloadJobFile('${job.id}')">⬇ Download</button>`
+                        : job.status === 'FAILED' && job.events && job.events.length
+                            ? `<span style="font-size:0.65rem;color:#dc2626;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${job.events[job.events.length - 1].message}">❌ ${job.events[job.events.length - 1].message.substring(0, 50)}</span>`
+                            : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function downloadJobFile(jobId) {
+            try {
+                const response = await authFetch(`/jobs/${jobId}/download`);
+                if (!response || !response.ok) {
+                    showToast('Download failed', 'error');
+                    return;
+                }
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `GSTR2B_vs_PR_Report_${jobId.substring(0, 8)}.xlsx`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+                showToast('Report downloaded successfully!', 'success');
+            } catch (e) {
+                console.error(e);
+                showToast('Error downloading file', 'error');
+            }
+        }
+
+        // ═══ TOAST ═══
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = (type === 'success' ? '✓ ' : '✕ ') + message;
+            toast.className = 'tool-toast ' + type;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 4000);
+        }
+
+        // ═══ LOAD ON INIT ═══
         loadJobs();
     </script>
 </body>
+
 </html>

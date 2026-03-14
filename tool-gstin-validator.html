@@ -78,6 +78,12 @@
                     </div>
                     <input type="file" id="bulk-file" accept=".xlsx,.csv" style="display:none"
                         onchange="handleBulkUpload(this)">
+                    <div style="text-align:center;margin-top:0.5rem">
+                        <button onclick="pickFromDrive()"
+                            style="background:none;border:1px solid #e2e8f0;border-radius:8px;padding:0.35rem 0.75rem;font-size:0.72rem;font-weight:600;color:#3b82f6;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:0.3rem;transition:all .15s"
+                            onmouseover="this.style.background='#eff6ff'" onmouseout="this.style.background='none'">📁
+                            Pick from Drive</button>
+                    </div>
                     <div style="margin-top:1rem;display:flex;gap:0.65rem">
                         <button class="tbtn tbtn-primary" id="bulk-validate-btn" onclick="triggerBulkValidation()"
                             disabled>Validate All</button>
@@ -87,12 +93,17 @@
 
                 <!-- Recent Jobs -->
                 <div class="tool-card" id="recent-jobs-container" style="display:none">
-                    <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="10" />
-                            <polyline points="12 6 12 12 16 14" />
-                        </svg> Recent Jobs</h3>
-                    <p>Track the status of your bulk GSTIN verification reports.</p>
-                    <div class="tool-jobs" id="jobs-list"></div>
+                    <div class="jobs-section-header">
+                        <h3>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10" />
+                                <polyline points="12 6 12 12 16 14" />
+                            </svg>
+                            Recent Jobs <span class="jobs-count" id="jobs-count">0</span>
+                        </h3>
+                        <button class="tbtn tbtn-secondary" onclick="loadJobs()" style="font-size:0.72rem;padding:0.35rem 0.75rem">↻ Refresh</button>
+                    </div>
+                    <div id="jobs-list"></div>
                 </div>
             </div>
         </main>
@@ -101,8 +112,24 @@
     <script src="tool-sidebar.js"></script>
     <script src="api_config.js?v=2"></script>
     <script src="session-manager.js?v=2"></script>
+    <script src="drive-picker.js"></script>
+    <script src="tool-jobs.js"></script>
     <script>
         renderToolSidebar('gstin-validator');
+        initToolJobs({ jobType: 'gst_verify', jobLabel: 'GSTIN Bulk Verification', filePrefix: 'GST_Verify' });
+
+        let bulkFile = null;
+        function pickFromDrive() {
+            const cid = new URLSearchParams(window.location.search).get('clientId');
+            if (!cid) return;
+            openDrivePicker({
+                clientId: cid, accept: ['.xlsx', '.csv'], onSelect: (file) => {
+                    bulkFile = file;
+                    const el = document.getElementById('bulk-file-name'); el.textContent = '📎 ' + file.name; el.style.display = '';
+                    document.getElementById('bulk-validate-btn').disabled = false;
+                }
+            });
+        }
 
         async function validateGSTIN() {
             const input = document.getElementById('gstin-input');
@@ -128,29 +155,24 @@
 
         function handleBulkUpload(input) {
             if (input.files.length > 0) {
+                bulkFile = input.files[0];
                 const el = document.getElementById('bulk-file-name'); el.textContent = '📎 ' + input.files[0].name; el.style.display = '';
-                input.closest('.tool-upload').classList.add('has-file');
+                const ub = input.closest('.tool-upload'); if (ub) ub.classList.add('has-file');
                 document.getElementById('bulk-validate-btn').disabled = false;
             }
         }
 
         async function triggerBulkValidation() {
-            const fileInput = document.getElementById('bulk-file');
-            if (!fileInput.files.length) return;
+            const file = bulkFile || (document.getElementById('bulk-file').files.length > 0 ? document.getElementById('bulk-file').files[0] : null);
+            if (!file) return;
+            const params = new URLSearchParams(window.location.search);
+            const clientId = params.get('clientId');
+            if (!clientId) { alert('⚠️ No client selected. Please navigate from a client workspace.'); return; }
             const btn = document.getElementById('bulk-validate-btn');
-<<<<<<< HEAD
-            const originalText = btn.innerHTML;
-            btn.disabled = true;
-            btn.innerHTML = '<span class="loading-spinner"></span> Processing...';
-
-=======
             btn.disabled = true; btn.innerHTML = '<span class="tool-spinner"></span> Processing...';
->>>>>>> ea8664237128fffa4ca00ea0ee0946ce90945ffa
             try {
-                const formData = new FormData(); formData.append('file', fileInput.files[0]);
+                const formData = new FormData(); formData.append('file', file);
                 const token = localStorage.getItem('access_token');
-                const params = new URLSearchParams(window.location.search);
-                const clientId = params.get('clientId');
                 const uploadRes = await fetch(`${API_BASE_URL}/jobs/upload`, { method: 'POST', headers: { 'Authorization': `Bearer ${token}` }, body: formData });
                 if (uploadRes.ok) {
                     const uploadData = await uploadRes.json();
@@ -158,115 +180,14 @@
                         method: 'POST', headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
                         body: JSON.stringify({ job_type: 'gst_verify', input_files: [uploadData.file_key || uploadData.file_path], client_id: clientId })
                     });
-<<<<<<< HEAD
-
-                    if (!jobRes.ok) {
-                        const err = await jobRes.json();
-                        throw new Error(err.detail || 'Failed to start job');
-                    }
-
-                    if (typeof loadJobs === 'function') loadJobs();
-
-                    const jobData = await jobRes.json();
-                    const jobId = jobData.id;
-
-                    // Poll for Completion
-                    let completed = false;
-                    let attempts = 0;
-                    const maxAttempts = 60;
-
-                    while (!completed && attempts < maxAttempts) {
-                        attempts++;
-                        btn.innerHTML = `<span class="loading-spinner"></span> Processing... (${attempts}s)`;
-                        await new Promise(r => setTimeout(r, 2000));
-
-                        const pollRes = await fetch(`${API_BASE_URL}/jobs/${jobId}`, {
-                            headers: { 'Authorization': `Bearer ${token}` }
-                        });
-
-                        if (pollRes.ok) {
-                            const statusData = await pollRes.json();
-                            if (statusData.status === 'completed') {
-                                completed = true;
-                                btn.innerHTML = '<span class="loading-spinner"></span> Downloading...';
-
-                                const downloadUrl = `${API_BASE_URL}/jobs/${jobId}/download`;
-                                const dlFetch = await fetch(downloadUrl, {
-                                    headers: { 'Authorization': `Bearer ${token}` }
-                                });
-                                const blob = await dlFetch.blob();
-                                const url = window.URL.createObjectURL(blob);
-                                const a = document.createElement('a');
-                                a.href = url;
-                                a.download = `GSTIN_Validation_Report_${clientId}.xlsx`;
-                                document.body.appendChild(a);
-                                a.click();
-                                window.URL.revokeObjectURL(url);
-                                document.body.removeChild(a);
-                            } else if (statusData.status === 'failed') {
-                                throw new Error("Job failed: " + (statusData.error || "Unknown error"));
-                            }
-                        }
-                    }
-                    if (!completed) alert('Processing is taking longer than expected.');
-                }
-            } catch (err) {
-                console.error(err);
-                alert('Error: ' + err.message);
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = originalText;
-            }
-=======
                     if (jobRes.ok) { alert('Bulk validation job started!'); loadJobs(); }
                     else { const err = await jobRes.json(); alert('Job failed: ' + (err.detail || 'Unknown error')); }
                 }
             } catch (err) { console.error(err); alert('Error: ' + err.message); }
             finally { btn.disabled = false; btn.textContent = 'Validate All'; }
->>>>>>> ea8664237128fffa4ca00ea0ee0946ce90945ffa
         }
 
         function downloadTemplate() { alert('Template download will be available soon.'); }
-
-        let pollingInterval = null;
-        async function loadJobs() {
-            const params = new URLSearchParams(window.location.search);
-            const clientId = params.get('clientId'); if (!clientId) return;
-            try {
-                const res = await authFetch(`/jobs/?skip=0&limit=50&client_id=${clientId}`);
-                if (res.ok) {
-                    const jobs = await res.json();
-                    const verifyJobs = jobs.filter(j => j.job_type === 'gst_verify');
-                    if (verifyJobs.length > 0) {
-                        document.getElementById('recent-jobs-container').style.display = 'block';
-                        renderJobs(verifyJobs);
-                        const hasIP = verifyJobs.some(j => j.status === 'QUEUED' || j.status === 'PROCESSING');
-                        if (hasIP && !pollingInterval) pollingInterval = setInterval(loadJobs, 5000);
-                        else if (!hasIP && pollingInterval) { clearInterval(pollingInterval); pollingInterval = null; }
-                    }
-                }
-            } catch (e) { console.error(e) }
-        }
-
-        function renderJobs(jobs) {
-            document.getElementById('jobs-list').innerHTML = jobs.map(job => {
-                const date = new Date(job.created_at).toLocaleString();
-                return `<div class="tool-job"><div class="tool-job-info"><span class="tool-job-name">GSTIN Bulk Verification</span><span class="tool-job-meta">Created: ${date}</span></div><div style="display:flex;align-items:center;gap:.75rem"><span class="tool-job-status tj-${job.status.toLowerCase()}">${job.status}</span>${job.status === 'COMPLETED' ? `<button class="tbtn tbtn-download" onclick="downloadJobFile('${job.id}')">⬇ Download</button>` : ''}</div></div>`;
-            }).join('');
-        }
-
-        async function downloadJobFile(jobId) {
-            try {
-                const response = await authFetch(`/jobs/${jobId}/download`);
-                if (!response.ok) { alert('Download failed'); return; }
-                const blob = await response.blob();
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a'); a.href = url; a.download = `GST_Verify_${jobId.substring(0, 8)}.xlsx`;
-                document.body.appendChild(a); a.click(); window.URL.revokeObjectURL(url); document.body.removeChild(a);
-            } catch (e) { console.error(e); alert('Error downloading file'); }
-        }
-
-        loadJobs();
     </script>
 </body>
 

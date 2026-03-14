@@ -59,19 +59,35 @@
                         onchange="updateFileName('ims', this)">
                     <input type="file" id="pr-file" accept=".xlsx,.csv" style="display:none"
                         onchange="updateFileName('pr', this)">
+                    <div style="text-align:center;margin-top:0.75rem">
+                        <button onclick="pickFromDrive('ims')"
+                            style="background:none;border:1px solid #e2e8f0;border-radius:8px;padding:0.35rem 0.75rem;font-size:0.72rem;font-weight:600;color:#3b82f6;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:0.3rem;transition:all .15s;margin-right:0.5rem"
+                            onmouseover="this.style.background='#eff6ff'" onmouseout="this.style.background='none'">📁
+                            IMS from Drive</button>
+                        <button onclick="pickFromDrive('pr')"
+                            style="background:none;border:1px solid #e2e8f0;border-radius:8px;padding:0.35rem 0.75rem;font-size:0.72rem;font-weight:600;color:#3b82f6;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:0.3rem;transition:all .15s"
+                            onmouseover="this.style.background='#eff6ff'" onmouseout="this.style.background='none'">📁
+                            PR from Drive</button>
+                    </div>
                     <div style="margin-top:1.25rem">
                         <button class="tbtn tbtn-primary" id="reconcile-btn" onclick="startReconciliation()" disabled>⚖️
                             Start Reconciliation</button>
                     </div>
                 </div>
 
+                <!-- Recent Jobs -->
                 <div class="tool-card" id="recent-jobs-container" style="display:none">
-                    <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="10" />
-                            <polyline points="12 6 12 12 16 14" />
-                        </svg> Recent Jobs</h3>
-                    <p>Track the status of your IMS vs PR reconciliation tasks.</p>
-                    <div class="tool-jobs" id="jobs-list"></div>
+                    <div class="jobs-section-header">
+                        <h3>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10" />
+                                <polyline points="12 6 12 12 16 14" />
+                            </svg>
+                            Recent Jobs <span class="jobs-count" id="jobs-count">0</span>
+                        </h3>
+                        <button class="tbtn tbtn-secondary" onclick="loadJobs()" style="font-size:0.72rem;padding:0.35rem 0.75rem">↻ Refresh</button>
+                    </div>
+                    <div id="jobs-list"></div>
                 </div>
             </div>
         </main>
@@ -80,83 +96,57 @@
     <script src="tool-sidebar.js"></script>
     <script src="api_config.js?v=2"></script>
     <script src="session-manager.js"></script>
+    <script src="drive-picker.js"></script>
+    <script src="tool-jobs.js"></script>
     <script>
         renderToolSidebar('ims-vs-pr');
+        initToolJobs({ jobType: 'ims_vs_pr', jobLabel: 'IMS vs PR Reconciliation', filePrefix: 'IMS_vs_PR_Report' });
 
         let file1 = null, file2 = null;
+        function pickFromDrive(type) {
+            const cid = new URLSearchParams(window.location.search).get('clientId');
+            if (!cid) return;
+            openDrivePicker({
+                clientId: cid, accept: ['.xlsx', '.csv'], onSelect: (file) => {
+                    if (type === 'ims') { file1 = file; const el = document.getElementById('ims-name'); el.textContent = '📎 ' + file.name; el.style.display = ''; }
+                    else { file2 = file; const el = document.getElementById('pr-name'); el.textContent = '📎 ' + file.name; el.style.display = ''; }
+                    document.getElementById('reconcile-btn').disabled = !(file1 && file2);
+                }
+            });
+        }
         function updateFileName(type, input) {
             if (input.files.length) {
-                if (type === 'ims') { file1 = input.files[0]; const el=document.getElementById('ims-name');el.textContent='📎 '+file1.name;el.style.display='';input.closest('.tool-upload').classList.add('has-file'); }
-                else { file2 = input.files[0]; const el=document.getElementById('pr-name');el.textContent='📎 '+file2.name;el.style.display='';input.closest('.tool-upload').classList.add('has-file'); }
+                const ub = input.closest('.tool-upload');
+                if (type === 'ims') { file1 = input.files[0]; const el = document.getElementById('ims-name'); el.textContent = '📎 ' + file1.name; el.style.display = ''; if (ub) ub.classList.add('has-file'); }
+                else { file2 = input.files[0]; const el = document.getElementById('pr-name'); el.textContent = '📎 ' + file2.name; el.style.display = ''; if (ub) ub.classList.add('has-file'); }
                 document.getElementById('reconcile-btn').disabled = !(file1 && file2);
             }
         }
 
         async function startReconciliation() {
+            const params = new URLSearchParams(window.location.search);
+            const clientId = params.get('clientId');
+            if (!clientId) { alert('⚠️ No client selected. Please navigate from a client workspace.'); return; }
             const btn = document.getElementById('reconcile-btn');
             btn.disabled = true;
             btn.innerHTML = '<span class="tool-spinner"></span> Processing...';
             try {
                 const token = localStorage.getItem('access_token');
-                const params = new URLSearchParams(window.location.search);
-                const clientId = params.get('clientId');
                 const fileKeys = [];
                 for (const file of [file1, file2]) {
                     const fd = new FormData(); fd.append('file', file);
-                    const res = await fetch(`${API_BASE_URL}/jobs/upload`, { method:'POST', headers:{'Authorization':`Bearer ${token}`}, body:fd });
+                    const res = await fetch(`${API_BASE_URL}/jobs/upload`, { method: 'POST', headers: { 'Authorization': `Bearer ${token}` }, body: fd });
                     if (res.ok) { const d = await res.json(); fileKeys.push(d.file_key || d.file_path); }
                 }
                 const jobRes = await fetch(`${API_BASE_URL}/jobs/`, {
-                    method:'POST', headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'},
-                    body: JSON.stringify({ job_type:'ims_vs_pr', input_files:fileKeys, client_id:clientId })
+                    method: 'POST', headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ job_type: 'ims_vs_pr', input_files: fileKeys, client_id: clientId })
                 });
                 if (jobRes.ok) { alert('Reconciliation job started!'); loadJobs(); }
-                else { const err=await jobRes.json(); alert('Failed: '+(err.detail||'Unknown error')); }
-            } catch(err) { console.error(err); alert('Error: '+err.message); }
-            finally { btn.disabled=false; btn.textContent='⚖️ Start Reconciliation'; }
+                else { const err = await jobRes.json(); alert('Failed: ' + (err.detail || 'Unknown error')); }
+            } catch (err) { console.error(err); alert('Error: ' + err.message); }
+            finally { btn.disabled = false; btn.textContent = '⚖️ Start Reconciliation'; }
         }
-
-        let pollingInterval = null;
-        async function loadJobs() {
-            const params = new URLSearchParams(window.location.search);
-            const clientId = params.get('clientId');
-            if (!clientId) return;
-            try {
-                const res = await authFetch(`/jobs/?skip=0&limit=50&client_id=${clientId}`);
-                if (res.ok) {
-                    const jobs = await res.json();
-                    const taskJobs = jobs.filter(j => j.job_type === 'ims_vs_pr');
-                    if (taskJobs.length > 0) {
-                        document.getElementById('recent-jobs-container').style.display = 'block';
-                        renderJobs(taskJobs);
-                        const hasInProgress = taskJobs.some(j => j.status==='QUEUED'||j.status==='PROCESSING');
-                        if (hasInProgress && !pollingInterval) pollingInterval = setInterval(loadJobs, 5000);
-                        else if (!hasInProgress && pollingInterval) { clearInterval(pollingInterval); pollingInterval=null; }
-                    }
-                }
-            } catch(e) { console.error("Failed to load jobs",e); }
-        }
-
-        function renderJobs(jobs) {
-            document.getElementById('jobs-list').innerHTML = jobs.map(job => {
-                const date = new Date(job.created_at).toLocaleString();
-                const sc = 'tj-'+job.status.toLowerCase();
-                return `<div class="tool-job"><div class="tool-job-info"><span class="tool-job-name">IMS vs PR Reconciliation</span><span class="tool-job-meta">Created: ${date}</span></div><div style="display:flex;align-items:center;gap:.75rem"><span class="tool-job-status ${sc}">${job.status}</span>${job.status==='COMPLETED'?`<button class="tbtn tbtn-download" onclick="downloadJobFile('${job.id}')">⬇ Download</button>`:''}</div></div>`;
-            }).join('');
-        }
-
-        async function downloadJobFile(jobId) {
-            try {
-                const response = await authFetch(`/jobs/${jobId}/download`);
-                if (!response.ok) { alert('Download failed'); return; }
-                const blob = await response.blob();
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a'); a.href=url; a.download=`IMS_vs_PR_Report_${jobId.substring(0,8)}.xlsx`;
-                document.body.appendChild(a); a.click(); window.URL.revokeObjectURL(url); document.body.removeChild(a);
-            } catch(e) { console.error('Download error:',e); alert('Error downloading file'); }
-        }
-
-        loadJobs();
     </script>
 </body>
 

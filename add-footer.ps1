@@ -15,8 +15,8 @@ $pages = @(
     "clients.html",
     "services-dashboard.html",
     "profile.html",
-    "service-gst-refund.html",
-    "web-view.html",
+    "file-gst-refund.html",
+    "service-gst-refund-webview.html",
     "semichat-view.html"
 )
 

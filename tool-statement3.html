@@ -11,7 +11,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="tool-layout.css">
+    <link rel="stylesheet" href="tool-layout.css?v=3">
     <style>
         .tool-select {
             width: 100%;
@@ -123,61 +123,40 @@
                             <div class="t-file" id="f2-name" style="display:none"></div>
                         </div>
                     </div>
-                    <input type="file" id="file-1" accept=".xlsx,.csv,.pdf,.jpg,.jpeg,.png" style="display:none"
+                    <input type="file" id="file-1" accept=".xlsx,.csv,.pdf,.jpg,.jpeg,.png,.zip" style="display:none"
                         onchange="addFile('f1', this)">
-                    <input type="file" id="file-2" accept=".xlsx,.csv,.pdf,.jpg,.jpeg,.png" style="display:none"
+                    <input type="file" id="file-2" accept=".xlsx,.csv,.pdf,.jpg,.jpeg,.png,.zip" style="display:none"
                         onchange="addFile('f2', this)">
+                    <div style="text-align:center;margin-top:0.75rem">
+                        <button id="drive-btn-1" onclick="pickFromDrive('f1')"
+                            style="background:none;border:1px solid #e2e8f0;border-radius:8px;padding:0.35rem 0.75rem;font-size:0.72rem;font-weight:600;color:#3b82f6;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:0.3rem;transition:all .15s;margin-right:0.5rem"
+                            onmouseover="this.style.background='#eff6ff'" onmouseout="this.style.background='none'">📁
+                            Shipping Bills from Drive</button>
+                        <button id="drive-btn-2" onclick="pickFromDrive('f2')"
+                            style="background:none;border:1px solid #e2e8f0;border-radius:8px;padding:0.35rem 0.75rem;font-size:0.72rem;font-weight:600;color:#3b82f6;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:0.3rem;transition:all .15s"
+                            onmouseover="this.style.background='#eff6ff'" onmouseout="this.style.background='none'">📁
+                            BRC / FIRC from Drive</button>
+                    </div>
                     <div class="tool-file-list" id="file-list"></div>
                     <div style="margin-top:1.25rem">
-                        <button class="tbtn tbtn-primary" id="generate-btn" onclick="generateStatement3()" disabled>📋
+                        <button class="tbtn tbtn-primary" id="generate-btn" onclick="generateStatement3()">📋
                             Generate Statement 3</button>
-                    </div>
-                </div>
-
-                <!-- How it works -->
-                <div class="tool-card">
-                    <h3>How It Works</h3>
-                    <div class="tool-step-list">
-                        <div class="tool-step">
-                            <div class="tool-step-num">1</div>
-                            <div>
-                                <h4>Select Refund Type</h4>
-                                <p>Choose the category that matches your GST refund application.</p>
-                            </div>
-                        </div>
-                        <div class="tool-step">
-                            <div class="tool-step-num">2</div>
-                            <div>
-                                <h4>Upload Required Files</h4>
-                                <p>Upload the specific documents requested for your refund type.</p>
-                            </div>
-                        </div>
-                        <div class="tool-step">
-                            <div class="tool-step-num">3</div>
-                            <div>
-                                <h4>Processing</h4>
-                                <p>The system maps and validates your data for Statement 3.</p>
-                            </div>
-                        </div>
-                        <div class="tool-step">
-                            <div class="tool-step-num">4</div>
-                            <div>
-                                <h4>Download</h4>
-                                <p>Get the completed Statement 3 ready for refund filing.</p>
-                            </div>
-                        </div>
                     </div>
                 </div>
 
                 <!-- Recent Jobs -->
                 <div class="tool-card" id="recent-jobs-container" style="display:none">
-                    <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                            style="width:17px;height:17px;vertical-align:middle">
-                            <circle cx="12" cy="12" r="10" />
-                            <polyline points="12 6 12 12 16 14" />
-                        </svg> Recent Jobs</h3>
-                    <p>Track the status of your Statement 3 reports and download the results.</p>
-                    <div class="tool-jobs" id="jobs-list"></div>
+                    <div class="jobs-section-header">
+                        <h3>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10" />
+                                <polyline points="12 6 12 12 16 14" />
+                            </svg>
+                            Recent Jobs <span class="jobs-count" id="jobs-count">0</span>
+                        </h3>
+                        <button class="tbtn tbtn-secondary" onclick="loadJobs()" style="font-size:0.72rem;padding:0.35rem 0.75rem">↻ Refresh</button>
+                    </div>
+                    <div id="jobs-list"></div>
                 </div>
             </div>
         </main>
@@ -186,8 +165,25 @@
     <script src="tool-sidebar.js"></script>
     <script src="api_config.js?v=2"></script>
     <script src="session-manager.js"></script>
+    <script src="drive-picker.js"></script>
+    <script src="tool-jobs.js"></script>
     <script>
         renderToolSidebar('statement3');
+        initToolJobs({ jobType: ['statement3', 'statement3_firc'], jobLabel: 'Statement 3', filePrefix: 'Statement3' });
+
+        function pickFromDrive(type) {
+            const cid = new URLSearchParams(window.location.search).get('clientId');
+            if (!cid) return;
+            openDrivePicker({
+                clientId: cid, accept: ['.xlsx', '.csv', '.pdf', '.jpg', '.jpeg', '.png', '.zip'], onSelect: (file) => {
+                    files[type] = file;
+                    const el = document.getElementById(type + '-name');
+                    el.textContent = '📎 ' + file.name; el.style.display = '';
+                    renderFileList();
+                    document.getElementById('generate-btn').disabled = !(files.f1 || files.f2);
+                }
+            });
+        }
 
         const refundConfigs = {
             export_goods: { title: "Upload Documents", desc: "Upload Shipping Bills and BRC (Bank Realisation Certificate) files.", z1: { label: "Shipping Bills", icon: "🚢", sub: "Excel file with data" }, z2: { label: "BRC / FIRC", icon: "🏦", sub: "Bank Realisation Certificates" } },
@@ -206,6 +202,11 @@
             document.getElementById('label-2').textContent = c.z2.label;
             document.getElementById('icon-2').textContent = c.z2.icon;
             document.getElementById('sublabel-2').textContent = c.z2.sub;
+            // Update drive picker button labels
+            const db1 = document.getElementById('drive-btn-1');
+            const db2 = document.getElementById('drive-btn-2');
+            if (db1) db1.innerHTML = '📁 ' + c.z1.label + ' from Drive';
+            if (db2) db2.innerHTML = '📁 ' + c.z2.label + ' from Drive';
             files = { f1: null, f2: null };
             renderFileList();
             document.getElementById('generate-btn').disabled = true;
@@ -217,7 +218,8 @@
                 files[type] = input.files[0];
                 const el = document.getElementById(type + '-name');
                 el.textContent = '📎 ' + files[type].name; el.style.display = '';
-                input.closest('.tool-upload').classList.add('has-file');
+                const uploadBox = input.closest('.tool-upload');
+                if (uploadBox) uploadBox.classList.add('has-file');
                 renderFileList();
                 document.getElementById('generate-btn').disabled = !(files.f1 || files.f2);
             }
@@ -235,150 +237,40 @@
         }
 
         async function generateStatement3() {
+            console.log('generateStatement3 called, files:', files);
+            if (!files.f1 && !files.f2) {
+                alert('Please upload at least one file before generating.');
+                return;
+            }
+            const params = new URLSearchParams(window.location.search);
+            const clientId = params.get('clientId');
+            if (!clientId) {
+                alert('⚠️ No client selected. Please navigate to this tool from a client workspace so the report is saved at the client level.');
+                return;
+            }
             const btn = document.getElementById('generate-btn');
-<<<<<<< HEAD
-            const originalText = btn.innerHTML;
-            btn.disabled = true;
-            btn.innerHTML = '<span class="loading-spinner"></span> Generating...';
-
-=======
             btn.disabled = true; btn.innerHTML = '<span class="tool-spinner"></span> Generating...';
->>>>>>> ea8664237128fffa4ca00ea0ee0946ce90945ffa
             try {
                 const token = localStorage.getItem('access_token');
-                const params = new URLSearchParams(window.location.search);
-                const clientId = params.get('clientId');
                 const refundType = document.getElementById('refund-type-select').value;
                 const backendJobType = (refundType === 'export_service') ? 'statement3_firc' : 'statement3';
                 const fileKeys = [];
-<<<<<<< HEAD
-
-                // 1. Upload Files
-                for (const file of [files.f1, files.f2].filter(Boolean)) {
-                    const fd = new FormData();
-                    fd.append('file', file);
-                    const res = await fetch(`${API_BASE_URL}/jobs/upload`, {
-                        method: 'POST', headers: { 'Authorization': `Bearer ${token}` }, body: fd
-                    });
-                    if (res.ok) {
-                        const d = await res.json();
-                        fileKeys.push(d.file_key || d.file_path);
-                    } else {
-                        throw new Error("Failed to upload " + file.name);
-                    }
-                }
-
-                // 2. Create Job
-=======
                 for (const file of [files.f1, files.f2].filter(Boolean)) {
                     const fd = new FormData(); fd.append('file', file);
                     const res = await fetch(`${API_BASE_URL}/jobs/upload`, { method: 'POST', headers: { 'Authorization': `Bearer ${token}` }, body: fd });
                     if (res.ok) { const d = await res.json(); fileKeys.push(d.file_key || d.file_path); }
                 }
->>>>>>> ea8664237128fffa4ca00ea0ee0946ce90945ffa
                 const jobRes = await fetch(`${API_BASE_URL}/jobs/`, {
                     method: 'POST', headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
                     body: JSON.stringify({ job_type: backendJobType, input_files: fileKeys, client_id: clientId })
                 });
-<<<<<<< HEAD
-
-                if (!jobRes.ok) {
-                    const err = await jobRes.json();
-                    throw new Error(err.detail || 'Failed to start job');
-                }
-
-                if (typeof loadJobs === 'function') loadJobs(); // Initial refresh
-
-                const jobData = await jobRes.json();
-                const jobId = jobData.id;
-
-                // 3. Poll for Completion
-                let completed = false;
-                let attempts = 0;
-                const maxAttempts = 60; // 2 minutes max
-
-                while (!completed && attempts < maxAttempts) {
-                    attempts++;
-                    btn.innerHTML = `<span class="loading-spinner"></span> Processing... (${attempts}s)`;
-
-                    await new Promise(r => setTimeout(r, 2000));
-
-                    const pollRes = await fetch(`${API_BASE_URL}/jobs/${jobId}`, {
-                        headers: { 'Authorization': `Bearer ${token}` }
-                    });
-
-                    if (pollRes.ok) {
-                        const statusData = await pollRes.json();
-                        if (statusData.status === 'completed') {
-                            completed = true;
-                            if (typeof loadJobs === 'function') loadJobs(); // Refresh list on complete
-
-                            btn.innerHTML = '<span class="loading-spinner"></span> Downloading...';
-
-                            // 4. Trigger Download
-                            const downloadUrl = `${API_BASE_URL}/jobs/${jobId}/download`;
-                            const dlFetch = await fetch(downloadUrl, {
-                                headers: { 'Authorization': `Bearer ${token}` }
-                            });
-                            const blob = await dlFetch.blob();
-                            const url = window.URL.createObjectURL(blob);
-                            const a = document.createElement('a');
-                            a.href = url;
-                            a.download = `Statement3_${refundType}_${clientId}.xlsx`;
-                            document.body.appendChild(a);
-                            a.click();
-                            window.URL.revokeObjectURL(url);
-                            document.body.removeChild(a);
-                        } else if (statusData.status === 'failed') {
-                            if (typeof loadJobs === 'function') loadJobs();
-                            throw new Error("Job failed: " + (statusData.error || "Unknown error"));
-                        }
-                    }
-                }
-                if (!completed) alert('Processing is taking longer than expected. Please check back later.');
-=======
                 if (jobRes.ok) { alert('Statement 3 generation started!'); loadJobs(); }
                 else { const err = await jobRes.json(); alert('Failed: ' + (err.detail || 'Error')); }
->>>>>>> ea8664237128fffa4ca00ea0ee0946ce90945ffa
             } catch (err) { console.error(err); alert('Error: ' + err.message); }
-            finally { btn.disabled = false; btn.innerHTML = originalText; }
-        }
-
-        let pollingInterval = null;
-        async function loadJobs() {
-            const params = new URLSearchParams(window.location.search);
-            const clientId = params.get('clientId'); if (!clientId) return;
-            try {
-                const res = await authFetch(`/jobs/?skip=0&limit=50&client_id=${clientId}`);
-                if (res.ok) {
-                    const jobs = await res.json(); const sJobs = jobs.filter(j => j.job_type === 'statement3' || j.job_type === 'statement3_firc');
-                    if (sJobs.length > 0) {
-                        document.getElementById('recent-jobs-container').style.display = 'block'; renderJobs(sJobs);
-                        const hasIP = sJobs.some(j => j.status === 'QUEUED' || j.status === 'PROCESSING');
-                        if (hasIP && !pollingInterval) pollingInterval = setInterval(loadJobs, 5000); else if (!hasIP && pollingInterval) { clearInterval(pollingInterval); pollingInterval = null; }
-                    }
-                }
-            } catch (e) { console.error(e) }
-        }
-
-        function renderJobs(jobs) {
-            document.getElementById('jobs-list').innerHTML = jobs.map(job => {
-                const date = new Date(job.created_at).toLocaleString(); const name = job.job_type.toUpperCase().replaceAll('_', ' ');
-                return `<div class="tool-job"><div class="tool-job-info"><span class="tool-job-name">${name}</span><span class="tool-job-meta">Created: ${date}</span></div><div style="display:flex;align-items:center;gap:.75rem"><span class="tool-job-status tj-${job.status.toLowerCase()}">${job.status}</span>${job.status === 'COMPLETED' ? `<button class="tbtn tbtn-download" onclick="downloadJobFile('${job.id}')">⬇ Download</button>` : ''}</div></div>`;
-            }).join('');
-        }
-
-        async function downloadJobFile(jobId) {
-            try {
-                const response = await authFetch(`/jobs/${jobId}/download`); if (!response.ok) { alert('Download failed'); return; }
-                const cd = response.headers.get('Content-Disposition'); let filename = `Statement3_${jobId.substring(0, 8)}.xlsx`;
-                if (cd) { const m = cd.match(/filename="?(.+)"?/); if (m && m[1]) filename = m[1]; }
-                const blob = await response.blob(); const url = window.URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = filename; document.body.appendChild(a); a.click(); window.URL.revokeObjectURL(url); document.body.removeChild(a);
-            } catch (e) { console.error(e); alert('Error downloading file'); }
+            finally { btn.disabled = false; btn.textContent = '📋 Generate Statement 3'; }
         }
 
         updateUploadOptions(document.getElementById('refund-type-select').value);
-        loadJobs();
     </script>
 </body>
 

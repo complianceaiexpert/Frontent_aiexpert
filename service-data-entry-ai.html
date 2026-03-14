@@ -1009,6 +1009,13 @@
                                     class="upload-fmt">PNG</span>
                             </div>
                         </div>
+                        <div style="text-align:center;margin-top:0.75rem">
+                            <button onclick="pickFromDriveAI()"
+                                style="background:none;border:1px solid #e2e8f0;border-radius:8px;padding:0.45rem 1rem;font-size:0.78rem;font-weight:600;color:#3b82f6;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:0.4rem;transition:all .15s"
+                                onmouseover="this.style.background='#eff6ff';this.style.borderColor='#3b82f6'"
+                                onmouseout="this.style.background='none';this.style.borderColor='#e2e8f0'">📁 Pick from
+                                Client Drive</button>
+                        </div>
                         <div class="file-queue" id="file-queue"></div>
                         <div class="step-actions">
                             <button class="btn-primary" id="btn-process" onclick="goStep(2)"
@@ -1146,6 +1153,7 @@
 
     <script src="api_config.js"></script>
     <script src="session-manager.js?v=2"></script>
+    <script src="drive-picker.js"></script>
     <script>
         if (!requireAuth()) { }
 
@@ -1154,6 +1162,17 @@
         let processedEntries = [];
         let currentStep = 1;
         const stats = { uploaded: 0, processed: 0, approved: 0, synced: 0 };
+
+        function pickFromDriveAI() {
+            const params = new URLSearchParams(window.location.search);
+            const cid = params.get('clientId');
+            if (!cid) { alert('No client context — open from client workspace'); return; }
+            openDrivePicker({
+                clientId: cid,
+                accept: ['.pdf', '.xlsx', '.xls', '.csv', '.jpg', '.jpeg', '.png'],
+                onSelect: (file) => handleFiles([file])
+            });
+        }
 
         // Mock AI-extracted data
         const MOCK_ENTRIES = [

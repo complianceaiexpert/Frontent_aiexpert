@@ -12,40 +12,6 @@
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="tool-layout.css">
-    <style>
-        .feature-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: .75rem;
-            margin-top: .75rem
-        }
-
-        .feature-item {
-            background: #f8fafc;
-            border: 1px solid #f1f5f9;
-            border-radius: 10px;
-            padding: 1rem;
-            text-align: center
-        }
-
-        .feature-item .fi {
-            font-size: 1.4rem;
-            margin-bottom: .4rem
-        }
-
-        .feature-item .ft {
-            font-weight: 600;
-            font-size: .82rem;
-            color: #111827;
-            margin-bottom: .15rem
-        }
-
-        .feature-item .fd {
-            font-size: .7rem;
-            color: #6b7280;
-            line-height: 1.3
-        }
-    </style>
 </head>
 
 <body>
@@ -92,46 +58,35 @@
                         onchange="updateFile('pr', this)">
                     <input type="file" id="sr-file" accept=".xlsx,.csv" style="display:none"
                         onchange="updateFile('sr', this)">
+                    <div style="text-align:center;margin-top:0.75rem">
+                        <button onclick="pickFromDrive('pr')"
+                            style="background:none;border:1px solid #e2e8f0;border-radius:8px;padding:0.35rem 0.75rem;font-size:0.72rem;font-weight:600;color:#3b82f6;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:0.3rem;transition:all .15s;margin-right:0.5rem"
+                            onmouseover="this.style.background='#eff6ff'" onmouseout="this.style.background='none'">📁
+                            PR from Drive</button>
+                        <button onclick="pickFromDrive('sr')"
+                            style="background:none;border:1px solid #e2e8f0;border-radius:8px;padding:0.35rem 0.75rem;font-size:0.72rem;font-weight:600;color:#3b82f6;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:0.3rem;transition:all .15s"
+                            onmouseover="this.style.background='#eff6ff'" onmouseout="this.style.background='none'">📁
+                            SR from Drive</button>
+                    </div>
                     <div style="margin-top:1.25rem">
                         <button class="tbtn tbtn-primary" id="plot-btn" onclick="startPlotting()" disabled>📈 Plot HSN
                             Codes</button>
                     </div>
                 </div>
 
+                <!-- Recent Jobs -->
                 <div class="tool-card" id="recent-jobs-container" style="display:none">
-                    <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                            style="width:17px;height:17px;vertical-align:middle">
-                            <circle cx="12" cy="12" r="10" />
-                            <polyline points="12 6 12 12 16 14" />
-                        </svg> Recent Jobs</h3>
-                    <p>Track the status of your HSN plotting tasks.</p>
-                    <div class="tool-jobs" id="jobs-list"></div>
-                </div>
-
-                <div class="tool-card">
-                    <h3>Features</h3>
-                    <div class="feature-grid">
-                        <div class="feature-item">
-                            <div class="fi">🔍</div>
-                            <div class="ft">Auto Detection</div>
-                            <div class="fd">Automatically identifies items & maps to HSN codes</div>
-                        </div>
-                        <div class="feature-item">
-                            <div class="fi">📈</div>
-                            <div class="ft">Visual Reports</div>
-                            <div class="fd">HSN-wise summary with tax breakdowns</div>
-                        </div>
-                        <div class="feature-item">
-                            <div class="fi">⚡</div>
-                            <div class="ft">Fast Processing</div>
-                            <div class="fd">Process thousands of entries in seconds</div>
-                        </div>
-                        <div class="feature-item">
-                            <div class="fi">📋</div>
-                            <div class="ft">GSTR Ready</div>
-                            <div class="fd">Output formatted for direct GSTR filing</div>
-                        </div>
+                    <div class="jobs-section-header">
+                        <h3>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10" />
+                                <polyline points="12 6 12 12 16 14" />
+                            </svg>
+                            Recent Jobs <span class="jobs-count" id="jobs-count">0</span>
+                        </h3>
+                        <button class="tbtn tbtn-secondary" onclick="loadJobs()" style="font-size:0.72rem;padding:0.35rem 0.75rem">↻ Refresh</button>
                     </div>
+                    <div id="jobs-list"></div>
                 </div>
             </div>
         </main>
@@ -140,141 +95,44 @@
     <script src="tool-sidebar.js"></script>
     <script src="api_config.js?v=2"></script>
     <script src="session-manager.js"></script>
+    <script src="drive-picker.js"></script>
+    <script src="tool-jobs.js"></script>
     <script>
         renderToolSidebar('hsn-plotter');
+        initToolJobs({ jobType: 'hsn_plotter', jobLabel: 'HSN Plotting', filePrefix: 'HSN_Plotting_Report' });
 
         let files = { pr: null, sr: null };
+        function pickFromDrive(type) {
+            const cid = new URLSearchParams(window.location.search).get('clientId');
+            if (!cid) return;
+            openDrivePicker({
+                clientId: cid, accept: ['.xlsx', '.csv'], onSelect: (file) => {
+                    files[type] = file;
+                    const el = document.getElementById(type + '-name'); el.textContent = '📎 ' + file.name; el.style.display = '';
+                    document.getElementById('plot-btn').disabled = !(files.pr || files.sr);
+                }
+            });
+        }
         function updateFile(type, input) {
             if (!input.files.length) return;
             files[type] = input.files[0];
             const el = document.getElementById(type + '-name'); el.textContent = '📎 ' + files[type].name; el.style.display = '';
-            input.closest('.tool-upload').classList.add('has-file');
+            const ub = input.closest('.tool-upload'); if (ub) ub.classList.add('has-file');
             document.getElementById('plot-btn').disabled = !(files.pr || files.sr);
         }
 
         async function startPlotting() {
-<<<<<<< HEAD
-            const btn = document.getElementById('plot-btn');
-            const originalText = btn.innerHTML;
-            btn.disabled = true;
-            btn.innerHTML = '<span class="loading-spinner"></span> Processing...';
-            try {
-                const token = localStorage.getItem('access_token');
-                const params = new URLSearchParams(window.location.search);
-                const clientId = params.get('clientId');
-                const fileKeys = [];
-
-                for (const file of [files.pr, files.sr].filter(Boolean)) {
-                    const fd = new FormData();
-                    fd.append('file', file);
-                    const res = await fetch(`${API_BASE_URL}/jobs/upload`, {
-                        method: 'POST', headers: { 'Authorization': `Bearer ${token}` }, body: fd
-                    });
-                    if (res.ok) {
-                        const d = await res.json();
-                        fileKeys.push(d.file_key || d.file_path);
-                    }
-                }
-
-                const jobRes = await fetch(`${API_BASE_URL}/jobs/`, {
-                    method: 'POST',
-                    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        job_type: 'hsn_plotter',
-                        input_files: fileKeys,
-                        client_id: clientId // Send as string UUID
-                    })
-                });
-
-                if (!jobRes.ok) {
-                    const err = await jobRes.json();
-                    throw new Error(err.detail || 'Failed to start job');
-                }
-
-                const jobData = await jobRes.json();
-                const jobId = jobData.id;
-
-                // Poll for Completion
-                let completed = false;
-                let attempts = 0;
-                const maxAttempts = 60;
-
-                while (!completed && attempts < maxAttempts) {
-                    attempts++;
-                    btn.innerHTML = `<span class="loading-spinner"></span> Processing... (${attempts}s)`;
-                    await new Promise(r => setTimeout(r, 2000));
-
-                    const pollRes = await fetch(`${API_BASE_URL}/jobs/${jobId}`, {
-                        headers: { 'Authorization': `Bearer ${token}` }
-                    });
-
-                    if (pollRes.ok) {
-                        const statusData = await pollRes.json();
-                        if (statusData.status === 'completed') {
-                            completed = true;
-                            btn.innerHTML = '<span class="loading-spinner"></span> Downloading...';
-
-                            const downloadUrl = `${API_BASE_URL}/jobs/${jobId}/download`;
-                            const dlFetch = await fetch(downloadUrl, {
-                                headers: { 'Authorization': `Bearer ${token}` }
-                            });
-                            const blob = await dlFetch.blob();
-                            const url = window.URL.createObjectURL(blob);
-                            const a = document.createElement('a');
-                            a.href = url;
-                            a.download = `HSN_Plotter_${clientId}.xlsx`;
-                            document.body.appendChild(a);
-                            a.click();
-                            window.URL.revokeObjectURL(url);
-                            document.body.removeChild(a);
-                        } else if (statusData.status === 'failed') {
-                            throw new Error("Job failed: " + (statusData.error || "Unknown error"));
-                        }
-                    }
-                }
-                if (!completed) alert('Processing is taking longer than expected.');
-
-            } catch (err) { console.error(err); alert('Error: ' + err.message); }
-            finally { btn.disabled = false; btn.innerHTML = originalText; }
-=======
+            const params = new URLSearchParams(window.location.search); const clientId = params.get('clientId');
+            if (!clientId) { alert('⚠️ No client selected. Please navigate from a client workspace.'); return; }
             const btn = document.getElementById('plot-btn'); btn.disabled = true; btn.innerHTML = '<span class="tool-spinner"></span> Processing...';
             try {
-                const token = localStorage.getItem('access_token'); const params = new URLSearchParams(window.location.search); const clientId = params.get('clientId'); const fileKeys = [];
+                const token = localStorage.getItem('access_token'); const fileKeys = [];
                 for (const file of [files.pr, files.sr].filter(Boolean)) { const fd = new FormData(); fd.append('file', file); const res = await fetch(`${API_BASE_URL}/jobs/upload`, { method: 'POST', headers: { 'Authorization': `Bearer ${token}` }, body: fd }); if (res.ok) { const d = await res.json(); fileKeys.push(d.file_key || d.file_path); } }
                 const jobRes = await fetch(`${API_BASE_URL}/jobs/`, { method: 'POST', headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ job_type: 'hsn_plotter', input_files: fileKeys, client_id: clientId }) });
                 if (jobRes.ok) { alert('HSN Plotter job started!'); loadJobs(); } else { const err = await jobRes.json(); alert('Failed: ' + (err.detail || 'Unknown error')); }
             } catch (err) { console.error(err); alert('Error: ' + err.message); }
             finally { btn.disabled = false; btn.textContent = '📈 Plot HSN Codes'; }
->>>>>>> ea8664237128fffa4ca00ea0ee0946ce90945ffa
         }
-
-        let pollingInterval = null;
-        async function loadJobs() {
-            const params = new URLSearchParams(window.location.search); const clientId = params.get('clientId'); if (!clientId) return;
-            try {
-                const res = await authFetch(`/jobs/?skip=0&limit=50&client_id=${clientId}`); if (res.ok) {
-                    const jobs = await res.json(); const pJobs = jobs.filter(j => j.job_type === 'hsn_plotter');
-                    if (pJobs.length > 0) {
-                        document.getElementById('recent-jobs-container').style.display = 'block'; renderJobs(pJobs);
-                        const hasIP = pJobs.some(j => j.status === 'QUEUED' || j.status === 'PROCESSING');
-                        if (hasIP && !pollingInterval) pollingInterval = setInterval(loadJobs, 5000); else if (!hasIP && pollingInterval) { clearInterval(pollingInterval); pollingInterval = null; }
-                    }
-                }
-            } catch (e) { console.error(e) }
-        }
-
-        function renderJobs(jobs) {
-            document.getElementById('jobs-list').innerHTML = jobs.map(job => {
-                const date = new Date(job.created_at).toLocaleString();
-                return `<div class="tool-job"><div class="tool-job-info"><span class="tool-job-name">HSN Plotting</span><span class="tool-job-meta">Created: ${date}</span></div><div style="display:flex;align-items:center;gap:.75rem"><span class="tool-job-status tj-${job.status.toLowerCase()}">${job.status}</span>${job.status === 'COMPLETED' ? `<button class="tbtn tbtn-download" onclick="downloadJobFile('${job.id}')">⬇ Download</button>` : ''}</div></div>`;
-            }).join('');
-        }
-
-        async function downloadJobFile(jobId) {
-            try { const response = await authFetch(`/jobs/${jobId}/download`); if (!response.ok) { alert('Download failed'); return; } const blob = await response.blob(); const url = window.URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `HSN_Plotting_Report_${jobId.substring(0, 8)}.xlsx`; document.body.appendChild(a); a.click(); window.URL.revokeObjectURL(url); document.body.removeChild(a); } catch (e) { console.error(e); alert('Error downloading file'); }
-        }
-
-        loadJobs();
     </script>
 </body>
 

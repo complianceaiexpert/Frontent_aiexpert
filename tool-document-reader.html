@@ -119,6 +119,12 @@
                     </div>
                     <input type="file" id="doc-files" accept=".pdf,.jpg,.jpeg,.png,.xlsx,.csv" multiple
                         style="display:none" onchange="handleFiles(this)">
+                    <div style="text-align:center;margin-top:0.5rem">
+                        <button onclick="pickFromDrive()"
+                            style="background:none;border:1px solid #e2e8f0;border-radius:8px;padding:0.35rem 0.75rem;font-size:0.72rem;font-weight:600;color:#3b82f6;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:0.3rem;transition:all .15s"
+                            onmouseover="this.style.background='#eff6ff'" onmouseout="this.style.background='none'">📁
+                            Pick from Drive</button>
+                    </div>
                     <div class="tool-file-list" id="file-list"></div>
                     <div style="margin-top:1.25rem">
                         <button class="tbtn tbtn-primary" id="extract-btn" onclick="extractData()" disabled>📖 Extract
@@ -128,13 +134,17 @@
 
                 <!-- Recent Jobs -->
                 <div class="tool-card" id="recent-jobs-container" style="display:none">
-                    <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                            style="width:17px;height:17px;vertical-align:middle">
-                            <circle cx="12" cy="12" r="10" />
-                            <polyline points="12 6 12 12 16 14" />
-                        </svg> Recent Reader Jobs</h3>
-                    <p>Track the status of your document extraction tasks.</p>
-                    <div class="tool-jobs" id="jobs-list"></div>
+                    <div class="jobs-section-header">
+                        <h3>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10" />
+                                <polyline points="12 6 12 12 16 14" />
+                            </svg>
+                            Recent Reader Jobs <span class="jobs-count" id="jobs-count">0</span>
+                        </h3>
+                        <button class="tbtn tbtn-secondary" onclick="loadJobs()" style="font-size:0.72rem;padding:0.35rem 0.75rem">↻ Refresh</button>
+                    </div>
+                    <div id="jobs-list"></div>
                 </div>
             </div>
         </main>
@@ -143,12 +153,27 @@
     <script src="tool-sidebar.js"></script>
     <script src="api_config.js?v=2"></script>
     <script src="session-manager.js?v=2"></script>
+    <script src="drive-picker.js"></script>
+    <script src="tool-jobs.js"></script>
     <script>
         if (!requireAuth()) { }
         renderToolSidebar('document-reader');
+        initToolJobs({ jobType: 'document_reader', jobLabel: 'Document Reader', filePrefix: 'Extracted_Data' });
 
         let selectedType = 'csb';
         let uploadedFiles = [];
+
+        function pickFromDrive() {
+            const cid = new URLSearchParams(window.location.search).get('clientId');
+            if (!cid) return;
+            openDrivePicker({
+                clientId: cid, accept: ['.pdf', '.jpg', '.jpeg', '.png', '.xlsx', '.csv'], onSelect: (file) => {
+                    uploadedFiles.push(file);
+                    renderFileList();
+                    document.getElementById('extract-btn').disabled = false;
+                }
+            });
+        }
 
         function selectDocType(btn, type) {
             document.querySelectorAll('.doc-type-btn').forEach(b => b.classList.remove('active'));
@@ -177,14 +202,15 @@
 
         async function extractData() {
             if (!uploadedFiles.length) return;
+            const params = new URLSearchParams(window.location.search);
+            const clientId = params.get('clientId');
+            if (!clientId) { alert('⚠️ No client selected. Please navigate from a client workspace.'); return; }
             const btn = document.getElementById('extract-btn');
             const originalText = btn.innerHTML;
             btn.disabled = true;
             btn.innerHTML = '<span class="tool-spinner"></span> Extracting...';
             try {
                 const token = localStorage.getItem('access_token');
-                const params = new URLSearchParams(window.location.search);
-                const clientId = params.get('clientId');
                 const fileKeys = [];
                 for (const file of uploadedFiles) {
                     const fd = new FormData(); fd.append('file', file);
@@ -192,13 +218,12 @@
                     if (res.ok) { const d = await res.json(); fileKeys.push(d.file_key || d.file_path); }
                 }
                 const jobRes = await fetch(`${API_BASE_URL}/jobs/`, {
-<<<<<<< HEAD
                     method: 'POST',
                     headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         job_type: 'document_reader',
                         input_files: fileKeys,
-                        client_id: clientId, // Send as string UUID
+                        client_id: clientId,
                         metadata: { doc_type: selectedType }
                     })
                 });
@@ -261,56 +286,7 @@
                 btn.disabled = false;
                 btn.innerHTML = originalText;
             }
-=======
-                    method: 'POST', headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ job_type: 'document_reader', input_files: fileKeys, client_id: clientId, metadata: { document_type: selectedType } })
-                });
-                if (jobRes.ok) { alert('Document extraction started!'); loadJobs(); }
-                else { const err = await jobRes.json(); alert('Failed: ' + (err.detail || 'Error')); }
-            } catch (err) { console.error(err); alert('Error: ' + err.message); }
-            finally { btn.disabled = false; btn.innerHTML = '📖 Extract Data'; }
->>>>>>> ea8664237128fffa4ca00ea0ee0946ce90945ffa
         }
-
-        let pollingInterval = null;
-        async function loadJobs() {
-            const params = new URLSearchParams(window.location.search);
-            const clientId = params.get('clientId'); if (!clientId) return;
-            try {
-                const res = await authFetch(`/jobs/?skip=0&limit=50&client_id=${clientId}`);
-                if (res.ok) {
-                    const jobs = await res.json();
-                    const rJobs = jobs.filter(j => j.job_type === 'document_reader');
-                    if (rJobs.length > 0) {
-                        document.getElementById('recent-jobs-container').style.display = 'block';
-                        renderJobs(rJobs);
-                        const hasIP = rJobs.some(j => j.status === 'QUEUED' || j.status === 'PROCESSING');
-                        if (hasIP && !pollingInterval) pollingInterval = setInterval(loadJobs, 5000);
-                        else if (!hasIP && pollingInterval) { clearInterval(pollingInterval); pollingInterval = null; }
-                    }
-                }
-            } catch (e) { console.error(e); }
-        }
-
-        function renderJobs(jobs) {
-            document.getElementById('jobs-list').innerHTML = jobs.map(job => {
-                const date = new Date(job.created_at).toLocaleString();
-                const docType = (job.metadata && job.metadata.document_type) ? job.metadata.document_type.toUpperCase() : 'UNKNOWN';
-                return `<div class="tool-job"><div class="tool-job-info"><span class="tool-job-name">Reader: ${docType}</span><span class="tool-job-meta">Created: ${date}</span></div><div style="display:flex;align-items:center;gap:.75rem"><span class="tool-job-status tj-${job.status.toLowerCase()}">${job.status}</span>${job.status === 'COMPLETED' ? `<button class="tbtn tbtn-download" onclick="downloadJobFile('${job.id}')">⬇ Download</button>` : ''}</div></div>`;
-            }).join('');
-        }
-
-        async function downloadJobFile(jobId) {
-            try {
-                const response = await authFetch(`/jobs/${jobId}/download`);
-                if (!response.ok) { alert('Download failed'); return; }
-                const blob = await response.blob(); const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a'); a.href = url; a.download = `Extracted_Data_${jobId.substring(0, 8)}.xlsx`;
-                document.body.appendChild(a); a.click(); window.URL.revokeObjectURL(url); document.body.removeChild(a);
-            } catch (e) { console.error(e); alert('Error downloading file'); }
-        }
-
-        loadJobs();
     </script>
 </body>
 

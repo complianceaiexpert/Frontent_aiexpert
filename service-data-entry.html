@@ -25,14 +25,6 @@
             <div id="app-client-nav" data-active="data-entry"></div>
             <script src="app-client-nav.js"></script>
 
-            <div class="de-sb-brand">
-                <div class="de-sb-logo">DE</div>
-                <div class="de-sb-brand-text">
-                    <span class="de-sb-brand-name" id="sb-company-name">Data Entry</span>
-                    <span class="de-sb-brand-sub" id="sb-date-range">FY 2025-26</span>
-                </div>
-            </div>
-
             <div class="de-sb-section">
                 <div class="de-sb-item active" onclick="deNav('dashboard',this)">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -274,6 +266,13 @@
                         <span class="de-upload-fmt">CSV</span>
                         <span class="de-upload-fmt">Images</span>
                     </div>
+                </div>
+                <div style="text-align:center;margin-top:0.75rem">
+                    <button onclick="pickFromDriveDE()"
+                        style="background:none;border:1px solid #e2e8f0;border-radius:8px;padding:0.45rem 1rem;font-size:0.78rem;font-weight:600;color:#3b82f6;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:0.4rem;transition:all .15s"
+                        onmouseover="this.style.background='#eff6ff';this.style.borderColor='#3b82f6'"
+                        onmouseout="this.style.background='none';this.style.borderColor='#e2e8f0'">📁 Pick from Client
+                        Drive</button>
                 </div>
                 <div id="file-queue" style="margin-top:1.25rem"></div>
             </div>
@@ -559,6 +558,7 @@
     </div>
 
     <script src="api_config.js?v=2"></script>
+    <script src="drive-picker.js"></script>
     <script>
         // ═══ URL PARAMS ═══
         const urlParams = new URLSearchParams(window.location.search);
@@ -567,8 +567,19 @@
         const user = JSON.parse(localStorage.getItem('user') || '{}');
 
         document.getElementById('back-link').href = `services-dashboard.html?clientId=${clientId}`;
-        if (user && user.firm_name) {
-            document.getElementById('sb-company-name').textContent = user.firm_name;
+
+        function pickFromDriveDE() {
+            if (!clientId) { alert('No client context'); return; }
+            openDrivePicker({
+                clientId,
+                accept: ['.pdf', '.xlsx', '.xls', '.csv', '.jpg', '.jpeg', '.png'],
+                onSelect: (file) => {
+                    // Create a mock input-like object for handleBulkUpload
+                    const dt = new DataTransfer();
+                    dt.items.add(file);
+                    handleBulkUpload({ files: dt.files });
+                }
+            });
         }
 
         // ═══ INDIAN ACCOUNTING HELPERS ═══

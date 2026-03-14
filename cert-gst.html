@@ -627,8 +627,9 @@
     <script src="session-manager.js?v=2"></script>
     <script>
         if (!requireAuth()) { }
-        
+
         const CERT_CATEGORY = "gst";
+        const USE_MANUAL_FIELDS = true; // This cert has carefully mapped fields — skip dynamic extraction
 
         function getInitialFieldValues(templateName) {
             return {
@@ -753,4 +754,5 @@
     <script src="app-topbar.js"></script>
 
 </body>
+
 </html>

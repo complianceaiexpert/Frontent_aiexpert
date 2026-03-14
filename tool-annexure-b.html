@@ -77,43 +77,31 @@
                     </div>
                     <input type="file" id="gstr2b-file" accept=".xlsx,.csv" style="display:none"
                         onchange="handleFile(this)">
+                    <div style="text-align:center;margin-top:0.5rem">
+                        <button onclick="pickFromDrive()"
+                            style="background:none;border:1px solid #e2e8f0;border-radius:8px;padding:0.35rem 0.75rem;font-size:0.72rem;font-weight:600;color:#3b82f6;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:0.3rem;transition:all .15s"
+                            onmouseover="this.style.background='#eff6ff'" onmouseout="this.style.background='none'">📁
+                            Pick from Drive</button>
+                    </div>
                     <div style="margin-top:1.25rem">
                         <button class="tbtn tbtn-primary" id="generate-btn" onclick="generateAnnexureB()" disabled>📑
                             Generate Annexure B</button>
                     </div>
                 </div>
 
-                <div class="tool-card">
-                    <h3>What's Included</h3>
-                    <p style="margin-bottom:.5rem">The generated Annexure B report contains:</p>
-                    <div class="info-grid">
-                        <div class="info-item">
-                            <h4>📊 ITC Summary</h4>
-                            <p>Comprehensive ITC breakdown by category — IGST, CGST, SGST, and Cess</p>
-                        </div>
-                        <div class="info-item">
-                            <h4>🏢 Supplier Details</h4>
-                            <p>Complete supplier-wise listing with GSTINs and invoice details</p>
-                        </div>
-                        <div class="info-item">
-                            <h4>⚡ Auto Classification</h4>
-                            <p>Automatic classification into eligible and ineligible ITC categories</p>
-                        </div>
-                        <div class="info-item">
-                            <h4>📋 Refund Ready</h4>
-                            <p>Output formatted for direct attachment with refund applications</p>
-                        </div>
-                    </div>
-                </div>
-
+                <!-- Recent Jobs -->
                 <div class="tool-card" id="recent-jobs-container" style="display:none">
-                    <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                            style="width:17px;height:17px;vertical-align:middle">
-                            <circle cx="12" cy="12" r="10" />
-                            <polyline points="12 6 12 12 16 14" />
-                        </svg> Recent Jobs</h3>
-                    <p>Track the status of your Annexure B reports and download the results.</p>
-                    <div class="tool-jobs" id="jobs-list"></div>
+                    <div class="jobs-section-header">
+                        <h3>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10" />
+                                <polyline points="12 6 12 12 16 14" />
+                            </svg>
+                            Recent Jobs <span class="jobs-count" id="jobs-count">0</span>
+                        </h3>
+                        <button class="tbtn tbtn-secondary" onclick="loadJobs()" style="font-size:0.72rem;padding:0.35rem 0.75rem">↻ Refresh</button>
+                    </div>
+                    <div id="jobs-list"></div>
                 </div>
             </div>
         </main>
@@ -122,33 +110,46 @@
     <script src="tool-sidebar.js"></script>
     <script src="api_config.js?v=2"></script>
     <script src="session-manager.js"></script>
+    <script src="drive-picker.js"></script>
+    <script src="tool-jobs.js"></script>
     <script>
         renderToolSidebar('annexure-b');
+        initToolJobs({ jobType: 'annexure_b', jobLabel: 'Annexure B', filePrefix: 'AnnexureB' });
 
         let uploadedFile = null;
+        function pickFromDrive() {
+            const cid = new URLSearchParams(window.location.search).get('clientId');
+            if (!cid) return;
+            openDrivePicker({
+                clientId: cid, accept: ['.xlsx', '.csv'], onSelect: (file) => {
+                    uploadedFile = file;
+                    const el = document.getElementById('file-name'); el.textContent = '📎 ' + file.name; el.style.display = '';
+                    document.getElementById('generate-btn').disabled = false;
+                }
+            });
+        }
         function handleFile(input) {
             if (input.files.length) {
                 uploadedFile = input.files[0];
                 const el = document.getElementById('file-name'); el.textContent = '📎 ' + uploadedFile.name; el.style.display = '';
-                input.closest('.tool-upload').classList.add('has-file');
+                const uploadBox = input.closest('.tool-upload');
+                if (uploadBox) uploadBox.classList.add('has-file');
                 document.getElementById('generate-btn').disabled = false;
             }
         }
 
         async function generateAnnexureB() {
             if (!uploadedFile) return;
+            const params = new URLSearchParams(window.location.search);
+            const clientId = params.get('clientId');
+            if (!clientId) {
+                alert('⚠️ No client selected. Please navigate to this tool from a client workspace so the report is saved at the client level.');
+                return;
+            }
             const btn = document.getElementById('generate-btn');
-<<<<<<< HEAD
-            const originalText = btn.innerHTML;
-            btn.disabled = true;
-            btn.innerHTML = '<span class="loading-spinner"></span> Generating...';
-=======
             btn.disabled = true; btn.innerHTML = '<span class="tool-spinner"></span> Generating...';
->>>>>>> ea8664237128fffa4ca00ea0ee0946ce90945ffa
             try {
                 const token = localStorage.getItem('access_token');
-                const params = new URLSearchParams(window.location.search);
-                const clientId = params.get('clientId');
                 const fd = new FormData(); fd.append('file', uploadedFile);
                 const uploadRes = await fetch(`${API_BASE_URL}/jobs/upload`, { method: 'POST', headers: { 'Authorization': `Bearer ${token}` }, body: fd });
                 if (uploadRes.ok) {
@@ -157,93 +158,11 @@
                         method: 'POST', headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
                         body: JSON.stringify({ job_type: 'annexure_b', input_files: [d.file_key || d.file_path], client_id: clientId })
                     });
-<<<<<<< HEAD
-                    if (!jobRes.ok) {
-                        const err = await jobRes.json();
-                        throw new Error(err.detail || 'Failed to start job');
-                    }
-
-                    if (typeof loadJobs === 'function') loadJobs();
-
-                    const jobData = await jobRes.json();
-                    const jobId = jobData.id;
-
-                    // Poll for Completion
-                    let completed = false;
-                    let attempts = 0;
-                    const maxAttempts = 60;
-
-                    while (!completed && attempts < maxAttempts) {
-                        attempts++;
-                        btn.innerHTML = `<span class="loading-spinner"></span> Processing... (${attempts}s)`;
-                        await new Promise(r => setTimeout(r, 2000));
-
-                        const pollRes = await fetch(`${API_BASE_URL}/jobs/${jobId}`, {
-                            headers: { 'Authorization': `Bearer ${token}` }
-                        });
-
-                        if (pollRes.ok) {
-                            const statusData = await pollRes.json();
-                            if (statusData.status === 'completed') {
-                                completed = true;
-                                if (typeof loadJobs === 'function') loadJobs();
-                                btn.innerHTML = '<span class="loading-spinner"></span> Downloading...';
-
-                                const downloadUrl = `${API_BASE_URL}/jobs/${jobId}/download`;
-                                const dlFetch = await fetch(downloadUrl, {
-                                    headers: { 'Authorization': `Bearer ${token}` }
-                                });
-                                const blob = await dlFetch.blob();
-                                const url = window.URL.createObjectURL(blob);
-                                const a = document.createElement('a');
-                                a.href = url;
-                                a.download = `Annexure_B_${clientId}.xlsx`;
-                                document.body.appendChild(a);
-                                a.click();
-                                window.URL.revokeObjectURL(url);
-                                document.body.removeChild(a);
-                            } else if (statusData.status === 'failed') {
-                                if (typeof loadJobs === 'function') loadJobs();
-                                throw new Error("Job failed: " + (statusData.error || "Unknown error"));
-                            }
-                        }
-                    }
-                    if (!completed) alert('Processing is taking longer than expected.');
-=======
                     if (jobRes.ok) { alert('Annexure B generation started!'); loadJobs(); } else { const err = await jobRes.json(); alert('Failed: ' + (err.detail || 'Error')); }
->>>>>>> ea8664237128fffa4ca00ea0ee0946ce90945ffa
                 }
             } catch (err) { console.error(err); alert('Error: ' + err.message); }
-            finally { btn.disabled = false; btn.innerHTML = originalText; }
+            finally { btn.disabled = false; btn.textContent = '📑 Generate Annexure B'; }
         }
-
-        let pollingInterval = null;
-        async function loadJobs() {
-            const params = new URLSearchParams(window.location.search); const clientId = params.get('clientId'); if (!clientId) return;
-            try {
-                const res = await authFetch(`/jobs/?skip=0&limit=50&client_id=${clientId}`); if (res.ok) {
-                    const jobs = await res.json(); const aJobs = jobs.filter(j => j.job_type === 'annexure_b');
-                    if (aJobs.length > 0) {
-                        document.getElementById('recent-jobs-container').style.display = 'block'; renderJobs(aJobs);
-                        const hasIP = aJobs.some(j => j.status === 'QUEUED' || j.status === 'PROCESSING');
-                        if (hasIP && !pollingInterval) pollingInterval = setInterval(loadJobs, 5000); else if (!hasIP && pollingInterval) { clearInterval(pollingInterval); pollingInterval = null; }
-                    }
-                }
-            } catch (e) { console.error(e) }
-        }
-
-        function renderJobs(jobs) {
-            document.getElementById('jobs-list').innerHTML = jobs.map(job => {
-                const date = new Date(job.created_at).toLocaleString(); const name = job.job_type.toUpperCase().replaceAll('_', ' ');
-                return `<div class="tool-job"><div class="tool-job-info"><span class="tool-job-name">${name}</span><span class="tool-job-meta">Created: ${date}</span></div><div style="display:flex;align-items:center;gap:.75rem"><span class="tool-job-status tj-${job.status.toLowerCase()}">${job.status}</span>${job.status === 'COMPLETED' ? `<button class="tbtn tbtn-download" onclick="downloadJobFile('${job.id}')">⬇ Download</button>` : ''}</div></div>`;
-            }).join('');
-        }
-
-        async function downloadJobFile(jobId) {
-            try { const response = await authFetch(`/jobs/${jobId}/download`); if (!response.ok) { alert('Download failed'); return; } const blob = await response.blob(); const url = window.URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `AnnexureB_${jobId.substring(0, 8)}.xlsx`; document.body.appendChild(a); a.click(); window.URL.revokeObjectURL(url); document.body.removeChild(a); } catch (e) { console.error(e); alert('Error downloading file'); }
-        }
-
-        loadJobs();
     </script>
 </body>
 
