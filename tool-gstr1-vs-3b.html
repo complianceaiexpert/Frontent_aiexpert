@@ -857,10 +857,10 @@
                                 <div class="dz-title">Drop your GSTR-1 file here</div>
                                 <div class="dz-sub">or <strong>browse files</strong></div>
                                 <div class="dz-formats"><span class="fmt-tag">.xlsx</span><span
-                                        class="fmt-tag">.csv</span><span class="fmt-tag">.json</span></div>
+                                        class="fmt-tag">.csv</span><span class="fmt-tag">.json</span><span class="fmt-tag">.pdf</span></div>
                                 <div class="dz-file" id="dz-file-g1"><span>✓</span><span id="fn-g1"></span></div>
                             </div>
-                            <input type="file" id="file-g1" accept=".xlsx,.csv,.json" style="display:none"
+                            <input type="file" id="file-g1" accept=".xlsx,.csv,.json,.pdf" style="display:none"
                                 onchange="handleFile(this.files[0],'g1')">
                             <div style="text-align:center;margin-top:0.5rem">
                                 <button onclick="event.stopPropagation();pickFromDrive('g1')"
@@ -890,10 +890,10 @@
                                 <div class="dz-title">Drop your GSTR-3B file here</div>
                                 <div class="dz-sub">or <strong>browse files</strong></div>
                                 <div class="dz-formats"><span class="fmt-tag">.xlsx</span><span
-                                        class="fmt-tag">.csv</span><span class="fmt-tag">.json</span></div>
+                                        class="fmt-tag">.csv</span><span class="fmt-tag">.json</span><span class="fmt-tag">.pdf</span></div>
                                 <div class="dz-file" id="dz-file-3b"><span>✓</span><span id="fn-3b"></span></div>
                             </div>
-                            <input type="file" id="file-3b" accept=".xlsx,.csv,.json" style="display:none"
+                            <input type="file" id="file-3b" accept=".xlsx,.csv,.json,.pdf" style="display:none"
                                 onchange="handleFile(this.files[0],'3b')">
                             <div style="text-align:center;margin-top:0.5rem">
                                 <button onclick="event.stopPropagation();pickFromDrive('3b')"
@@ -1013,7 +1013,7 @@
             if (!cid) { showToast('No client context — open from client workspace', 'error'); return; }
             openDrivePicker({
                 clientId: cid,
-                accept: ['.xlsx', '.csv', '.json'],
+                accept: ['.xlsx', '.csv', '.json', '.pdf'],
                 onSelect: (file) => handleFile(file, type)
             });
         }

@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tally Connector Setup Guide — ComplianceAI Expert</title>
+    <meta name="description"
+        content="Step-by-step guide to install and configure the ComplianceAI Tally Connector. Sync ledgers, vouchers, and trial balances from Tally Prime and ERP 9.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        * { box-sizing: border-box }
+        body { background: #fff; margin: 0; min-height: 100vh; font-family: 'Inter', sans-serif }
+
+        .guide-hero {
+            padding: 5rem 2rem 2rem;
+            max-width: 820px;
+            margin: 0 auto;
+        }
+        .guide-hero .breadcrumb {
+            font-size: .72rem;
+            color: #9ca3af;
+            margin-bottom: .75rem;
+        }
+        .guide-hero .breadcrumb a {
+            color: #6b7280;
+            text-decoration: none;
+        }
+        .guide-hero .breadcrumb a:hover { color: #1e3a8a }
+        .guide-hero h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.85rem;
+            font-weight: 800;
+            color: #111827;
+            margin: 0 0 .5rem;
+            letter-spacing: -.02em;
+        }
+        .guide-hero h1 span {
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .guide-hero .subtitle {
+            font-size: .88rem;
+            color: #6b7280;
+            line-height: 1.65;
+            margin: 0 0 1.25rem;
+            max-width: 650px;
+        }
+        .guide-hero .meta-row {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            font-size: .7rem;
+            color: #9ca3af;
+        }
+        .guide-hero .meta-row span {
+            display: flex;
+            align-items: center;
+            gap: .3rem;
+        }
+
+        .guide-wrap {
+            max-width: 820px;
+            margin: 0 auto;
+            padding: 0 2rem 4rem;
+        }
+
+        /* Quick Info Bar */
+        .quick-bar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: .75rem;
+            margin-bottom: 2rem;
+        }
+        .quick-item {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: .85rem;
+            text-align: center;
+        }
+        .quick-item .qi-icon {
+            font-size: 1.3rem;
+            margin-bottom: .3rem;
+        }
+        .quick-item .qi-label {
+            font-size: .62rem;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            font-weight: 600;
+        }
+        .quick-item .qi-value {
+            font-size: .78rem;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        /* Prerequisites */
+        .prereq-box {
+            background: linear-gradient(135deg, #eff6ff, #f0f4ff);
+            border: 1px solid #dbeafe;
+            border-radius: 12px;
+            padding: 1.25rem 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .prereq-box h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: .9rem;
+            font-weight: 700;
+            color: #1e3a8a;
+            margin: 0 0 .65rem;
+            display: flex;
+            align-items: center;
+            gap: .4rem;
+        }
+        .prereq-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: .4rem .75rem;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .prereq-list li {
+            font-size: .76rem;
+            color: #374151;
+            display: flex;
+            align-items: center;
+            gap: .4rem;
+            line-height: 1.6;
+        }
+        .prereq-list li .check {
+            color: #059669;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        /* Steps */
+        .step {
+            margin-bottom: 2rem;
+            position: relative;
+        }
+        .step::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 36px;
+            bottom: -28px;
+            width: 2px;
+            background: #e5e7eb;
+        }
+        .step:last-of-type::before { display: none }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: .65rem;
+            margin-bottom: .65rem;
+        }
+        .step-num {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            font-size: .85rem;
+            flex-shrink: 0;
+            position: relative;
+            z-index: 1;
+        }
+        .step-header h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #111827;
+            margin: 0;
+        }
+        .step-body {
+            padding-left: 47px;
+        }
+        .step-body p {
+            font-size: .8rem;
+            color: #4b5563;
+            line-height: 1.7;
+            margin: 0 0 .65rem;
+        }
+        .step-body ol, .step-body ul {
+            margin: 0 0 .75rem;
+            padding-left: 1.25rem;
+            font-size: .78rem;
+            color: #4b5563;
+            line-height: 1.8;
+        }
+        .step-body ol li, .step-body ul li {
+            margin-bottom: .25rem;
+        }
+        .step-body code {
+            background: #f1f5f9;
+            padding: 1px 6px;
+            border-radius: 4px;
+            font-size: .72rem;
+            color: #1e3a8a;
+            font-weight: 500;
+        }
+        .step-body strong { color: #111827 }
+
+        /* Tip / Warning boxes */
+        .tip-box {
+            display: flex;
+            gap: .65rem;
+            padding: .85rem 1rem;
+            border-radius: 8px;
+            margin: .75rem 0;
+            font-size: .75rem;
+            line-height: 1.6;
+        }
+        .tip-box.info {
+            background: #eff6ff;
+            border: 1px solid #dbeafe;
+            color: #1e40af;
+        }
+        .tip-box.warning {
+            background: #fffbeb;
+            border: 1px solid #fef3c7;
+            color: #92400e;
+        }
+        .tip-box.success {
+            background: #ecfdf5;
+            border: 1px solid #d1fae5;
+            color: #065f46;
+        }
+        .tip-icon { flex-shrink: 0; font-size: 1rem }
+
+        /* Download button */
+        .dl-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: .45rem;
+            padding: .65rem 1.35rem;
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: .82rem;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: all .15s;
+            text-decoration: none;
+            margin: .5rem 0;
+        }
+        .dl-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 14px rgba(30, 58, 138, .25);
+        }
+
+        /* Table */
+        .port-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: .75rem;
+            margin: .65rem 0;
+        }
+        .port-table th {
+            background: #f8fafc;
+            font-weight: 700;
+            color: #374151;
+            text-align: left;
+            padding: .5rem .75rem;
+            border: 1px solid #e5e7eb;
+        }
+        .port-table td {
+            padding: .45rem .75rem;
+            border: 1px solid #e5e7eb;
+            color: #4b5563;
+        }
+
+        /* FAQ */
+        .faq-section { margin-top: 2.5rem }
+        .faq-section h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #111827;
+            margin: 0 0 1rem;
+        }
+        .faq-item {
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            margin-bottom: .65rem;
+            overflow: hidden;
+        }
+        .faq-q {
+            padding: .85rem 1rem;
+            font-size: .8rem;
+            font-weight: 700;
+            color: #111827;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #fafafa;
+            transition: background .15s;
+        }
+        .faq-q:hover { background: #f1f5f9 }
+        .faq-a {
+            padding: 0 1rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height .3s ease, padding .3s ease;
+            font-size: .78rem;
+            color: #4b5563;
+            line-height: 1.7;
+        }
+        .faq-item.open .faq-a {
+            padding: .75rem 1rem;
+            max-height: 300px;
+        }
+        .faq-item.open .faq-q .faq-chevron { transform: rotate(180deg) }
+        .faq-chevron { transition: transform .2s; font-size: .7rem }
+
+        /* Back link */
+        .back-bar {
+            margin-top: 2.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: .35rem;
+            font-size: .78rem;
+            font-weight: 600;
+            color: #1e3a8a;
+            text-decoration: none;
+            transition: color .15s;
+        }
+        .back-link:hover { color: #3b82f6 }
+
+        @media(max-width:640px) {
+            .quick-bar { grid-template-columns: 1fr 1fr }
+            .prereq-list { grid-template-columns: 1fr }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app-topbar" data-active="settings"></div>
+    <script src="app-topbar.js?v=3"></script>
+
+    <!-- Hero -->
+    <div class="guide-hero">
+        <div class="breadcrumb">
+            <a href="integrations.html">Integrations</a> &nbsp;/&nbsp; Tally Connector Guide
+        </div>
+        <h1>Tally Connector <span>Setup Guide</span></h1>
+        <p class="subtitle">
+            Connect your Tally Prime or ERP 9 to ComplianceAI in under 5 minutes. The connector bridges
+            your local Tally data to our cloud platform — enabling real-time sync of ledgers, vouchers,
+            trial balances, and company master data.
+        </p>
+        <div class="meta-row">
+            <span>📄 5 min read</span>
+            <span>🔄 Last updated: March 2025</span>
+            <span>🖥️ Windows only</span>
+        </div>
+    </div>
+
+    <div class="guide-wrap">
+
+        <!-- Quick Info -->
+        <div class="quick-bar">
+            <div class="quick-item">
+                <div class="qi-icon">⏱️</div>
+                <div class="qi-value">~3 min</div>
+                <div class="qi-label">Setup Time</div>
+            </div>
+            <div class="quick-item">
+                <div class="qi-icon">💻</div>
+                <div class="qi-value">Windows</div>
+                <div class="qi-label">Platform</div>
+            </div>
+            <div class="quick-item">
+                <div class="qi-icon">🔌</div>
+                <div class="qi-value">Port 9000</div>
+                <div class="qi-label">Tally Port</div>
+            </div>
+            <div class="quick-item">
+                <div class="qi-icon">🔒</div>
+                <div class="qi-value">Local Only</div>
+                <div class="qi-label">Data Flow</div>
+            </div>
+        </div>
+
+        <!-- Prerequisites -->
+        <div class="prereq-box">
+            <h3>📋 Before You Begin</h3>
+            <ul class="prereq-list">
+                <li><span class="check">✅</span> Windows 10 or later (64-bit recommended)</li>
+                <li><span class="check">✅</span> Tally Prime or Tally ERP 9 installed</li>
+                <li><span class="check">✅</span> At least one company loaded in Tally</li>
+                <li><span class="check">✅</span> Active internet connection</li>
+                <li><span class="check">✅</span> Admin rights to install software</li>
+                <li><span class="check">✅</span> ComplianceAI account (sign up free)</li>
+            </ul>
+        </div>
+
+        <!-- Step 1 -->
+        <div class="step">
+            <div class="step-header">
+                <div class="step-num">1</div>
+                <h3>Download the Connector</h3>
+            </div>
+            <div class="step-body">
+                <p>
+                    Download the ComplianceAI Tally Connector application. This is a lightweight Windows utility
+                    (~15 MB) that runs in the background and bridges your Tally data securely.
+                </p>
+                <a href="assets/downloads/ComplianceAI-Desktop-Setup.exe" download class="dl-btn" id="dl-connector-btn">
+                    ⬇️ Download Connector (.exe)
+                </a>
+                <div class="tip-box info">
+                    <span class="tip-icon">💡</span>
+                    <div>
+                        <strong>64-bit by default.</strong> The download is a 64-bit application.
+                        If you're using a 32-bit system, contact us at <strong>support@complianceai.in</strong>
+                        for the 32-bit version.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="step">
+            <div class="step-header">
+                <div class="step-num">2</div>
+                <h3>Install the Application</h3>
+            </div>
+            <div class="step-body">
+                <ol>
+                    <li>Locate the downloaded file — usually in your <strong>Downloads</strong> folder</li>
+                    <li>Double-click <code>ComplianceAI-Connector-Setup.exe</code> to start installation</li>
+                    <li>If Windows SmartScreen appears, click <strong>"More info"</strong> → <strong>"Run anyway"</strong></li>
+                    <li>Follow the on-screen installer — click <strong>"Next"</strong> through each step</li>
+                    <li>Wait for installation to complete (usually under 30 seconds)</li>
+                    <li>Click <strong>"Finish"</strong> — the connector will launch automatically</li>
+                </ol>
+                <div class="tip-box warning">
+                    <span class="tip-icon">⚠️</span>
+                    <div>
+                        <strong>Windows Firewall:</strong> If prompted, allow the connector through Windows Firewall.
+                        It only communicates between Tally (localhost) and our cloud servers — no external data leaves
+                        your machine without sync commands.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="step">
+            <div class="step-header">
+                <div class="step-num">3</div>
+                <h3>Configure Tally for Connector Access</h3>
+            </div>
+            <div class="step-body">
+                <p>
+                    Tally needs to be configured to accept connections on its HTTP port. Most recent Tally Prime versions
+                    have this enabled by default, but verify with these steps:
+                </p>
+                <ol>
+                    <li>Open <strong>Tally Prime</strong> (or ERP 9)</li>
+                    <li>Press <strong>F12</strong> (Configure) or go to <strong>F1 → Settings</strong></li>
+                    <li>Navigate to <strong>Connectivity</strong> settings</li>
+                    <li>Set <strong>"Enable ODBC Server"</strong> to <strong>Yes</strong></li>
+                    <li>Set <strong>"Port"</strong> to <code>9000</code> (default)</li>
+                    <li>Accept and save the settings</li>
+                </ol>
+
+                <table class="port-table">
+                    <thead>
+                        <tr>
+                            <th>Setting</th>
+                            <th>Value</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Tally HTTP Port</td>
+                            <td><code>9000</code></td>
+                            <td>Default port — do not change unless it conflicts</td>
+                        </tr>
+                        <tr>
+                            <td>ODBC Server</td>
+                            <td><strong>Enabled</strong></td>
+                            <td>Required for external connections</td>
+                        </tr>
+                        <tr>
+                            <td>Company</td>
+                            <td>Must be loaded</td>
+                            <td>Open and select the company before syncing</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="tip-box info">
+                    <span class="tip-icon">ℹ️</span>
+                    <div>
+                        <strong>Tally ERP 9 users:</strong> Go to <strong>Gateway of Tally → F12 → Advanced Configuration</strong>
+                        and set <strong>"Enable Tally.NET Server"</strong> to Yes.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="step">
+            <div class="step-header">
+                <div class="step-num">4</div>
+                <h3>Launch and Connect</h3>
+            </div>
+            <div class="step-body">
+                <ol>
+                    <li>Open the <strong>ComplianceAI Connector</strong> from your Desktop or Start Menu</li>
+                    <li>Log in with your <strong>ComplianceAI credentials</strong> (same email/password you use on the website)</li>
+                    <li>The connector will automatically scan for Tally running on <code>localhost:9000</code></li>
+                    <li>Once detected, you'll see a <strong>green "Connected"</strong> status with your company name</li>
+                    <li>The connector will now sync data in the background</li>
+                </ol>
+                <div class="tip-box success">
+                    <span class="tip-icon">✅</span>
+                    <div>
+                        <strong>Success!</strong> Once connected, the connector runs silently in the system tray.
+                        Return to ComplianceAI website — your Tally data will appear in the integrations panel.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 5 -->
+        <div class="step">
+            <div class="step-header">
+                <div class="step-num">5</div>
+                <h3>Verify the Connection</h3>
+            </div>
+            <div class="step-body">
+                <p>
+                    Once the connector is running, verify the connection from the ComplianceAI website:
+                </p>
+                <ol>
+                    <li>Go to <a href="integrations.html" style="color:#1e3a8a;font-weight:600">Integrations</a> page</li>
+                    <li>In the Tally Integration card, the status should show <strong style="color:#059669">● Connected</strong></li>
+                    <li>Your company name will appear next to the status</li>
+                    <li>Ledgers, vouchers, and trial balances will start appearing in your workspace</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- What Gets Synced -->
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:1.5rem;margin:1.5rem 0">
+            <h3 style="font-family:'Outfit',sans-serif;font-size:1rem;font-weight:700;color:#111827;margin:0 0 .85rem;display:flex;align-items:center;gap:.4rem">
+                📦 What Gets Synced?
+            </h3>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.65rem">
+                <div style="padding:.75rem;background:#fff;border:1px solid #e5e7eb;border-radius:8px">
+                    <div style="font-size:.88rem;margin-bottom:.25rem">📒</div>
+                    <div style="font-size:.76rem;font-weight:700;color:#111827;margin-bottom:.15rem">Ledgers</div>
+                    <div style="font-size:.68rem;color:#6b7280;line-height:1.5">All master ledgers with groups, opening balances, and closing balances</div>
+                </div>
+                <div style="padding:.75rem;background:#fff;border:1px solid #e5e7eb;border-radius:8px">
+                    <div style="font-size:.88rem;margin-bottom:.25rem">🧾</div>
+                    <div style="font-size:.76rem;font-weight:700;color:#111827;margin-bottom:.15rem">Vouchers</div>
+                    <div style="font-size:.68rem;color:#6b7280;line-height:1.5">Sales, purchase, receipt, payment, journal, and contra vouchers</div>
+                </div>
+                <div style="padding:.75rem;background:#fff;border:1px solid #e5e7eb;border-radius:8px">
+                    <div style="font-size:.88rem;margin-bottom:.25rem">📊</div>
+                    <div style="font-size:.76rem;font-weight:700;color:#111827;margin-bottom:.15rem">Trial Balance</div>
+                    <div style="font-size:.68rem;color:#6b7280;line-height:1.5">Complete trial balance with group-wise and ledger-wise breakup</div>
+                </div>
+                <div style="padding:.75rem;background:#fff;border:1px solid #e5e7eb;border-radius:8px">
+                    <div style="font-size:.88rem;margin-bottom:.25rem">🏢</div>
+                    <div style="font-size:.76rem;font-weight:700;color:#111827;margin-bottom:.15rem">Company Info</div>
+                    <div style="font-size:.68rem;color:#6b7280;line-height:1.5">Company name, GSTIN, PAN, address, and financial year details</div>
+                </div>
+                <div style="padding:.75rem;background:#fff;border:1px solid #e5e7eb;border-radius:8px">
+                    <div style="font-size:.88rem;margin-bottom:.25rem">🏦</div>
+                    <div style="font-size:.76rem;font-weight:700;color:#111827;margin-bottom:.15rem">Bank Transactions</div>
+                    <div style="font-size:.68rem;color:#6b7280;line-height:1.5">Bank ledger transactions including narration, amount, and date</div>
+                </div>
+                <div style="padding:.75rem;background:#fff;border:1px solid #e5e7eb;border-radius:8px">
+                    <div style="font-size:.88rem;margin-bottom:.25rem">📋</div>
+                    <div style="font-size:.76rem;font-weight:700;color:#111827;margin-bottom:.15rem">GST Data</div>
+                    <div style="font-size:.68rem;color:#6b7280;line-height:1.5">GSTIN-wise invoice details, HSN summary, and tax component breakup</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Daily Usage Tips -->
+        <div style="background:#ecfdf5;border:1px solid #d1fae5;border-radius:12px;padding:1.25rem 1.5rem;margin:1.5rem 0">
+            <h3 style="font-family:'Outfit',sans-serif;font-size:.95rem;font-weight:700;color:#065f46;margin:0 0 .65rem;display:flex;align-items:center;gap:.4rem">
+                🔄 Daily Usage
+            </h3>
+            <p style="font-size:.78rem;color:#065f46;line-height:1.65;margin:0 0 .65rem">
+                Once setup is complete, your daily workflow is simple:
+            </p>
+            <ol style="margin:0;padding-left:1.35rem;font-size:.78rem;color:#065f46;line-height:1.85">
+                <li><strong>Open Tally</strong> and load the company you want to work with</li>
+                <li><strong>Launch the Connector</strong> (or it auto-starts if set to run on Windows startup)</li>
+                <li><strong>Use ComplianceAI</strong> — data syncs automatically in the background</li>
+                <li>Ledgers, vouchers, and reports refresh whenever you open a client workspace</li>
+            </ol>
+            <div class="tip-box info" style="margin-top:.75rem;margin-bottom:0">
+                <span class="tip-icon">💡</span>
+                <div>
+                    <strong>Pro tip:</strong> Set the connector to <strong>run on Windows startup</strong> so you
+                    never have to manually launch it. Right-click the system tray icon → Settings → "Start on boot".
+                </div>
+            </div>
+        </div>
+
+        <!-- FAQ Section -->
+        <div class="faq-section">
+            <h2>❓ Frequently Asked Questions</h2>
+
+            <div class="faq-item">
+                <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+                    Tally is running but the connector says "Not Connected"
+                    <span class="faq-chevron">▼</span>
+                </div>
+                <div class="faq-a">
+                    <strong>Check the port:</strong> Make sure Tally is configured to use port <code>9000</code>.
+                    Go to Tally → F12 → Connectivity and verify the port number.
+                    Also ensure that no firewall or antivirus is blocking the connection on <code>localhost:9000</code>.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+                    Can I sync multiple companies?
+                    <span class="faq-chevron">▼</span>
+                </div>
+                <div class="faq-a">
+                    Yes! The connector automatically detects whichever company is currently loaded in Tally.
+                    To sync a different company, simply close the current one and open the desired company in Tally.
+                    The connector will detect the change and sync accordingly.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+                    Is my data secure? What data leaves my computer?
+                    <span class="faq-chevron">▼</span>
+                </div>
+                <div class="faq-a">
+                    The connector communicates locally with Tally (localhost only) and sends encrypted data
+                    over HTTPS to ComplianceAI servers. Only the specific data required for compliance
+                    (ledgers, vouchers, trial balance) is synced. No passwords or sensitive credentials leave
+                    your machine. All data is encrypted in transit and at rest.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+                    Does the connector work with Tally running on a different PC in the network?
+                    <span class="faq-chevron">▼</span>
+                </div>
+                <div class="faq-a">
+                    By default, the connector connects to Tally on the same machine (<code>localhost:9000</code>).
+                    If Tally is running on a different machine in your LAN, you can change the host in the connector
+                    settings to the IP address of that machine (e.g., <code>192.168.1.100:9000</code>).
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+                    I'm using a 32-bit system. Can I still use the connector?
+                    <span class="faq-chevron">▼</span>
+                </div>
+                <div class="faq-a">
+                    The default download is a 64-bit application. For 32-bit systems, contact us at
+                    <strong>support@complianceai.in</strong> and we'll send you the 32-bit version download link.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+                    How do I uninstall the connector?
+                    <span class="faq-chevron">▼</span>
+                </div>
+                <div class="faq-a">
+                    Go to <strong>Windows Settings → Apps → Apps & features</strong>, search for
+                    "ComplianceAI Connector", and click <strong>Uninstall</strong>. The connector will be
+                    completely removed without leaving any traces.
+                </div>
+            </div>
+        </div>
+
+        <!-- Back bar -->
+        <div class="back-bar">
+            <a href="integrations.html" class="back-link">← Back to Integrations</a>
+            <span style="font-size:.7rem;color:#9ca3af">Need help? Contact <a href="mailto:support@complianceai.in" style="color:#1e3a8a;text-decoration:none;font-weight:600">support@complianceai.in</a></span>
+        </div>
+
+    </div>
+
+    <script src="api_config.js"></script>
+    <script src="session-manager.js?v=2"></script>
+    <script>
+        if (!requireAuth()) { }
+    </script>
+</body>
+
+</html>

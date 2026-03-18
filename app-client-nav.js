@@ -47,22 +47,23 @@
         }
     ];
 
-    const serviceItems = [
-        {
-            id: 'gst-refund',
-            label: 'GST Refund',
-            href: buildHref('service-gst-refund-webview.html'),
-            icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>',
-            color: '#10b981'
-        },
-        {
-            id: 'data-entry',
-            label: 'Data Entry',
-            href: buildHref('service-data-entry.html'),
-            icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>',
-            color: '#3b82f6'
-        }
-    ];
+    // ═══ Service name → sidebar config mapping ═══
+    // Keys are LOWERCASE versions of service.name from DB
+    const SERVICE_MAP = {
+        'gst refund':      { id: 'gst-refund',      label: 'GST Refund',      href: buildHref('service-gst-refund-webview.html'), icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>' },
+        'gst filing':      { id: 'gst-refund',      label: 'GST Filing',      href: buildHref('service-gst-refund-webview.html'), icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>' },
+        'data entry':      { id: 'data-entry',      label: 'Data Entry',      href: buildHref('service-data-entry.html'),          icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>' },
+        'ca certificates': { id: 'ca-certificates', label: 'CA Certificates', href: buildHref('service-certificates.html'),         icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 7h10M7 12h10M7 17h4"/></svg>' },
+        'income tax':      { id: 'income-tax',      label: 'Income Tax',      href: buildHref('service-income-tax.html'),           icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>' },
+        'audit':           { id: 'audit',           label: 'Audit',           href: buildHref('service-audit.html'),                icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>' },
+        'taxation':        { id: 'taxation',        label: 'Taxation',        href: buildHref('service-taxation.html'),             icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>' },
+        'payroll':         { id: 'payroll',         label: 'Payroll',         href: buildHref('service-payroll.html'),              icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>' },
+        'company law':     { id: 'company-law',     label: 'Company Law',     href: buildHref('service-company-law.html'),          icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 7h10M7 12h10M7 17h4"/></svg>' },
+        'accounting':      { id: 'accounting',      label: 'Accounting',      href: buildHref('service-data-entry.html'),           icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>' },
+        'compliance':      { id: 'compliance',      label: 'Compliance',      href: buildHref('service-compliance.html'),           icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>' },
+        'bookkeeping':     { id: 'bookkeeping',     label: 'Bookkeeping',     href: buildHref('service-data-entry.html'),           icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>' },
+        'invoice':         { id: 'invoice',         label: 'Invoice',         href: buildHref('service-invoice.html'),              icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>' },
+    };
 
     // ═══ Build Client Header (mini card) ═══
     let html = '';
@@ -93,32 +94,26 @@
 
     html += '</div>';
 
-    // ═══ Services section ═══
+    // ═══ Services section — placeholder, populated dynamically ═══
+    html += '<div id="cn-services-section" style="display:none">';
     html += '<div class="cn-divider"></div>';
     html += '<div class="cn-section">';
     html += '<div class="cn-section-label">';
     html += '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>';
     html += 'Services';
     html += '</div>';
-
-    serviceItems.forEach(item => {
-        const activeClass = isActive(item.id);
-        html += `<a href="${item.href}" class="cn-item${activeClass}">
-            ${item.icon}
-            ${item.label}
-        </a>`;
-    });
-
+    html += '<div id="cn-service-links"></div>';
+    html += '</div>';
     html += '</div>';
     html += '<div class="cn-divider"></div>';
 
     container.innerHTML = html;
 
-    // ═══ Load client info if clientId is present ═══
+    // ═══ Load client info + services if clientId is present ═══
     if (clientId) {
-        // Try to use authFetch if it's already available, otherwise wait for it
         const tryLoadClient = () => {
             if (typeof authFetch === 'function') {
+                // Load client details
                 authFetch(`/clients/${clientId}`).then(res => {
                     if (res.ok) return res.json();
                     throw new Error('Not ok');
@@ -133,6 +128,34 @@
                     if (type) {
                         const gstin = client.gstins && client.gstins.length > 0 ? client.gstins[0] : (client.pan || '');
                         type.textContent = gstin ? gstin : (client.entity_type || 'Client');
+                    }
+
+                    // Render services from client.services array
+                    const services = client.services || [];
+                    const linksEl = document.getElementById('cn-service-links');
+                    const sectionEl = document.getElementById('cn-services-section');
+
+                    if (services.length > 0 && linksEl && sectionEl) {
+                        let svcHtml = '';
+                        services.forEach(svc => {
+                            const key = (svc.name || '').toLowerCase().trim();
+                            const mapped = SERVICE_MAP[key];
+                            if (mapped) {
+                                const activeClass = isActive(mapped.id);
+                                svcHtml += `<a href="${mapped.href}" class="cn-item${activeClass}">
+                                    ${mapped.icon}
+                                    ${mapped.label}
+                                </a>`;
+                            } else {
+                                // Generic fallback for unmapped services
+                                svcHtml += `<a href="#" class="cn-item">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>
+                                    ${svc.name}
+                                </a>`;
+                            }
+                        });
+                        linksEl.innerHTML = svcHtml;
+                        sectionEl.style.display = 'block';
                     }
                 }).catch(() => { });
             } else {

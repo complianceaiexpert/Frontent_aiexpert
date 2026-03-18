@@ -537,6 +537,28 @@
         const serviceName = urlParams.get('service');
         const user = JSON.parse(localStorage.getItem('user') || '{}');
 
+        // Client's company name — used to filter all Tally data
+        let clientCompanyName = '';
+
+        async function loadClientCompanyName() {
+            if (!clientId) return;
+            try {
+                const res = await authFetch('/clients/' + clientId);
+                if (res.ok) {
+                    const client = await res.json();
+                    clientCompanyName = client.name || '';
+                    console.log('Client company name:', clientCompanyName);
+                }
+            } catch (e) { console.error('Load client name error:', e); }
+        }
+
+        // Helper: append company_name to a Tally API URL
+        function withCompany(url) {
+            if (!clientCompanyName) return url;
+            const sep = url.includes('?') ? '&' : '?';
+            return url + sep + 'company_name=' + encodeURIComponent(clientCompanyName);
+        }
+
         document.getElementById('back-link').href = `services-dashboard.html?clientId=${clientId}`;
 
         function pickFromDriveDE() {
@@ -582,7 +604,7 @@
         async function loadDashboardStats() {
             try {
                 // Master stats (ledgers, items, groups, cost centres)
-                const lRes = await authFetch('/tally/ledgers/stats');
+                const lRes = await authFetch(withCompany('/tally/ledgers/stats'));
                 if (lRes.ok) {
                     const ls = await lRes.json();
                     document.getElementById('stat-master-ledgers').textContent = ls.total_ledgers || 0;
@@ -591,7 +613,7 @@
                     document.getElementById('stat-master-costcentres').textContent = ls.total_cost_centres || 0;
                 }
                 // Voucher stats
-                const vRes = await authFetch('/tally/vouchers/stats');
+                const vRes = await authFetch(withCompany('/tally/vouchers/stats'));
                 if (vRes.ok) {
                     const vs = await vRes.json();
                     document.getElementById('stat-total').textContent = vs.total || 0;
@@ -607,7 +629,7 @@
         async function loadTop5() {
             try {
                 // Top 5 Customers = Sundry Debtors sorted by closing_balance desc
-                const cRes = await authFetch('/tally/ledgers?parent=Sundry+Debtors&per_page=5&page=1');
+                const cRes = await authFetch(withCompany('/tally/ledgers?parent=Sundry+Debtors&per_page=5&page=1'));
                 if (cRes.ok) {
                     const cd = await cRes.json();
                     const tbody = document.getElementById('top5-customers');
@@ -621,7 +643,7 @@
                     }
                 }
                 // Top 5 Suppliers = Sundry Creditors sorted by closing_balance desc
-                const sRes = await authFetch('/tally/ledgers?parent=Sundry+Creditors&per_page=5&page=1');
+                const sRes = await authFetch(withCompany('/tally/ledgers?parent=Sundry+Creditors&per_page=5&page=1'));
                 if (sRes.ok) {
                     const sd = await sRes.json();
                     const tbody = document.getElementById('top5-suppliers');
@@ -651,7 +673,7 @@
             tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:2rem;color:#9ca3af">Loading ledgers from Tally...</td></tr>';
 
             try {
-                let url = `/tally/ledgers?page=${ledgerPage}&per_page=${LEDGER_PER_PAGE}`;
+                let url = withCompany(`/tally/ledgers?page=${ledgerPage}&per_page=${LEDGER_PER_PAGE}`);
                 if (ledgerSearchVal) url += `&search=${encodeURIComponent(ledgerSearchVal)}`;
                 if (ledgerParentFilter) url += `&parent=${encodeURIComponent(ledgerParentFilter)}`;
 
@@ -1058,7 +1080,10 @@
 
         // ═══ INIT ═══
         window.addEventListener('load', async () => {
-            // Load all data in parallel
+            // First load client company name so all Tally calls are filtered
+            await loadClientCompanyName();
+
+            // Load all data in parallel (now filtered by company)
             await Promise.allSettled([
                 loadDashboardStats(),
                 loadTop5(),

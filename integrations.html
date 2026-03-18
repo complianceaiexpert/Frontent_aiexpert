@@ -544,16 +544,6 @@
                     or browser connector.</p>
                 <a href="#tally-setup" class="int-action">Configure ↓</a>
             </div>
-            <div class="int-card" style="border-left:3px solid #6366f1">
-                <div class="int-card-top">
-                    <div class="int-icon" style="background:#6366f1;color:#fff">📄</div>
-                    <h4>Document Upload & OCR</h4>
-                    <span class="int-badge" style="background:#ede9fe;color:#6366f1">ACTIVE</span>
-                </div>
-                <p>Upload invoices, FIRCs, bank statements, and reports. AI OCR extracts and structures data
-                    automatically from PDFs and images.</p>
-                <a href="tool-document-reader.html" class="int-action">Open Reader →</a>
-            </div>
             <div class="int-card" style="border-left:3px solid #7c3aed">
                 <div class="int-card-top">
                     <div class="int-icon" style="background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff">🤖</div>
@@ -564,15 +554,15 @@
                     language.</p>
                 <a href="ai-gpt.html" class="int-action">Open AI Assistant →</a>
             </div>
-            <div class="int-card" style="border-left:3px solid #3b82f6">
+            <div class="int-card" style="border-left:3px solid #d1d5db">
                 <div class="int-card-top">
-                    <div class="int-icon" style="background:#eff6ff;color:#3b82f6">📧</div>
+                    <div class="int-icon" style="background:#f1f5f9;color:#6b7280">📧</div>
                     <h4>Email Integration</h4>
-                    <span class="int-badge" style="background:#dbeafe;color:#1e3a8a">ACTIVE</span>
+                    <span class="int-badge" style="background:#f1f5f9;color:#6b7280">COMING SOON</span>
                 </div>
                 <p>Connect client email accounts for AI agents to auto-read attachments, extract invoices, and file
                     documents to client folders.</p>
-                <a href="ai-agents.html" class="int-action">Configure Agent →</a>
+                <span class="int-action" style="color:#9ca3af">Notify Me</span>
             </div>
             <div class="int-card" style="border-left:3px solid #d1d5db">
                 <div class="int-card-top">
@@ -640,51 +630,48 @@
                 </div>
             </div>
 
-            <div class="methods">
+            <div class="methods" style="grid-template-columns:1fr">
                 <div class="method rec" style="position:relative">
                     <span class="method-rec-badge">RECOMMENDED</span>
                     <h4><span class="method-num" style="background:#1e3a8a;color:#fff">1</span> Browser + Connector
                     </h4>
-                    <p>Keep using this website. Install a small utility to bridge the connection to Tally on your
+                    <p>Keep using this website. Install a small connector utility to bridge the connection to Tally on your
                         machine. <strong>Quick setup, works instantly.</strong></p>
-                    <button class="m-btn m-btn-primary" onclick="downloadConnector()" style="margin-bottom:.55rem">⬇️ Download Connector
-                        (.exe)</button>
-                    <div class="m-token">
-                        <label>Connection Token</label>
-                        <div class="m-token-row">
-                            <input type="text" value="ca_live_tk_9982374823" readonly>
-                            <button onclick="copyToken()">📋</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="method" style="position:relative;opacity:.55;pointer-events:none">
-                    <span class="method-rec-badge" style="background:#9ca3af">COMING SOON</span>
-                    <h4><span class="method-num" style="background:#e5e7eb;color:#6b7280">2</span> Desktop App</h4>
-                    <p>Download the full ComplianceAI desktop app. <strong>No setup required.</strong> Sync works when
-                        Tally is open.</p>
-                    <div style="display:flex;gap:.4rem;margin-bottom:.4rem">
-                        <button class="m-btn m-btn-secondary" disabled style="flex:1">🪟
-                            Windows</button>
-                        <button class="m-btn m-btn-secondary" disabled style="flex:1">🍎
-                            macOS</button>
-                    </div>
-                    <p style="text-align:center;font-size:.62rem;color:#9ca3af;margin:0">✅ Zero Config · ✅ Enhanced
-                        Security</p>
+                    <button class="m-btn m-btn-primary" onclick="downloadConnector()" style="max-width:320px">⬇️ Download Connector (.exe)</button>
                 </div>
             </div>
 
-            <div class="setup-steps">
-                <div class="step-col">
-                    <h4><span class="method-num"
-                            style="background:#1e3a8a;color:#fff;display:inline-flex;font-size:.55rem">1</span> Using
-                        the Connector</h4>
-                    <ol>
-                        <li>Open <strong>Tally Prime</strong> or <strong>ERP 9</strong> and ensure your company is
-                            loaded.</li>
-                        <li>Run the <strong>ComplianceAI Connector</strong> (.exe).</li>
-                        <li>Paste the <strong>Connection Token</strong> when asked.</li>
-                        <li>The Connector will detect Tally and start syncing automatically.</li>
-                    </ol>
+            <!-- How to Use Guide -->
+            <div style="padding:1.25rem;background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;margin-bottom:1rem">
+                <h4 style="font-family:'Outfit',sans-serif;font-size:.88rem;font-weight:700;color:#1e3a8a;margin:0 0 .65rem;display:flex;align-items:center;gap:.4rem">
+                    📖 How to Use the Tally Connector
+                </h4>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem">
+                    <div>
+                        <h5 style="font-size:.76rem;font-weight:700;color:#111827;margin:0 0 .4rem">🔧 One-Time Setup</h5>
+                        <ol style="margin:0;padding-left:1.15rem;font-size:.73rem;color:#4b5563;line-height:1.7">
+                            <li>Download the <strong>ComplianceAI Connector</strong> (.exe) above</li>
+                            <li>Install it on the PC where <strong>Tally Prime / ERP 9</strong> is running</li>
+                            <li>Open Tally and ensure your <strong>company is loaded</strong></li>
+                            <li>Launch the Connector — it auto-detects Tally on <code style="background:#e5e7eb;padding:1px 4px;border-radius:3px;font-size:.68rem">localhost:9000</code></li>
+                        </ol>
+                    </div>
+                    <div>
+                        <h5 style="font-size:.76rem;font-weight:700;color:#111827;margin:0 0 .4rem">🔄 Daily Usage</h5>
+                        <ol style="margin:0;padding-left:1.15rem;font-size:.73rem;color:#4b5563;line-height:1.7">
+                            <li>Open <strong>Tally</strong> and load the company</li>
+                            <li>Run the <strong>Connector</strong> (if not already running)</li>
+                            <li>Come back to this website — data syncs automatically</li>
+                            <li>Ledgers, vouchers, and trial balances will appear in your workspace</li>
+                        </ol>
+                    </div>
+                </div>
+                <div style="margin-top:.75rem;padding-top:.65rem;border-top:1px solid #e2e8f0;display:flex;align-items:center;gap:.65rem">
+                    <span style="font-size:.7rem;color:#6b7280">💡 <strong>Need detailed instructions?</strong></span>
+                    <a href="tally-connector-guide.html"
+                       style="font-size:.72rem;font-weight:600;color:#1e3a8a;text-decoration:none;display:inline-flex;align-items:center;gap:.25rem">
+                        Read the full setup guide →
+                    </a>
                 </div>
             </div>
         </div>

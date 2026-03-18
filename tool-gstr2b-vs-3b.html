@@ -15,6 +15,7 @@
         rel="stylesheet">
     <link rel="stylesheet" href="tool-layout.css">
     <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <style>
         .tool-main {
             background: #f8fafc;
@@ -869,10 +870,10 @@
                                 <div class="dz-title">Drop your GSTR-2B file here</div>
                                 <div class="dz-sub">or <strong>browse files</strong></div>
                                 <div class="dz-formats"><span class="fmt-tag">.xlsx</span><span
-                                        class="fmt-tag">.csv</span><span class="fmt-tag">.json</span></div>
+                                        class="fmt-tag">.csv</span><span class="fmt-tag">.json</span><span class="fmt-tag">.pdf</span></div>
                                 <div class="dz-file" id="dz-file-2b"><span>✓</span><span id="fn-2b"></span></div>
                             </div>
-                            <input type="file" id="file-2b" accept=".xlsx,.csv,.json" style="display:none"
+                            <input type="file" id="file-2b" accept=".xlsx,.csv,.json,.pdf" style="display:none"
                                 onchange="handleFile(this.files[0],'2b')">
                             <div style="text-align:center;margin-top:0.5rem">
                                 <button onclick="event.stopPropagation();pickFromDrive('2b')"
@@ -902,10 +903,10 @@
                                 <div class="dz-title">Drop your GSTR-3B file here</div>
                                 <div class="dz-sub">or <strong>browse files</strong></div>
                                 <div class="dz-formats"><span class="fmt-tag">.xlsx</span><span
-                                        class="fmt-tag">.csv</span><span class="fmt-tag">.json</span></div>
+                                        class="fmt-tag">.csv</span><span class="fmt-tag">.json</span><span class="fmt-tag">.pdf</span></div>
                                 <div class="dz-file" id="dz-file-3b"><span>✓</span><span id="fn-3b"></span></div>
                             </div>
-                            <input type="file" id="file-3b" accept=".xlsx,.csv,.json" style="display:none"
+                            <input type="file" id="file-3b" accept=".xlsx,.csv,.json,.pdf" style="display:none"
                                 onchange="handleFile(this.files[0],'3b')">
                             <div style="text-align:center;margin-top:0.5rem">
                                 <button onclick="event.stopPropagation();pickFromDrive('3b')"
@@ -997,8 +998,56 @@
 
         // State
         let parsed2B = null, parsed3B = null;
+        let detected3BPeriod = null;  // { month: 'April', year: '2025', monthNum: 4 }
+        let file2BName = '', file3BName = '';
+
+        const MONTH_MAP = {
+            'jan': 1, 'january': 1, 'feb': 2, 'february': 2, 'mar': 3, 'march': 3,
+            'apr': 4, 'april': 4, 'may': 5, 'jun': 6, 'june': 6,
+            'jul': 7, 'july': 7, 'aug': 8, 'august': 8, 'sep': 9, 'september': 9,
+            'oct': 10, 'october': 10, 'nov': 11, 'november': 11, 'dec': 12, 'december': 12
+        };
+        const MONTH_NAMES = ['', 'January', 'February', 'March', 'April', 'May', 'June',
+            'July', 'August', 'September', 'October', 'November', 'December'];
 
         function fmt(n) { return '₹' + Math.abs(n).toLocaleString('en-IN', { maximumFractionDigits: 0 }); }
+
+        // ── Period detection ──
+        function detectPeriod(filename, pdfText) {
+            // Try filename first: "GSTR3B_April_2025.pdf", "3B-Apr-25.xlsx", "202504", etc.
+            const src = (filename + ' ' + (pdfText || '')).toLowerCase();
+            
+            // Pattern 1: Month name + year: "april 2025", "apr-2025", "apr 25"
+            for (const [name, num] of Object.entries(MONTH_MAP)) {
+                const re = new RegExp(name + '[\\s_\\-]*(20\\d{2}|\\d{2})', 'i');
+                const m = src.match(re);
+                if (m) {
+                    let year = m[1];
+                    if (year.length === 2) year = '20' + year;
+                    return { month: MONTH_NAMES[num], year, monthNum: num };
+                }
+            }
+
+            // Pattern 2: YYYYMM or MMYYYY: "202504", "042025"  
+            const ym = src.match(/(20\d{2})(0[1-9]|1[0-2])/);
+            if (ym) return { month: MONTH_NAMES[parseInt(ym[2])], year: ym[1], monthNum: parseInt(ym[2]) };
+            const my = src.match(/(0[1-9]|1[0-2])(20\d{2})/);
+            if (my) return { month: MONTH_NAMES[parseInt(my[1])], year: my[2], monthNum: parseInt(my[1]) };
+
+            // Pattern 3: From PDF content — "Period: April" or "Tax Period: 042025"
+            if (pdfText) {
+                const periodMatch = pdfText.match(/(?:period|tax\s*period|return\s*period)[:\s]*([a-z]+)/i);
+                if (periodMatch) {
+                    const mName = periodMatch[1].toLowerCase();
+                    if (MONTH_MAP[mName]) {
+                        const yearMatch = pdfText.match(/(?:year|fy)[:\s]*(20\d{2})/i);
+                        return { month: MONTH_NAMES[MONTH_MAP[mName]], year: yearMatch ? yearMatch[1] : '', monthNum: MONTH_MAP[mName] };
+                    }
+                }
+            }
+
+            return null;
+        }
 
         function pickFromDrive(type) {
             const params = new URLSearchParams(window.location.search);
@@ -1006,7 +1055,7 @@
             if (!cid) { showToast('No client context', 'error'); return; }
             openDrivePicker({
                 clientId: cid,
-                accept: ['.xlsx', '.csv', '.json'],
+                accept: ['.xlsx', '.csv', '.json', '.pdf'],
                 onSelect: (file) => handleFile(file, type)
             });
         }
@@ -1025,64 +1074,180 @@
             fi.className = 'fi done';
             fi.textContent = (type === '2b' ? '📊 2B: ✓ ' : '📈 3B: ✓ ') + file.name;
 
+            if (type === '2b') file2BName = file.name;
+            else file3BName = file.name;
+
             // Parse
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                try {
-                    let data;
-                    if (file.name.endsWith('.json')) {
-                        data = JSON.parse(e.target.result);
-                        if (type === '2b') parsed2B = extractFromJSON_2B(data);
-                        else parsed3B = extractFromJSON_3B(data);
-                    } else {
-                        const wb = XLSX.read(e.target.result, { type: 'array' });
-                        if (type === '2b') parsed2B = extractFromExcel_2B(wb);
-                        else parsed3B = extractFromExcel_3B(wb);
+            if (file.name.endsWith('.pdf')) {
+                const reader = new FileReader();
+                reader.onload = async function (e) {
+                    try {
+                        const pdfBytes = new Uint8Array(e.target.result);
+                        const fullText = await extractPDFText(pdfBytes);
+                        
+                        if (type === '3b') {
+                            parsed3B = parse3BFromPDF(fullText);
+                            // Detect period from 3B
+                            detected3BPeriod = detectPeriod(file.name, fullText);
+                            if (detected3BPeriod) {
+                                showToast(`3B period detected: ${detected3BPeriod.month} ${detected3BPeriod.year}`, 'success');
+                            }
+                        } else {
+                            parsed2B = parse2BFromPDF(fullText);
+                        }
+                        showPreview(type);
+                        checkReady();
+                        showToast(`${file.name} (PDF) parsed successfully!`, 'success');
+                    } catch (err) {
+                        console.error(err);
+                        showToast('Error parsing PDF: ' + err.message, 'error');
                     }
-                    showPreview(type);
-                    checkReady();
-                    showToast(`${file.name} parsed successfully!`, 'success');
-                } catch (err) {
-                    console.error(err);
-                    showToast('Error parsing file: ' + err.message, 'error');
-                }
-            };
-            if (file.name.endsWith('.json')) reader.readAsText(file);
-            else reader.readAsArrayBuffer(file);
+                };
+                reader.readAsArrayBuffer(file);
+            } else {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    try {
+                        let data;
+                        if (file.name.endsWith('.json')) {
+                            data = JSON.parse(e.target.result);
+                            if (type === '2b') parsed2B = extractFromJSON_2B(data);
+                            else {
+                                parsed3B = extractFromJSON_3B(data);
+                                detected3BPeriod = detectPeriod(file.name, JSON.stringify(data).substring(0, 2000));
+                            }
+                        } else {
+                            const wb = XLSX.read(e.target.result, { type: 'array' });
+                            if (type === '2b') parsed2B = extractFromExcel_2B(wb);
+                            else {
+                                parsed3B = extractFromExcel_3B(wb);
+                                detected3BPeriod = detectPeriod(file.name, '');
+                            }
+                        }
+                        if (type === '3b' && detected3BPeriod) {
+                            showToast(`3B period detected: ${detected3BPeriod.month} ${detected3BPeriod.year}`, 'success');
+                        }
+                        showPreview(type);
+                        checkReady();
+                        showToast(`${file.name} parsed successfully!`, 'success');
+                    } catch (err) {
+                        console.error(err);
+                        showToast('Error parsing file: ' + err.message, 'error');
+                    }
+                };
+                if (file.name.endsWith('.json')) reader.readAsText(file);
+                else reader.readAsArrayBuffer(file);
+            }
         }
 
         // ── Extract from Excel ──
         function extractFromExcel_2B(wb) {
-            const result = { igst: 0, cgst: 0, sgst: 0, cess: 0, rows: [] };
-            // Try to find ITC summary data from any sheet
-            for (const name of wb.SheetNames) {
+            const result = { igst: 0, cgst: 0, sgst: 0, cess: 0, rows: [], periods: [], hasMonthCol: false, hasEligCol: false };
+            
+            // Valid month names for detection
+            const VALID_MONTHS = ['JANUARY','FEBRUARY','MARCH','APRIL','MAY','JUNE',
+                                  'JULY','AUGUST','SEPTEMBER','OCTOBER','NOVEMBER','DECEMBER'];
+            
+            // Try B2B sheet first, then any sheet
+            const sheetOrder = [...wb.SheetNames];
+            const b2bIdx = sheetOrder.findIndex(n => n.toLowerCase().includes('b2b'));
+            if (b2bIdx > 0) { sheetOrder.unshift(sheetOrder.splice(b2bIdx, 1)[0]); }
+            
+            for (const name of sheetOrder) {
                 const sheet = wb.Sheets[name];
-                const json = XLSX.utils.sheet_to_json(sheet, { defval: 0 });
+                const json = XLSX.utils.sheet_to_json(sheet, { defval: '' });
                 if (!json.length) continue;
-                // Look for rows with tax component columns
-                for (const row of json) {
-                    const keys = Object.keys(row).map(k => k.toLowerCase());
-                    const hasIGST = keys.some(k => k.includes('igst') || k.includes('integrated'));
-                    const hasCGST = keys.some(k => k.includes('cgst') || k.includes('central'));
-                    if (hasIGST || hasCGST) {
-                        let label = '', igst = 0, cgst = 0, sgst = 0, cess = 0;
-                        for (const [k, v] of Object.entries(row)) {
-                            const kl = k.toLowerCase();
-                            if (kl.includes('description') || kl.includes('type') || kl.includes('category') || kl.includes('particular') || kl.includes('heading')) label = v;
-                            if (kl.includes('igst') || kl.includes('integrated')) igst = parseFloat(v) || 0;
-                            if (kl.includes('cgst') || kl.includes('central')) cgst = parseFloat(v) || 0;
-                            if ((kl.includes('sgst') || kl.includes('state') || kl.includes('utgst')) && !kl.includes('igst')) sgst = parseFloat(v) || 0;
-                            if (kl.includes('cess')) cess = parseFloat(v) || 0;
-                        }
-                        if (igst || cgst || sgst || cess) {
-                            result.rows.push({ label: label || `Row ${result.rows.length + 1}`, igst, cgst, sgst, cess });
-                            result.igst += igst; result.cgst += cgst; result.sgst += sgst; result.cess += cess;
+                
+                // ── Step 1: Identify columns by scanning data, not just headers ──
+                const allKeys = Object.keys(json[0]);
+                let igstCol = null, cgstCol = null, sgstCol = null, cessCol = null;
+                let monthCol = null, eligCol = null, supplierCol = null;
+                
+                // Scan headers first
+                for (const k of allKeys) {
+                    const kl = k.toLowerCase();
+                    if (kl.includes('igst') || kl.includes('integrated')) igstCol = k;
+                    if (kl.includes('cgst') || kl.includes('central')) cgstCol = k;
+                    if ((kl.includes('sgst') || kl.includes('state') || kl.includes('utgst')) && !kl.includes('igst')) sgstCol = k;
+                    if (kl.includes('cess')) cessCol = k;
+                    if (kl.includes('trade') || kl.includes('supplier') || kl.includes('legal name')) supplierCol = k;
+                    // Try header match for month/period column
+                    if (kl.includes('filing period') || kl.includes('return period') || kl === 'month' || kl === 'period') monthCol = k;
+                    // ITC eligibility
+                    if (kl.includes('itc') && kl.includes('elig')) eligCol = k;
+                    if (kl.includes('eligibility') || kl.includes('eligible')) eligCol = k;
+                }
+                
+                if (!igstCol && !cgstCol) continue; // No tax columns in this sheet
+                
+                // ── Step 2: If month column not found by header, scan data values ──
+                if (!monthCol) {
+                    for (const k of allKeys) {
+                        // Check if any value in this column is a month name
+                        const sampleVals = json.slice(0, 20).map(r => String(r[k]).toUpperCase().trim());
+                        if (sampleVals.some(v => VALID_MONTHS.includes(v))) {
+                            monthCol = k;
+                            break;
                         }
                     }
                 }
-                if (result.rows.length > 0) break;
+                
+                // ── Step 3: If eligibility column not found, scan for Yes/No column ──
+                if (!eligCol) {
+                    for (const k of allKeys) {
+                        const kl = k.toLowerCase();
+                        if (kl.includes('tax') || kl.includes('inv') || kl.includes('gstin') || kl.includes('value')) continue;
+                        const sampleVals = json.slice(0, 30).map(r => String(r[k]).toLowerCase().trim());
+                        const yesNoCount = sampleVals.filter(v => v === 'yes' || v === 'no' || v === 'y' || v === 'n').length;
+                        if (yesNoCount > 5) {
+                            eligCol = k;
+                            break;
+                        }
+                    }
+                }
+                
+                console.log(`2B Sheet "${name}": igst=${igstCol}, cgst=${cgstCol}, sgst=${sgstCol}, month=${monthCol}, elig=${eligCol}`);
+                result.hasMonthCol = !!monthCol;
+                result.hasEligCol = !!eligCol;
+                
+                // ── Step 4: Extract all rows ──
+                for (const row of json) {
+                    const igst = parseFloat(row[igstCol]) || 0;
+                    const cgst = cgstCol ? (parseFloat(row[cgstCol]) || 0) : 0;
+                    const sgst = sgstCol ? (parseFloat(row[sgstCol]) || 0) : 0;
+                    const cess = cessCol ? (parseFloat(row[cessCol]) || 0) : 0;
+                    
+                    if (igst || cgst || sgst || cess) {
+                        const label = supplierCol ? String(row[supplierCol] || '') : `Row ${result.rows.length + 1}`;
+                        const rowData = { label, igst, cgst, sgst, cess };
+                        
+                        // Capture month value
+                        if (monthCol) {
+                            const monthVal = String(row[monthCol]).trim().toUpperCase();
+                            rowData.month = monthVal;
+                            if (!result.periods.includes(monthVal) && VALID_MONTHS.includes(monthVal)) {
+                                result.periods.push(monthVal);
+                            }
+                        }
+                        
+                        // Capture ITC eligibility
+                        if (eligCol) {
+                            const eligVal = String(row[eligCol]).trim().toLowerCase();
+                            rowData.itcEligible = (eligVal === 'yes' || eligVal === 'y');
+                        }
+                        
+                        result.rows.push(rowData);
+                        result.igst += igst; result.cgst += cgst; result.sgst += sgst; result.cess += cess;
+                    }
+                }
+                
+                if (result.rows.length > 0) {
+                    console.log(`2B parsed: ${result.rows.length} rows, months: [${result.periods.join(', ')}], hasMonth=${result.hasMonthCol}, hasElig=${result.hasEligCol}`);
+                    break;
+                }
             }
-            // Fallback: if no structured data found, sum all numeric columns
+            
+            // Fallback
             if (result.rows.length === 0) {
                 const sheet = wb.Sheets[wb.SheetNames[0]];
                 const json = XLSX.utils.sheet_to_json(sheet, { defval: 0 });
@@ -1099,18 +1264,52 @@
         }
 
         function extractFromExcel_3B(wb) {
-            // Same approach — look for ITC-related data
-            return extractFromExcel_2B(wb); // Same parser works; structure is similar
+            // For 3B Excel, look specifically for ITC section (Table 4A)
+            for (const name of wb.SheetNames) {
+                const sheet = wb.Sheets[name];
+                const json = XLSX.utils.sheet_to_json(sheet, { defval: 0 });
+                for (const row of json) {
+                    const vals = Object.values(row).map(v => String(v).toLowerCase());
+                    const rowText = vals.join(' ');
+                    // Look for ITC-related rows: "4(A)", "Eligible ITC", "All other ITC"
+                    if (rowText.includes('eligible itc') || rowText.includes('4(a)') || 
+                        rowText.includes('all other itc') || rowText.includes('itc available')) {
+                        // Found ITC section — use the generic parser on this sheet
+                        const result = { igst: 0, cgst: 0, sgst: 0, cess: 0, rows: [] };
+                        for (const r of json) {
+                            const keys = Object.keys(r).map(k => k.toLowerCase());
+                            const hasIGST = keys.some(k => k.includes('igst') || k.includes('integrated'));
+                            const hasCGST = keys.some(k => k.includes('cgst') || k.includes('central'));
+                            if (hasIGST || hasCGST) {
+                                let label = '', igst = 0, cgst = 0, sgst = 0, cess = 0;
+                                for (const [k, v] of Object.entries(r)) {
+                                    const kl = k.toLowerCase();
+                                    if (kl.includes('description') || kl.includes('type') || kl.includes('particular')) label = v;
+                                    if (kl.includes('igst') || kl.includes('integrated')) igst = parseFloat(v) || 0;
+                                    if (kl.includes('cgst') || kl.includes('central')) cgst = parseFloat(v) || 0;
+                                    if ((kl.includes('sgst') || kl.includes('state') || kl.includes('utgst')) && !kl.includes('igst')) sgst = parseFloat(v) || 0;
+                                    if (kl.includes('cess')) cess = parseFloat(v) || 0;
+                                }
+                                if (igst || cgst || sgst || cess) {
+                                    result.rows.push({ label: label || `ITC Row`, igst, cgst, sgst, cess });
+                                    result.igst += igst; result.cgst += cgst; result.sgst += sgst; result.cess += cess;
+                                }
+                            }
+                        }
+                        if (result.rows.length > 0) return result;
+                    }
+                }
+            }
+            // Fallback to generic parser
+            return extractFromExcel_2B(wb);
         }
 
         // ── Extract from JSON ──
         function extractFromJSON_2B(data) {
-            const result = { igst: 0, cgst: 0, sgst: 0, cess: 0, rows: [] };
-            // GST portal JSON format: data.data.docdata or similar
+            const result = { igst: 0, cgst: 0, sgst: 0, cess: 0, rows: [], periods: [], hasMonthCol: false };
             const walk = (obj, path = '') => {
                 if (!obj || typeof obj !== 'object') return;
                 if (Array.isArray(obj)) { obj.forEach((item, i) => walk(item, `${path}[${i}]`)); return; }
-                // Check if this object has tax fields
                 const keys = Object.keys(obj).map(k => k.toLowerCase());
                 if (keys.some(k => k.includes('igst') || k.includes('iamt'))) {
                     const igst = parseFloat(obj.igst || obj.iamt || obj.IGST || obj.IAMT || 0);
@@ -1122,13 +1321,256 @@
                         result.igst += igst; result.cgst += cgst; result.sgst += sgst; result.cess += cess;
                     }
                 }
+                // Track period info from JSON
+                if (obj.rtnprd || obj.ret_period) {
+                    result.periods.push(obj.rtnprd || obj.ret_period);
+                }
                 for (const v of Object.values(obj)) walk(v, path);
             };
             walk(data);
             return result;
         }
 
-        function extractFromJSON_3B(data) { return extractFromJSON_2B(data); }
+        function extractFromJSON_3B(data) {
+            // For 3B JSON from GST portal, look specifically for itc_elg (eligible ITC)
+            const result = { igst: 0, cgst: 0, sgst: 0, cess: 0, rows: [] };
+            
+            const findITC = (obj, path = '') => {
+                if (!obj || typeof obj !== 'object') return;
+                if (Array.isArray(obj)) { obj.forEach((item, i) => findITC(item, `${path}[${i}]`)); return; }
+                
+                // GST portal 3B JSON has: itc_elg.itc_avl[] with items having ty, iamt, camt, samt, csamt
+                if (obj.itc_elg || obj.itc_avl) {
+                    const avl = obj.itc_avl || (obj.itc_elg && obj.itc_elg.itc_avl) || [];
+                    if (Array.isArray(avl)) {
+                        for (const item of avl) {
+                            const igst = parseFloat(item.iamt || 0);
+                            const cgst = parseFloat(item.camt || 0);
+                            const sgst = parseFloat(item.samt || 0);
+                            const cess = parseFloat(item.csamt || 0);
+                            const label = item.ty || item.typ || 'ITC';
+                            if (igst || cgst || sgst || cess) {
+                                result.rows.push({ label, igst, cgst, sgst, cess });
+                                result.igst += igst; result.cgst += cgst; result.sgst += sgst; result.cess += cess;
+                            }
+                        }
+                    }
+                    return; // Don't recurse further, we found ITC
+                }
+                for (const v of Object.values(obj)) findITC(v, path);
+            };
+            findITC(data);
+            
+            // Fallback to generic walk if no ITC section found
+            if (result.rows.length === 0) return extractFromJSON_2B(data);
+            return result;
+        }
+
+        // ── PDF text extraction ──
+        async function extractPDFText(pdfBytes) {
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+            const pdf = await pdfjsLib.getDocument({ data: pdfBytes }).promise;
+            let fullText = '';
+            for (let i = 1; i <= pdf.numPages; i++) {
+                const page = await pdf.getPage(i);
+                const content = await page.getTextContent();
+                fullText += content.items.map(item => item.str).join(' ') + '\n';
+            }
+            console.log('PDF text extracted:', fullText.substring(0, 1000));
+            return fullText;
+        }
+
+        // ── Parse 3B PDF — specifically Table 4(A) ITC ──
+        // Raw text pattern from GSTR-3B PDF:
+        //   (5) All other ITC   3422038.61   427555.77   427555.77   0.00
+        // The four numbers after a row label are: IGST, CGST, SGST, Cess
+        function parse3BFromPDF(text) {
+            const result = { igst: 0, cgst: 0, sgst: 0, cess: 0, rows: [] };
+            
+            // Strip commas from numbers (Indian format: 34,22,038.61 → 3422038.61)
+            const clean = text.replace(/(\d),(\d)/g, '$1$2');
+            
+            console.log('=== 3B PDF Parser ===');
+            console.log('Full text (first 2000 chars):', clean.substring(0, 2000));
+
+            // ── Step 1: Isolate Section 4 (Eligible ITC) ──
+            // Start: "Eligible ITC" or "4." followed by ITC content
+            // End: "4(B)" or "4 (B)" or "Values of exempt" or "5." or "6." or "Payment of tax"
+            let itcSection = '';
+            
+            // Try multiple start markers
+            const startPatterns = [
+                /(?:4\.?\s*(?:Eligible\s*ITC|Details\s*of\s*ITC))/i,
+                /Eligible\s*ITC/i,
+                /ITC\s*Avail(?:able|ed)/i,
+            ];
+            
+            let startIdx = -1;
+            for (const sp of startPatterns) {
+                const m = clean.match(sp);
+                if (m) { startIdx = m.index; break; }
+            }
+            
+            if (startIdx >= 0) {
+                // Find end boundary
+                const afterStart = clean.substring(startIdx);
+                const endPatterns = [
+                    /4\s*\(\s*B\s*\)/i,
+                    /Values\s*of\s*exempt/i,
+                    /5\.\s*(?:Values|Exempt)/i,
+                    /6\.\s*(?:Payment|Tax\s*pay)/i,
+                    /Payment\s*of\s*tax/i,
+                ];
+                
+                let endIdx = afterStart.length;
+                for (const ep of endPatterns) {
+                    const m = afterStart.match(ep);
+                    if (m && m.index < endIdx) endIdx = m.index;
+                }
+                
+                itcSection = afterStart.substring(0, endIdx);
+                console.log('ITC Section found (' + itcSection.length + ' chars):', itcSection.substring(0, 800));
+            }
+
+            // ── Step 2: Extract rows (1)-(5) from ITC section ──
+            // Each row looks like: "(N) Label text  NUM1  NUM2  NUM3  NUM4"
+            // Where NUM are decimal amounts like 3422038.61 or 0.00
+            const ITC_ROWS = [
+                { num: '1', label: '4A(1) Import of Goods' },
+                { num: '2', label: '4A(2) Import of Services' },
+                { num: '3', label: '4A(3) RCM / Reverse Charge' },
+                { num: '4', label: '4A(4) ISD' },
+                { num: '5', label: '4A(5) All Other ITC' },
+            ];
+            
+            const searchText = itcSection || clean;
+            
+            for (const row of ITC_ROWS) {
+                // Pattern: "(N)" followed by some label text, then 3-4 decimal numbers
+                // The numbers are amounts like 3422038.61, 0.00, etc.
+                const rowPatterns = [
+                    // "(5) All other ITC  3422038.61  427555.77  427555.77  0.00"
+                    new RegExp('\\(' + row.num + '\\)[^\\d]*?(\\d+\\.\\d{2})\\s+(\\d+\\.\\d{2})\\s+(\\d+\\.\\d{2})(?:\\s+(\\d+\\.\\d{2}))?', 'i'),
+                    // Looser: "(5)" then any text then amounts with at least one being > 0
+                    new RegExp('\\(' + row.num + '\\)[^(]{0,80}?(\\d+\\.\\d+)\\s+(\\d+\\.\\d+)\\s+(\\d+\\.\\d+)(?:\\s+(\\d+\\.\\d+))?', 'i'),
+                ];
+                
+                for (const re of rowPatterns) {
+                    const m = searchText.match(re);
+                    if (m) {
+                        const igst = parseFloat(m[1]) || 0;
+                        const cgst = parseFloat(m[2]) || 0;
+                        const sgst = parseFloat(m[3]) || 0;
+                        const cess = m[4] ? parseFloat(m[4]) || 0 : 0;
+                        
+                        // Sanity: at least one value should be meaningful (> ₹10)
+                        if (igst > 10 || cgst > 10 || sgst > 10) {
+                            result.rows.push({ label: row.label, igst, cgst, sgst, cess });
+                            result.igst += igst; result.cgst += cgst; 
+                            result.sgst += sgst; result.cess += cess;
+                            console.log(`  Found ${row.label}: IGST=${igst}, CGST=${cgst}, SGST=${sgst}, Cess=${cess}`);
+                            break; // Use first successful pattern match
+                        }
+                    }
+                }
+            }
+
+            // ── Step 3: Fallback — scan for "All other ITC" directly in full text ──
+            if (result.rows.length === 0) {
+                console.log('Primary parse failed, trying direct scan...');
+                // Look for "(5)" or "All other ITC" followed by amounts anywhere
+                const directPatterns = [
+                    /\(5\)\s*All\s*other\s*ITC[^(]*?(\d+\.?\d*)\s+(\d+\.?\d*)\s+(\d+\.?\d*)(?:\s+(\d+\.?\d*))?/i,
+                    /All\s*other\s*ITC[^(]*?(\d+\.?\d*)\s+(\d+\.?\d*)\s+(\d+\.?\d*)(?:\s+(\d+\.?\d*))?/i,
+                    /\(5\)[^(]{0,50}?(\d{4,}\.?\d*)\s+(\d+\.?\d*)\s+(\d+\.?\d*)(?:\s+(\d+\.?\d*))?/i,
+                ];
+                
+                for (const re of directPatterns) {
+                    const m = clean.match(re);
+                    if (m) {
+                        const igst = parseFloat(m[1]) || 0;
+                        const cgst = parseFloat(m[2]) || 0;
+                        const sgst = parseFloat(m[3]) || 0;
+                        const cess = m[4] ? parseFloat(m[4]) || 0 : 0;
+                        
+                        if (igst + cgst + sgst > 100) {
+                            result.rows.push({ label: '4A(5) All Other ITC', igst, cgst, sgst, cess });
+                            result.igst = igst; result.cgst = cgst;
+                            result.sgst = sgst; result.cess = cess;
+                            console.log(`  Direct scan found: IGST=${igst}, CGST=${cgst}, SGST=${sgst}, Cess=${cess}`);
+                            break;
+                        }
+                    }
+                }
+            }
+            
+            // ── Step 4: Fallback — look for "Total ITC Available" row ──
+            if (result.rows.length === 0) {
+                const totalPatterns = [
+                    /Total\s*ITC\s*(?:Avail\w*|Claimed)[^(]*?(\d{4,}\.?\d*)\s+(\d+\.?\d*)\s+(\d+\.?\d*)(?:\s+(\d+\.?\d*))?/i,
+                    /Net\s*ITC\s*(?:Avail\w*)[^(]*?(\d{4,}\.?\d*)\s+(\d+\.?\d*)\s+(\d+\.?\d*)(?:\s+(\d+\.?\d*))?/i,
+                ];
+                for (const re of totalPatterns) {
+                    const m = clean.match(re);
+                    if (m) {
+                        const igst = parseFloat(m[1]) || 0;
+                        const cgst = parseFloat(m[2]) || 0;
+                        const sgst = parseFloat(m[3]) || 0;
+                        const cess = m[4] ? parseFloat(m[4]) || 0 : 0;
+                        if (igst + cgst + sgst > 1000) {
+                            result.rows.push({ label: 'Total ITC Available', igst, cgst, sgst, cess });
+                            result.igst = igst; result.cgst = cgst;
+                            result.sgst = sgst; result.cess = cess;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // ── Validation ──
+            const totalITC = result.igst + result.cgst + result.sgst;
+            console.log(`3B PDF parse result: IGST=${result.igst}, CGST=${result.cgst}, SGST=${result.sgst}, Cess=${result.cess}, Total=${totalITC}`);
+            
+            if (result.rows.length === 0 || totalITC < 1000) {
+                console.error('3B PDF parse FAILED. Total ITC =', totalITC);
+                throw new Error(
+                    'Could not extract ITC values from 3B PDF (total: ₹' + totalITC.toLocaleString('en-IN') + '). ' +
+                    'Please check the PDF is a valid GSTR-3B filing, or upload the Excel/JSON version instead.'
+                );
+            }
+            
+            return result;
+        }
+
+        // ── Parse 2B PDF — generic tax extraction ──
+        function parse2BFromPDF(text) {
+            const result = { igst: 0, cgst: 0, sgst: 0, cess: 0, rows: [] };
+            const clean = text.replace(/,/g, '').replace(/\s+/g, ' ');
+            
+            const patterns = [
+                { key: 'igst', re: /(?:integrated\s*tax|igst|iamt)[:\s₹]*(\d+\.?\d*)/gi },
+                { key: 'cgst', re: /(?:central\s*tax|cgst|camt)[:\s₹]*(\d+\.?\d*)/gi },
+                { key: 'sgst', re: /(?:state.*?tax|sgst|utgst|samt)[:\s₹]*(\d+\.?\d*)/gi },
+                { key: 'cess', re: /(?:cess|csamt)[:\s₹]*(\d+\.?\d*)/gi },
+            ];
+
+            for (const { key, re } of patterns) {
+                let match, maxVal = 0;
+                while ((match = re.exec(clean)) !== null) {
+                    const val = parseFloat(match[1]);
+                    if (val > maxVal) maxVal = val;
+                }
+                result[key] = maxVal;
+            }
+
+            const total = result.igst + result.cgst + result.sgst + result.cess;
+            if (total > 0) {
+                result.rows.push({ label: 'Total (from PDF)', igst: result.igst, cgst: result.cgst, sgst: result.sgst, cess: result.cess });
+            } else {
+                throw new Error('Could not find tax amounts in 2B PDF. Please upload the Excel/JSON version instead.');
+            }
+            return result;
+        }
 
         // ── Show preview ──
         function showPreview(type) {
@@ -1141,7 +1583,11 @@
                 html += `<tr><td>${r.label}</td><td>${fmt(r.igst)}</td><td>${fmt(r.cgst)}</td><td>${fmt(r.sgst)}</td><td>${fmt(r.cess)}</td></tr>`;
             });
             if (parsed.rows.length > 8) html += `<tr><td colspan="5" style="color:#9ca3af;text-align:center;font-size:0.72rem">... and ${parsed.rows.length - 8} more rows</td></tr>`;
-            html += `</tbody><tfoot><tr><td class="${colorClass}">Total</td><td class="${colorClass}">${fmt(parsed.igst)}</td><td class="${colorClass}">${fmt(parsed.cgst)}</td><td class="${colorClass}">${fmt(parsed.sgst)}</td><td class="${colorClass}">${fmt(parsed.cess)}</td></tr></tfoot></table>`;
+            html += `</tbody><tfoot><tr><td class="${colorClass}">Total (${parsed.rows.length} rows)</td><td class="${colorClass}">${fmt(parsed.igst)}</td><td class="${colorClass}">${fmt(parsed.cgst)}</td><td class="${colorClass}">${fmt(parsed.sgst)}</td><td class="${colorClass}">${fmt(parsed.cess)}</td></tr></tfoot></table>`;
+            // Show detected periods if multi-month file
+            if (parsed.periods && parsed.periods.length > 1) {
+                html += `<div style="margin-top:0.5rem;font-size:0.68rem;color:#d97706;font-weight:600">⚠️ Combined file: contains months ${parsed.periods.join(', ')}</div>`;
+            }
             preview.innerHTML = html;
             preview.classList.add('visible');
         }
@@ -1159,6 +1605,57 @@
         // ── Comparison ──
         function runComparison() {
             if (!parsed2B || !parsed3B) return;
+            
+            // ── Period filter: Filter 2B to match 3B period ──
+            let effective2B = parsed2B;
+            let periodWarning = '';
+            const totalInvoices = parsed2B.rows.length;
+            
+            if (detected3BPeriod && parsed2B.rows.length > 3) {
+                const targetMonth = detected3BPeriod.month.toUpperCase(); // 'APRIL'
+                const hasMonthData = parsed2B.hasMonthCol || parsed2B.rows.some(r => r.month);
+                
+                console.log(`Period filter: target=${targetMonth}, hasMonthData=${hasMonthData}, 2B rows=${totalInvoices}`);
+                
+                if (hasMonthData) {
+                    // Filter 2B rows: month must match AND ITC must be eligible (if column exists)
+                    const filtered = parsed2B.rows.filter(r => {
+                        if (!r.month) return false;
+                        const rowMonth = r.month.toUpperCase().trim();
+                        const monthMatch = rowMonth === targetMonth || rowMonth.startsWith(targetMonth.substring(0, 3));
+                        
+                        // If we have ITC eligibility column, also filter on that
+                        if (parsed2B.hasEligCol && r.itcEligible !== undefined) {
+                            return monthMatch && r.itcEligible;
+                        }
+                        return monthMatch;
+                    });
+                    
+                    console.log(`Period filter result: ${filtered.length} of ${totalInvoices} rows match ${targetMonth}`);
+                    
+                    if (filtered.length > 0) {
+                        effective2B = { igst: 0, cgst: 0, sgst: 0, cess: 0, rows: filtered };
+                        filtered.forEach(r => {
+                            effective2B.igst += r.igst; effective2B.cgst += r.cgst;
+                            effective2B.sgst += r.sgst; effective2B.cess += r.cess;
+                        });
+                        const eligNote = parsed2B.hasEligCol ? ', ITC Eligible = Yes' : '';
+                        periodWarning = `📅 Showing ${detected3BPeriod.month} ${detected3BPeriod.year} ITC only from combined 2B file (${filtered.length} of ${totalInvoices} invoices${eligNote})`;
+                        showToast(periodWarning, 'success');
+                    } else {
+                        periodWarning = `⚠️ No 2B rows found for ${detected3BPeriod.month} ${detected3BPeriod.year} — using full 2B data. Check your files.`;
+                        showToast(periodWarning, 'error');
+                    }
+                } else {
+                    // 2B has many rows but no month column detected
+                    periodWarning = `⚠️ Combined 2B detected (${totalInvoices} invoices) but no month column found — please upload the single-month 2B for accurate comparison`;
+                    showToast(periodWarning, 'error');
+                }
+            } else if (!detected3BPeriod && parsed2B.rows.length > 10) {
+                periodWarning = `⚠️ Combined 2B detected (${totalInvoices} invoices) — could not detect 3B period. Results may be inaccurate.`;
+                showToast(periodWarning, 'error');
+            }
+            
             const COMPS = ['igst', 'cgst', 'sgst', 'cess'];
             const labels = { igst: 'IGST', cgst: 'CGST', sgst: 'SGST/UTGST', cess: 'Cess' };
             const icons = { igst: '🔵', cgst: '🟢', sgst: '🟠', cess: '🟣' };
@@ -1166,8 +1663,8 @@
             let total2b = 0, total3b = 0;
             const data = {};
             COMPS.forEach(c => {
-                data[c] = { available: parsed2B[c], claimed: parsed3B[c], variance: parsed3B[c] - parsed2B[c] };
-                total2b += parsed2B[c]; total3b += parsed3B[c];
+                data[c] = { available: effective2B[c], claimed: parsed3B[c], variance: parsed3B[c] - effective2B[c] };
+                total2b += effective2B[c]; total3b += parsed3B[c];
             });
             const totalVariance = total3b - total2b;
             const pct = total2b > 0 ? Math.abs(totalVariance / total2b * 100) : 0;
@@ -1227,6 +1724,31 @@
             if (totalVariance === 0) actions += `<div class="action-item"><div class="ai-icon green">✅</div><div class="ai-text"><strong>No Action Required</strong><span>ITC perfectly reconciled.</span></div></div>`;
             actions += `<div class="action-item"><div class="ai-icon blue">📄</div><div class="ai-text"><strong>Save for GSTR-9 Annual Return</strong><span>This reconciliation feeds into Table 8 of GSTR-9.</span></div></div>`;
             document.getElementById('action-items').innerHTML = actions;
+
+            // Show period warning if any
+            let periodBanner = document.getElementById('period-warning');
+            if (!periodBanner) {
+                periodBanner = document.createElement('div');
+                periodBanner.id = 'period-warning';
+                periodBanner.style.cssText = 'padding:0.75rem 1rem;border-radius:10px;font-size:0.78rem;font-weight:600;margin-bottom:1rem;display:none';
+                const resultsDash = document.getElementById('results-dash');
+                resultsDash.insertBefore(periodBanner, resultsDash.firstChild);
+            }
+            if (periodWarning) {
+                periodBanner.style.display = 'block';
+                if (periodWarning.includes('⚠️')) {
+                    periodBanner.style.background = '#fffbeb';
+                    periodBanner.style.border = '1px solid #fde68a';
+                    periodBanner.style.color = '#92400e';
+                } else {
+                    periodBanner.style.background = '#f0fdf4';
+                    periodBanner.style.border = '1px solid #bbf7d0';
+                    periodBanner.style.color = '#166534';
+                }
+                periodBanner.textContent = periodWarning;
+            } else {
+                periodBanner.style.display = 'none';
+            }
 
             document.getElementById('results-dash').classList.add('visible');
             document.getElementById('results-dash').scrollIntoView({ behavior: 'smooth', block: 'start' });
