@@ -18,13 +18,10 @@ const GST_TOOLS = [
         section: 'Returns & Filing', items: [
             { id: 'statement3', icon: '📝', name: 'Statement 3', page: 'tool-statement3.html' },
             { id: 'annexure-b', icon: '📎', name: 'Annexure B', page: 'tool-annexure-b.html' },
-            { id: 'arn-status', icon: '🔔', name: 'ARN Status', page: 'tool-arn-status.html', badge: 'SOON', badgeType: 'orange' },
-            { id: 'gstr9-json', icon: '📦', name: 'GSTR-9 JSON', page: 'tool-gstr9-json.html', badge: 'SOON', badgeType: 'orange' },
         ]
     },
     {
         section: 'Utilities', items: [
-            { id: 'document-reader', icon: '📖', name: 'Document Reader', page: 'tool-document-reader.html' },
             { id: 'gstin-validator', icon: '🔍', name: 'GSTIN Validator', page: 'tool-gstin-validator.html' },
             { id: 'ai-block-credit', icon: '🚫', name: 'AI Block Credit', page: 'tool-ai-block-credit.html' },
             { id: 'hsn-locator', icon: '🔎', name: 'HSN Locator', page: 'tool-hsn-locator.html' },

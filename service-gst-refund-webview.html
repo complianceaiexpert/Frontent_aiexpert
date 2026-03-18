@@ -959,38 +959,37 @@
                 <!-- Quick Action Cards -->
                 <h3 style="font-size:0.9rem;font-weight:600;color:#374151;margin:0 0 1rem;">Quick Actions</h3>
                 <div class="cards-grid">
-                    <div class="tool-card" onclick="navigateToTool('gst-refund.html')">
+                    <div class="tool-card" onclick="navigateToTool('tool-statement3.html')">
                         <div class="card-top">
                             <div class="card-icon">📝</div>
                         </div>
-                        <h3 class="card-title">File GST Refund</h3>
-                        <p class="card-desc">Step-by-step guided workflow for Export LUT, Inverted Duty, Deemed Export &
-                            more</p>
-                        <a class="card-action">Open Workflow →</a>
+                        <h3 class="card-title">Statement 3</h3>
+                        <p class="card-desc">Generate Statement 3 from Shipping Bills and BRC documents automatically.</p>
+                        <a class="card-action">Open Tool →</a>
                     </div>
-                    <div class="tool-card" onclick="navigateTo('calculate-refund', null)">
+                    <div class="tool-card" onclick="navigateToTool('tool-annexure-b.html')">
                         <div class="card-top">
-                            <div class="card-icon">🧮</div>
+                            <div class="card-icon">📑</div>
                         </div>
-                        <h3 class="card-title">Calculate Refund</h3>
-                        <p class="card-desc">AI-powered refund calculation using Rule 89(4) & 89(5) formulas</p>
-                        <a class="card-action">Calculate →</a>
+                        <h3 class="card-title">Annexure B</h3>
+                        <p class="card-desc">Streamline GST refund documentation with simplified Annexure-B processing.</p>
+                        <a class="card-action">Open Tool →</a>
                     </div>
-                    <div class="tool-card" onclick="navigateTo('reconciliation', null)">
+                    <div class="tool-card" onclick="navigateToTool('tool-gstin-validator.html')">
                         <div class="card-top">
-                            <div class="card-icon">⚖️</div>
+                            <div class="card-icon">🔍</div>
                         </div>
-                        <h3 class="card-title">GST Reconciliation</h3>
-                        <p class="card-desc">GSTR-2B vs PR, GSTR-1 vs 3B, E-Invoice matching & more</p>
-                        <a class="card-action">Reconcile →</a>
+                        <h3 class="card-title">GSTIN Validator</h3>
+                        <p class="card-desc">Validate GSTINs quickly and accurately with our efficient tool.</p>
+                        <a class="card-action">Open Tool →</a>
                     </div>
-                    <div class="tool-card" onclick="navigateTo('tools', null)">
+                    <div class="tool-card" onclick="navigateToTool('tool-hsn-locator.html')">
                         <div class="card-top">
-                            <div class="card-icon">🛠️</div>
+                            <div class="card-icon">🔎</div>
                         </div>
-                        <h3 class="card-title">GST Tools</h3>
-                        <p class="card-desc">Statement 3, Annexure B, GSTIN Validator, HSN Locator & more</p>
-                        <a class="card-action">View Tools →</a>
+                        <h3 class="card-title">HSN / SAC Locator</h3>
+                        <p class="card-desc">Find HSN/SAC codes by description — single lookup or bulk validation.</p>
+                        <a class="card-action">Open Tool →</a>
                     </div>
                 </div>
 
@@ -1314,16 +1313,7 @@
 
                 <!-- All Tools Grid -->
                 <div class="cards-grid" id="tools-grid">
-                    <!-- Refund Tools (Prioritized) -->
-                    <div class="tool-card coming-soon-card" data-tool-name="arn status">
-                        <div class="coming-soon-tag">Coming Soon</div>
-                        <div class="card-top">
-                            <div class="card-icon">📋</div>
-                        </div>
-                        <h3 class="card-title">ARN Status</h3>
-                        <p class="card-desc">Check ARN status with our efficient and quick tool.</p>
-                        <a class="card-action">Explore →</a>
-                    </div>
+                    <!-- Active Tools -->
                     <div class="tool-card" data-tool-name="statement3 generation"
                         onclick="navigateToTool('tool-statement3.html')">
                         <div class="card-top">
@@ -1342,17 +1332,6 @@
                             processing.</p>
                         <a class="card-action">Explore →</a>
                     </div>
-                    <div class="tool-card" data-tool-name="document reader"
-                        onclick="navigateToTool('tool-document-reader.html')">
-                        <div class="card-top">
-                            <div class="card-icon">📖</div>
-                        </div>
-                        <h3 class="card-title">Document Reader</h3>
-                        <p class="card-desc">Extract data from CSB, BRC, Invoice, Shipping Bill, and FIRC.</p>
-                        <a class="card-action">Explore →</a>
-                    </div>
-
-                    <!-- Return Tools -->
                     <div class="tool-card" data-tool-name="gstin validator"
                         onclick="navigateToTool('tool-gstin-validator.html')">
                         <div class="card-top">
@@ -1391,6 +1370,26 @@
                         <p class="card-desc">Identify and map HSN codes from your registers for compliance.</p>
                         <a class="card-action">Explore →</a>
                     </div>
+
+                    <!-- Disabled / Coming Soon Tools -->
+                    <div class="tool-card coming-soon-card" data-tool-name="document reader">
+                        <div class="coming-soon-tag">Coming Soon</div>
+                        <div class="card-top">
+                            <div class="card-icon">📖</div>
+                        </div>
+                        <h3 class="card-title">Document Reader</h3>
+                        <p class="card-desc">Extract data from CSB, BRC, Invoice, Shipping Bill, and FIRC.</p>
+                        <a class="card-action disabled">Coming Soon</a>
+                    </div>
+                    <div class="tool-card coming-soon-card" data-tool-name="arn status">
+                        <div class="coming-soon-tag">Coming Soon</div>
+                        <div class="card-top">
+                            <div class="card-icon">📋</div>
+                        </div>
+                        <h3 class="card-title">ARN Status</h3>
+                        <p class="card-desc">Check ARN status with our efficient and quick tool.</p>
+                        <a class="card-action disabled">Coming Soon</a>
+                    </div>
                     <div class="tool-card coming-soon-card" data-tool-name="gstr-9 json generator">
                         <div class="coming-soon-tag">Coming Soon</div>
                         <div class="card-top">
@@ -1398,7 +1397,7 @@
                         </div>
                         <h3 class="card-title">GSTR-9 JSON Generator</h3>
                         <p class="card-desc">Easily generate accurate GSTR-9 JSON files for seamless portal upload.</p>
-                        <a class="card-action">Explore →</a>
+                        <a class="card-action disabled">Coming Soon</a>
                     </div>
                 </div>
             </div>

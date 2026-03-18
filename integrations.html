@@ -641,12 +641,13 @@
             </div>
 
             <div class="methods">
-                <div class="method">
-                    <h4><span class="method-num" style="background:#e5e7eb;color:#374151">1</span> Browser + Connector
+                <div class="method rec" style="position:relative">
+                    <span class="method-rec-badge">RECOMMENDED</span>
+                    <h4><span class="method-num" style="background:#1e3a8a;color:#fff">1</span> Browser + Connector
                     </h4>
                     <p>Keep using this website. Install a small utility to bridge the connection to Tally on your
-                        machine.</p>
-                    <button class="m-btn m-btn-secondary" onclick="downloadConnector()">⬇️ Download Connector
+                        machine. <strong>Quick setup, works instantly.</strong></p>
+                    <button class="m-btn m-btn-primary" onclick="downloadConnector()" style="margin-bottom:.55rem">⬇️ Download Connector
                         (.exe)</button>
                     <div class="m-token">
                         <label>Connection Token</label>
@@ -656,33 +657,26 @@
                         </div>
                     </div>
                 </div>
-                <div class="method rec" style="position:relative">
-                    <span class="method-rec-badge">RECOMMENDED</span>
-                    <h4><span class="method-num" style="background:#1e3a8a;color:#fff">2</span> Desktop App</h4>
+                <div class="method" style="position:relative;opacity:.55;pointer-events:none">
+                    <span class="method-rec-badge" style="background:#9ca3af">COMING SOON</span>
+                    <h4><span class="method-num" style="background:#e5e7eb;color:#6b7280">2</span> Desktop App</h4>
                     <p>Download the full ComplianceAI desktop app. <strong>No setup required.</strong> Sync works when
                         Tally is open.</p>
                     <div style="display:flex;gap:.4rem;margin-bottom:.4rem">
-                        <button class="m-btn m-btn-primary" onclick="downloadDesktop('win')" style="flex:1">🪟
+                        <button class="m-btn m-btn-secondary" disabled style="flex:1">🪟
                             Windows</button>
-                        <button class="m-btn m-btn-secondary" onclick="downloadDesktop('mac')" style="flex:1">🍎
+                        <button class="m-btn m-btn-secondary" disabled style="flex:1">🍎
                             macOS</button>
                     </div>
-                    <p style="text-align:center;font-size:.62rem;color:#1e3a8a;margin:0">✅ Zero Config · ✅ Enhanced
+                    <p style="text-align:center;font-size:.62rem;color:#9ca3af;margin:0">✅ Zero Config · ✅ Enhanced
                         Security</p>
                 </div>
-            </div>
-
-            <div class="sync-row">
-                <button id="sync-btn" class="sync-btn" onclick="syncTally()">
-                    <span id="sync-icon">🔄</span> <span id="sync-text">Sync Now</span>
-                </button>
-                <span style="font-size:.7rem;color:#9ca3af">Ensure Tally is running on port 9000</span>
             </div>
 
             <div class="setup-steps">
                 <div class="step-col">
                     <h4><span class="method-num"
-                            style="background:#e5e7eb;color:#374151;display:inline-flex;font-size:.55rem">1</span> Using
+                            style="background:#1e3a8a;color:#fff;display:inline-flex;font-size:.55rem">1</span> Using
                         the Connector</h4>
                     <ol>
                         <li>Open <strong>Tally Prime</strong> or <strong>ERP 9</strong> and ensure your company is
@@ -690,17 +684,6 @@
                         <li>Run the <strong>ComplianceAI Connector</strong> (.exe).</li>
                         <li>Paste the <strong>Connection Token</strong> when asked.</li>
                         <li>The Connector will detect Tally and start syncing automatically.</li>
-                    </ol>
-                </div>
-                <div class="step-col">
-                    <h4 style="color:#1e3a8a"><span class="method-num"
-                            style="background:#1e3a8a;color:#fff;display:inline-flex;font-size:.55rem">2</span> Using
-                        Desktop App (Better)</h4>
-                    <ol>
-                        <li>Download and install the <strong>full Desktop App</strong>.</li>
-                        <li>Log in with your email and password.</li>
-                        <li>Keep <strong>Tally open</strong> in the background.</li>
-                        <li>Click <strong>"Sync Tally"</strong> in the app dashboard. No token needed!</li>
                     </ol>
                 </div>
             </div>
@@ -765,9 +748,11 @@
 
         function downloadConnector() {
             const link = document.createElement('a');
-            link.href = '#';
+            link.href = 'assets/downloads/ComplianceAI-Desktop-Setup.exe';
             link.download = 'ComplianceAI-Connector-Setup.exe';
-            alert('Starting download for ComplianceAI-Connector-Setup.exe...');
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
 
         function downloadDesktop(os) {

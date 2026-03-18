@@ -425,7 +425,7 @@ function renderStep3() {
                     ✏️ Edit Document
                 </button>
                 ` : ''}
-                <button class="btn btn-primary" onclick="window.print()">
+                <button class="btn btn-primary" onclick="downloadPDF()">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
                         <polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
@@ -435,6 +435,88 @@ function renderStep3() {
             </div>
         `;
     schedulePreview();
+}
+
+// ═══ DOWNLOAD PDF — Direct PDF download using html2pdf.js ═══
+function downloadPDF() {
+    const pb = document.getElementById('preview-body');
+    if (!pb) { showToast('No preview available to download.', 'error'); return; }
+
+    const iframe = pb.querySelector('iframe');
+    if (!iframe) { showToast('No preview available to download.', 'error'); return; }
+
+    // Show loading state
+    const btn = document.querySelector('#step-3 .btn-primary') || document.querySelector('[onclick="downloadPDF()"]');
+    const originalText = btn ? btn.innerHTML : '';
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spin" style="width:14px;height:14px;border-width:2px;margin:0;display:inline-block"></span> Generating PDF...';
+    }
+
+    // Dynamically load html2pdf if not already loaded
+    const loadLib = () => {
+        if (window.html2pdf) return Promise.resolve();
+        return new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.2/html2pdf.bundle.min.js';
+            script.onload = resolve;
+            script.onerror = () => reject(new Error('Failed to load PDF library'));
+            document.head.appendChild(script);
+        });
+    };
+
+    loadLib().then(() => {
+        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+
+        // Clone the body to avoid modifying the live preview
+        const clone = iframeDoc.body.cloneNode(true);
+
+        // Strip editable field styling for clean output
+        clone.querySelectorAll('.tpl-ph').forEach(span => {
+            span.style.border = 'none';
+            span.style.background = 'none';
+            span.style.padding = '0';
+            span.style.color = 'inherit';
+            span.style.fontWeight = 'inherit';
+            span.removeAttribute('contenteditable');
+        });
+
+        // Create a container with the iframe's styles
+        const container = document.createElement('div');
+        container.style.cssText = 'font-family: "Times New Roman", serif; line-height: 1.6; padding: 0;';
+
+        // Copy styles from iframe
+        const iframeStyles = iframeDoc.querySelectorAll('style');
+        iframeStyles.forEach(s => {
+            const styleClone = s.cloneNode(true);
+            container.appendChild(styleClone);
+        });
+        container.appendChild(clone);
+
+        const filename = selectedTemplate
+            ? selectedTemplate.name.replace(/_/g, ' ') + '.pdf'
+            : 'Certificate.pdf';
+
+        html2pdf().set({
+            margin: [10, 10, 10, 10],
+            filename: filename,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2, useCORS: true, logging: false },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+            pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+        }).from(container).save().then(() => {
+            showToast('✅ PDF downloaded successfully!', 'success');
+        }).catch(err => {
+            console.error('PDF generation error:', err);
+            showToast('Error generating PDF. Try again.', 'error');
+        }).finally(() => {
+            if (btn) { btn.disabled = false; btn.innerHTML = originalText; }
+        });
+    }).catch(err => {
+        console.error(err);
+        showToast('Failed to load PDF library. Check your internet connection.', 'error');
+        if (btn) { btn.disabled = false; btn.innerHTML = originalText; }
+    });
 }
 
 // ═══ EDIT PREVIEW (STEP 4) ═══

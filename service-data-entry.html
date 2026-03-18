@@ -97,153 +97,124 @@
 
             <!-- ═══ DASHBOARD ═══ -->
             <div class="de-section active" id="sec-dashboard">
-                <!-- Tally Sync Stats -->
-                <div class="de-panel">
-                    <div class="de-panel-header">
-                        <h3 class="de-panel-title">Transactions sent to Tally</h3>
-                        <div style="display:flex;gap:.5rem">
-                            <select class="de-select">
-                                <option>All</option>
-                            </select>
-                            <select class="de-select">
-                                <option>Today</option>
-                                <option>This Week</option>
-                                <option>This Month</option>
-                            </select>
+
+                <!-- Tally Sync Overview — compact single-row layout -->
+                <div class="de-panel" style="padding:1rem 1.25rem">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem">
+                        <h3 class="de-panel-title" style="margin:0">Tally Sync Overview</h3>
+                        <div style="display:flex;gap:.4rem">
+                            <select class="de-select" style="font-size:.7rem;padding:.25rem .4rem"><option>All</option></select>
+                            <select class="de-select" style="font-size:.7rem;padding:.25rem .4rem"><option>Today</option><option>This Week</option><option>This Month</option></select>
                         </div>
                     </div>
-                    <div class="de-stats-row">
-                        <div class="de-stat">
-                            <div class="de-stat-label">Total</div>
-                            <div class="de-stat-num" id="stat-total">0</div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">
+                        <!-- Masters -->
+                        <div style="background:#f8fafc;border-radius:10px;padding:.65rem .85rem;border:1px solid #e2e8f0">
+                            <div style="display:flex;align-items:center;gap:.35rem;margin-bottom:.5rem">
+                                <div style="width:3px;height:14px;background:#3b82f6;border-radius:2px"></div>
+                                <span style="font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#1e3a8a">Masters</span>
+                            </div>
+                            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem">
+                                <div style="text-align:center">
+                                    <div style="font-size:1.15rem;font-weight:800;font-family:'Outfit',sans-serif;color:#1e293b" id="stat-master-ledgers">0</div>
+                                    <div style="font-size:.58rem;font-weight:600;color:#9ca3af;text-transform:uppercase;letter-spacing:.04em">Ledgers</div>
+                                </div>
+                                <div style="text-align:center">
+                                    <div style="font-size:1.15rem;font-weight:800;font-family:'Outfit',sans-serif;color:#1e293b" id="stat-master-items">0</div>
+                                    <div style="font-size:.58rem;font-weight:600;color:#9ca3af;text-transform:uppercase;letter-spacing:.04em">Items</div>
+                                </div>
+                                <div style="text-align:center">
+                                    <div style="font-size:1.15rem;font-weight:800;font-family:'Outfit',sans-serif;color:#1e293b" id="stat-master-groups">0</div>
+                                    <div style="font-size:.58rem;font-weight:600;color:#9ca3af;text-transform:uppercase;letter-spacing:.04em">Groups</div>
+                                </div>
+                                <div style="text-align:center">
+                                    <div style="font-size:1.15rem;font-weight:800;font-family:'Outfit',sans-serif;color:#1e293b" id="stat-master-costcentres">0</div>
+                                    <div style="font-size:.58rem;font-weight:600;color:#9ca3af;text-transform:uppercase;letter-spacing:.04em">Cost Centres</div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="de-stat">
-                            <div class="de-stat-label">Banking</div>
-                            <div class="de-stat-num" id="stat-banking">0</div>
-                        </div>
-                        <div class="de-stat">
-                            <div class="de-stat-label">Sales</div>
-                            <div class="de-stat-num" id="stat-sales">0</div>
-                        </div>
-                        <div class="de-stat">
-                            <div class="de-stat-label">Purchase</div>
-                            <div class="de-stat-num" id="stat-purchase">0</div>
-                        </div>
-                        <div class="de-stat">
-                            <div class="de-stat-label">Journal</div>
-                            <div class="de-stat-num" id="stat-journal">0</div>
+                        <!-- Vouchers -->
+                        <div style="background:#f8fafc;border-radius:10px;padding:.65rem .85rem;border:1px solid #e2e8f0">
+                            <div style="display:flex;align-items:center;gap:.35rem;margin-bottom:.5rem">
+                                <div style="width:3px;height:14px;background:#059669;border-radius:2px"></div>
+                                <span style="font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#065f46">Vouchers</span>
+                            </div>
+                            <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:.5rem">
+                                <div style="text-align:center">
+                                    <div style="font-size:1.15rem;font-weight:800;font-family:'Outfit',sans-serif;color:#1e293b" id="stat-total">0</div>
+                                    <div style="font-size:.58rem;font-weight:600;color:#9ca3af;text-transform:uppercase;letter-spacing:.04em">Total</div>
+                                </div>
+                                <div style="text-align:center">
+                                    <div style="font-size:1.15rem;font-weight:800;font-family:'Outfit',sans-serif;color:#1e293b" id="stat-banking">0</div>
+                                    <div style="font-size:.58rem;font-weight:600;color:#9ca3af;text-transform:uppercase;letter-spacing:.04em">Banking</div>
+                                </div>
+                                <div style="text-align:center">
+                                    <div style="font-size:1.15rem;font-weight:800;font-family:'Outfit',sans-serif;color:#1e293b" id="stat-sales">0</div>
+                                    <div style="font-size:.58rem;font-weight:600;color:#9ca3af;text-transform:uppercase;letter-spacing:.04em">Sales</div>
+                                </div>
+                                <div style="text-align:center">
+                                    <div style="font-size:1.15rem;font-weight:800;font-family:'Outfit',sans-serif;color:#1e293b" id="stat-purchase">0</div>
+                                    <div style="font-size:.58rem;font-weight:600;color:#9ca3af;text-transform:uppercase;letter-spacing:.04em">Purchase</div>
+                                </div>
+                                <div style="text-align:center">
+                                    <div style="font-size:1.15rem;font-weight:800;font-family:'Outfit',sans-serif;color:#1e293b" id="stat-journal">0</div>
+                                    <div style="font-size:.58rem;font-weight:600;color:#9ca3af;text-transform:uppercase;letter-spacing:.04em">Journal</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Quick Create -->
-                <div class="de-panel">
-                    <div class="de-panel-header">
-                        <h3 class="de-panel-title green">Quick Create</h3>
-                    </div>
-                    <div class="qc-grid">
-                        <div class="qc-pill"
-                            onclick="deNav('transactions',document.querySelector('[onclick*=transactions]'))"><em>+</em>
-                            Banking</div>
-                        <div class="qc-pill"
-                            onclick="deNav('transactions',document.querySelector('[onclick*=transactions]'))"><em>+</em>
-                            Sales</div>
-                        <div class="qc-pill"
-                            onclick="deNav('transactions',document.querySelector('[onclick*=transactions]'))"><em>+</em>
-                            Sales Return</div>
-                        <div class="qc-pill"
-                            onclick="deNav('transactions',document.querySelector('[onclick*=transactions]'))"><em>+</em>
-                            Purchase</div>
-                        <div class="qc-pill"
-                            onclick="deNav('transactions',document.querySelector('[onclick*=transactions]'))"><em>+</em>
-                            Purchase Return</div>
-                        <div class="qc-pill"
-                            onclick="deNav('transactions',document.querySelector('[onclick*=transactions]'))"><em>+</em>
-                            Journal</div>
-                        <div class="qc-pill" onclick="deNav('master',document.querySelector('[onclick*=master]'))">
-                            <em>+</em> Ledger
-                        </div>
-                        <div class="qc-pill" onclick="deNav('master',document.querySelector('[onclick*=master]'))">
-                            <em>+</em> Item
+                <!-- Quick Create — compact inline -->
+                <div class="de-panel" style="padding:.75rem 1.25rem">
+                    <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap">
+                        <h3 class="de-panel-title green" style="margin:0;font-size:.78rem">Quick Create</h3>
+                        <div class="qc-grid" style="display:flex;gap:.4rem;flex-wrap:wrap;flex:1">
+                            <div class="qc-pill" style="padding:.35rem .7rem;font-size:.72rem"
+                                onclick="deNav('transactions',document.querySelector('[onclick*=transactions]'))"><em>+</em> Banking</div>
+                            <div class="qc-pill" style="padding:.35rem .7rem;font-size:.72rem"
+                                onclick="deNav('transactions',document.querySelector('[onclick*=transactions]'))"><em>+</em> Sales</div>
+                            <div class="qc-pill" style="padding:.35rem .7rem;font-size:.72rem"
+                                onclick="deNav('transactions',document.querySelector('[onclick*=transactions]'))"><em>+</em> Purchase</div>
+                            <div class="qc-pill" style="padding:.35rem .7rem;font-size:.72rem"
+                                onclick="deNav('transactions',document.querySelector('[onclick*=transactions]'))"><em>+</em> Journal</div>
+                            <div class="qc-pill" style="padding:.35rem .7rem;font-size:.72rem"
+                                onclick="deNav('master',document.querySelector('[onclick*=master]'))"><em>+</em> Ledger</div>
+                            <div class="qc-pill" style="padding:.35rem .7rem;font-size:.72rem"
+                                onclick="deNav('master',document.querySelector('[onclick*=master]'))"><em>+</em> Item</div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Top 5 Grid -->
-                <div class="de-top5-grid">
+                <!-- Top 5 Grid — two columns only, no Payment vs Receipt -->
+                <div class="de-top5-grid" style="grid-template-columns:1fr 1fr">
                     <div class="de-top5">
                         <div class="de-top5-header">
                             <h4 class="de-top5-title">Top 5 Customer</h4>
-                            <select class="de-select" style="font-size:.75rem;padding:.3rem .5rem">
-                                <option>Top 5</option>
-                                <option>Top 10</option>
+                            <select class="de-select" style="font-size:.72rem;padding:.25rem .4rem">
+                                <option>Top 5</option><option>Top 10</option>
                             </select>
                         </div>
                         <table class="de-table" style="min-width:auto">
-                            <thead>
-                                <tr>
-                                    <th>Sr. No.</th>
-                                    <th>Customer Name</th>
-                                    <th>Total Amount</th>
-                                </tr>
-                            </thead>
+                            <thead><tr><th>Sr.</th><th>Customer Name</th><th>Total Amount</th></tr></thead>
                             <tbody id="top5-customers">
-                                <tr>
-                                    <td colspan="3" style="text-align:center;color:#9ca3af;padding:2rem">
-                                        <div style="font-size:2rem;margin-bottom:.5rem">📋</div>No data
-                                    </td>
-                                </tr>
+                                <tr><td colspan="3" style="text-align:center;color:#9ca3af;padding:1.5rem"><div style="font-size:1.5rem;margin-bottom:.3rem">📋</div>No data</td></tr>
                             </tbody>
                         </table>
                     </div>
                     <div class="de-top5">
                         <div class="de-top5-header">
                             <h4 class="de-top5-title green">Top 5 Supplier</h4>
-                            <select class="de-select" style="font-size:.75rem;padding:.3rem .5rem">
-                                <option>Top 5</option>
-                                <option>Top 10</option>
+                            <select class="de-select" style="font-size:.72rem;padding:.25rem .4rem">
+                                <option>Top 5</option><option>Top 10</option>
                             </select>
                         </div>
                         <table class="de-table" style="min-width:auto">
-                            <thead>
-                                <tr>
-                                    <th>Sr. No.</th>
-                                    <th>Supplier Name</th>
-                                    <th>Total Amount</th>
-                                </tr>
-                            </thead>
+                            <thead><tr><th>Sr.</th><th>Supplier Name</th><th>Total Amount</th></tr></thead>
                             <tbody id="top5-suppliers">
-                                <tr>
-                                    <td colspan="3" style="text-align:center;color:#9ca3af;padding:2rem">
-                                        <div style="font-size:2rem;margin-bottom:.5rem">📋</div>No data
-                                    </td>
-                                </tr>
+                                <tr><td colspan="3" style="text-align:center;color:#9ca3af;padding:1.5rem"><div style="font-size:1.5rem;margin-bottom:.3rem">📋</div>No data</td></tr>
                             </tbody>
                         </table>
-                    </div>
-                    <div class="de-top5">
-                        <div class="de-top5-header">
-                            <h4 class="de-top5-title orange">Payment vs Receipt</h4>
-                        </div>
-                        <div
-                            style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;text-align:center;padding:1.5rem 0">
-                            <div>
-                                <div
-                                    style="font-size:.7rem;font-weight:600;color:#9ca3af;text-transform:uppercase;margin-bottom:.35rem">
-                                    Payment</div>
-                                <div
-                                    style="font-size:1.35rem;font-weight:800;font-family:'Outfit',sans-serif;color:#dc2626">
-                                    ₹ 0</div>
-                            </div>
-                            <div>
-                                <div
-                                    style="font-size:.7rem;font-weight:600;color:#9ca3af;text-transform:uppercase;margin-bottom:.35rem">
-                                    Receipt</div>
-                                <div
-                                    style="font-size:1.35rem;font-weight:800;font-family:'Outfit',sans-serif;color:#059669">
-                                    ₹ 0</div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -610,11 +581,14 @@
         // ═══ DASHBOARD — LIVE STATS ═══
         async function loadDashboardStats() {
             try {
-                // Ledger stats
+                // Master stats (ledgers, items, groups, cost centres)
                 const lRes = await authFetch('/tally/ledgers/stats');
                 if (lRes.ok) {
                     const ls = await lRes.json();
-                    document.getElementById('stat-total').textContent = ls.total_ledgers || 0;
+                    document.getElementById('stat-master-ledgers').textContent = ls.total_ledgers || 0;
+                    document.getElementById('stat-master-items').textContent = ls.total_items || 0;
+                    document.getElementById('stat-master-groups').textContent = ls.total_groups || 0;
+                    document.getElementById('stat-master-costcentres').textContent = ls.total_cost_centres || 0;
                 }
                 // Voucher stats
                 const vRes = await authFetch('/tally/vouchers/stats');

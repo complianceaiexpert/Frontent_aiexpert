@@ -1550,6 +1550,25 @@
                 blockedEl.style.display = 'none';
             }
 
+            // Low PR warning
+            const lowPrSlot = document.getElementById('blocked-itc-alert');
+            if (data.low_pr_warning) {
+                const warningDiv = document.createElement('div');
+                warningDiv.id = 'low-pr-warning';
+                warningDiv.innerHTML = `
+                    <div style="display:flex;align-items:center;gap:0.5rem;padding:0.75rem 1rem;background:#fef3c7;border:1px solid #f59e0b55;border-radius:10px;margin-bottom:1rem">
+                        <span style="font-size:1.1rem">⚠️</span>
+                        <div>
+                            <div style="font-size:0.78rem;font-weight:700;color:#92400e">Incomplete Purchase Register?</div>
+                            <div style="font-size:0.72rem;color:#a16207">${data.low_pr_warning}</div>
+                        </div>
+                    </div>`;
+                lowPrSlot.parentNode.insertBefore(warningDiv, lowPrSlot.nextSibling);
+            } else {
+                const existing = document.getElementById('low-pr-warning');
+                if (existing) existing.remove();
+            }
+
             // Filter buttons
             document.getElementById('filter-btns').innerHTML = [
                 { label: `All (${s.total_invoices})`, filter: 'all' },
