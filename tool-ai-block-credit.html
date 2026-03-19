@@ -109,6 +109,52 @@
                     </div>
                 </div>
 
+                <!-- ITC Status Summary -->
+                <div class="tool-card" id="itc-summary-card" style="display:none">
+                    <h3 style="margin:0 0 1rem;font-size:.95rem;font-weight:700;color:#111827">
+                        📊 ITC Status Summary
+                        <span id="itc-summary-badge" style="font-size:.65rem;font-weight:600;background:#dbeafe;color:#1e3a8a;padding:.15rem .5rem;border-radius:999px;margin-left:.5rem"></span>
+                    </h3>
+                    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.65rem;margin-bottom:1rem">
+                        <div id="itc-s-eligible" style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:.85rem;text-align:center">
+                            <div style="font-size:1.3rem;font-weight:800;color:#16a34a" id="itc-n-eligible">0</div>
+                            <div style="font-size:.68rem;font-weight:600;color:#166534">✅ Eligible</div>
+                            <div style="font-size:.62rem;color:#15803d;margin-top:.2rem" id="itc-g-eligible">₹0</div>
+                        </div>
+                        <div id="itc-s-blocked" style="background:#fef2f2;border:1px solid #fecaca;border-radius:10px;padding:.85rem;text-align:center">
+                            <div style="font-size:1.3rem;font-weight:800;color:#dc2626" id="itc-n-blocked">0</div>
+                            <div style="font-size:.68rem;font-weight:600;color:#991b1b">🔴 Blocked</div>
+                            <div style="font-size:.62rem;color:#b91c1c;margin-top:.2rem" id="itc-g-blocked">₹0</div>
+                        </div>
+                        <div id="itc-s-review" style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:.85rem;text-align:center">
+                            <div style="font-size:1.3rem;font-weight:800;color:#d97706" id="itc-n-review">0</div>
+                            <div style="font-size:.68rem;font-weight:600;color:#92400e">⚠️ Needs Review</div>
+                            <div style="font-size:.62rem;color:#b45309;margin-top:.2rem" id="itc-g-review">₹0</div>
+                        </div>
+                        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:.85rem;text-align:center">
+                            <div style="font-size:1.3rem;font-weight:800;color:#334155" id="itc-n-total">0</div>
+                            <div style="font-size:.68rem;font-weight:600;color:#475569">Total Invoices</div>
+                            <div style="font-size:.62rem;color:#64748b;margin-top:.2rem" id="itc-g-total">₹0</div>
+                        </div>
+                    </div>
+                    <!-- Progress bar -->
+                    <div style="display:flex;height:8px;border-radius:6px;overflow:hidden;background:#f1f5f9;margin-bottom:.85rem">
+                        <div id="itc-bar-eligible" style="background:#22c55e;transition:width .5s"></div>
+                        <div id="itc-bar-blocked" style="background:#ef4444;transition:width .5s"></div>
+                        <div id="itc-bar-review" style="background:#f59e0b;transition:width .5s"></div>
+                    </div>
+                    <!-- Source breakdown -->
+                    <div style="display:flex;gap:1rem;flex-wrap:wrap">
+                        <div style="font-size:.68rem;color:#6b7280">
+                            <span style="font-weight:600">Analysis Sources:</span>
+                            <span id="itc-src-hsn" style="margin-left:.4rem;background:#eff6ff;color:#1e40af;padding:.1rem .4rem;border-radius:4px;font-weight:600">🔎 HSN: 0</span>
+                            <span id="itc-src-sup" style="margin-left:.3rem;background:#faf5ff;color:#7c3aed;padding:.1rem .4rem;border-radius:4px;font-weight:600">🏢 Supplier: 0</span>
+                            <span id="itc-src-ai" style="margin-left:.3rem;background:#f0fdf4;color:#166534;padding:.1rem .4rem;border-radius:4px;font-weight:600">🤖 AI: 0</span>
+                            <span id="itc-src-reg" style="margin-left:.3rem;background:#fef3c7;color:#92400e;padding:.1rem .4rem;border-radius:4px;font-weight:600">📋 Register: 0</span>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Recent Jobs -->
                 <div class="tool-card" id="recent-jobs-container" style="display:none">
                     <div class="jobs-section-header">
@@ -168,6 +214,70 @@
             } catch (err) { console.error(err); alert('Error: ' + err.message); }
             finally { btn.disabled = false; btn.textContent = '🚀 Start Analysis'; }
         }
+
+        // ── ITC Summary Card ──
+        function formatINR(val) {
+            return '₹' + Number(val || 0).toLocaleString('en-IN', { maximumFractionDigits: 0 });
+        }
+
+        async function loadItcSummary() {
+            try {
+                const params = new URLSearchParams(window.location.search);
+                const clientId = params.get('clientId');
+                const url = clientId ? `/jobs/?skip=0&limit=10&client_id=${clientId}` : `/jobs/?skip=0&limit=10`;
+                const res = await authFetch(url);
+                if (!res || !res.ok) return;
+                const jobs = await res.json();
+
+                // Find latest completed ai_block_credit job with metadata
+                const latest = jobs.find(j =>
+                    j.job_type === 'ai_block_credit' &&
+                    j.status === 'COMPLETED' &&
+                    (j.metadata || j.meta)
+                );
+                if (!latest) return;
+
+                const meta = latest.metadata || latest.meta;
+                const s = meta?.itc_summary;
+                if (!s) return;
+
+                // Show card
+                document.getElementById('itc-summary-card').style.display = '';
+
+                // Badge with last run time
+                const badge = document.getElementById('itc-summary-badge');
+                const runDate = new Date(latest.created_at.endsWith('Z') ? latest.created_at : latest.created_at + 'Z');
+                badge.textContent = 'Last run: ' + runDate.toLocaleString('en-IN', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
+
+                // Counts
+                document.getElementById('itc-n-eligible').textContent = s.eligible || 0;
+                document.getElementById('itc-n-blocked').textContent = s.blocked || 0;
+                document.getElementById('itc-n-review').textContent = s.needs_review || 0;
+                document.getElementById('itc-n-total').textContent = s.total || 0;
+
+                // GST amounts
+                document.getElementById('itc-g-eligible').textContent = formatINR(s.eligible_gst);
+                document.getElementById('itc-g-blocked').textContent = formatINR(s.blocked_gst);
+                document.getElementById('itc-g-review').textContent = formatINR(s.review_gst);
+                document.getElementById('itc-g-total').textContent = formatINR((s.eligible_gst || 0) + (s.blocked_gst || 0) + (s.review_gst || 0));
+
+                // Progress bar
+                const total = s.total || 1;
+                document.getElementById('itc-bar-eligible').style.width = ((s.eligible / total) * 100) + '%';
+                document.getElementById('itc-bar-blocked').style.width = ((s.blocked / total) * 100) + '%';
+                document.getElementById('itc-bar-review').style.width = ((s.needs_review / total) * 100) + '%';
+
+                // Source breakdown
+                document.getElementById('itc-src-hsn').textContent = '🔎 HSN: ' + (s.hsn_resolved || 0);
+                document.getElementById('itc-src-sup').textContent = '🏢 Supplier: ' + (s.supplier_resolved || 0);
+                document.getElementById('itc-src-ai').textContent = '🤖 AI: ' + (s.ai_resolved || 0);
+                document.getElementById('itc-src-reg').textContent = '📋 Register: ' + (s.register_resolved || 0);
+
+            } catch (e) { console.error('ITC Summary error:', e); }
+        }
+
+        // Load summary on page load
+        setTimeout(loadItcSummary, 500);
     </script>
 </body>
 

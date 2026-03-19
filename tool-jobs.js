@@ -69,7 +69,8 @@ function _checkClientContext() {
 
 function _timeAgo(dateStr) {
     const now = new Date();
-    const date = new Date(dateStr);
+    // Backend stores UTC but without 'Z' suffix — append it so JS parses as UTC
+    const date = new Date(dateStr.endsWith('Z') ? dateStr : dateStr + 'Z');
     const diffMs = now - date;
     const diffSec = Math.floor(diffMs / 1000);
     const diffMin = Math.floor(diffSec / 60);
@@ -146,7 +147,7 @@ function _renderToolJobs(jobs) {
 
     list.innerHTML = jobs.map(job => {
         const relTime = _timeAgo(job.created_at);
-        const fullDate = new Date(job.created_at).toLocaleString('en-IN', {
+        const fullDate = new Date(job.created_at.endsWith('Z') ? job.created_at : job.created_at + 'Z').toLocaleString('en-IN', {
             day: '2-digit', month: 'short', year: 'numeric',
             hour: '2-digit', minute: '2-digit'
         });

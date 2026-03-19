@@ -1049,19 +1049,50 @@
         function handleTxSort(v) { txSort = v; renderTransactions(); }
 
         // ═══ BULK UPLOAD ═══
+        const N8N_WEBHOOK_URL = 'https://rahul250192.app.n8n.cloud/webhook/4e082356-d55f-4174-a1eb-7bb275db59c5';
+
         function handleBulkUpload(input) {
             const files = Array.from(input.files);
             const queue = document.getElementById('file-queue');
-            files.forEach(f => {
+            files.forEach((f, idx) => {
                 const ext = f.name.split('.').pop().toUpperCase();
                 const bg = ext === 'PDF' ? '#fef2f2' : ext === 'XLSX' || ext === 'CSV' ? '#ecfdf5' : '#eff6ff';
-                queue.innerHTML += `<div class="fq-item">
+                const itemId = `fq-${Date.now()}-${idx}`;
+                queue.innerHTML += `<div class="fq-item" id="${itemId}">
                     <div class="fq-icon" style="background:${bg}">${ext === 'PDF' ? '📄' : '📊'}</div>
                     <div class="fq-info"><div class="fq-name">${f.name}</div><div class="fq-meta">${(f.size / 1024).toFixed(1)} KB</div></div>
-                    <span class="fq-status pending">Queued</span>
+                    <span class="fq-status pending">Uploading…</span>
                 </div>`;
+                // Send to n8n webhook
+                sendFileToWebhook(f, itemId);
             });
-            input.value = '';
+            if (input.value !== undefined) input.value = '';
+        }
+
+        async function sendFileToWebhook(file, itemId) {
+            const statusEl = document.querySelector(`#${itemId} .fq-status`);
+            try {
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('clientId', clientId || '');
+                formData.append('fileName', file.name);
+                formData.append('clientName', clientCompanyName || '');
+
+                const res = await fetch(N8N_WEBHOOK_URL, {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                if (res.ok) {
+                    if (statusEl) { statusEl.textContent = 'Sent ✓'; statusEl.className = 'fq-status success'; statusEl.style.color = '#16a34a'; }
+                } else {
+                    if (statusEl) { statusEl.textContent = 'Failed'; statusEl.className = 'fq-status error'; statusEl.style.color = '#dc2626'; }
+                    console.error('Webhook error:', res.status, await res.text());
+                }
+            } catch (err) {
+                console.error('Webhook error:', err);
+                if (statusEl) { statusEl.textContent = 'Failed'; statusEl.className = 'fq-status error'; statusEl.style.color = '#dc2626'; }
+            }
         }
 
         const uploadZone = document.getElementById('uploadZone');
