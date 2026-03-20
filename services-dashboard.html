@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Client Workspace — ComplianceAI Expert</title>
+    <title>Client Workspace — Suvidha AI</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -856,9 +856,9 @@
             <div id="app-client-nav" data-active="overview"></div>
             <script src="app-client-nav.js"></script>
             <div class="sb-divider"></div>
+            <!-- [COMMENTED OUT] Add Service sidebar action — removed for discoverability
             <div class="sb-section">
                 <div class="sb-section-label">Actions</div>
-
                 <a href="#" class="sb-item" onclick="event.preventDefault();showAddService()">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M12 5v14" />
@@ -867,6 +867,7 @@
                     Add Service
                 </a>
             </div>
+            -->
         </aside>
 
         <!-- ══ MAIN CONTENT ══ -->
@@ -925,9 +926,10 @@
             <!-- Services -->
             <div class="ws-section-header">
                 <div>
-                    <h2>Available Services</h2>
-                    <p>Select a module to open your professional workspace.</p>
+                    <h2>Your Services</h2>
+                    <p>Select a service to open your professional workspace.</p>
                 </div>
+                <!-- [COMMENTED OUT] Add Service button — removed for discoverability
                 <button class="btn-add-svc" onclick="showAddService()">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                         stroke-width="2.5">
@@ -936,6 +938,7 @@
                     </svg>
                     Add Service
                 </button>
+                -->
             </div>
             <div id="services-grid" class="services-grid"></div>
         </main>
@@ -968,7 +971,7 @@
         </div>
     </div>
 
-    <!-- ══ MANAGE SERVICES MODAL ══ -->
+    <!-- [COMMENTED OUT] Manage Services Modal — removed for discoverability
     <div id="manage-services-modal" class="modal">
         <div class="modal-content">
             <div class="modal-top">
@@ -984,6 +987,7 @@
             </div>
         </div>
     </div>
+    -->
 
     <!-- ══ TALLY SYNC MODAL ══ -->
     <div id="tally-sync-modal" class="modal">
@@ -1092,31 +1096,58 @@
             requestAnimationFrame(step);
         }
 
-        // ====== RENDER SERVICES ======
+        // ====== HARDCODED AVAILABLE SERVICES ======
+        // Beta feedback: users couldn't discover services via "Add Service" flow.
+        // Now we show all available services directly. These are the 3 currently active ones.
+        const AVAILABLE_SERVICES = [
+            {
+                name: 'GST Filing',
+                icon: '🧾',
+                color: 'blue',
+                desc: 'GST return filing with automated reconciliation, ITC optimization, and AI-powered error detection.',
+                page: 'service-gst-refund-webview.html'
+            },
+            {
+                name: 'CA Certificates',
+                icon: '📃',
+                color: 'purple',
+                desc: 'Generate GST, Financial, Net Worth, FEMA, and Bank certificates with AI-powered templates.',
+                page: 'ca-certificates.html'
+            },
+            {
+                name: 'Data Entry',
+                icon: '⌨️',
+                color: 'orange',
+                desc: 'Quick entry of banking, sales, purchase, journal, and ledger transactions with Tally sync.',
+                page: 'service-data-entry.html'
+            }
+        ];
+
+        function getIconBg(c) { return { blue: '#eff6ff', green: '#ecfdf5', purple: '#f5f3ff', orange: '#fffbeb', pink: '#fdf2f8', teal: '#f0fdfa' }[c] || '#f3f4f6' }
+
+        // ====== RENDER SERVICES (now shows all available services directly) ======
         function renderActiveServices() {
             const grid = document.getElementById('services-grid'); grid.innerHTML = '';
-            const colorCycle = ['blue', 'green', 'purple', 'orange', 'pink', 'teal'];
-            clientServices.forEach((service, idx) => {
-                const meta = serviceData[service.name] || { icon: '📦', color: colorCycle[idx % 6], desc: 'Professional service management' };
+            AVAILABLE_SERVICES.forEach((svc) => {
                 const card = document.createElement('div');
                 card.className = 'service-card';
-                card.setAttribute('data-color', meta.color);
-                card.onclick = () => openViewSelection(service);
+                card.setAttribute('data-color', svc.color);
+                card.onclick = () => openViewSelection(svc);
                 card.innerHTML = `
                     <div class="svc-card-top">
-                        <div class="svc-icon-box" style="background:${getIconBg(meta.color)};font-size:1.2rem">${meta.icon}</div>
-                        <div style="flex:1;min-width:0"><div class="svc-card-title">${service.name}</div><span class="svc-card-status status-active">Active</span></div>
+                        <div class="svc-icon-box" style="background:${getIconBg(svc.color)};font-size:1.2rem">${svc.icon}</div>
+                        <div style="flex:1;min-width:0"><div class="svc-card-title">${svc.name}</div><span class="svc-card-status status-active">Active</span></div>
                     </div>
-                    <p class="svc-card-desc">${meta.desc}</p>
+                    <p class="svc-card-desc">${svc.desc}</p>
                     <div class="svc-card-footer">
                         <span class="svc-open-link">Open Workspace <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg></span>
                         <span class="svc-card-meta">AI Powered</span>
                     </div>`;
                 grid.appendChild(card);
             });
+            // Update stats to always show the count of available services
+            animateCounter('stat-services', AVAILABLE_SERVICES.length);
         }
-
-        function getIconBg(c) { return { blue: '#eff6ff', green: '#ecfdf5', purple: '#f5f3ff', orange: '#fffbeb', pink: '#fdf2f8', teal: '#f0fdfa' }[c] || '#f3f4f6' }
 
         // ====== VIEW SELECTION ======
         function openViewSelection(service) {
@@ -1133,15 +1164,11 @@
                 closeModal('view-modal');
                 return;
             }
-            let webPage = 'service-gst-refund-webview.html', chatPage = 'file-gst-refund.html';
-            if (currentService.name === 'CA Certificates') { window.location.href = `ca-certificates.html?clientId=${clientId}&serviceId=${currentService.id}`; return }
-            if (currentService.name === 'Data Entry') { const dePage = viewType === 'web' ? 'service-data-entry.html' : 'service-data-entry-ai.html'; window.location.href = `${dePage}?clientId=${clientId}&serviceId=${currentService.id}`; return }
-            const page = viewType === 'web' ? webPage : chatPage;
-            const vp = viewType === 'chat' ? '&view=semi-chat' : '';
-            window.location.href = `${page}?clientId=${clientId}&serviceId=${currentService.id}${vp}`;
+            // Navigate directly using the service's page property
+            window.location.href = `${currentService.page}?clientId=${clientId}`;
         }
 
-        // ====== ADD/MANAGE SERVICES ======
+        /* [COMMENTED OUT] Add/Manage Services — removed for discoverability (beta feedback)
         function showAddService() {
             const list = document.getElementById('available-services-list'); list.innerHTML = '';
             allServices.forEach(service => {
@@ -1157,7 +1184,7 @@
         }
 
         async function saveServices() {
-            const cbs = document.querySelectorAll('#available-services-list input[type="checkbox"]');
+            const cbs = document.querySelectorAll('#available-services-list input[type="checkbox\]');
             const selectedIds = Array.from(cbs).filter(cb => cb.checked).map(cb => cb.dataset.id);
             try {
                 const r = await authFetch(`/clients/${clientId}/services`, { method: 'PUT', body: JSON.stringify({ service_ids: selectedIds }) });
@@ -1165,6 +1192,7 @@
                 else { alert('Failed to update services.') }
             } catch (e) { console.error(e); alert('Connection error.') }
         }
+        */
 
         function closeModal(id) { document.getElementById(id).classList.remove('active') }
 
@@ -1191,7 +1219,7 @@
             catch (e) { alert('Sync Failed: ' + e.message); btn.textContent = ot; btn.disabled = false }
         }
 
-        document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal('view-modal'); closeModal('manage-services-modal'); closeModal('tally-sync-modal') } });
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal('view-modal'); /* closeModal('manage-services-modal'); */ closeModal('tally-sync-modal') } });
         loadDashboard();
     </script>
     <script src="session-manager.js?v=2"></script>

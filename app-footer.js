@@ -11,7 +11,7 @@
     container.innerHTML = `
   <footer class="app-footer">
     <div class="app-footer-inner">
-      <p class="app-footer-copy">&copy; ${new Date().getFullYear()} ComplianceAI Expert. All rights reserved.</p>
+      <p class="app-footer-copy">&copy; ${new Date().getFullYear()} Suvidha AI. All rights reserved.</p>
       <div class="app-footer-links">
         <a href="mailto:complianceAIExpert@gmail.com">Support</a>
         <span class="app-footer-dot">·</span>

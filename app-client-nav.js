@@ -94,14 +94,34 @@
 
     html += '</div>';
 
-    // ═══ Services section — placeholder, populated dynamically ═══
-    html += '<div id="cn-services-section" style="display:none">';
+    // ═══ Services section — now hardcoded with the 3 active services ═══
+    // Beta feedback: show services directly instead of loading from client.services
+    const HARDCODED_SERVICES = [
+        { key: 'gst filing', id: 'gst-refund' },
+        { key: 'ca certificates', id: 'ca-certificates' },
+        { key: 'data entry', id: 'data-entry' }
+    ];
+
+    html += '<div id="cn-services-section">';
     html += '<div class="cn-divider"></div>';
     html += '<div class="cn-section">';
     html += '<div class="cn-section-label">';
     html += '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>';
     html += 'Services';
     html += '</div>';
+    // Render hardcoded service links directly
+    let svcLinksHtml = '';
+    HARDCODED_SERVICES.forEach(svc => {
+        const mapped = SERVICE_MAP[svc.key];
+        if (mapped) {
+            const activeClass = isActive(svc.id);
+            svcLinksHtml += `<a href="${mapped.href}" class="cn-item${activeClass}">
+                ${mapped.icon}
+                ${mapped.label}
+            </a>`;
+        }
+    });
+    html += svcLinksHtml;
     html += '<div id="cn-service-links"></div>';
     html += '</div>';
     html += '</div>';
@@ -130,6 +150,7 @@
                         type.textContent = gstin ? gstin : (client.entity_type || 'Client');
                     }
 
+                    /* [COMMENTED OUT] Dynamic services from client.services — now hardcoded above
                     // Render services from client.services array
                     const services = client.services || [];
                     const linksEl = document.getElementById('cn-service-links');
@@ -157,6 +178,7 @@
                         linksEl.innerHTML = svcHtml;
                         sectionEl.style.display = 'block';
                     }
+                    */
                 }).catch(() => { });
             } else {
                 setTimeout(tryLoadClient, 200);

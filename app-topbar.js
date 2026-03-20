@@ -25,7 +25,7 @@
           </svg>
         </div>
         <div class="app-logo-text">
-          <span class="app-logo-name">ComplianceAI</span>
+          <span class="app-logo-name">Suvidha AI</span>
           <span class="app-logo-sub">Expert Platform</span>
         </div>
       </a>
@@ -141,7 +141,7 @@
   try {
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     const initial = (user.firm_name || user.full_name || user.name || 'U').charAt(0).toUpperCase();
-    const name = user.full_name || user.name || user.firm_name || 'User';
+    const name = user.firm_name || user.full_name || user.name || 'User';
     const email = user.email || '';
     const role = user.subscription_plan || user.role || 'Free Plan';
 
@@ -149,7 +149,7 @@
     const av = document.getElementById('nav-avatar');
     if (av) av.textContent = initial;
     const un = document.getElementById('nav-user-name');
-    if (un) un.textContent = name.split(' ')[0]; // first name only
+    if (un) un.textContent = name;
     const ur = document.getElementById('nav-user-role');
     if (ur) ur.textContent = role;
 

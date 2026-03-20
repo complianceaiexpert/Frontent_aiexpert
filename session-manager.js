@@ -1,46 +1,42 @@
 // Session Management Utility
-// Handles authentication, auto-redirect, and session timeout
+// Handles authentication, auto-redirect, session timeout, and trial expiry
 
-const SESSION_TIMEOUT = 60 * 60 * 1000; // 1 hour in milliseconds
+const SESSION_TIMEOUT = 60 * 60 * 1000; // 1 hour
 const TOKEN_KEY = 'access_token';
 const LAST_ACTIVITY_KEY = 'lastActivity';
 
-// Check if user is logged in
+// Pages expired-trial users can still access
+const TRIAL_ALLOWED_PAGES = ['pricing.html', 'payment.html', 'profile.html', 'contact-us.html', 'sign-in.html', 'sign-up.html', 'index.html'];
+
 function isLoggedIn() {
     const token = localStorage.getItem(TOKEN_KEY);
     return token !== null && token !== '';
 }
 
-// Update last activity timestamp
 function updateLastActivity() {
     localStorage.setItem(LAST_ACTIVITY_KEY, Date.now().toString());
 }
 
-// Check if session has expired
 function isSessionExpired() {
     const lastActivity = localStorage.getItem(LAST_ACTIVITY_KEY);
     if (!lastActivity) return true;
-
-    const timeSinceLastActivity = Date.now() - parseInt(lastActivity);
-    return timeSinceLastActivity > SESSION_TIMEOUT;
+    return (Date.now() - parseInt(lastActivity)) > SESSION_TIMEOUT;
 }
 
-// Logout user
 function logout() {
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(LAST_ACTIVITY_KEY);
     localStorage.removeItem('user');
+    localStorage.removeItem('trial_expired');
     window.location.href = 'index.html';
 }
 
-// Auto-redirect if logged in (for public pages)
 function redirectIfLoggedIn() {
     if (isLoggedIn() && !isSessionExpired()) {
         window.location.href = 'clients.html';
     }
 }
 
-// Require authentication (for protected pages)
 function requireAuth() {
     if (!isLoggedIn() || isSessionExpired()) {
         logout();
@@ -50,24 +46,35 @@ function requireAuth() {
     return true;
 }
 
-// Initialize session monitoring
+// ═══════════════════════════════════
+// TRIAL EXPIRY GUARD (localStorage only — no API calls)
+// ═══════════════════════════════════
+function checkTrialExpiry() {
+    if (!isLoggedIn()) return;
+    if (localStorage.getItem('trial_expired') !== 'true') return;
+
+    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+    if (TRIAL_ALLOWED_PAGES.includes(currentPage)) return;
+
+    // Blocked — send to pricing
+    window.location.href = 'pricing.html?expired=1';
+}
+
 function initSessionMonitoring() {
-    // Update activity on user interactions
     const events = ['mousedown', 'keydown', 'scroll', 'touchstart'];
     events.forEach(event => {
         document.addEventListener(event, updateLastActivity, { passive: true });
     });
 
-    // Check session every minute
     setInterval(() => {
         if (isLoggedIn() && isSessionExpired()) {
             alert('Your session has expired due to inactivity. Please log in again.');
             logout();
         }
-    }, 60000); // Check every minute
+    }, 60000);
 }
 
-// Initialize on page load
 if (typeof window !== 'undefined') {
     initSessionMonitoring();
+    checkTrialExpiry();
 }

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GST Workview — ComplianceAI Expert</title>
+    <title>GST Workview — Suvidha AI</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1216,9 +1216,33 @@
 
             <!-- ========== GST RECONCILIATION (DEFAULT ACTIVE) ========== -->
             <div class="content-section" id="sec-reconciliation">
-                <div class="section-header">
+                <div class="section-header" style="margin-bottom:0.5rem">
                     <h1>⚖️ GST Reconciliations</h1>
-                    <p class="section-subtitle">Automated tools for accurate GST compliance</p>
+                    <p class="section-subtitle">AI-powered tools for accurate GST compliance — pick a reconciliation to start</p>
+                </div>
+
+                <!-- Quick Stats -->
+                <div style="display:flex;gap:1rem;margin-bottom:2rem;flex-wrap:wrap">
+                    <div style="flex:1;min-width:140px;background:linear-gradient(135deg,#eff6ff,#dbeafe);border-radius:12px;padding:1rem 1.25rem;border:1px solid #bfdbfe">
+                        <div style="font-size:0.7rem;font-weight:600;color:#1e3a8a;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:0.25rem">Purchase Tools</div>
+                        <div style="font-size:1.5rem;font-weight:800;color:#1e3a8a">3</div>
+                        <div style="font-size:0.72rem;color:#3b82f6">IMS, 2B, 2B vs 3B</div>
+                    </div>
+                    <div style="display:flex;flex:1;min-width:140px;background:linear-gradient(135deg,#f0fdf4,#dcfce7);border-radius:12px;padding:1rem 1.25rem;border:1px solid #bbf7d0;flex-direction:column">
+                        <div style="font-size:0.7rem;font-weight:600;color:#166534;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:0.25rem">Sales Tools</div>
+                        <div style="font-size:1.5rem;font-weight:800;color:#166534">3</div>
+                        <div style="font-size:0.72rem;color:#16a34a">E-Invoice, GSTR-1, 1 vs 3B</div>
+                    </div>
+                    <div style="flex:1;min-width:140px;background:linear-gradient(135deg,#faf5ff,#f3e8ff);border-radius:12px;padding:1rem 1.25rem;border:1px solid #e9d5ff">
+                        <div style="font-size:0.7rem;font-weight:600;color:#581c87;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:0.25rem">AI Accuracy</div>
+                        <div style="font-size:1.5rem;font-weight:800;color:#581c87">99%</div>
+                        <div style="font-size:0.72rem;color:#7c3aed">Matching precision</div>
+                    </div>
+                    <div style="flex:1;min-width:140px;background:linear-gradient(135deg,#fff7ed,#ffedd5);border-radius:12px;padding:1rem 1.25rem;border:1px solid #fed7aa">
+                        <div style="font-size:0.7rem;font-weight:600;color:#9a3412;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:0.25rem">Time Saved</div>
+                        <div style="font-size:1.5rem;font-weight:800;color:#9a3412">10x</div>
+                        <div style="font-size:0.72rem;color:#ea580c">vs manual recon</div>
+                    </div>
                 </div>
 
                 <!-- Purchase Reconciliation -->
@@ -1226,71 +1250,71 @@
                     <span class="cat-icon">📦</span>
                     <h2>Purchase Reconciliation</h2>
                 </div>
-                <p class="category-subtitle">Tools for ITC (Input Tax Credit) verification and purchase matching</p>
+                <p class="category-subtitle">Match your purchase data with GST portal returns for accurate ITC claims</p>
 
-                <div class="cards-grid">
-                    <div class="tool-card">
+                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-bottom:2rem">
+                    <div class="tool-card" style="border-top:3px solid #3b82f6">
                         <div class="card-top">
                             <div class="card-icon">⚡</div>
                             <span class="card-badge">PURCHASE</span>
                         </div>
-                        <h3 class="card-title">IMS vs PR</h3>
-                        <p class="card-desc">Reconcile Invoice Management System with Purchase Register</p>
+                        <h3 class="card-title">IMS vs Purchase Register</h3>
+                        <p class="card-desc">Reconcile Invoice Management System data with your Purchase Register for ITC verification</p>
                         <a class="card-action" onclick="navigateToTool('tool-ims-vs-pr.html')">Open Tool →</a>
                     </div>
-                    <div class="tool-card">
+                    <div class="tool-card" style="border-top:3px solid #3b82f6">
                         <div class="card-top">
                             <div class="card-icon">🔀</div>
                             <span class="card-badge">PURCHASE</span>
                         </div>
-                        <h3 class="card-title">GSTR-2B vs PR</h3>
-                        <p class="card-desc">Match GSTR-2B with Purchase Register for ITC verification</p>
+                        <h3 class="card-title">GSTR-2B vs Purchase Register</h3>
+                        <p class="card-desc">Match GSTR-2B auto-populated data with your Purchase Register for ITC claims</p>
                         <a class="card-action" onclick="navigateToTool('tool-gstr2b-vs-pr.html')">Open Tool →</a>
                     </div>
-                    <div class="tool-card">
+                    <div class="tool-card" style="border-top:3px solid #3b82f6">
                         <div class="card-top">
                             <div class="card-icon">🔗</div>
                             <span class="card-badge">PURCHASE</span>
                         </div>
                         <h3 class="card-title">GSTR-2B vs GSTR-3B</h3>
-                        <p class="card-desc">Tax credit reconciliation between 2B and 3B for ITC matching</p>
+                        <p class="card-desc">Tax credit reconciliation between 2B and 3B filings for ITC matching</p>
                         <a class="card-action" onclick="navigateToTool('tool-gstr2b-vs-3b.html')">Open Tool →</a>
                     </div>
                 </div>
 
                 <!-- Sales Reconciliation -->
-                <div class="category-header" style="margin-top:2.5rem;">
+                <div class="category-header">
                     <span class="cat-icon">📊</span>
                     <h2>Sales Reconciliation</h2>
                 </div>
-                <p class="category-subtitle">Tools for sales verification and output tax reconciliation</p>
+                <p class="category-subtitle">Verify your outward supplies and output tax across all sales channels</p>
 
-                <div class="cards-grid">
-                    <div class="tool-card">
+                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-bottom:1rem">
+                    <div class="tool-card" style="border-top:3px solid #10b981">
                         <div class="card-top">
                             <div class="card-icon">📄</div>
                             <span class="card-badge sales">SALES</span>
                         </div>
                         <h3 class="card-title">E-Invoice vs Sales Register</h3>
-                        <p class="card-desc">Validate E-Invoices against Sales Register for output tax</p>
+                        <p class="card-desc">Validate E-Invoice records against your Sales Register for output tax accuracy</p>
                         <a class="card-action" onclick="navigateToTool('tool-einv-vs-sr.html')">Open Tool →</a>
                     </div>
-                    <div class="tool-card">
+                    <div class="tool-card" style="border-top:3px solid #10b981">
                         <div class="card-top">
                             <div class="card-icon">🔄</div>
                             <span class="card-badge sales">SALES</span>
                         </div>
                         <h3 class="card-title">GSTR-1 vs E-Invoice</h3>
-                        <p class="card-desc">Reconcile GSTR-1 data with E-Invoices for sales verification</p>
+                        <p class="card-desc">Reconcile GSTR-1 outward supply data with E-Invoice records</p>
                         <a class="card-action" onclick="navigateToTool('tool-gstr1-vs-einv.html')">Open Tool →</a>
                     </div>
-                    <div class="tool-card">
+                    <div class="tool-card" style="border-top:3px solid #10b981">
                         <div class="card-top">
                             <div class="card-icon">📈</div>
                             <span class="card-badge sales">SALES</span>
                         </div>
                         <h3 class="card-title">GSTR-1 vs GSTR-3B</h3>
-                        <p class="card-desc">Outward supply reconciliation between GSTR-1 & 3B for output tax</p>
+                        <p class="card-desc">Outward supply reconciliation between GSTR-1 and 3B for output tax</p>
                         <a class="card-action" onclick="navigateToTool('tool-gstr1-vs-3b.html')">Open Tool →</a>
                     </div>
                 </div>

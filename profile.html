@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Profile — ComplianceAI Expert</title>
+    <title>My Profile — Suvidha AI</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -1094,7 +1094,7 @@
 
             <!-- ══ TAB: Plan & Billing ══ -->
             <div class="pf-panel" id="panel-plan">
-                <div class="pf-card">
+                <div class="pf-card" id="plan-card">
                     <div class="pf-card-head">
                         <div class="pf-card-title">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1103,28 +1103,38 @@
                             </svg>
                             Current Plan
                         </div>
-                        <span class="plan-badge active">✓ Active</span>
+                        <span class="plan-badge" id="plan-status-badge">Loading…</span>
                     </div>
-                    <div
-                        style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:0.75rem">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:0.75rem">
                         <div>
                             <div style="font-family:'Outfit',sans-serif;font-size:1.35rem;font-weight:800;color:#111827"
-                                id="plan-name">Pro Annual</div>
-                            <div style="font-size:0.75rem;color:#9ca3af;margin-top:0.15rem">Renews automatically · Best
-                                for CA firms</div>
+                                id="plan-name">Loading…</div>
+                            <div style="font-size:0.75rem;color:#9ca3af;margin-top:0.15rem" id="plan-subtitle">—</div>
                         </div>
-                        <button class="btn-primary">Upgrade Plan</button>
+                        <a href="pricing.html" class="btn-primary" id="plan-cta-btn">Contact Us</a>
                     </div>
+
+                    <!-- Trial progress -->
                     <div>
-                        <div
-                            style="display:flex;justify-content:space-between;font-size:0.78rem;font-weight:700;color:#374151;margin-bottom:0.2rem">
-                            <span>Client Slots Used</span>
-                            <span id="usage-text">— / —</span>
+                        <div style="display:flex;justify-content:space-between;font-size:0.78rem;font-weight:700;color:#374151;margin-bottom:0.2rem">
+                            <span id="trial-progress-label">Trial Days</span>
+                            <span id="trial-days-text">— / 30</span>
                         </div>
                         <div class="usage-bar">
-                            <div class="usage-fill" id="usage-fill" style="width:0%"></div>
+                            <div class="usage-fill" id="trial-fill" style="width:0%"></div>
                         </div>
-                        <div class="usage-label" id="usage-label">Loading…</div>
+                        <div class="usage-label" id="trial-status-label">Checking trial status…</div>
+                    </div>
+                </div>
+
+                <!-- Expired overlay (hidden by default) -->
+                <div id="trial-expired-banner" style="display:none;background:linear-gradient(135deg,#fef2f2,#fee2e2);border:1px solid #fecaca;border-radius:12px;padding:1.5rem;margin-bottom:1.25rem;text-align:center">
+                    <div style="font-size:2rem;margin-bottom:0.5rem">⏰</div>
+                    <h3 style="font-family:'Outfit',sans-serif;font-weight:800;color:#dc2626;margin:0 0 0.5rem">Trial Expired</h3>
+                    <p style="font-size:0.85rem;color:#991b1b;margin:0 0 1rem">Your 30-day free trial has ended. Upgrade your plan to continue using Suvidha AI.</p>
+                    <div style="display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap">
+                        <a href="pricing.html" class="btn-primary" style="text-decoration:none">🚀 View Plans & Upgrade</a>
+                        <a href="contact-us.html" class="btn-primary" style="background:linear-gradient(135deg,#1e3a8a,#2563eb);box-shadow:0 3px 12px rgba(30,58,138,.3);text-decoration:none">📞 Contact Sales</a>
                     </div>
                 </div>
 
@@ -1140,10 +1150,10 @@
                     </div>
                     <div class="info-row-inline">
                         <div>
-                            <div style="font-size:0.82rem;font-weight:600;color:#1f2937">Payment Method</div>
-                            <div style="font-size:0.72rem;color:#9ca3af">Visa ending in ****</div>
+                            <div style="font-size:0.82rem;font-weight:600;color:#1f2937">Plan Type</div>
+                            <div style="font-size:0.72rem;color:#9ca3af" id="billing-plan-type">Free Trial</div>
                         </div>
-                        <button class="btn-edit-inline">Update</button>
+                        <button class="btn-edit-inline" onclick="window.location.href='pricing.html'">Upgrade</button>
                     </div>
                     <div class="info-row-inline">
                         <div>
@@ -1154,10 +1164,9 @@
                     </div>
                     <div class="info-row-inline" style="border-bottom:none">
                         <div>
-                            <div style="font-size:0.82rem;font-weight:600;color:#1f2937">Invoices</div>
-                            <div style="font-size:0.72rem;color:#9ca3af">Download past invoices</div>
+                            <div style="font-size:0.82rem;font-weight:600;color:#1f2937">Trial Started</div>
+                            <div style="font-size:0.72rem;color:#9ca3af" id="billing-trial-date">—</div>
                         </div>
-                        <button class="btn-ghost" style="font-size:0.72rem;padding:0.3rem 0.7rem">View All</button>
                     </div>
                 </div>
             </div>
@@ -1323,14 +1332,98 @@
         // ── Populate Firm Tab ──
         document.getElementById('detail-firm').textContent = user.firm_name || '—';
 
-        // ── Populate Plan Tab ──
-        document.getElementById('plan-name').textContent = plan;
-        document.getElementById('billing-email').textContent = user.email || '—';
-        const used = 8, total = 10;
-        document.getElementById('usage-text').textContent = `${used} / ${total}`;
-        document.getElementById('usage-fill').style.width = `${(used / total) * 100}%`;
-        document.getElementById('usage-label').textContent = `${used} of ${total} client slots used`;
-        document.getElementById('detail-clients').textContent = used;
+        // ── Populate Plan Tab from Backend ──
+        async function loadTrialStatus() {
+            try {
+                const res = await authFetch('/auth/trial-status');
+                if (!res.ok) throw new Error('Failed');
+                const data = await res.json();
+
+                const planName = data.plan || 'free';
+                const isFreeTrial = planName.toLowerCase() === 'free';
+                const daysUsed = data.days_used || 0;
+                const daysRemaining = data.days_remaining || 0;
+                const totalDays = data.total_trial_days || 30;
+                const expired = data.trial_expired || false;
+                const trialStart = data.trial_started_at ? new Date(data.trial_started_at) : null;
+
+                // Plan name
+                document.getElementById('plan-name').textContent = isFreeTrial ? 'Free Trial' : planName;
+                document.getElementById('plan-subtitle').textContent = isFreeTrial
+                    ? (expired ? '30-day trial has ended' : `${daysRemaining} day${daysRemaining !== 1 ? 's' : ''} remaining in your free trial`)
+                    : 'Active subscription';
+
+                // Badge
+                const badge = document.getElementById('plan-status-badge');
+                if (expired) {
+                    badge.textContent = '✕ Expired';
+                    badge.className = 'plan-badge';
+                    badge.style.background = '#fef2f2';
+                    badge.style.color = '#dc2626';
+                } else {
+                    badge.textContent = '✓ Active';
+                    badge.className = 'plan-badge active';
+                    badge.style = '';
+                }
+
+                // Hero badge
+                const heroPlan = document.getElementById('hero-plan-badge');
+                if (heroPlan) {
+                    heroPlan.innerHTML = `<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>${isFreeTrial ? `Free Trial (${daysRemaining}d)` : planName}`;
+                }
+
+                // Progress bar
+                const pct = Math.min(100, (daysUsed / totalDays) * 100);
+                const fill = document.getElementById('trial-fill');
+                fill.style.width = pct + '%';
+                if (pct > 80) fill.style.background = 'linear-gradient(90deg, #dc2626, #ef4444)';
+                else if (pct > 60) fill.style.background = 'linear-gradient(90deg, #f59e0b, #f97316)';
+
+                document.getElementById('trial-days-text').textContent = `${daysUsed} / ${totalDays} days`;
+                document.getElementById('trial-status-label').textContent = expired
+                    ? '⚠️ Trial expired — please upgrade to continue'
+                    : `${daysRemaining} day${daysRemaining !== 1 ? 's' : ''} left in free trial`;
+
+                // Expired banner
+                if (expired) {
+                    document.getElementById('trial-expired-banner').style.display = 'block';
+                }
+
+                // Billing details
+                document.getElementById('billing-email').textContent = user.email || '—';
+                document.getElementById('billing-plan-type').textContent = isFreeTrial ? 'Free Trial (30 days)' : planName;
+                if (trialStart) {
+                    document.getElementById('billing-trial-date').textContent = trialStart.toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric' });
+                }
+
+                // CTA button
+                const ctaBtn = document.getElementById('plan-cta-btn');
+                if (expired) {
+                    ctaBtn.textContent = '🚀 Upgrade Now';
+                    ctaBtn.style.animation = 'pulse 2s infinite';
+                } else {
+                    ctaBtn.textContent = 'Upgrade Plan';
+                }
+
+            } catch (e) {
+                console.error('Trial status error:', e);
+                document.getElementById('plan-name').textContent = plan;
+                document.getElementById('trial-status-label').textContent = 'Could not load trial status';
+            }
+        }
+        loadTrialStatus();
+
+        // Fetch real client count
+        async function loadClientCount() {
+            try {
+                const res = await authFetch('/clients/');
+                if (res.ok) {
+                    const clients = await res.json();
+                    document.getElementById('detail-clients').textContent = clients.length;
+                }
+            } catch(e) { console.error(e); }
+        }
+        loadClientCount();
 
         // ── Tab Switching ──
         function switchTab(tabId, btn) {

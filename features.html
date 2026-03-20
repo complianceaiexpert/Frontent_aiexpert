@@ -4,71 +4,201 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Features - ComplianceAI Expert</title>
+    <title>Features — AI-Powered CA Practice Management | Suvidha AI</title>
     <meta name="description"
-        content="Explore the powerful features of ComplianceAI Expert — AI-powered compliance for CAs and tax professionals.">
+        content="Discover 50+ powerful features in Suvidha AI — from AI-powered GST reconciliation to Tally integration, certificate generation, and smart compliance automation for CAs.">
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@700;800&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap"
         rel="stylesheet">
     <style>
-        /* ── Hero ── */
+        /* ── Hero — matches index.html dark scheme ── */
         .features-hero {
-            padding: 8rem 2rem 5rem;
-            background: linear-gradient(135deg, #f8fafc 0%, #EBF0FF 50%, #FFF7ED 100%);
+            padding: 9rem 2rem 5rem;
+            background: #07080d;
             text-align: center;
             position: relative;
             overflow: hidden;
+            color: #fff;
         }
 
+        /* Radial gradient mesh — blue / orange / purple */
         .features-hero::before {
             content: '';
             position: absolute;
-            width: 500px;
-            height: 500px;
-            border-radius: 50%;
-            background: rgba(30, 58, 138, 0.04);
-            top: -200px;
-            right: -100px;
-            filter: blur(80px);
+            inset: 0;
+            z-index: 0;
+            background:
+                radial-gradient(ellipse 70% 50% at 25% 45%, rgba(30, 58, 138, .35) 0%, transparent 70%),
+                radial-gradient(ellipse 60% 40% at 75% 55%, rgba(235, 103, 17, .18) 0%, transparent 70%),
+                radial-gradient(ellipse 50% 60% at 50% 90%, rgba(139, 92, 246, .12) 0%, transparent 60%);
+        }
+
+        /* Subtle dot grid */
+        .features-hero::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, .03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, .03) 1px, transparent 1px);
+            background-size: 48px 48px;
         }
 
         .features-hero h1 {
-            font-size: 3.5rem;
+            font-size: 3.2rem;
             font-weight: 800;
             margin-bottom: 1rem;
             position: relative;
+            z-index: 1;
+            color: #fff;
+            letter-spacing: -0.02em;
         }
 
+        /* Gradient text: blue → purple → amber — matches index.html */
         .features-hero h1 .highlight {
-            background: linear-gradient(135deg, var(--primary-orange), var(--primary-blue));
+            background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 40%, #f59e0b 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
 
         .features-hero p {
-            font-size: 1.2rem;
-            color: var(--gray-600);
-            max-width: 650px;
-            margin: 0 auto;
+            font-size: 1.15rem;
+            color: rgba(255, 255, 255, 0.85);
+            max-width: 680px;
+            margin: 0 auto 2rem;
             position: relative;
+            z-index: 1;
             line-height: 1.7;
+        }
+
+        .hero-badges {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 1;
+            margin-bottom: 2.5rem;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.4rem 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 999px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #fff;
+            backdrop-filter: blur(4px);
+        }
+
+        .hero-cta-row {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-cta-row .btn-hero-primary {
+            padding: 0.85rem 2rem;
+            background: linear-gradient(135deg, #EB6711, #C55410);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 20px rgba(235, 103, 17, 0.35);
+        }
+
+        .hero-cta-row .btn-hero-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(235, 103, 17, 0.45);
+        }
+
+        .hero-cta-row .btn-hero-secondary {
+            padding: 0.85rem 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            backdrop-filter: blur(4px);
+        }
+
+        .hero-cta-row .btn-hero-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            color: #fff;
+        }
+
+        /* ── Stats Bar ── */
+        .stats-bar {
+            background: #fff;
+            border-bottom: 1px solid #f1f5f9;
+            padding: 2.5rem 2rem;
+        }
+
+        .stats-bar-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            text-align: center;
+        }
+
+        .stat-item .stat-num {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #1e3a8a;
+            line-height: 1;
+        }
+
+        .stat-item .stat-num span {
+            color: #EB6711;
+        }
+
+        .stat-item .stat-label {
+            font-size: 0.82rem;
+            color: #6b7280;
+            font-weight: 600;
+            margin-top: 0.35rem;
         }
 
         /* ── Category Section ── */
         .category-section {
-            padding: 5rem 2rem;
+            padding: 4.5rem 2rem;
         }
 
         .category-section:nth-child(odd) {
-            background: white;
+            background: #fff;
         }
 
         .category-section:nth-child(even) {
-            background: var(--gray-50);
+            background: #f9fafb;
         }
 
         .category-inner {
@@ -80,7 +210,7 @@
             display: flex;
             align-items: center;
             gap: 1.25rem;
-            margin-bottom: 2.5rem;
+            margin-bottom: 0.5rem;
         }
 
         .category-icon {
@@ -95,38 +225,66 @@
         }
 
         .category-header h2 {
-            font-size: 2rem;
+            font-size: 1.8rem;
             font-weight: 800;
-            margin-bottom: 0.25rem;
+            margin: 0;
         }
 
         .category-header p {
-            font-size: 1rem;
+            font-size: 0.95rem;
             color: var(--gray-500);
+            margin: 0.15rem 0 0;
+        }
+
+        .category-subtitle {
+            font-size: 0.95rem;
+            color: #6b7280;
+            max-width: 700px;
+            line-height: 1.65;
+            margin-bottom: 2rem;
+            padding-left: calc(56px + 1.25rem);
         }
 
         .features-bento {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.25rem;
+            grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+            gap: 1.15rem;
         }
 
         .f-card {
-            background: white;
-            border: 1px solid var(--gray-200);
+            background: #fff;
+            border: 1px solid #e5e7eb;
             border-radius: 16px;
-            padding: 1.75rem;
+            padding: 1.65rem;
             transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
         }
 
         .category-section:nth-child(odd) .f-card {
-            background: var(--gray-50);
+            background: #f9fafb;
         }
 
         .f-card:hover {
-            transform: translateY(-3px);
-            box-shadow: var(--shadow-lg);
-            border-color: var(--primary-blue);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px -8px rgba(30, 58, 138, 0.12);
+            border-color: #1e3a8a;
+        }
+
+        .f-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, #1e3a8a, #3b82f6);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .f-card:hover::before {
+            opacity: 1;
         }
 
         .f-card .emoji {
@@ -135,19 +293,91 @@
         }
 
         .f-card h3 {
-            font-size: 1.15rem;
+            font-size: 1.05rem;
             font-weight: 700;
-            margin-bottom: 0.5rem;
-            color: var(--gray-900);
+            margin-bottom: 0.45rem;
+            color: #111827;
+            font-family: 'Inter', sans-serif;
         }
 
         .f-card p {
-            font-size: 0.9rem;
-            color: var(--gray-500);
-            line-height: 1.6;
+            font-size: 0.85rem;
+            color: #6b7280;
+            line-height: 1.65;
         }
 
-        /* ── CTA ── */
+        .f-tag {
+            display: inline-block;
+            font-size: 0.6rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-bottom: 0.65rem;
+        }
+
+        .f-tag.ai {
+            background: #eff6ff;
+            color: #1e3a8a;
+        }
+
+        .f-tag.new {
+            background: #ecfdf5;
+            color: #065f46;
+        }
+
+        .f-tag.popular {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .f-tag.pro {
+            background: #fae8ff;
+            color: #7e22ce;
+        }
+
+        /* ── Inline CTA ── */
+        .inline-cta {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            border-radius: 20px;
+            padding: 3rem 2.5rem;
+            text-align: center;
+            color: #fff;
+            margin: 1rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .inline-cta::before {
+            content: '';
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(235, 103, 17, 0.15), transparent 70%);
+            top: -100px;
+            right: -50px;
+        }
+
+        .inline-cta h3 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            color: #fff;
+            position: relative;
+            z-index: 1;
+        }
+
+        .inline-cta p {
+            font-size: 0.95rem;
+            opacity: 0.85;
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ── Bottom CTA ── */
         .features-cta {
             padding: 5rem 2rem;
             text-align: center;
@@ -155,15 +385,18 @@
         }
 
         .features-cta h2 {
-            font-size: 2.5rem;
+            font-size: 2.2rem;
             font-weight: 800;
-            margin-bottom: 1rem;
+            margin-bottom: 0.75rem;
         }
 
         .features-cta p {
-            font-size: 1.15rem;
+            font-size: 1.1rem;
             color: var(--gray-600);
             margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         /* ── Footer ── */
@@ -219,7 +452,7 @@
             font-size: 0.85rem;
         }
 
-        /* ── Scroll Reveal ── */
+        /* ── Reveal ── */
         .reveal {
             opacity: 0;
             transform: translateY(30px);
@@ -233,11 +466,21 @@
 
         @media (max-width: 768px) {
             .features-hero h1 {
-                font-size: 2.5rem;
+                font-size: 2.2rem;
+            }
+
+            .stats-bar-inner {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.5rem;
             }
 
             .category-header {
                 flex-direction: column;
+                text-align: center;
+            }
+
+            .category-subtitle {
+                padding-left: 0;
                 text-align: center;
             }
 
@@ -248,6 +491,11 @@
             .footer-grid {
                 grid-template-columns: 1fr 1fr;
             }
+
+            .hero-cta-row {
+                flex-direction: column;
+                align-items: center;
+            }
         }
     </style>
 </head>
@@ -256,9 +504,9 @@
     <nav class="navbar">
         <div class="navbar-container">
             <a href="index.html" class="logo" style="text-decoration: none;">
-                <div class="logo-icon">CE</div>
-                <span style="font-weight: 700; font-size: 1.25rem; color: var(--primary-blue);">ComplianceAI<span
-                        style="color: var(--primary-orange);">expert</span></span>
+                <div class="logo-icon">SA</div>
+                <span style="font-weight: 700; font-size: 1.25rem; color: var(--primary-blue);">Suvidha<span
+                        style="color: var(--primary-orange);">AI</span></span>
             </a>
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
@@ -270,196 +518,627 @@
         </div>
     </nav>
 
-    <!-- Hero -->
+    <!-- ═══ HERO ═══ -->
     <section class="features-hero">
-        <h1>Powerful Features for <span class="highlight">Modern CAs</span></h1>
-        <p>Everything you need to manage compliance, automate workflows, and deliver exceptional service — powered by
-            intelligence.</p>
+        <div class="hero-badges">
+            <span class="hero-badge">🤖 AI-Powered</span>
+            <span class="hero-badge">☁️ 100% Cloud</span>
+            <span class="hero-badge">🔒 Bank-Grade Security</span>
+            <span class="hero-badge">🇮🇳 Built for India</span>
+        </div>
+        <h1>The Complete <span class="highlight">AI Practice Suite</span><br>for Modern CAs</h1>
+        <p>50+ powerful features to automate GST, streamline accounting, generate certificates, and manage your entire
+            CA practice — all powered by cutting-edge artificial intelligence.</p>
+        <div class="hero-cta-row">
+            <a href="sign-up.html" class="btn-hero-primary">Start Free Trial →</a>
+            <a href="how-it-works.html" class="btn-hero-secondary">See How It Works</a>
+        </div>
     </section>
 
-    <!-- AI Intelligence -->
+    <!-- ═══ STATS BAR ═══ -->
+    <section class="stats-bar">
+        <div class="stats-bar-inner">
+            <div class="stat-item">
+                <div class="stat-num" id="stat1">50<span>+</span></div>
+                <div class="stat-label">Powerful Features</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-num" id="stat2">10<span>x</span></div>
+                <div class="stat-label">Faster Reconciliation</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-num" id="stat3">99<span>%</span></div>
+                <div class="stat-label">OCR Accuracy</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-num" id="stat4">0<span>₹</span></div>
+                <div class="stat-label">Setup Cost</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ 1. AI & AUTOMATION ═══ -->
     <section class="category-section">
         <div class="category-inner reveal">
             <div class="category-header">
-                <div class="category-icon" style="background: rgba(30, 58, 138, 0.08);">🤖</div>
+                <div class="category-icon" style="background: rgba(30,58,138,0.08);">🤖</div>
                 <div>
-                    <h2>AI-Powered Intelligence</h2>
-                    <p>Leverage cutting-edge AI to make smarter decisions and automate complex tasks</p>
+                    <h2>AI & Automation Engine</h2>
+                    <p>The brain behind your practice — intelligent automation that learns and adapts</p>
                 </div>
             </div>
+            <p class="category-subtitle">Stop wasting hours on repetitive tasks. Our AI engine handles document parsing,
+                data extraction, reconciliation, and anomaly detection — so you can focus on advisory and growing your
+                firm.</p>
             <div class="features-bento">
                 <div class="f-card">
+                    <span class="f-tag ai">AI Powered</span>
+                    <div class="emoji">🧠</div>
+                    <h3>Intelligent OCR Data Import</h3>
+                    <p>AI-powered OCR extracts data from invoices, bank statements, and financial documents with 99%
+                        accuracy — auto-creating ledger entries instantly.</p>
+                </div>
+                <div class="f-card">
+                    <span class="f-tag ai">AI Powered</span>
+                    <div class="emoji">⚡</div>
+                    <h3>AI-Driven Data Entry</h3>
+                    <p>Upload bills, let AI categorize, validate, and create voucher entries automatically. Review and
+                        approve in seconds, not hours.</p>
+                </div>
+                <div class="f-card">
+                    <span class="f-tag popular">Popular</span>
+                    <div class="emoji">🔍</div>
+                    <h3>Smart Document Reader</h3>
+                    <p>Drag-and-drop any document — our AI reads, understands, and extracts structured data from PDFs,
+                        images, and scanned files.</p>
+                </div>
+                <div class="f-card">
+                    <span class="f-tag ai">AI Powered</span>
                     <div class="emoji">📊</div>
                     <h3>Predictive Risk Scoring</h3>
-                    <p>AI analyzes client data to identify potential compliance risks before they become issues, keeping
-                        you proactive.</p>
+                    <p>AI analyzes client data patterns to surface potential compliance risks before they become costly
+                        issues. Stay proactive, not reactive.</p>
                 </div>
                 <div class="f-card">
-                    <div class="emoji">📄</div>
-                    <h3>Automated Document Analysis</h3>
-                    <p>Intelligent processing extracts key information, validates data, and flags inconsistencies
-                        automatically.</p>
+                    <span class="f-tag new">New</span>
+                    <div class="emoji">🤖</div>
+                    <h3>AI Expert Agents (GPT)</h3>
+                    <p>Specialized AI assistants trained on Indian tax law — ask questions, get instant answers, draft
+                        responses, and generate reports using natural language.</p>
                 </div>
                 <div class="f-card">
+                    <span class="f-tag ai">AI Powered</span>
                     <div class="emoji">💡</div>
                     <h3>Smart Recommendations</h3>
-                    <p>Get AI-powered suggestions for tax optimization, compliance strategies, and workflow
-                        improvements.</p>
+                    <p>Get AI-powered suggestions for tax optimization, ITC maximization, compliance strategies, and
+                        filing priority based on your client portfolio.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Compliance -->
+    <!-- ═══ 2. GST COMPLIANCE ═══ -->
     <section class="category-section">
         <div class="category-inner reveal">
             <div class="category-header">
-                <div class="category-icon" style="background: rgba(16, 185, 129, 0.08);">✅</div>
+                <div class="category-icon" style="background: rgba(16,185,129,0.08);">📋</div>
                 <div>
-                    <h2>Comprehensive Compliance</h2>
-                    <p>Complete compliance management suite designed for Indian regulations</p>
+                    <h2>Complete GST Automation</h2>
+                    <p>End-to-end GST compliance — from reconciliation to filing, fully automated</p>
+                </div>
+            </div>
+            <p class="category-subtitle">India's most comprehensive GST toolkit. Reconcile returns in minutes, catch
+                mismatches instantly, and file with confidence — powered by AI that understands every GST nuance.</p>
+            <div class="features-bento">
+                <div class="f-card">
+                    <span class="f-tag popular">Most Used</span>
+                    <div class="emoji">🔄</div>
+                    <h3>GSTR-1 vs 3B Reconciliation</h3>
+                    <p>Instantly compare GSTR-1 and GSTR-3B with detailed mismatch reports, drill-down analysis, and
+                        AI-suggested corrections.</p>
+                </div>
+                <div class="f-card">
+                    <span class="f-tag popular">Most Used</span>
+                    <div class="emoji">📊</div>
+                    <h3>GSTR-2B vs 3B Reconciliation</h3>
+                    <p>Auto-reconcile purchase data against filed returns. Identify ITC discrepancies, blocked credits,
+                        and unclaimed amounts instantly.</p>
+                </div>
+                <div class="f-card">
+                    <div class="emoji">📑</div>
+                    <h3>GSTR-2B vs Purchase Register</h3>
+                    <p>Match your books against GSTN data. Highlight missing invoices, excess claims, and vendor
+                        mismatches across all periods.</p>
+                </div>
+                <div class="f-card">
+                    <span class="f-tag new">New</span>
+                    <div class="emoji">🔎</div>
+                    <h3>IMS vs Purchase Register</h3>
+                    <p>Compare Invoice Management System data with your purchase register for comprehensive ITC
+                        validation and compliance assurance.</p>
+                </div>
+                <div class="f-card">
+                    <div class="emoji">🧾</div>
+                    <h3>E-Invoice vs Sales Register</h3>
+                    <p>Verify e-invoice data against your sales records. Catch discrepancies before they trigger portal
+                        mismatches or notices.</p>
+                </div>
+                <div class="f-card">
+                    <div class="emoji">📄</div>
+                    <h3>GSTR-1 vs E-Invoice</h3>
+                    <p>Cross-validate GSTR-1 filings with e-invoice records to ensure 100% accuracy and prevent
+                        duplicate reporting errors.</p>
+                </div>
+                <div class="f-card">
+                    <span class="f-tag new">New</span>
+                    <div class="emoji">🚫</div>
+                    <h3>AI Block Credit Analysis</h3>
+                    <p>Automatically identify blocked ITC under Section 17(5) using AI-powered HSN analysis. Maximize
+                        legitimate credit claims.</p>
+                </div>
+                <div class="f-card">
+                    <div class="emoji">📝</div>
+                    <h3>Annexure-B Generator</h3>
+                    <p>Auto-generate Annexure-B statements from your GSTR data with one click — formatted and ready for
+                        filing.</p>
+                </div>
+                <div class="f-card">
+                    <div class="emoji">📊</div>
+                    <h3>GSTR-9 JSON Generator</h3>
+                    <p>Prepare annual returns effortlessly. Auto-populate GSTR-9 JSON from monthly data with built-in
+                        validation checks.</p>
+                </div>
+                <div class="f-card">
+                    <div class="emoji">🔗</div>
+                    <h3>ARN Status Tracker</h3>
+                    <p>Track acknowledgment status of all GST filings in real-time. Never miss a filing confirmation
+                        again.</p>
+                </div>
+                <div class="f-card">
+                    <div class="emoji">💰</div>
+                    <h3>GST Refund Filing</h3>
+                    <p>Streamlined refund application process with auto-populated forms, supporting documents, and
+                        status tracking from application to credit.</p>
+                </div>
+                <div class="f-card">
+                    <div class="emoji">📑</div>
+                    <h3>Statement-3 Report</h3>
+                    <p>Generate comprehensive Statement-3 reports with automated data compilation and validation for
+                        seamless compliance.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ INLINE CTA ═══ -->
+    <section class="category-section" style="background: transparent; padding: 2rem;">
+        <div class="category-inner">
+            <div class="inline-cta reveal">
+                <h3>Managing 50+ GST Clients? You Need Suvidha AI.</h3>
+                <p>Batch reconcile all your clients in minutes, not days. See why 100+ CA firms trust us.</p>
+                <a href="sign-up.html" class="btn-hero-primary" style="display: inline-flex;">Start Free Trial →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ 3. GST TOOLS ═══ -->
+    <section class="category-section">
+        <div class="category-inner reveal">
+            <div class="category-header">
+                <div class="category-icon" style="background: rgba(139,92,246,0.08);">🛠️</div>
+                <div>
+                    <h2>Smart GST Toolkit</h2>
+                    <p>Precision tools that make every GST task faster and error-free</p>
+                </div>
+            </div>
+            <div class="features-bento">
+                <div class="f-card">
+                    <span class="f-tag popular">Popular</span>
+                    <div class="emoji">🔎</div>
+                    <h3>HSN Code Locator</h3>
+                    <p>AI-powered HSN code search with descriptions, tax rates, and related codes. Find the right
+                        classification in seconds.</p>
+                </div>
+                <div class="f-card">
+                    <div class="emoji">📈</div>
+                    <h3>HSN Summary Plotter</h3>
+                    <p>Visualize HSN-wise sales and purchase distribution with interactive charts for quick analysis and
+                        reporting.</p>
+                </div>
+                <div class="f-card">
+                    <div class="emoji">✅</div>
+                    <h3>GSTIN Validator</h3>
+                    <p>Bulk validate GSTINs, check active status, filing history, and compliance rating — essential for
+                        vendor due diligence.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ 4. ACCOUNTING & TALLY ═══ -->
+    <section class="category-section">
+        <div class="category-inner reveal">
+            <div class="category-header">
+                <div class="category-icon" style="background: rgba(235,103,17,0.08);">📒</div>
+                <div>
+                    <h2>Accounting & Tally Integration</h2>
+                    <p>Cloud-powered accounting with seamless Tally connectivity — the best of both worlds</p>
+                </div>
+            </div>
+            <p class="category-subtitle">Don't abandon Tally — supercharge it. Our deep integration syncs your Tally
+                data to the cloud, enabling AI-powered analysis, remote access, and automated workflows without changing
+                your existing setup.</p>
+            <div class="features-bento">
+                <div class="f-card">
+                    <span class="f-tag popular">Popular</span>
+                    <div class="emoji">🔗</div>
+                    <h3>Tally Connector</h3>
+                    <p>One-click sync between Tally and cloud. Import masters, vouchers, and trial balances
+                        automatically — works with Tally Prime & ERP 9.</p>
+                </div>
+                <div class="f-card">
+                    <div class="emoji">📊</div>
+                    <h3>Smart Data Entry</h3>
+                    <p>Create sales, purchase, payment, receipt, and journal vouchers with AI-assisted categorization
+                        and validation against your chart of accounts.</p>
+                </div>
+                <div class="f-card">
+                    <div class="emoji">📋</div>
+                    <h3>Data Entry Dashboard</h3>
+                    <p>Bird's-eye view of all pending entries, approvals, and sync status across clients. Track progress
+                        and ensure nothing falls through the cracks.</p>
+                </div>
+                <div class="f-card">
+                    <span class="f-tag new">New</span>
+                    <div class="emoji">🤖</div>
+                    <h3>AI-Powered Voucher Creation</h3>
+                    <p>Upload invoices → AI reads, categorizes, and creates vouchers automatically. Review, approve,
+                        push to Tally — zero manual entry.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ 5. CERTIFICATES ═══ -->
+    <section class="category-section">
+        <div class="category-inner reveal">
+            <div class="category-header">
+                <div class="category-icon" style="background: rgba(245,158,11,0.08);">🏅</div>
+                <div>
+                    <h2>Certificate Generation Engine</h2>
+                    <p>Professional CA certificates in minutes — templated, compliant, and beautifully formatted</p>
                 </div>
             </div>
             <div class="features-bento">
                 <div class="f-card">
                     <div class="emoji">📋</div>
-                    <h3>GST Filing Automation</h3>
-                    <p>Automated GSTR-1, GSTR-3B, and refund filing with built-in validation and error checking.</p>
+                    <h3>GST Certificates</h3>
+                    <p>Generate GST-related certificates including turnover, ITC, and compliance certificates with
+                        auto-populated client data.</p>
                 </div>
                 <div class="f-card">
-                    <div class="emoji">🧮</div>
-                    <h3>Tax Computation</h3>
-                    <p>Accurate tax calculations for income tax, GST, and other compliance requirements with AI
-                        verification.</p>
+                    <div class="emoji">💰</div>
+                    <h3>Tax Certificates</h3>
+                    <p>Income tax certificates, Form 15CA/CB, and tax compliance reports — professionally formatted and
+                        ready to sign.</p>
                 </div>
                 <div class="f-card">
-                    <div class="emoji">📢</div>
-                    <h3>Regulatory Updates</h3>
-                    <p>Stay informed with real-time updates on tax law changes, compliance deadlines, and regulatory
-                        notifications.</p>
+                    <div class="emoji">🏦</div>
+                    <h3>Bank Certificates</h3>
+                    <p>Net worth certificates, bank loan certificates, and financial health reports trusted by all major
+                        Indian banks.</p>
                 </div>
                 <div class="f-card">
-                    <div class="emoji">🗺️</div>
-                    <h3>Multi-State Compliance</h3>
-                    <p>Manage compliance across multiple states with automated tracking and state-specific requirements.
-                    </p>
+                    <div class="emoji">📊</div>
+                    <h3>Financial Certificates</h3>
+                    <p>Balance sheet certificates, P&L attestations, and financial statement certifications with
+                        customizable templates.</p>
+                </div>
+                <div class="f-card">
+                    <div class="emoji">🌍</div>
+                    <h3>FEMA Certificates</h3>
+                    <p>Foreign exchange compliance certificates for overseas transactions, FDI declarations, and FEMA
+                        reporting requirements.</p>
+                </div>
+                <div class="f-card">
+                    <div class="emoji">📃</div>
+                    <h3>General & Net Worth Certificates</h3>
+                    <p>Custom certificate templates for any purpose. Auto-fill client data, apply digital signatures,
+                        and maintain version history.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Real-time Workflow -->
+    <!-- ═══ 6. DOCUMENT & DRIVE ═══ -->
     <section class="category-section">
         <div class="category-inner reveal">
             <div class="category-header">
-                <div class="category-icon" style="background: rgba(235, 103, 17, 0.08);">⚡</div>
+                <div class="category-icon" style="background: rgba(30,58,138,0.08);">📁</div>
                 <div>
-                    <h2>Real-time Workflow</h2>
-                    <p>Collaborate seamlessly and track progress in real-time</p>
+                    <h2>Document & Drive Management</h2>
+                    <p>Secure cloud storage with smart organization — every document, always accessible</p>
+                </div>
+            </div>
+            <div class="features-bento">
+                <div class="f-card">
+                    <span class="f-tag popular">Popular</span>
+                    <div class="emoji">☁️</div>
+                    <h3>Google Drive Integration</h3>
+                    <p>Seamless Google Drive sync with auto-organized folder structures per client. Access, share, and
+                        collaborate from anywhere.</p>
+                </div>
+                <div class="f-card">
+                    <span class="f-tag new">New</span>
+                    <div class="emoji">💾</div>
+                    <h3>Auto-Save Reports to Drive</h3>
+                    <p>Generated reports and certificates are automatically saved to the right client folder on Drive —
+                        with a "Saved ✓" badge for confirmation.</p>
+                </div>
+                <div class="f-card">
+                    <div class="emoji">🔄</div>
+                    <h3>Version Control</h3>
+                    <p>Track all document revisions, changes, and modifications with a complete version history and
+                        rollback capability.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ 7. CLIENT & PRACTICE MANAGEMENT ═══ -->
+    <section class="category-section">
+        <div class="category-inner reveal">
+            <div class="category-header">
+                <div class="category-icon" style="background: rgba(16,185,129,0.08);">👥</div>
+                <div>
+                    <h2>Client & Practice Management</h2>
+                    <p>Manage unlimited clients with dedicated workspaces, services, and history</p>
+                </div>
+            </div>
+            <p class="category-subtitle">Every client gets a dedicated workspace with their own services, documents, and
+                compliance timeline. Scale from 10 to 1,000 clients without losing track of a single filing.</p>
+            <div class="features-bento">
+                <div class="f-card">
+                    <span class="f-tag popular">Popular</span>
+                    <div class="emoji">🏢</div>
+                    <h3>Unlimited Client Workspaces</h3>
+                    <p>Each client gets a dedicated workspace with GSTIN, PAN, services, documents, and complete
+                        activity history at a glance.</p>
+                </div>
+                <div class="f-card">
+                    <div class="emoji">⚙️</div>
+                    <h3>Service Activation per Client</h3>
+                    <p>Enable GST, Income Tax, Audit, or Accounting services per client — see exactly what's active,
+                        pending, and completed.</p>
+                </div>
+                <div class="f-card">
+                    <div class="emoji">🔍</div>
+                    <h3>Smart Search & Filters</h3>
+                    <p>Find any client instantly. Filter by service type, compliance status, entity type, or custom tags
+                        — even across 500+ clients.</p>
+                </div>
+                <div class="f-card">
+                    <div class="emoji">📝</div>
+                    <h3>Agreement Management</h3>
+                    <p>Create, edit, and manage engagement letters and service agreements with a professional built-in
+                        document editor.</p>
+                </div>
+                <div class="f-card">
+                    <div class="emoji">📢</div>
+                    <h3>Notice Management</h3>
+                    <p>Track and respond to GST and IT notices. Maintain a complete notice history with deadlines,
+                        responses, and resolution status.</p>
+                </div>
+                <div class="f-card">
+                    <div class="emoji">📈</div>
+                    <h3>Firm Dashboard & Analytics</h3>
+                    <p>Real-time overview of your entire practice — total clients, active services, pending tasks,
+                        compliance health, and revenue insights.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ 8. WORKFLOW & COLLABORATION ═══ -->
+    <section class="category-section">
+        <div class="category-inner reveal">
+            <div class="category-header">
+                <div class="category-icon" style="background: rgba(235,103,17,0.08);">⚡</div>
+                <div>
+                    <h2>Workflow & Team Collaboration</h2>
+                    <p>Coordinate your team, track progress, and never miss a deadline</p>
                 </div>
             </div>
             <div class="features-bento">
                 <div class="f-card">
                     <div class="emoji">👥</div>
-                    <h3>Live Collaboration</h3>
-                    <p>Work together with your team in real-time, share notes, and coordinate tasks effortlessly.</p>
+                    <h3>Real-Time Collaboration</h3>
+                    <p>Work together with your team in real-time — share notes, coordinate tasks, and maintain a unified
+                        view across all client work.</p>
                 </div>
                 <div class="f-card">
                     <div class="emoji">🔔</div>
-                    <h3>Instant Notifications</h3>
-                    <p>Get notified about deadlines, client updates, and important events via email, SMS, and in-app
-                        alerts.</p>
+                    <h3>Smart Notifications</h3>
+                    <p>Intelligent alerts for filing deadlines, job completions, compliance risks, and client activity —
+                        via email, SMS, and in-app.</p>
                 </div>
                 <div class="f-card">
-                    <div class="emoji">📈</div>
-                    <h3>Progress Tracking</h3>
-                    <p>Visual dashboards show real-time progress on all tasks, filings, and client work at a glance.</p>
+                    <div class="emoji">📊</div>
+                    <h3>Progress Dashboards</h3>
+                    <p>Visual dashboards show real-time progress on all tasks, filings, and client work — at a glance,
+                        always up to date.</p>
                 </div>
                 <div class="f-card">
                     <div class="emoji">🤝</div>
-                    <h3>Team Coordination</h3>
-                    <p>Assign tasks, set priorities, and manage workload distribution across your team efficiently.</p>
+                    <h3>Team Workload Management</h3>
+                    <p>Assign tasks, set priorities, and balance workload distribution across your team — from Partners
+                        to Articles.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Management Tools -->
+    <!-- ═══ 9. INTEGRATIONS ═══ -->
     <section class="category-section">
         <div class="category-inner reveal">
             <div class="category-header">
-                <div class="category-icon" style="background: rgba(139, 92, 246, 0.08);">🛠️</div>
+                <div class="category-icon" style="background: rgba(139,92,246,0.08);">🔌</div>
                 <div>
-                    <h2>Management Tools</h2>
-                    <p>Comprehensive tools to manage clients, documents, and services</p>
+                    <h2>Integrations & Connectivity</h2>
+                    <p>Connect with the tools you already use — no rip-and-replace required</p>
                 </div>
             </div>
             <div class="features-bento">
                 <div class="f-card">
-                    <div class="emoji">📚</div>
-                    <h3>Service History</h3>
-                    <p>Complete audit trail of all services, communications, and actions for every client.</p>
+                    <div class="emoji">📊</div>
+                    <h3>Tally Prime & ERP 9</h3>
+                    <p>Deep bi-directional sync. Import masters, push vouchers, reconcile data — your Tally workflow,
+                        supercharged by cloud and AI.</p>
+                </div>
+                <div class="f-card">
+                    <div class="emoji">☁️</div>
+                    <h3>Google Workspace</h3>
+                    <p>Native Google Drive integration for document storage. Sheets for reporting, Gmail for
+                        notifications — all connected.</p>
                 </div>
                 <div class="f-card">
                     <div class="emoji">🌐</div>
-                    <h3>Client Portals</h3>
-                    <p>Branded client portals where clients can view status, upload documents, and communicate securely.
-                    </p>
+                    <h3>GST Portal Integration</h3>
+                    <p>Direct data fetch from GSTN for returns, e-invoices, and IMS data. No manual downloads, no
+                        copy-paste.</p>
                 </div>
                 <div class="f-card">
-                    <div class="emoji">🔄</div>
-                    <h3>Version Control</h3>
-                    <p>Track all document versions, changes, and revisions with complete version history.</p>
-                </div>
-                <div class="f-card">
-                    <div class="emoji">📁</div>
-                    <h3>Document Management</h3>
-                    <p>Secure cloud storage with smart organization, search, and retrieval of all client documents.</p>
+                    <span class="f-tag pro">Pro</span>
+                    <div class="emoji">🔗</div>
+                    <h3>REST API Access</h3>
+                    <p>Full API access for custom integrations with your existing systems, CRMs, and workflow tools.
+                        Build exactly what you need.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- CTA -->
-    <section class="features-cta reveal">
-        <h2>Ready to Supercharge Your Practice?</h2>
-        <p>See how ComplianceAI Expert can transform the way you work</p>
-        <a href="sign-up.html" class="btn btn-primary btn-large">Get Started Free →</a>
+    <!-- ═══ 10. SECURITY & UX ═══ -->
+    <section class="category-section">
+        <div class="category-inner reveal">
+            <div class="category-header">
+                <div class="category-icon" style="background: rgba(30,58,138,0.08);">🔒</div>
+                <div>
+                    <h2>Security & User Experience</h2>
+                    <p>Enterprise-grade security with a delightfully intuitive interface</p>
+                </div>
+            </div>
+            <div class="features-bento">
+                <div class="f-card">
+                    <div class="emoji">🔐</div>
+                    <h3>Bank-Grade Encryption</h3>
+                    <p>256-bit SSL encryption, encrypted data at rest, and SOC-2 aligned security practices. Your
+                        clients' data is sacred.</p>
+                </div>
+                <div class="f-card">
+                    <div class="emoji">📱</div>
+                    <h3>Access Anywhere</h3>
+                    <p>100% cloud-based. Work from office, home, or on-the-go. Responsive design works beautifully on
+                        desktop, tablet, and mobile.</p>
+                </div>
+                <div class="f-card">
+                    <div class="emoji">⌨️</div>
+                    <h3>Keyboard-First Design</h3>
+                    <p>Tally-style keyboard shortcuts for power users. Navigate, create entries, and run tools without
+                        touching the mouse.</p>
+                </div>
+                <div class="f-card">
+                    <div class="emoji">📚</div>
+                    <h3>Guided Walkthroughs</h3>
+                    <p>Interactive onboarding, contextual help tooltips, and step-by-step tutorials — your team will be
+                        productive from day one.</p>
+                </div>
+            </div>
+        </div>
     </section>
 
-    <!-- Footer -->
+    <!-- ═══ CTA ═══ -->
+    <section class="features-cta reveal">
+        <h2>Ready to Transform Your CA Practice?</h2>
+        <p>Join hundreds of forward-thinking CAs who've already made the switch. Start free, upgrade when you're ready.
+        </p>
+        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+            <a href="sign-up.html" class="btn btn-primary btn-large">Start Free Trial →</a>
+            <a href="contact-us.html" class="btn btn-secondary btn-large">Talk to Sales</a>
+        </div>
+        <p style="font-size: 0.8rem; color: #9ca3af; margin-top: 1rem;">No credit card required · Free for 14 days ·
+            Cancel anytime</p>
+    </section>
+
+    <!-- ═══ FOOTER ═══ -->
     <footer class="site-footer">
         <div class="footer-grid">
             <div class="footer-brand">
                 <a href="index.html" class="logo" style="text-decoration: none;">
-                    <div class="logo-icon">CE</div>
-                    <span style="font-weight: 700; font-size: 1.2rem; color: white;">ComplianceAI<span
-                            style="color: var(--primary-orange);">expert</span></span>
+                    <div class="logo-icon">SA</div>
+                    <span style="font-weight: 700; font-size: 1.2rem; color: white;">Suvidha<span
+                            style="color: var(--primary-orange);">AI</span></span>
                 </a>
-                <p>AI-powered compliance intelligence for the modern Indian professional.</p>
+                <p>AI-powered practice management for the modern Indian CA. Smarter compliance, faster workflows,
+                    happier clients.</p>
             </div>
             <div class="footer-col">
-                <h4>Product</h4><a href="features.html">Features</a><a href="pricing.html">Pricing</a><a
-                    href="how-it-works.html">How It Works</a>
+                <h4>Product</h4>
+                <a href="features.html">Features</a>
+                <a href="pricing.html">Pricing</a>
+                <a href="how-it-works.html">How It Works</a>
+                <a href="integrations.html">Integrations</a>
             </div>
             <div class="footer-col">
-                <h4>Company</h4><a href="about-us.html">About Us</a><a href="contact-us.html">Contact</a><a
-                    href="#">Careers</a>
+                <h4>Company</h4>
+                <a href="about-us.html">About Us</a>
+                <a href="contact-us.html">Contact</a>
+                <a href="#">Careers</a>
             </div>
             <div class="footer-col">
-                <h4>Legal</h4><a href="#">Privacy Policy</a><a href="#">Terms of Service</a><a href="#">Security</a>
+                <h4>Legal</h4>
+                <a href="#">Privacy Policy</a>
+                <a href="terms-conditions.html">Terms of Service</a>
+                <a href="#">Security</a>
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2025 ComplianceAI Expert. All rights reserved.</p>
+            <p>&copy; 2025 Suvidha AI. All rights reserved.</p>
         </div>
     </footer>
 
     <script>
+        // Scroll reveal
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
-        }, { threshold: 0.15 });
+        }, { threshold: 0.1 });
         document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // Animate stat numbers
+        function animateCounter(el, end, suffix) {
+            let start = 0;
+            const duration = 1500;
+            const step = (timestamp) => {
+                if (!start) start = timestamp;
+                const progress = Math.min((timestamp - start) / duration, 1);
+                const eased = 1 - Math.pow(1 - progress, 3);
+                el.innerHTML = Math.floor(eased * end) + '<span>' + suffix + '</span>';
+                if (progress < 1) requestAnimationFrame(step);
+            };
+            requestAnimationFrame(step);
+        }
+        const statsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateCounter(document.getElementById('stat1'), 50, '+');
+                    animateCounter(document.getElementById('stat2'), 10, 'x');
+                    animateCounter(document.getElementById('stat3'), 99, '%');
+                    animateCounter(document.getElementById('stat4'), 0, '₹');
+                    statsObserver.disconnect();
+                }
+            });
+        }, { threshold: 0.5 });
+        statsObserver.observe(document.querySelector('.stats-bar'));
     </script>
 </body>
 

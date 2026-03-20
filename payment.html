@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout — Suvidha AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0
+        }
+
+        body {
+            background: #f1f5f9;
+            font-family: 'Inter', sans-serif;
+            color: #1e293b;
+            min-height: 100vh;
+        }
+
+        .has-topbar {
+            padding-top: 64px
+        }
+
+        .checkout-wrap {
+            max-width: 860px;
+            margin: 2.5rem auto;
+            padding: 0 1.5rem;
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            gap: 1.5rem;
+            align-items: start;
+        }
+
+        /* ── Left: Order Summary ── */
+        .order-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, .04);
+        }
+
+        .order-card h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #111827;
+            margin-bottom: 1.25rem;
+        }
+
+        .order-back {
+            display: inline-flex;
+            align-items: center;
+            gap: .35rem;
+            font-size: .8rem;
+            color: #6b7280;
+            text-decoration: none;
+            margin-bottom: 1rem;
+            font-weight: 500;
+            transition: color .15s;
+        }
+
+        .order-back:hover {
+            color: #1e3a8a
+        }
+
+        /* Plan summary row */
+        .plan-summary {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.25rem;
+            background: #f8fafc;
+            border-radius: 12px;
+            border: 1px solid #f1f5f9;
+            margin-bottom: 1.5rem;
+        }
+
+        .plan-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .plan-icon.starter {
+            background: #eff6ff
+        }
+
+        .plan-icon.professional {
+            background: #f5f3ff
+        }
+
+        .plan-meta {
+            flex: 1
+        }
+
+        .plan-meta h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: .1rem;
+        }
+
+        .plan-meta p {
+            font-size: .75rem;
+            color: #6b7280;
+            margin: 0
+        }
+
+        /* Billing toggle in checkout */
+        .billing-options {
+            display: flex;
+            gap: .5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .billing-opt {
+            flex: 1;
+            padding: .85rem 1rem;
+            border-radius: 10px;
+            border: 1.5px solid #e5e7eb;
+            background: #fff;
+            cursor: pointer;
+            transition: all .2s;
+            position: relative;
+        }
+
+        .billing-opt:hover {
+            border-color: #93c5fd
+        }
+
+        .billing-opt.active {
+            border-color: #1e3a8a;
+            background: #eff6ff;
+            box-shadow: 0 0 0 3px rgba(30, 58, 138, .08);
+        }
+
+        .billing-opt .bo-label {
+            font-size: .82rem;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .billing-opt .bo-price {
+            font-size: .72rem;
+            color: #6b7280;
+            margin-top: .1rem;
+        }
+
+        .billing-opt .bo-save {
+            position: absolute;
+            top: -8px;
+            right: 8px;
+            background: #059669;
+            color: #fff;
+            font-size: .55rem;
+            font-weight: 700;
+            padding: .1rem .45rem;
+            border-radius: 4px;
+        }
+
+        /* Line items */
+        .line-items {
+            margin-bottom: 1.25rem
+        }
+
+        .line-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: .6rem 0;
+            border-bottom: 1px solid #f8fafc;
+            font-size: .82rem;
+        }
+
+        .line-item:last-child {
+            border: none
+        }
+
+        .line-item .li-label {
+            color: #6b7280
+        }
+
+        .line-item .li-value {
+            font-weight: 600;
+            color: #111827
+        }
+
+        .line-item.total {
+            border-top: 2px solid #e5e7eb;
+            padding-top: .85rem;
+            margin-top: .25rem;
+        }
+
+        .line-item.total .li-label {
+            font-weight: 700;
+            font-size: .88rem;
+            color: #111827;
+        }
+
+        .line-item.total .li-value {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #1e3a8a;
+        }
+
+        /* ── Right: Payment ── */
+        .payment-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 1.75rem;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, .04);
+        }
+
+        .payment-card h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 1rem;
+        }
+
+        /* Payment methods */
+        .pay-method {
+            padding: .75rem;
+            border-radius: 10px;
+            border: 1.5px solid #e5e7eb;
+            background: #fff;
+            cursor: pointer;
+            transition: all .2s;
+            display: flex;
+            align-items: center;
+            gap: .65rem;
+            margin-bottom: .5rem;
+        }
+
+        .pay-method:hover {
+            border-color: #93c5fd
+        }
+
+        .pay-method.active {
+            border-color: #1e3a8a;
+            background: #eff6ff;
+        }
+
+        .pay-method input[type="radio"] {
+            accent-color: #1e3a8a
+        }
+
+        .pay-method .pm-icon {
+            font-size: 1.2rem
+        }
+
+        .pay-method .pm-label {
+            font-size: .82rem;
+            font-weight: 600;
+            color: #111827
+        }
+
+        .pay-method .pm-desc {
+            font-size: .68rem;
+            color: #9ca3af
+        }
+
+        /* Pay button */
+        .pay-btn {
+            display: block;
+            width: 100%;
+            padding: .85rem;
+            border: none;
+            border-radius: 12px;
+            font-size: .95rem;
+            font-weight: 700;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            color: #fff;
+            background: linear-gradient(135deg, #EB6711, #f5841a);
+            box-shadow: 0 4px 14px rgba(235, 103, 17, .25);
+            transition: all .2s;
+            margin-top: 1.25rem;
+        }
+
+        .pay-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(235, 103, 17, .3)
+        }
+
+        .pay-btn:disabled {
+            opacity: .5;
+            cursor: not-allowed;
+            transform: none !important
+        }
+
+        .secure-note {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: .35rem;
+            font-size: .7rem;
+            color: #9ca3af;
+            margin-top: .75rem;
+        }
+
+        .guarantee {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 10px;
+            padding: .75rem;
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .guarantee p {
+            font-size: .72rem;
+            color: #166534;
+            font-weight: 500;
+            margin: 0;
+        }
+
+        /* ── Toast ── */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #1e293b;
+            color: #fff;
+            padding: .85rem 1.75rem;
+            border-radius: 12px;
+            font-size: .85rem;
+            font-weight: 600;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, .15);
+            transition: all .35s cubic-bezier(.4, 0, .2, 1);
+            z-index: 1000;
+            opacity: 0;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1
+        }
+
+        .toast.success {
+            background: #059669
+        }
+
+        .toast.error {
+            background: #dc2626
+        }
+
+        /* ── Success overlay ── */
+        .success-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .5);
+            z-index: 9999;
+            backdrop-filter: blur(4px);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .success-modal {
+            background: #fff;
+            border-radius: 20px;
+            max-width: 420px;
+            width: 92%;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, .2);
+            overflow: hidden;
+            animation: modalIn .4s ease;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(.97)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1)
+            }
+        }
+
+        @media(max-width:768px) {
+            .checkout-wrap {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app-topbar" data-active="pricing"></div>
+    <script src="app-topbar.js"></script>
+
+    <div class="checkout-wrap has-topbar">
+        <!-- Left: Order Summary -->
+        <div class="order-card">
+            <a href="pricing.html" class="order-back">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5m7-7-7 7 7 7" />
+                </svg>
+                Back to Plans
+            </a>
+            <h2>Order Summary</h2>
+
+            <div class="plan-summary">
+                <div class="plan-icon" id="checkout-icon">🚀</div>
+                <div class="plan-meta">
+                    <h3 id="checkout-plan-name">Starter Plan</h3>
+                    <p id="checkout-plan-desc">For solo practitioners getting started</p>
+                </div>
+            </div>
+
+            <!-- Billing options -->
+            <div class="billing-options">
+                <div class="billing-opt" id="opt-monthly" onclick="selectBilling('monthly')">
+                    <div class="bo-label">Monthly</div>
+                    <div class="bo-price" id="opt-monthly-price">₹999/month</div>
+                </div>
+                <div class="billing-opt" id="opt-annual" onclick="selectBilling('annual')">
+                    <div class="bo-save">SAVE 20%</div>
+                    <div class="bo-label">Annual</div>
+                    <div class="bo-price" id="opt-annual-price">₹9,588/year</div>
+                </div>
+            </div>
+
+            <!-- Line items -->
+            <div class="line-items">
+                <div class="line-item">
+                    <span class="li-label" id="li-plan">Starter Plan</span>
+                    <span class="li-value" id="li-plan-price">₹999</span>
+                </div>
+                <div class="line-item">
+                    <span class="li-label">Billing Period</span>
+                    <span class="li-value" id="li-period">Monthly</span>
+                </div>
+                <div class="line-item">
+                    <span class="li-label">GST (18%)</span>
+                    <span class="li-value" id="li-gst">₹180</span>
+                </div>
+                <div class="line-item total">
+                    <span class="li-label">Total Due</span>
+                    <span class="li-value" id="li-total">₹1,179</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Payment -->
+        <div class="payment-card">
+            <h3>Payment Method</h3>
+
+            <label class="pay-method active" onclick="selectPayMethod(this)">
+                <input type="radio" name="paymethod" value="upi" checked>
+                <span class="pm-icon">📱</span>
+                <div>
+                    <div class="pm-label">UPI</div>
+                    <div class="pm-desc">Google Pay, PhonePe, Paytm</div>
+                </div>
+            </label>
+
+            <label class="pay-method" onclick="selectPayMethod(this)">
+                <input type="radio" name="paymethod" value="card">
+                <span class="pm-icon">💳</span>
+                <div>
+                    <div class="pm-label">Credit / Debit Card</div>
+                    <div class="pm-desc">Visa, Mastercard, RuPay</div>
+                </div>
+            </label>
+
+            <label class="pay-method" onclick="selectPayMethod(this)">
+                <input type="radio" name="paymethod" value="netbanking">
+                <span class="pm-icon">🏦</span>
+                <div>
+                    <div class="pm-label">Net Banking</div>
+                    <div class="pm-desc">All major Indian banks</div>
+                </div>
+            </label>
+
+            <button class="pay-btn" id="pay-btn" onclick="processPayment()">
+                Pay ₹1,179
+            </button>
+
+            <div class="secure-note">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="11" width="18" height="11" rx="2" />
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                </svg>
+                Secured by 256-bit encryption via Razorpay
+            </div>
+
+            <div class="guarantee">
+                <p>✅ 7-day money-back guarantee · Cancel anytime</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="success-overlay" id="success-overlay">
+        <div class="success-modal">
+            <div style="font-size:3rem;margin-bottom:.75rem">🎉</div>
+            <h2
+                style="font-family:'Outfit',sans-serif;font-size:1.4rem;font-weight:800;color:#111827;margin-bottom:.35rem">
+                Payment Successful!</h2>
+            <p style="font-size:.88rem;color:#6b7280;line-height:1.6;margin-bottom:1.25rem">Your plan has been upgraded
+                to <strong id="success-plan">Starter</strong>. All premium features are now unlocked.</p>
+            <a href="clients.html"
+                style="display:block;padding:.75rem;border-radius:12px;background:linear-gradient(135deg,#059669,#10b981);color:#fff;font-size:.92rem;font-weight:700;text-decoration:none;text-align:center;box-shadow:0 4px 14px rgba(5,150,105,.25)">Go
+                to Dashboard →</a>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script src="api_config.js"></script>
+    <script>
+        /* ══════════════════════════
+           PLAN DATA
+           ══════════════════════════ */
+        const PLANS = {
+            starter: {
+                name: 'Starter Plan', desc: 'For solo practitioners getting started',
+                icon: '🚀', iconClass: 'starter',
+                monthly: 999, annual: 9588, monthlyIfAnnual: 799,
+            },
+            professional: {
+                name: 'Professional Plan', desc: 'For growing firms & teams',
+                icon: '⭐', iconClass: 'professional',
+                monthly: 2499, annual: 23988, monthlyIfAnnual: 1999,
+            }
+        };
+
+        // Read URL params
+        const params = new URLSearchParams(window.location.search);
+        let selectedPlan = params.get('plan') || 'starter';
+        let selectedBilling = params.get('billing') || 'monthly';
+
+        // Auth check
+        const token = localStorage.getItem('access_token');
+        const user = JSON.parse(localStorage.getItem('user') || 'null');
+        if (!token || !user) {
+            window.location.href = 'sign-in.html';
+        }
+
+        // Validate plan
+        if (!PLANS[selectedPlan]) {
+            window.location.href = 'pricing.html';
+        }
+
+        // Initial render
+        renderCheckout();
+
+        function renderCheckout() {
+            const plan = PLANS[selectedPlan];
+            if (!plan) return;
+
+            // Plan header
+            document.getElementById('checkout-icon').textContent = plan.icon;
+            document.getElementById('checkout-icon').className = 'plan-icon ' + plan.iconClass;
+            document.getElementById('checkout-plan-name').textContent = plan.name;
+            document.getElementById('checkout-plan-desc').textContent = plan.desc;
+
+            // Billing options
+            document.getElementById('opt-monthly-price').textContent = '₹' + plan.monthly.toLocaleString('en-IN') + '/month';
+            document.getElementById('opt-annual-price').textContent = '₹' + plan.annual.toLocaleString('en-IN') + '/year';
+
+            selectBilling(selectedBilling);
+        }
+
+        function selectBilling(billing) {
+            selectedBilling = billing;
+            const plan = PLANS[selectedPlan];
+            const isAnn = billing === 'annual';
+
+            document.getElementById('opt-monthly').classList.toggle('active', !isAnn);
+            document.getElementById('opt-annual').classList.toggle('active', isAnn);
+
+            const basePrice = isAnn ? plan.annual : plan.monthly;
+            const gst = Math.round(basePrice * 0.18);
+            const total = basePrice + gst;
+
+            document.getElementById('li-plan').textContent = plan.name;
+            document.getElementById('li-plan-price').textContent = '₹' + basePrice.toLocaleString('en-IN');
+            document.getElementById('li-period').textContent = isAnn ? 'Annual (12 months)' : 'Monthly';
+            document.getElementById('li-gst').textContent = '₹' + gst.toLocaleString('en-IN');
+            document.getElementById('li-total').textContent = '₹' + total.toLocaleString('en-IN');
+            document.getElementById('pay-btn').textContent = 'Pay ₹' + total.toLocaleString('en-IN');
+        }
+
+        function selectPayMethod(el) {
+            document.querySelectorAll('.pay-method').forEach(m => m.classList.remove('active'));
+            el.classList.add('active');
+            el.querySelector('input[type="radio"]').checked = true;
+        }
+
+        /* ══════════════════════════
+           PROCESS PAYMENT
+           ══════════════════════════ */
+        async function processPayment() {
+            const btn = document.getElementById('pay-btn');
+            btn.disabled = true;
+            btn.textContent = 'Processing...';
+
+            try {
+                // Update subscription on backend
+                const res = await authFetch('/auth/me', {
+                    method: 'PUT',
+                    body: JSON.stringify({ subscription_plan: selectedPlan })
+                });
+
+                if (res.ok) {
+                    const updatedUser = await res.json();
+                    // Update local storage
+                    const localUser = JSON.parse(localStorage.getItem('user') || '{}');
+                    localUser.subscription_plan = selectedPlan;
+                    // Clear trial expiry flag so session-manager lets user through
+                    localStorage.removeItem('trial_expired');
+                    localStorage.setItem('user', JSON.stringify(localUser));
+
+                    // Show success
+                    document.getElementById('success-plan').textContent = PLANS[selectedPlan].name;
+                    document.getElementById('success-overlay').style.display = 'flex';
+                } else {
+                    const err = await res.json();
+                    showToast('❌ ' + (err.detail || 'Payment failed'), 'error');
+                    btn.disabled = false;
+                    btn.textContent = 'Retry Payment';
+                }
+            } catch (e) {
+                console.error(e);
+                showToast('❌ Network error — please try again', 'error');
+                btn.disabled = false;
+                btn.textContent = 'Retry Payment';
+            }
+        }
+
+        function showToast(msg, type = '') {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.className = `toast show ${type}`;
+            setTimeout(() => t.className = 'toast', 3500);
+        }
+    </script>
+</body>
+
+</html>

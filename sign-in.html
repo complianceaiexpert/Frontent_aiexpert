@@ -4,9 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign In — ComplianceAI Expert</title>
+    <title>Sign In — Suvidha AI</title>
     <meta name="description"
-        content="Sign in to ComplianceAI Expert with your Email, Phone Number, or Google account. Access your CA tools and AI-powered compliance dashboard.">
+        content="Sign in to Suvidha AI with your Email, Phone Number, or Google account. Access your CA tools and AI-powered compliance dashboard.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -624,8 +624,8 @@
         <!-- ══════ LEFT — BRAND + FEATURES ══════ -->
         <div class="auth-left">
             <a href="index.html" class="left-logo">
-                <div class="logo-box">CE</div>
-                <span class="logo-text">ComplianceAIexpert</span>
+                <div class="logo-box">SA</div>
+                <span class="logo-text">Suvidha AI</span>
             </a>
 
             <div class="left-hero">
@@ -774,6 +774,34 @@
 
     <div class="toast" id="toast"></div>
 
+    <!-- Trial Expired Modal -->
+    <div id="trial-expired-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;backdrop-filter:blur(4px);align-items:center;justify-content:center">
+        <div style="background:#fff;border-radius:20px;max-width:440px;width:92%;box-shadow:0 25px 60px rgba(0,0,0,.2);overflow:hidden;animation:modalSlideIn .35s ease">
+            <!-- Top accent bar -->
+            <div style="height:4px;background:linear-gradient(90deg,#dc2626,#f97316,#eab308)"></div>
+            <div style="padding:2rem 2rem 1.5rem;text-align:center">
+                <div style="width:64px;height:64px;background:linear-gradient(135deg,#fef2f2,#fee2e2);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto .75rem;font-size:1.8rem">⏰</div>
+                <h2 style="font-family:'Outfit',sans-serif;font-size:1.35rem;font-weight:800;color:#111827;margin:0 0 .4rem">Free Trial Ended</h2>
+                <p style="font-size:.88rem;color:#6b7280;line-height:1.6;margin:0 0 .75rem">Your <strong>30-day free trial</strong> of Suvidha AI has expired. To continue accessing your clients, reports, and AI tools, please upgrade to a paid plan.</p>
+                <div style="background:#f9fafb;border:1px solid #f1f5f9;border-radius:10px;padding:.65rem 1rem;font-size:.78rem;color:#6b7280;margin-bottom:1.25rem">
+                    <span style="color:#9ca3af">Account:</span>
+                    <strong style="color:#1e293b" id="trial-modal-email">—</strong>
+                </div>
+                <a href="pricing.html" style="display:block;width:100%;padding:.75rem;border-radius:12px;background:linear-gradient(135deg,#EB6711,#f5841a);color:#fff;font-size:.92rem;font-weight:700;text-decoration:none;text-align:center;box-shadow:0 4px 14px rgba(235,103,17,.25);transition:all .2s;margin-bottom:.6rem">🚀 View Plans & Upgrade</a>
+                <a href="contact-us.html" style="display:block;width:100%;padding:.7rem;border-radius:12px;background:#fff;color:#1e3a8a;font-size:.85rem;font-weight:600;text-decoration:none;text-align:center;border:1.5px solid #e5e7eb;transition:all .2s">📞 Contact Sales Team</a>
+            </div>
+            <div style="padding:.75rem 2rem;background:#f9fafb;border-top:1px solid #f1f5f9;text-align:center">
+                <button onclick="document.getElementById('trial-expired-overlay').style.display='none'" style="background:none;border:none;color:#9ca3af;font-size:.78rem;cursor:pointer;font-family:inherit;font-weight:500">Dismiss</button>
+            </div>
+        </div>
+    </div>
+    <style>
+        @keyframes modalSlideIn {
+            from { opacity: 0; transform: translateY(20px) scale(.97); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+    </style>
+
     <script src="api_config.js"></script>
     <script>
         // Redirect if already logged in
@@ -834,17 +862,33 @@
         }
 
         /* ═══════════════════════════════════
+           TRIAL EXPIRED MODAL
+           ═══════════════════════════════════ */
+        function showTrialExpiredModal(account) {
+            const overlay = document.getElementById('trial-expired-overlay');
+            document.getElementById('trial-modal-email').textContent = account || '—';
+            overlay.style.display = 'flex';
+        }
+
+        /* ═══════════════════════════════════
            POST-LOGIN HELPER
            ═══════════════════════════════════ */
-        async function completeLogin(accessToken) {
+        async function completeLogin(accessToken, trialExpired = false, accountHint = '') {
             localStorage.setItem('access_token', accessToken);
             const userResponse = await authFetch('/auth/me');
             if (userResponse.ok) {
                 const userData = await userResponse.json();
                 localStorage.setItem('user', JSON.stringify(userData));
                 localStorage.setItem('lastActivity', Date.now().toString());
-                showToast('✅ Welcome back!', 'success');
-                setTimeout(() => { window.location.href = 'clients.html'; }, 400);
+
+                if (trialExpired) {
+                    localStorage.setItem('trial_expired', 'true');
+                    window.location.href = 'profile.html';
+                } else {
+                    localStorage.removeItem('trial_expired');
+                    showToast('✅ Welcome back!', 'success');
+                    setTimeout(() => { window.location.href = 'clients.html'; }, 400);
+                }
             }
         }
 
@@ -876,7 +920,7 @@
                 const data = await response.json();
 
                 if (response.ok) {
-                    await completeLogin(data.access_token);
+                    await completeLogin(data.access_token, data.trial_expired, email);
                 } else {
                     showToast('❌ ' + (data.detail || 'Invalid credentials'), 'error');
                 }
@@ -918,7 +962,7 @@
                 const data = await response.json();
 
                 if (response.ok) {
-                    await completeLogin(data.access_token);
+                    await completeLogin(data.access_token, data.trial_expired, phone_number);
                 } else {
                     showToast('❌ ' + (data.detail || 'Invalid credentials'), 'error');
                 }
@@ -949,6 +993,10 @@
                     client_id: GOOGLE_CLIENT_ID,
                     callback: async (response) => {
                         try {
+                            // Decode email from Google JWT for modal display
+                            let gEmail = '';
+                            try { gEmail = JSON.parse(atob(response.credential.split('.')[1])).email || ''; } catch(e) {}
+
                             const res = await fetch(`${API_BASE_URL}/auth/signup/google`, {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
@@ -958,7 +1006,7 @@
                             const data = await res.json();
 
                             if (res.ok) {
-                                await completeLogin(data.access_token);
+                                await completeLogin(data.access_token, data.trial_expired, gEmail);
                             } else {
                                 showToast('❌ ' + (data.detail || 'Google sign-in failed'), 'error');
                             }

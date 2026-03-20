@@ -4,515 +4,244 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Integrations & Data Sources — ComplianceAI Expert</title>
-    <meta name="description"
-        content="Connect Tally Prime, upload documents, use AI GPT, and integrate your accounting stack with ComplianceAI Expert for automated compliance.">
+    <title>Connect Tally — Suvidha AI</title>
+    <meta name="description" content="Step-by-step guide to connect Tally Prime / ERP 9 with Suvidha AI.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     <style>
-        * {
-            box-sizing: border-box
-        }
+        body { background: #f8fafc; margin: 0; font-family: 'Inter', sans-serif }
 
-        body {
-            background: #fff;
-            margin: 0;
-            min-height: 100vh;
-            font-family: 'Inter', sans-serif
-        }
-
-        /* Page Header */
-        .page-header {
-            padding: 5rem 2rem 1.5rem;
-            max-width: 1100px;
-            margin: 0 auto
-        }
-
-        .page-header .tag {
-            display: inline-flex;
-            align-items: center;
-            gap: .4rem;
-            padding: .25rem .8rem;
-            background: #eff6ff;
-            border: 1px solid #dbeafe;
-            border-radius: 999px;
-            font-size: .68rem;
-            font-weight: 600;
-            color: #1e3a8a;
-            margin-bottom: .75rem
-        }
-
-        .page-header h1 {
-            font-family: 'Outfit', sans-serif;
-            font-size: 1.75rem;
-            font-weight: 800;
-            color: #111827;
-            margin: 0 0 .3rem;
-            letter-spacing: -.01em
-        }
-
-        .page-header h1 span {
-            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text
-        }
-
-        .page-header p {
-            font-size: .85rem;
-            color: #6b7280;
-            max-width: 600px;
-            line-height: 1.6;
-            margin: 0
-        }
-
-        /* Layout */
         .page-wrap {
-            max-width: 1100px;
+            max-width: 960px;
             margin: 0 auto;
-            padding: 0 2rem 3rem
+            padding: 5.5rem 2rem 3rem
         }
 
-        /* Section */
-        .sec-title {
+        /* ── Back link ── */
+        .back-link {
+            display: inline-flex; align-items: center; gap: 0.35rem;
+            font-size: 0.78rem; font-weight: 600; color: #64748b;
+            text-decoration: none; margin-bottom: 1.5rem; transition: color .15s
+        }
+        .back-link:hover { color: #1e3a8a }
+        .back-link svg { width: 14px; height: 14px }
+
+        /* ── Header ── */
+        .page-title {
             font-family: 'Outfit', sans-serif;
-            font-size: 1.05rem;
+            font-size: 1.85rem;
             font-weight: 800;
-            color: #111827;
-            margin: 2rem 0 .25rem
+            color: #0f172a;
+            margin: 0 0 0.4rem;
+            letter-spacing: -0.01em
+        }
+        .page-sub {
+            font-size: 0.95rem;
+            color: #64748b;
+            line-height: 1.65;
+            margin: 0 0 2rem;
+            max-width: 680px
         }
 
-        .sec-sub {
-            font-size: .78rem;
-            color: #6b7280;
-            margin: 0 0 1rem;
-            line-height: 1.5
-        }
-
-        /* Integration Grid */
-        .int-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: .85rem;
-            margin-bottom: 1.5rem
-        }
-
-        .int-card {
+        /* ── Status bar ── */
+        .status-bar {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.85rem 1.15rem;
             background: #fff;
-            border: 1px solid #e5e7eb;
-            border-radius: 12px;
-            padding: 1.15rem;
-            transition: all .2s;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            margin-bottom: 2rem
+        }
+        .status-icon {
+            width: 38px; height: 38px;
+            border-radius: 9px;
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: #fff;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 1rem; font-family: 'Outfit', sans-serif;
+            flex-shrink: 0
+        }
+        .status-info { flex: 1 }
+        .status-name {
+            font-size: 0.88rem; font-weight: 700; color: #0f172a; margin: 0 0 0.1rem
+        }
+        .status-detail { font-size: 0.72rem; color: #64748b; margin: 0 }
+        .status-pill {
+            display: inline-flex; align-items: center; gap: 0.3rem;
+            padding: 0.2rem 0.65rem; border-radius: 999px;
+            font-size: 0.68rem; font-weight: 700;
+            background: #f3f4f6; color: #6b7280
+        }
+        .status-dot {
+            width: 6px; height: 6px; border-radius: 50%; background: #9ca3af
+        }
+        .sync-btn {
+            display: inline-flex; align-items: center; gap: 0.35rem;
+            padding: 0.45rem 0.95rem; background: #1e3a8a; color: #fff;
+            border: none; border-radius: 8px; font-weight: 600; font-size: 0.78rem;
+            cursor: pointer; transition: all .15s; font-family: inherit
+        }
+        .sync-btn:hover { background: #1e40af }
+        .sync-btn:disabled { opacity: .5; cursor: not-allowed }
+
+        /* ── Steps ── */
+        .section-label {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: #0f172a;
+            margin: 0 0 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem
+        }
+
+        .step {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
             position: relative
         }
+        .step:last-of-type .step-line { display: none }
 
-        .int-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 14px rgba(0, 0, 0, .04)
-        }
-
-        .int-card-top {
-            display: flex;
-            align-items: center;
-            gap: .65rem;
-            margin-bottom: .5rem
-        }
-
-        .int-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 9px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 800;
-            font-size: .85rem;
+        .step-num {
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            background: #1e3a8a;
+            color: #fff;
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800; font-size: 0.9rem;
             flex-shrink: 0;
-            font-family: 'Outfit', sans-serif
+            position: relative;
+            z-index: 1
+        }
+        .step-line {
+            position: absolute;
+            left: 17px;
+            top: 36px;
+            bottom: -12px;
+            width: 2px;
+            background: #e2e8f0
         }
 
-        .int-card-top h4 {
-            font-size: .82rem;
+        .step-content {
+            padding-top: 0.35rem;
+            flex: 1
+        }
+        .step-title {
+            font-size: 1.05rem;
             font-weight: 700;
-            color: #111827;
+            color: #0f172a;
+            margin: 0 0 0.35rem
+        }
+        .step-desc {
+            font-size: 0.88rem;
+            color: #475569;
+            line-height: 1.65;
+            margin: 0
+        }
+        .step-desc code {
+            background: #f1f5f9;
+            padding: 2px 7px;
+            border-radius: 4px;
+            font-size: 0.82rem;
+            color: #1e3a8a;
+            font-weight: 600
+        }
+
+        /* download button inside a step */
+        .download-btn {
+            display: inline-flex; align-items: center; gap: 0.4rem;
+            padding: 0.55rem 1.15rem; margin-top: 0.65rem;
+            background: #1e3a8a; color: #fff; border: none; border-radius: 8px;
+            font-weight: 700; font-size: 0.88rem; cursor: pointer;
+            transition: all .15s; font-family: inherit
+        }
+        .download-btn:hover { background: #1e40af; transform: translateY(-1px) }
+
+        /* ── Divider ── */
+        .section-divider {
+            height: 1px; background: #e2e8f0; margin: 2.5rem 0
+        }
+
+        /* ── FAQ ── */
+        .faq-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.65rem
+        }
+
+        .faq-item {
+            background: #fff;
+            border: 1px solid #e8ecf1;
+            border-radius: 10px;
+            overflow: hidden;
+            transition: box-shadow .15s
+        }
+        .faq-item:hover { box-shadow: 0 2px 8px rgba(0,0,0,.03) }
+
+        .faq-q {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.95rem 1.15rem;
+            cursor: pointer;
+            user-select: none;
+            gap: 0.5rem
+        }
+        .faq-q h4 {
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: #0f172a;
             margin: 0;
             flex: 1
         }
-
-        .int-badge {
-            font-size: .55rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: .05em;
-            padding: 2px 6px;
-            border-radius: 4px
-        }
-
-        .int-card>p {
-            font-size: .73rem;
-            color: #6b7280;
-            line-height: 1.5;
-            margin: 0 0 .55rem
-        }
-
-        .int-action {
-            display: inline-flex;
-            align-items: center;
-            gap: .25rem;
-            font-size: .72rem;
-            font-weight: 600;
-            color: #1e3a8a;
-            cursor: pointer;
-            text-decoration: none;
-            transition: color .15s
-        }
-
-        .int-action:hover {
-            color: #3b82f6
-        }
-
-        /* Tally Card — Expanded */
-        .setup-card {
-            background: #fff;
-            border: 1px solid #e5e7eb;
-            border-radius: 14px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem
-        }
-
-        .setup-header {
-            display: flex;
-            align-items: center;
-            gap: .85rem;
-            margin-bottom: 1rem;
-            padding-bottom: .85rem;
-            border-bottom: 1px solid #f1f5f9
-        }
-
-        .setup-logo {
-            width: 42px;
-            height: 42px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 800;
-            font-size: 1.15rem;
-            flex-shrink: 0;
-            font-family: 'Outfit', sans-serif
-        }
-
-        .setup-info h3 {
-            font-family: 'Outfit', sans-serif;
-            font-size: 1rem;
-            font-weight: 700;
-            color: #111827;
-            margin: 0 0 .1rem
-        }
-
-        .setup-info p {
-            font-size: .75rem;
-            color: #6b7280;
-            margin: 0
-        }
-
-        .setup-status {
-            display: inline-flex;
-            align-items: center;
-            gap: .35rem;
-            padding: .2rem .65rem;
-            border-radius: 999px;
-            font-size: .68rem;
-            font-weight: 700;
-            background: #f3f4f6;
-            color: #6b7280;
-            margin-left: auto
-        }
-
-        .setup-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: #9ca3af
-        }
-
-        .methods {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-            margin-bottom: 1rem
-        }
-
-        .method {
-            padding: 1.15rem;
-            border-radius: 10px;
-            border: 1px solid #e5e7eb;
-            background: #f9fafb
-        }
-
-        .method.rec {
-            background: #eff6ff;
-            border-color: #dbeafe
-        }
-
-        .method-num {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            font-size: .6rem;
-            font-weight: 700;
-            margin-right: .3rem
-        }
-
-        .method h4 {
-            font-size: .82rem;
-            font-weight: 700;
-            color: #111827;
-            margin: 0 0 .35rem;
-            display: flex;
-            align-items: center
-        }
-
-        .method.rec h4 {
-            color: #1e3a8a
-        }
-
-        .method p {
-            font-size: .73rem;
-            color: #6b7280;
-            line-height: 1.5;
-            margin: 0 0 .7rem
-        }
-
-        .method-rec-badge {
-            position: absolute;
-            top: 0;
-            right: 0;
-            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
-            color: #fff;
-            font-size: .55rem;
-            padding: .15rem .5rem;
-            border-bottom-left-radius: 6px;
-            font-weight: 700;
-            letter-spacing: .04em
-        }
-
-        .m-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: .35rem;
-            width: 100%;
-            padding: .5rem;
-            border-radius: 7px;
-            border: none;
-            font-weight: 700;
-            font-size: .75rem;
-            cursor: pointer;
-            transition: all .15s;
-            font-family: 'Inter', sans-serif
-        }
-
-        .m-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 3px 10px rgba(0, 0, 0, .08)
-        }
-
-        .m-btn-primary {
-            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
-            color: #fff
-        }
-
-        .m-btn-secondary {
-            background: #fff;
-            color: #374151;
-            border: 1px solid #e5e7eb
-        }
-
-        .m-token {
-            background: #fff;
-            padding: .55rem;
-            border-radius: 6px;
-            border: 1px dashed #d1d5db;
-            margin-top: .55rem
-        }
-
-        .m-token label {
-            display: block;
-            font-size: .55rem;
-            font-weight: 700;
-            color: #9ca3af;
-            text-transform: uppercase;
-            letter-spacing: .06em;
-            margin-bottom: .25rem
-        }
-
-        .m-token-row {
-            display: flex;
-            gap: .3rem
-        }
-
-        .m-token-row input {
-            flex: 1;
-            padding: .2rem .4rem;
-            border: 1px solid #e5e7eb;
-            border-radius: 4px;
-            font-family: monospace;
-            font-size: .7rem;
-            color: #6b7280
-        }
-
-        .m-token-row button {
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: .78rem
-        }
-
-        .sync-row {
-            display: flex;
-            align-items: center;
-            gap: .65rem;
-            margin-bottom: 1rem
-        }
-
-        .sync-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: .35rem;
-            padding: .5rem 1rem;
-            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: .78rem;
-            cursor: pointer;
-            transition: all .15s;
-            font-family: 'Inter', sans-serif
-        }
-
-        .sync-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(30, 58, 138, .2)
-        }
-
-        .sync-btn:disabled {
-            opacity: .5;
-            cursor: not-allowed;
-            transform: none !important
-        }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg)
-            }
-        }
-
-        .setup-steps {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-            padding-top: 1rem;
-            border-top: 1px solid #f1f5f9
-        }
-
-        .step-col h4 {
-            font-size: .78rem;
-            font-weight: 700;
-            color: #111827;
-            margin: 0 0 .4rem;
-            display: flex;
-            align-items: center;
-            gap: .3rem
-        }
-
-        .step-col ol {
-            margin: 0;
-            padding-left: 1.15rem;
-            font-size: .73rem;
-            color: #6b7280;
-            line-height: 1.6
-        }
-
-        .step-col ol li {
-            margin-bottom: .25rem
-        }
-
-        /* AI section */
-        .ai-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: .85rem;
-            margin-bottom: 1.5rem
-        }
-
-        .ai-card {
-            background: #fff;
-            border: 1px solid #e5e7eb;
-            border-radius: 10px;
-            padding: 1rem;
-            display: flex;
-            gap: .7rem;
-            transition: all .15s
-        }
-
-        .ai-card:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 3px 10px rgba(0, 0, 0, .03)
-        }
-
-        .ai-icon {
-            width: 34px;
-            height: 34px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: .9rem;
+        .faq-chevron {
+            width: 16px; height: 16px;
+            color: #94a3b8;
+            transition: transform .2s;
             flex-shrink: 0
         }
+        .faq-item.open .faq-chevron { transform: rotate(180deg) }
 
-        .ai-card h4 {
-            font-size: .78rem;
-            font-weight: 700;
-            color: #111827;
-            margin: 0 0 .15rem
+        .faq-a {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height .25s ease
         }
+        .faq-item.open .faq-a { max-height: 400px }
 
-        .ai-card p {
-            font-size: .68rem;
-            color: #6b7280;
-            line-height: 1.5;
-            margin: 0
+        .faq-a-inner {
+            padding: 0 1.15rem 1rem;
+            font-size: 0.84rem;
+            color: #475569;
+            line-height: 1.65
         }
-
-        @media(max-width:868px) {
-
-            .int-grid,
-            .ai-grid {
-                grid-template-columns: 1fr 1fr
-            }
-
-            .methods,
-            .setup-steps {
-                grid-template-columns: 1fr
-            }
+        .faq-a-inner code {
+            background: #f1f5f9;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.78rem;
+            color: #1e3a8a
         }
+        .faq-a-inner ul {
+            margin: 0.35rem 0 0;
+            padding-left: 1.25rem
+        }
+        .faq-a-inner ul li { margin-bottom: 0.25rem }
 
+        @media(max-width:860px) {
+            .faq-grid { grid-template-columns: 1fr }
+        }
         @media(max-width:640px) {
-
-            .int-grid,
-            .ai-grid {
-                grid-template-columns: 1fr
-            }
+            .page-wrap { padding: 5rem 1rem 2rem }
+            .status-bar { flex-wrap: wrap }
         }
     </style>
 </head>
@@ -521,138 +250,187 @@
     <div id="app-topbar" data-active="settings"></div>
     <script src="app-topbar.js?v=3"></script>
 
-    <!-- Page Header -->
-    <div class="page-header">
-        <div class="tag">🔌 Settings & Integrations</div>
-        <h1>Integrations & <span>Data Sources</span></h1>
-        <p>Connect your accounting stack, sync data, and power AI-driven compliance automation across your practice.</p>
-    </div>
-
     <div class="page-wrap">
-        <!-- Available Integrations -->
-        <h2 class="sec-title">Available Integrations</h2>
-        <p class="sec-sub">Connect popular accounting platforms, data sources, and AI tools to automate GST, income tax,
-            audit, and compliance workflows.</p>
-        <div class="int-grid" style="grid-template-columns:1fr;max-width:400px">
-            <div class="int-card" style="border-left:3px solid #1e3a8a">
-                <div class="int-card-top">
-                    <div class="int-icon" style="background:#1e3a8a;color:#fff">T</div>
-                    <h4>Tally Prime / ERP 9</h4>
-                    <span class="int-badge" style="background:#dbeafe;color:#1e3a8a">ACTIVE</span>
-                </div>
-                <p>Sync ledgers, vouchers, trial balances, and company data directly from Tally. Zero-config desktop app
-                    or browser connector.</p>
-                <a href="#tally-setup" class="int-action">Configure ↓</a>
+        <a class="back-link" href="clients.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="19" y1="12" x2="5" y2="12"/>
+                <polyline points="12 19 5 12 12 5"/>
+            </svg>
+            Back to Dashboard
+        </a>
+
+        <h1 class="page-title">Connect Tally to Suvidha AI</h1>
+        <p class="page-sub">Follow these simple steps to connect your Tally Prime or ERP 9 with Suvidha AI. Once connected, your ledgers, vouchers, and company data sync automatically.</p>
+
+        <!-- Status Bar -->
+        <div class="status-bar">
+            <div class="status-icon">T</div>
+            <div class="status-info">
+                <p class="status-name">Tally Prime / ERP 9</p>
+                <p class="status-detail">Sync ledgers, vouchers & trial balances</p>
+            </div>
+            <div class="status-pill" id="tally-status-pill">
+                <span class="status-dot" id="tally-status-dot"></span>
+                <span id="tally-status-text">Not Connected</span>
+            </div>
+            <button class="download-btn" onclick="downloadConnector()" style="margin:0;padding:0.5rem 1.2rem;font-size:0.82rem">
+                ⬇️ Download Connector
+            </button>
+        </div>
+
+        <!-- ══ STEPS ══ -->
+        <div class="section-label">Step-by-step Setup</div>
+
+        <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-line"></div>
+            <div class="step-content">
+                <h3 class="step-title">Download the Suvidha AI Connector</h3>
+                <p class="step-desc">Download and install the small connector utility on the same computer where Tally is installed. This bridges the connection between Tally and Suvidha AI.</p>
+                <button class="download-btn" onclick="downloadConnector()">
+                    ⬇️ Download Connector (.exe)
+                </button>
             </div>
         </div>
 
-        <!-- Tally Integration Setup -->
-        <div id="tally-setup" class="setup-card">
-            <div class="setup-header">
-                <div class="setup-logo" style="background:linear-gradient(135deg,#1e3a8a,#3b82f6);color:#fff">T</div>
-                <div class="setup-info">
-                    <h3>Tally Prime / ERP 9 Integration</h3>
-                    <p>Sync ledgers, vouchers, and trial balances. Choose your preferred connection method.</p>
-                </div>
-                <div class="setup-status" id="tally-status-pill">
-                    <span class="setup-dot" id="tally-status-dot"></span>
-                    <span id="tally-status-text">Not Connected</span>
-                </div>
-            </div>
-
-            <div class="methods" style="grid-template-columns:1fr">
-                <div class="method rec" style="position:relative">
-                    <span class="method-rec-badge">RECOMMENDED</span>
-                    <h4><span class="method-num" style="background:#1e3a8a;color:#fff">1</span> Browser + Connector
-                    </h4>
-                    <p>Keep using this website. Install a small connector utility to bridge the connection to Tally on your
-                        machine. <strong>Quick setup, works instantly.</strong></p>
-                    <button class="m-btn m-btn-primary" onclick="downloadConnector()" style="max-width:320px">⬇️ Download Connector (.exe)</button>
-                </div>
-            </div>
-
-            <!-- How to Use Guide -->
-            <div style="padding:1.25rem;background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;margin-bottom:1rem">
-                <h4 style="font-family:'Outfit',sans-serif;font-size:.88rem;font-weight:700;color:#1e3a8a;margin:0 0 .65rem;display:flex;align-items:center;gap:.4rem">
-                    📖 How to Use the Tally Connector
-                </h4>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem">
-                    <div>
-                        <h5 style="font-size:.76rem;font-weight:700;color:#111827;margin:0 0 .4rem">🔧 One-Time Setup</h5>
-                        <ol style="margin:0;padding-left:1.15rem;font-size:.73rem;color:#4b5563;line-height:1.7">
-                            <li>Download the <strong>ComplianceAI Connector</strong> (.exe) above</li>
-                            <li>Install it on the PC where <strong>Tally Prime / ERP 9</strong> is running</li>
-                            <li>Open Tally and ensure your <strong>company is loaded</strong></li>
-                            <li>Launch the Connector — it auto-detects Tally on <code style="background:#e5e7eb;padding:1px 4px;border-radius:3px;font-size:.68rem">localhost:9000</code></li>
-                        </ol>
-                    </div>
-                    <div>
-                        <h5 style="font-size:.76rem;font-weight:700;color:#111827;margin:0 0 .4rem">🔄 Daily Usage</h5>
-                        <ol style="margin:0;padding-left:1.15rem;font-size:.73rem;color:#4b5563;line-height:1.7">
-                            <li>Open <strong>Tally</strong> and load the company</li>
-                            <li>Run the <strong>Connector</strong> (if not already running)</li>
-                            <li>Come back to this website — data syncs automatically</li>
-                            <li>Ledgers, vouchers, and trial balances will appear in your workspace</li>
-                        </ol>
-                    </div>
-                </div>
-                <div style="margin-top:.75rem;padding-top:.65rem;border-top:1px solid #e2e8f0;display:flex;align-items:center;gap:.65rem">
-                    <span style="font-size:.7rem;color:#6b7280">💡 <strong>Need detailed instructions?</strong></span>
-                    <a href="tally-connector-guide.html"
-                       style="font-size:.72rem;font-weight:600;color:#1e3a8a;text-decoration:none;display:inline-flex;align-items:center;gap:.25rem">
-                        Read the full setup guide →
-                    </a>
-                </div>
+        <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-line"></div>
+            <div class="step-content">
+                <h3 class="step-title">Open Tally and load your company</h3>
+                <p class="step-desc">Launch <strong>Tally Prime</strong> or <strong>Tally ERP 9</strong> on your computer. Make sure the company you want to sync is <strong>loaded and active</strong> in Tally.</p>
             </div>
         </div>
 
-        <!-- AI-Powered Data Processing -->
-        <h2 class="sec-title">AI-Powered Data Processing</h2>
-        <p class="sec-sub">Once connected, our agentic AI engine processes your data through intelligent workflows —
-            from extraction to compliance output.</p>
-        <div class="ai-grid">
-            <div class="ai-card">
-                <div class="ai-icon" style="background:#eff6ff;color:#1e3a8a">🤖</div>
-                <div>
-                    <h4>Agentic AI Reconciliation</h4>
-                    <p>AI agents autonomously reconcile GSTR-2A vs books, flag mismatches, and suggest corrections.</p>
+        <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-line"></div>
+            <div class="step-content">
+                <h3 class="step-title">Run the Connector</h3>
+                <p class="step-desc">Open the <strong>Suvidha AI Connector</strong> app you installed in Step 1. It will automatically detect Tally running on <code>localhost:9000</code>. Keep it running in the background.</p>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-line"></div>
+            <div class="step-content">
+                <h3 class="step-title">Test the connection</h3>
+                <p class="step-desc">Click the <strong>"Test Connection"</strong> button above. If everything is set up correctly, the status will turn <strong>green</strong> and show your company name.</p>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-num">5</div>
+            <div class="step-content">
+                <h3 class="step-title">You're all set!</h3>
+                <p class="step-desc">Go to the <strong>Data Entry</strong> service and start working. Your ledgers, vouchers, and trial balances will sync automatically whenever Tally and the Connector are running.</p>
+            </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- ══ FAQ ══ -->
+        <div class="section-label">Frequently Asked Questions</div>
+
+        <div class="faq-grid">
+            <div class="faq-item">
+                <div class="faq-q" onclick="toggleFaq(this)">
+                    <h4>Why am I seeing "Bridge not running" error?</h4>
+                    <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+                </div>
+                <div class="faq-a">
+                    <div class="faq-a-inner">
+                        This means the Connector app is not running or Tally is not open. Check these:
+                        <ul>
+                            <li>Make sure <strong>Tally is open</strong> with a company loaded</li>
+                            <li>Make sure the <strong>Suvidha AI Connector</strong> is running (check your system tray)</li>
+                            <li>Tally must be accessible on <code>localhost:9000</code> — this is the default port</li>
+                            <li>If you changed Tally's port, update it in the Connector settings</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
-            <div class="ai-card">
-                <div class="ai-icon" style="background:#f5f3ff;color:#7c3aed">💬</div>
-                <div>
-                    <h4>AI Chat Workspace</h4>
-                    <p>Ask "Show pending GST invoices for Q3" and get instant structured responses from synced data.</p>
+
+            <div class="faq-item">
+                <div class="faq-q" onclick="toggleFaq(this)">
+                    <h4>What if Tally says "port already in use"?</h4>
+                    <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+                </div>
+                <div class="faq-a">
+                    <div class="faq-a-inner">
+                        Another application is using port 9000. To fix this:
+                        <ul>
+                            <li>Close any other app using port 9000 (like another Tally instance)</li>
+                            <li>Or change Tally's server port: Go to <strong>Tally → F12 → Advanced Configuration → Set Client/Server port</strong></li>
+                            <li>Then update the same port in the Connector settings</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
-            <div class="ai-card">
-                <div class="ai-icon" style="background:#eff6ff;color:#3b82f6">🖥️</div>
-                <div>
-                    <h4>Web View Panels</h4>
-                    <p>Structured checklists and guided workflows for GST filing, income tax, audit, and certificates.
-                    </p>
+
+            <div class="faq-item">
+                <div class="faq-q" onclick="toggleFaq(this)">
+                    <h4>Why is my company name not showing after connecting?</h4>
+                    <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+                </div>
+                <div class="faq-a">
+                    <div class="faq-a-inner">
+                        The connection is working but Tally might not have a company loaded:
+                        <ul>
+                            <li>Open Tally and go to <strong>Gateway of Tally</strong></li>
+                            <li>Select and <strong>open the company</strong> you want to sync</li>
+                            <li>Then click <strong>"Test Connection"</strong> again</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
-            <div class="ai-card">
-                <div class="ai-icon" style="background:#fef3c7;color:#d97706">📄</div>
-                <div>
-                    <h4>Smart OCR Engine</h4>
-                    <p>Upload PDFs, images, or scans. AI extracts text, identifies fields, and maps to compliance forms.
-                    </p>
+
+            <div class="faq-item">
+                <div class="faq-q" onclick="toggleFaq(this)">
+                    <h4>Why won't the Connector app start after installing?</h4>
+                    <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+                </div>
+                <div class="faq-a">
+                    <div class="faq-a-inner">
+                        Try these steps:
+                        <ul>
+                            <li>Right-click the Connector and select <strong>"Run as Administrator"</strong></li>
+                            <li>Check if Windows Defender or antivirus is blocking it — add an exception</li>
+                            <li>Re-download and re-install the Connector</li>
+                            <li>Make sure you're on Windows 10 or later</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
-            <div class="ai-card">
-                <div class="ai-icon" style="background:#fdf2f8;color:#db2777">📜</div>
-                <div>
-                    <h4>Certificate Generator</h4>
-                    <p>Generate 30+ CA certificate types with auto-filled data from Tally and uploaded documents.</p>
+
+            <div class="faq-item">
+                <div class="faq-q" onclick="toggleFaq(this)">
+                    <h4>Why is my data not syncing even though I'm connected?</h4>
+                    <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+                </div>
+                <div class="faq-a">
+                    <div class="faq-a-inner">
+                        If the connection shows green but data isn't appearing:
+                        <ul>
+                            <li>Make sure the correct <strong>company is loaded</strong> in Tally</li>
+                            <li>Try refreshing the page and navigating to Data Entry again</li>
+                            <li>Check that Tally's <strong>ODBC/XML Server</strong> is enabled (Tally → F12 → Advanced Config → Enable ODBC Server = Yes)</li>
+                            <li>Restart both Tally and the Connector</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
-            <div class="ai-card">
-                <div class="ai-icon" style="background:#ecfdf5;color:#059669">⚡</div>
-                <div>
-                    <h4>Real-Time Alerts</h4>
-                    <p>Get notified about GST Council updates, filing deadlines, and regulatory changes.</p>
+
+            <div class="faq-item">
+                <div class="faq-q" onclick="toggleFaq(this)">
+                    <h4>Can I use Suvidha AI on Mac or Linux?</h4>
+                    <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+                </div>
+                <div class="faq-a">
+                    <div class="faq-a-inner">
+                        Tally itself only runs on Windows. However, you can access <strong>Suvidha AI from any browser</strong> (Mac, Linux, iPad). The Connector and Tally just need to be running on <strong>any Windows machine</strong> on your network — it doesn't have to be the same computer you're browsing from.
+                    </div>
                 </div>
             </div>
         </div>
@@ -665,32 +443,15 @@
 
         function downloadConnector() {
             const link = document.createElement('a');
-            link.href = 'assets/downloads/ComplianceAI-Desktop-Setup.exe';
-            link.download = 'ComplianceAI-Connector-Setup.exe';
+            link.href = 'assets/downloads/Suvidha AI-Desktop-Setup.exe';
+            link.download = 'Suvidha AI-Connector-Setup.exe';
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
         }
 
-        function downloadDesktop(os) {
-            const ext = os === 'win' ? 'exe' : 'dmg';
-            const fileName = `ComplianceAI-Desktop-Setup.${ext}`;
-            const link = document.createElement('a');
-            link.href = `assets/downloads/${fileName}`;
-            link.download = fileName;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        function copyToken() {
-            const tokenInput = document.querySelector('input[readonly]');
-            tokenInput.select();
-            document.execCommand('copy');
-            const btn = document.querySelector('button[onclick="copyToken()"]');
-            const orig = btn.innerHTML;
-            btn.innerHTML = '✅';
-            setTimeout(() => btn.innerHTML = orig, 2000);
+        function toggleFaq(el) {
+            el.closest('.faq-item').classList.toggle('open');
         }
 
         async function syncTally() {
@@ -700,7 +461,7 @@
             const dot = document.getElementById("tally-status-dot");
 
             btn.disabled = true;
-            statusText.textContent = "Connecting...";
+            statusText.textContent = "Connecting…";
             pill.style.background = "#FEF3C7"; pill.style.color = "#B45309";
             dot.style.background = "#F59E0B";
 
@@ -715,9 +476,7 @@
                         <TYPE>Data</TYPE>
                         <ID>List of Companies</ID>
                     </HEADER>
-                    <BODY>
-                        <DESC />
-                    </BODY>
+                    <BODY><DESC /></BODY>
                     </ENVELOPE>`,
                 });
 
@@ -749,10 +508,10 @@
                     alert("Connected to Tally ✅ but no company name found.");
                 }
             } catch (e) {
-                statusText.textContent = "Error";
+                statusText.textContent = "Not Connected";
                 pill.style.background = "#FEE2E2"; pill.style.color = "#991B1B";
                 dot.style.background = "#EF4444";
-                alert("Bridge not running. Ensure Tally is open or use the Desktop App.");
+                alert("Bridge not running. Ensure Tally is open and the Connector is running.");
             } finally {
                 btn.disabled = false;
             }

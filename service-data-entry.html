@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Entry — ComplianceAI Expert</title>
+    <title>Data Entry — Suvidha AI</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="data-entry.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -82,6 +82,14 @@
                     <span class="de-sb-badge beta">BETA</span>
                 </div>
             </div>
+
+            <a href="integrations.html" style="display:flex;align-items:center;justify-content:center;gap:0.4rem;padding:0.5rem 0.85rem;margin:0.75rem 0.5rem;background:#1e3a8a;color:#fff;border-radius:8px;font-size:0.78rem;font-weight:600;text-decoration:none;transition:all .15s;font-family:inherit" onmouseover="this.style.background='#1e40af'" onmouseout="this.style.background='#1e3a8a'">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M23 4v6h-6"/><path d="M1 20v-6h6"/>
+                    <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+                </svg>
+                Sync Tally
+            </a>
 
             <a class="de-sb-back" id="back-link" href="services-dashboard.html">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -965,9 +973,103 @@
                     }
                 }
             } catch (err) {
-                showToast('Connector not reachable. Is ComplianceAI connector running?', 'error');
+                showToast('Connector not reachable. Is Suvidha AI connector running?', 'error');
             } finally {
                 btn.disabled = false; btn.textContent = '🔄 Push to Tally';
+            }
+        }
+        // ═══ DIRECT SYNC TO TALLY ═══
+        async function syncToTally(invoiceId) {
+            const tx = allInvoices.find(t => t.id === invoiceId);
+            if (!tx) return;
+
+            // Step 1: Check if Tally connector is running
+            let tallyConnected = false;
+            try {
+                const res = await fetch('http://127.0.0.1:17890/tally/companies', { signal: AbortSignal.timeout(3000) });
+                if (res.ok) {
+                    const data = await res.json();
+                    tallyConnected = data.companies && data.companies.length > 0;
+                }
+            } catch (e) { /* connector not running */ }
+
+            if (!tallyConnected) {
+                // Show toast with link to integrations
+                showToast('⚠️ Tally is not connected. Please connect Tally first via the Integrations page.', 'error');
+                setTimeout(() => {
+                    if (confirm('Tally connector is not running.\n\nWould you like to go to the Integrations page to set up the Tally connection?')) {
+                        window.location.href = 'integrations.html';
+                    }
+                }, 300);
+                return;
+            }
+
+            // Step 2: Confirm sync
+            const msg = `Ready to sync this voucher to Tally?\n\n` +
+                `Invoice: ${tx.invoiceNo}\n` +
+                `Vendor: ${tx.vendor}\n` +
+                `Amount: ₹${(tx.totalAmount || 0).toLocaleString('en-IN')}\n` +
+                `Type: ${tx.type}`;
+            if (!confirm(msg)) return;
+
+            // Step 3: Build payload and push
+            const company = tallyCompanies[0] || '';
+            const typeMap = { 'Sales': 'Sales', 'Purchase': 'Purchase', 'Banking': 'Payment', 'Journal': 'Journal' };
+            const amt = parseFloat(tx.totalAmount) || 0;
+            const baseAmt = parseFloat(tx.amount) || 0;
+            const gstAmt = parseFloat(tx.gstAmount) || 0;
+
+            const ledger_entries = [];
+            // Debit: Party
+            ledger_entries.push({ ledger_name: tx.vendor !== 'Unknown' ? tx.vendor : 'Cash', amount: amt, is_debit: true });
+            // Credit: Account
+            const acctName = tx.type === 'Purchase' ? 'Purchase Account' : 'Sales Account';
+            ledger_entries.push({ ledger_name: acctName, amount: baseAmt, is_debit: false });
+            // Credit: GST
+            if (gstAmt > 0) {
+                const halfGst = Math.round(gstAmt / 2 * 100) / 100;
+                ledger_entries.push({ ledger_name: 'CGST', amount: halfGst, is_debit: false });
+                ledger_entries.push({ ledger_name: 'SGST', amount: gstAmt - halfGst, is_debit: false });
+            }
+
+            const dateVal = tx.date ? new Date(tx.date).toISOString().split('T')[0].replace(/-/g, '') : '';
+            const payload = {
+                company,
+                voucher_type: typeMap[tx.type] || 'Sales',
+                date: dateVal,
+                voucher_number: tx.invoiceNo !== 'N/A' ? tx.invoiceNo : undefined,
+                party_ledger: tx.vendor !== 'Unknown' ? tx.vendor : undefined,
+                narration: `${tx.type} Invoice ${tx.invoiceNo}`,
+                ledger_entries,
+                auto_create_ledgers: true
+            };
+
+            showToast('⏳ Syncing to Tally...', 'info');
+
+            try {
+                const res = await fetch('http://127.0.0.1:17890/tally/push-voucher', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (data.ok) {
+                    showToast('✅ Voucher synced to Tally successfully!', 'success');
+                    // Mark as synced in backend
+                    const token = localStorage.getItem('access_token');
+                    await fetch(`${API_BASE_URL}/invoices/${invoiceId}`, {
+                        method: 'PATCH',
+                        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ synced_to_tally: true })
+                    });
+                    const inv = allInvoices.find(t => t.id === invoiceId);
+                    if (inv) inv.status = 'Synced';
+                    renderTransactions();
+                } else {
+                    showToast('❌ Sync failed: ' + (data.details || data.error || 'Unknown error'), 'error');
+                }
+            } catch (err) {
+                showToast('❌ Connector not reachable. Is Suvidha AI connector running?', 'error');
             }
         }
 
@@ -1035,8 +1137,8 @@
                     <td style="font-weight:700">${formatINR(tx.totalAmount)}</td>
                     <td><span class="de-badge ${badgeCls}">${tx.status}</span></td>
                     <td style="text-align:right;display:flex;gap:.4rem;justify-content:flex-end">
-                        <button class="de-btn success" onclick="event.stopPropagation()">✓ Approve</button>
-                        <button class="de-btn primary" onclick="event.stopPropagation();openTallyModal(${tx.id})" ${tx.status === 'Synced' ? 'disabled' : ''}>⟳ ${tx.status === 'Synced' ? 'Synced' : 'Sync'}</button>
+                        <button class="de-btn success" onclick="event.stopPropagation();openTallyModal(${tx.id})" ${tx.status === 'Synced' ? 'disabled' : ''}>✓ Approve</button>
+                        <button class="de-btn primary" onclick="event.stopPropagation();syncToTally(${tx.id})" ${tx.status === 'Synced' ? 'disabled' : ''}>⟳ ${tx.status === 'Synced' ? 'Synced' : 'Sync'}</button>
                     </td>
                 </tr>`;
             });

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Firm Dashboard — ComplianceAI Expert</title>
+    <title>Firm Dashboard — Suvidha AI</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -113,105 +113,426 @@
             padding: 1.5rem 2rem 3rem
         }
 
-        /* ── Welcome ── */
-        .welcome-bar {
-            margin-bottom: 1.5rem
-        }
-
-        .welcome-bar h1 {
-            font-family: 'Outfit', sans-serif;
-            font-size: 1.65rem;
-            font-weight: 800;
-            color: #111827;
-            margin: 0 0 0.2rem
-        }
-
-        .welcome-bar h1 span {
-            color: #eb6711
-        }
-
-        .welcome-bar p {
-            font-size: 0.85rem;
-            color: #6b7280;
-            margin: 0
-        }
-
-        /* ── Service Cards Row ── */
-        .svc-cards-row {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 1rem;
-            margin-bottom: 1.75rem
-        }
-
-        .svc-card {
-            border-radius: 14px;
-            padding: 1.15rem 1.1rem;
+        /* ── Welcome Hero ── */
+        .welcome-hero {
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #1e40af 100%);
+            border-radius: 18px;
+            padding: 2rem 2.25rem;
+            margin-bottom: 1.75rem;
             color: #fff;
-            cursor: pointer;
-            transition: all .25s;
             position: relative;
             overflow: hidden
         }
 
-        .svc-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, .12)
+        .welcome-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255,255,255,.06) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none
         }
 
-        .svc-card .sc-icon {
-            font-size: 1.35rem;
+        .welcome-hero::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: 20%;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(59,130,246,.15) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none
+        }
+
+        .welcome-hero h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.7rem;
+            font-weight: 800;
+            margin: 0 0 0.4rem;
+            letter-spacing: -0.02em;
+            position: relative;
+            z-index: 1
+        }
+
+        .welcome-hero h1 span {
+            color: #f59e0b
+        }
+
+        .welcome-hero .wh-subtitle {
+            font-size: 0.88rem;
+            opacity: .85;
+            margin: 0;
+            line-height: 1.5;
+            max-width: 600px;
+            position: relative;
+            z-index: 1
+        }
+
+        .welcome-hero .wh-badges {
+            display: flex;
+            gap: 0.6rem;
+            margin-top: 1rem;
+            position: relative;
+            z-index: 1;
+            flex-wrap: wrap
+        }
+
+        .welcome-hero .wh-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.3rem 0.75rem;
+            background: rgba(255,255,255,.1);
+            border: 1px solid rgba(255,255,255,.15);
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            backdrop-filter: blur(4px)
+        }
+
+        /* ── Core Services (main 3) ── */
+        .core-svc-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem
+        }
+
+        .core-svc-header h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #111827;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem
+        }
+
+        .core-svc-header h2 .cs-badge {
+            font-size: 0.58rem;
+            font-weight: 700;
+            background: #f1f5f9;
+            color: #475569;
+            padding: 2px 8px;
+            border-radius: 10px;
+            letter-spacing: .04em;
+            text-transform: uppercase
+        }
+
+        .core-svc-header p {
+            font-size: 0.78rem;
+            color: #6b7280;
+            margin: 0.15rem 0 0
+        }
+
+        .core-svc-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.15rem;
+            margin-bottom: 1.75rem
+        }
+
+        .core-svc-card {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 1.5rem 1.4rem 1.25rem;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            transition: all .3s cubic-bezier(.4,0,.2,1);
+            text-decoration: none;
+            color: inherit
+        }
+
+        .core-svc-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 4px;
+            transition: opacity .3s
+        }
+
+        .core-svc-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px -8px rgba(30,58,138,.12);
+            border-color: transparent
+        }
+
+        .core-svc-card.cs-blue::before { background: linear-gradient(90deg, #1e3a8a, #3b82f6) }
+        .core-svc-card.cs-purple::before { background: linear-gradient(90deg, #1e3a8a, #2563eb) }
+        .core-svc-card.cs-orange::before { background: linear-gradient(90deg, #1e3a8a, #2563eb) }
+
+        .core-svc-card .cs-icon-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.85rem
+        }
+
+        .core-svc-card .cs-icon {
+            width: 48px; height: 48px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            flex-shrink: 0
+        }
+
+        .core-svc-card .cs-tag {
+            font-size: 0.58rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 10px;
+            text-transform: uppercase;
+            letter-spacing: .04em
+        }
+
+        .core-svc-card .cs-name {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: #111827;
+            margin-bottom: 0.3rem
+        }
+
+        .core-svc-card .cs-desc {
+            font-size: 0.78rem;
+            color: #6b7280;
+            line-height: 1.55;
+            margin-bottom: 0.85rem
+        }
+
+        .core-svc-card .cs-features {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+            flex: 1
+        }
+
+        .core-svc-card .cs-features li {
+            font-size: 0.73rem;
+            color: #4b5563;
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+            font-weight: 500
+        }
+
+        .core-svc-card .cs-features li svg {
+            width: 14px; height: 14px;
+            color: #94a3b8;
+            flex-shrink: 0
+        }
+
+        .core-svc-card .cs-cta {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+            padding: 0.6rem 1rem;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            transition: all .2s;
+            color: #fff;
+            text-decoration: none;
+            margin-top: auto
+        }
+
+        .core-svc-card .cs-cta svg {
+            width: 14px; height: 14px;
+            transition: transform .2s
+        }
+
+        .core-svc-card:hover .cs-cta svg { transform: translateX(3px) }
+
+        .cs-cta-blue, .cs-cta-purple, .cs-cta-orange { background: #1e3a8a }
+        .cs-cta-blue:hover, .cs-cta-purple:hover, .cs-cta-orange:hover { background: #1e40af }
+
+        /* ── How It Works ── */
+        .hiw-section {
+            margin-bottom: 1.75rem
+        }
+
+        .hiw-header {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem
+        }
+
+        .hiw-header svg {
+            width: 18px; height: 18px;
+            color: #6b7280
+        }
+
+        .hiw-steps {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0;
+            position: relative
+        }
+
+        .hiw-step {
+            background: #fff;
+            border: 1px solid #f1f5f9;
+            padding: 1.15rem 1.25rem;
+            position: relative;
+            text-align: center;
+            transition: all .2s
+        }
+
+        .hiw-step:first-child { border-radius: 14px 0 0 14px }
+        .hiw-step:last-child { border-radius: 0 14px 14px 0 }
+
+        .hiw-step:hover {
+            z-index: 1;
+            box-shadow: 0 4px 16px rgba(0,0,0,.06);
+            transform: translateY(-2px);
+            border-radius: 14px
+        }
+
+        .hiw-num {
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            background: #1e3a8a;
+            color: #fff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.72rem;
+            font-weight: 800;
+            font-family: 'Outfit', sans-serif;
             margin-bottom: 0.6rem
         }
 
-        .svc-card .sc-name {
-            font-size: 0.88rem;
+        .hiw-step h4 {
+            font-size: 0.82rem;
             font-weight: 700;
-            margin-bottom: 0.25rem
+            color: #1e293b;
+            margin: 0 0 0.2rem
         }
 
-        .svc-card .sc-desc {
+        .hiw-step p {
             font-size: 0.72rem;
-            opacity: .85;
-            line-height: 1.45;
-            margin-bottom: 0.75rem
+            color: #6b7280;
+            margin: 0;
+            line-height: 1.5
         }
 
-        .svc-card .sc-btn {
-            display: inline-flex;
+        .hiw-arrow {
+            position: absolute;
+            right: -10px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 2;
+            color: #cbd5e1;
+            background: #f8fafc;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
             align-items: center;
-            gap: 0.35rem;
-            padding: 0.4rem 1rem;
-            background: rgba(255, 255, 255, .25);
-            border: 1px solid rgba(255, 255, 255, .4);
-            border-radius: 8px;
-            font-size: 0.75rem;
+            justify-content: center
+        }
+
+        /* ── Quick Tools ── */
+        .qt-section {
+            margin-bottom: 1.75rem
+        }
+
+        .qt-header {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
             font-weight: 700;
-            color: #fff;
-            cursor: pointer;
-            backdrop-filter: blur(4px);
-            transition: background .2s;
-            text-decoration: none
+            color: #111827;
+            margin-bottom: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem
         }
 
-        .svc-card .sc-btn:hover {
-            background: rgba(255, 255, 255, .4)
+        .qt-header svg {
+            width: 18px; height: 18px;
+            color: #6b7280
         }
 
-        .bg-blue {
-            background: linear-gradient(135deg, #1e3a8a, #2563eb)
+        .qt-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.85rem
         }
 
-        .bg-teal {
-            background: linear-gradient(135deg, #0f766e, #14b8a6)
+        .qt-card {
+            background: #fff;
+            border: 1px solid #f1f5f9;
+            border-radius: 12px;
+            padding: 1rem 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            text-decoration: none;
+            color: inherit;
+            transition: all .25s;
+            cursor: pointer
         }
 
-        .bg-orange {
-            background: linear-gradient(135deg, #c2410c, #f97316)
+        .qt-card:hover {
+            border-color: #1e3a8a;
+            box-shadow: 0 4px 14px rgba(30,58,138,.08);
+            transform: translateY(-2px)
         }
 
-        .bg-purple {
-            background: linear-gradient(135deg, #6d28d9, #8b5cf6)
+        .qt-icon {
+            width: 40px; height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.15rem;
+            flex-shrink: 0
+        }
+
+        .qt-info h4 {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0 0 0.1rem
+        }
+
+        .qt-info p {
+            font-size: 0.68rem;
+            color: #9ca3af;
+            margin: 0;
+            line-height: 1.4
+        }
+
+        @media(max-width:1100px) {
+            .core-svc-grid { grid-template-columns: 1fr 1fr }
+            .hiw-steps { grid-template-columns: 1fr }
+            .hiw-step { border-radius: 14px !important; margin-bottom: 0.5rem }
+            .hiw-arrow { display: none }
+            .qt-row { grid-template-columns: 1fr }
+        }
+
+        @media(max-width:768px) {
+            .core-svc-grid { grid-template-columns: 1fr }
         }
 
         /* ── Overview Section ── */
@@ -289,34 +610,37 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 1rem
+            margin-bottom: 0.85rem
         }
 
         .workspace-toolbar {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
+            gap: 0.65rem;
             flex-wrap: wrap;
-            margin-bottom: 1rem
+            margin-bottom: 0.85rem
         }
 
         .search-box {
             position: relative;
             flex: 1;
             min-width: 200px;
-            max-width: 340px
+            max-width: 360px
         }
 
         .search-box input {
             width: 100%;
-            padding: 0.55rem 0.85rem 0.55rem 2.25rem;
-            border: 1px solid #e5e7eb;
-            border-radius: 10px;
+            padding: 0.5rem 0.85rem 0.5rem 2.25rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
             background: #fff;
-            font-size: 0.82rem;
+            font-size: 0.8rem;
             font-family: inherit;
-            transition: all .2s
+            transition: all .2s;
+            color: #1e293b
         }
+
+        .search-box input::placeholder { color: #94a3b8 }
 
         .search-box input:focus {
             outline: none;
@@ -329,40 +653,39 @@
             left: 0.65rem;
             top: 50%;
             transform: translateY(-50%);
-            color: #9ca3af;
+            color: #94a3b8;
             pointer-events: none
         }
 
         .filter-tabs {
             display: flex;
-            gap: 2px;
-            background: #fff;
-            border-radius: 10px;
-            padding: 3px;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, .04)
+            gap: 1px;
+            background: #f1f5f9;
+            border-radius: 8px;
+            padding: 2px
         }
 
         .filter-tab {
-            padding: 0.4rem 0.85rem;
-            font-size: 0.78rem;
+            padding: 0.35rem 0.75rem;
+            font-size: 0.75rem;
             font-weight: 500;
             border: none;
             background: none;
-            color: #6b7280;
-            border-radius: 7px;
+            color: #64748b;
+            border-radius: 6px;
             cursor: pointer;
             transition: all .15s;
             font-family: inherit
         }
 
         .filter-tab.active {
-            background: #1e293b;
-            color: #fff;
-            font-weight: 600
+            background: #fff;
+            color: #0f172a;
+            font-weight: 600;
+            box-shadow: 0 1px 3px rgba(0,0,0,.06)
         }
 
         .filter-tab:hover:not(.active) {
-            background: #f9fafb;
             color: #374151
         }
 
@@ -376,36 +699,36 @@
         .btn-add {
             display: flex;
             align-items: center;
-            gap: 0.4rem;
-            padding: 0.5rem 1rem;
-            background: #1e293b;
+            gap: 0.35rem;
+            padding: 0.45rem 0.9rem;
+            background: #1e3a8a;
             color: #fff;
             border: none;
-            border-radius: 10px;
+            border-radius: 8px;
             font-weight: 600;
-            font-size: 0.8rem;
+            font-size: 0.78rem;
             cursor: pointer;
             transition: all .2s;
             font-family: inherit
         }
 
         .btn-add:hover {
-            background: #0f172a;
-            transform: translateY(-1px)
+            background: #1e40af;
+            box-shadow: 0 2px 8px rgba(30,58,138,.15)
         }
 
         .view-toggle {
             display: flex;
-            gap: 2px;
-            background: #fff;
-            border: 1px solid #e5e7eb;
+            gap: 1px;
+            background: #f1f5f9;
+            border: none;
             border-radius: 8px;
             padding: 2px
         }
 
         .view-btn {
-            width: 30px;
-            height: 30px;
+            width: 28px;
+            height: 28px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -413,262 +736,181 @@
             background: none;
             border-radius: 6px;
             cursor: pointer;
-            color: #9ca3af;
+            color: #94a3b8;
             transition: all .15s
         }
 
         .view-btn.active {
-            background: #f1f5f9;
-            color: #1f2937
+            background: #fff;
+            color: #0f172a;
+            box-shadow: 0 1px 2px rgba(0,0,0,.06)
         }
 
         /* ── Client cards ── */
         .clients-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1rem;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 0.75rem;
             transition: all .3s
         }
 
         .clients-grid.list-view {
             grid-template-columns: 1fr;
-            gap: 0.5rem
+            gap: 0.4rem
         }
 
         .client-card {
             background: #fff;
-            border: 1px solid #f1f5f9;
-            border-radius: 14px;
-            padding: 1.25rem 1.35rem;
+            border: 1px solid #e8ecf1;
+            border-radius: 10px;
+            padding: 1rem 1.15rem;
             cursor: pointer;
-            transition: all .25s;
+            transition: all .25s cubic-bezier(.4,0,.2,1);
             display: flex;
-            flex-direction: column;
-            position: relative;
-            overflow: hidden
+            align-items: center;
+            gap: 0.85rem;
+            position: relative
         }
 
         .client-card:hover {
-            box-shadow: 0 8px 24px -8px rgba(30, 58, 138, .10);
-            transform: translateY(-2px)
-        }
-
-        .client-card.selected {
-            border-color: #1e3a8a;
+            border-color: #c7d2fe;
+            box-shadow: 0 4px 16px -4px rgba(30, 58, 138, .08);
             background: #fafbff
         }
 
-        .client-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 3px;
-            height: 100%;
-            background: linear-gradient(180deg, #1e3a8a, #3b82f6);
-            opacity: 0;
-            transition: opacity .25s
-        }
-
-        .client-card:hover::before,
-        .client-card.selected::before {
-            opacity: 1
+        .client-card.selected {
+            border-color: #818cf8;
+            background: #f5f7ff;
+            box-shadow: 0 0 0 2px rgba(99,102,241,.1)
         }
 
         .clients-grid.list-view .client-card {
-            display: grid;
-            grid-template-columns: auto 1fr auto auto;
-            align-items: center;
-            gap: 1rem;
-            padding: 0.85rem 1.25rem
+            padding: 0.75rem 1.1rem
         }
 
-        .clients-grid.list-view .card-body {
-            display: none
-        }
+        .clients-grid.list-view .cc-details { display: none }
 
-        .card-header {
-            display: flex;
-            align-items: flex-start;
-            gap: 0.85rem;
-            margin-bottom: 0.85rem
-        }
-
-        .client-avatar {
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
+        .cc-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.15rem;
+            font-size: 0.95rem;
             font-weight: 700;
             font-family: 'Outfit', sans-serif;
             flex-shrink: 0;
-            color: #fff
+            color: #fff;
+            background: linear-gradient(135deg, #334155, #475569)
         }
 
-        .avatar-blue {
-            background: #1282a2
-        }
+        .cc-avatar.av-1 { background: linear-gradient(135deg, #1e3a8a, #3b82f6) }
+        .cc-avatar.av-2 { background: linear-gradient(135deg, #1e40af, #2563eb) }
+        .cc-avatar.av-3 { background: linear-gradient(135deg, #1e3a5c, #475985) }
+        .cc-avatar.av-4 { background: linear-gradient(135deg, #1a2e6e, #3a5fc7) }
+        .cc-avatar.av-5 { background: linear-gradient(135deg, #172554, #1e40af) }
+        .cc-avatar.av-6 { background: linear-gradient(135deg, #1e3a8a, #4f6ec4) }
 
-        .avatar-orange {
-            background: #db2777
-        }
-
-        .avatar-purple {
-            background: #8b5cf6
-        }
-
-        .avatar-green {
-            background: #10b981
-        }
-
-        .avatar-pink {
-            background: #ec4899
-        }
-
-        .avatar-teal {
-            background: #14b8a6
-        }
-
-        .client-meta {
+        .cc-content {
             flex: 1;
-            min-width: 0
-        }
-
-        .client-meta h3 {
-            font-size: 0.95rem;
-            font-weight: 700;
-            color: #1e293b;
-            margin: 0 0 0.15rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis
-        }
-
-        .client-meta-id {
-            font-size: 0.72rem;
-            color: #64748b;
-            background: #f1f5f9;
-            padding: 1px 7px;
-            border-radius: 5px;
-            display: inline-block
-        }
-
-        .card-body {
-            margin-bottom: 0.5rem
-        }
-
-        .pan-section {
+            min-width: 0;
             display: flex;
             flex-direction: column;
-            gap: 1px
+            gap: 0.15rem
         }
 
-        .info-label {
-            font-size: 0.68rem;
-            text-transform: uppercase;
-            letter-spacing: 0.04em;
-            color: #64748b;
-            font-weight: 600
-        }
-
-        .info-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 2px
-        }
-
-        .info-value {
-            font-size: 0.85rem;
+        .cc-name {
+            font-size: 0.88rem;
+            font-weight: 700;
             color: #0f172a;
-            font-weight: 500;
-            font-family: 'SF Mono', 'Consolas', monospace
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            line-height: 1.3
         }
 
-        .active-count {
-            font-size: 0.78rem;
-            color: #475569;
-            font-weight: 500
+        .cc-id-line {
+            font-size: 0.7rem;
+            color: #64748b;
+            font-family: 'SF Mono', 'Consolas', 'Monaco', monospace;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            letter-spacing: 0.01em
         }
 
-        .card-services {
+        .cc-details {
             display: flex;
-            flex-wrap: wrap;
-            gap: 0.35rem;
-            margin-bottom: 0.65rem
+            align-items: center;
+            gap: 0.65rem;
+            margin-top: 0.25rem
         }
 
-        .svc-pill {
-            font-size: 0.68rem;
+        .cc-detail-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.62rem;
             font-weight: 600;
-            padding: 2px 10px;
-            border-radius: 16px;
-            letter-spacing: 0.02em
+            color: #64748b;
+            padding: 0.15rem 0.5rem;
+            background: #f8fafc;
+            border-radius: 4px;
+            border: 1px solid #f1f5f9;
+            text-transform: uppercase;
+            letter-spacing: 0.03em
         }
 
-        .svc-blue {
-            background: #bae6fd;
-            color: #0284c7
-        }
-
-        .svc-green {
-            background: #bbf7d0;
-            color: #16a34a
-        }
-
-        .svc-purple {
-            background: #e9d5ff;
-            color: #9333ea
-        }
-
-        .svc-orange {
-            background: #fef08a;
-            color: #ca8a04
-        }
-
-        .svc-gray {
-            background: #f1f5f9;
-            color: #64748b
-        }
-
-        .card-divider {
-            height: 1px;
-            background: #f1f5f9;
-            margin: 0.35rem -1.35rem 0.65rem
-        }
-
-        .card-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: auto
-        }
-
-        .footer-icons {
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
+        .cc-detail-chip svg {
+            width: 10px; height: 10px;
             color: #94a3b8
         }
 
-        .card-btn-add {
-            background: #1e293b;
-            color: #fff;
-            border: none;
-            padding: 0.4rem 0.85rem;
-            border-radius: 7px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all .15s
+        .cc-right {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-shrink: 0
         }
 
-        .card-btn-add:hover {
-            background: #0f172a
+        .cc-status {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #d1d5db;
+            flex-shrink: 0
         }
+
+        .cc-status.active { background: #22c55e }
+
+        .cc-open-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            border-radius: 7px;
+            border: 1px solid #e2e8f0;
+            background: #fff;
+            color: #94a3b8;
+            cursor: pointer;
+            transition: all .2s;
+            flex-shrink: 0
+        }
+
+        .cc-open-btn:hover {
+            border-color: #1e3a8a;
+            color: #1e3a8a;
+            background: #f5f7ff
+        }
+
+        .cc-open-btn svg {
+            width: 14px; height: 14px
+        }
+
+        /* legacy classes kept for panel compatibility */
+        .card-divider, .card-footer, .card-header, .card-body, .card-services, .client-avatar { display: none }
 
         /* ── Panel ── */
         .detail-panel {
@@ -1334,10 +1576,6 @@
         }
 
         @media(max-width:1100px) {
-            .svc-cards-row {
-                grid-template-columns: repeat(2, 1fr)
-            }
-
             .overview-grid {
                 grid-template-columns: repeat(2, 1fr)
             }
@@ -1350,10 +1588,6 @@
 
             .firm-main {
                 margin-left: 0
-            }
-
-            .svc-cards-row {
-                grid-template-columns: 1fr
             }
 
             .overview-grid {
@@ -1378,6 +1612,36 @@
             <!-- ═══ Shared Main Navigation ═══ -->
             <div id="app-sidebar-main" data-active="home"></div>
             <script src="app-sidebar.js"></script>
+
+            <!-- ═══ Services Section ═══ -->
+            <div class="sb-section">
+                <div class="sb-section-label">Services</div>
+                <a href="service-gst-overview.html" class="sb-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="1" x2="12" y2="23"/>
+                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                    </svg>
+                    GST Filing
+                    <span class="sb-badge" style="background:#f1f5f9;color:#475569">Live</span>
+                </a>
+                <a href="service-data-entry-overview.html" class="sb-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                    </svg>
+                    Data Entry
+                    <span class="sb-badge" style="background:#f1f5f9;color:#475569">Live</span>
+                </a>
+                <a href="ca-certificates.html" class="sb-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="8" r="6"/>
+                        <path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/>
+                    </svg>
+                    CA Certificates
+                    <span class="sb-badge" style="background:#f1f5f9;color:#475569">Live</span>
+                </a>
+            </div>
+            <div class="sb-divider"></div>
 
             <!-- ═══ Page-Specific: Quick Links ═══ -->
             <div class="sb-section">
@@ -1410,145 +1674,133 @@
 
         <!-- ══ MAIN CONTENT ══ -->
         <main class="firm-main" id="main-container">
-            <!-- Welcome -->
-            <div class="welcome-bar">
-                <h1>Welcome, <span id="firm-name">User</span></h1>
-                <p>Your firm's compliance command center — manage clients, certificates, and services.</p>
-            </div>
+            <!-- Hidden firm-name element for JS reference -->
+            <span id="firm-name" style="display:none">User</span>
 
-            <!-- Service Cards -->
-            <div class="section-title">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="3" />
-                    <path
-                        d="M12 2v4m0 12v4m-7.07-14.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83" />
-                </svg>
-                Our Services
-            </div>
-            <div class="svc-cards-row">
-                <a href="ca-certificates.html" class="svc-card bg-blue" style="text-decoration:none">
-                    <div class="sc-icon">📝</div>
-                    <div class="sc-name">CA Certificates</div>
-                    <div class="sc-desc">Generate GST, Financial, Net Worth, and FEMA certificates from templates.</div>
-                    <span class="sc-btn">Proceed →</span>
-                </a>
-                <a href="agreements.html" class="svc-card bg-teal" style="text-decoration:none">
-                    <div class="sc-icon">📋</div>
-                    <div class="sc-name">Agreements</div>
-                    <div class="sc-desc">Create 30+ legal agreements with AI-powered clause selection.</div>
-                    <span class="sc-btn">Proceed →</span>
-                </a>
-                <a href="ai-gpt.html" class="svc-card bg-orange" style="text-decoration:none">
-                    <div class="sc-icon">🤖</div>
-                    <div class="sc-name">AI GPT Assistant</div>
-                    <div class="sc-desc">Chat with AI for tax queries, compliance guidance, and document analysis.</div>
-                    <span class="sc-btn">Proceed →</span>
-                </a>
-                <a href="tool-gstin-validator.html" class="svc-card bg-purple" style="text-decoration:none">
-                    <div class="sc-icon">🔍</div>
-                    <div class="sc-name">GSTIN Validator</div>
-                    <div class="sc-desc">Validate GSTINs quickly and accurately — single or bulk verification.</div>
-                    <span class="sc-btn">Proceed →</span>
-                </a>
-            </div>
-
-            <!-- Overview Stats -->
-            <div class="section-title">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M3 3v18h18" />
-                    <path d="M18 17V9" />
-                    <path d="M13 17V5" />
-                    <path d="M8 17v-3" />
-                </svg>
-                Overview
-            </div>
-            <div class="overview-grid">
-                <div class="ov-card">
-                    <div class="ov-icon" style="background:#eff6ff;color:#3b82f6">👥</div>
-                    <div>
-                        <div class="ov-num" id="stat-total">0</div>
-                        <div class="ov-label">Clients</div>
-                    </div>
+            <!-- ═══ Core Services — The main 3 ═══ -->
+            <div class="core-svc-header">
+                <div>
+                    <h2>Core Services <span class="cs-badge">Live</span></h2>
+                    <p>Select a client below, then open any service to begin. Here's what you can do:</p>
                 </div>
-                <div class="ov-card">
-                    <div class="ov-icon" style="background:#fef3c7;color:#d97706">⚡</div>
-                    <div>
-                        <div class="ov-num" id="stat-services">0</div>
-                        <div class="ov-label">Active Services</div>
+            </div>
+            <div class="core-svc-grid">
+                <!-- GST Filing -->
+                <div class="core-svc-card cs-blue">
+                    <div class="cs-icon-row">
+                        <div class="cs-icon" style="background:#f1f5f9">🧾</div>
+                        <span class="cs-tag" style="background:#f1f5f9;color:#475569">Most Used</span>
                     </div>
+                    <div class="cs-name">GST Filing & Reconciliation</div>
+                    <p class="cs-desc">Complete GST compliance suite for your clients — automated reconciliation, ITC optimization, and AI-powered error detection.</p>
+                    <ul class="cs-features">
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>GSTR-1 vs 3B / 2B vs 3B reconciliation</li>
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>ITC status summary with AI analysis</li>
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>E-Invoice vs Sales Register matching</li>
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Refund tracking with ARN status</li>
+                    </ul>
+                    <span class="cs-cta cs-cta-blue" onclick="window.location.href='service-gst-overview.html'">Start Now <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg></span>
                 </div>
-                <div class="ov-card">
-                    <div class="ov-icon" style="background:#ecfdf5;color:#10b981">📄</div>
-                    <div>
-                        <div class="ov-num" id="stat-gstins">0</div>
-                        <div class="ov-label">GSTINs</div>
+                <!-- Data Entry -->
+                <div class="core-svc-card cs-orange">
+                    <div class="cs-icon-row">
+                        <div class="cs-icon" style="background:#f1f5f9">⌨️</div>
+                        <span class="cs-tag" style="background:#f1f5f9;color:#475569">Tally Sync</span>
                     </div>
+                    <div class="cs-name">Data Entry & Accounting</div>
+                    <p class="cs-desc">Quick-entry workspace for banking, sales, purchase, and journal transactions. Sync directly with Tally for seamless accounting.</p>
+                    <ul class="cs-features">
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Bank, Sales, Purchase voucher entry</li>
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Ledger master management</li>
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>One-click Tally company sync</li>
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>OCR document scanning</li>
+                    </ul>
+                    <span class="cs-cta cs-cta-orange" onclick="window.location.href='service-data-entry-overview.html'">Start Now <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg></span>
                 </div>
-                <div class="ov-card">
-                    <div class="ov-icon" style="background:#f5f3ff;color:#8b5cf6">🔑</div>
-                    <div>
-                        <div class="ov-num" id="stat-pans">0</div>
-                        <div class="ov-label">PANs</div>
+                <!-- CA Certificates -->
+                <div class="core-svc-card cs-purple">
+                    <div class="cs-icon-row">
+                        <div class="cs-icon" style="background:#f1f5f9">📃</div>
+                        <span class="cs-tag" style="background:#f1f5f9;color:#475569">Templates</span>
                     </div>
+                    <div class="cs-name">CA Certificate Generation</div>
+                    <p class="cs-desc">Generate legally compliant certificates using standardized templates. Fill data once, produce professionally formatted documents.</p>
+                    <ul class="cs-features">
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>GST, Net Worth, Financial certificates</li>
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>FEMA, Bank, and Tax certificates</li>
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Auto-populated from client data</li>
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Download as Word/PDF instantly</li>
+                    </ul>
+                    <span class="cs-cta cs-cta-purple" onclick="window.location.href='ca-certificates.html'">Start Now <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg></span>
                 </div>
             </div>
 
-            <!-- Client List -->
-            <div class="client-section-header">
-                <div class="section-title" style="margin-bottom:0">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                        <circle cx="9" cy="7" r="4" />
-                    </svg>
-                    Your Clients
+            <!-- ═══ How It Works ═══ -->
+            <div class="hiw-section">
+                <div class="hiw-header">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                    How It Works
                 </div>
-            </div>
-            <div class="workspace-toolbar">
-                <div class="search-box">
-                    <span class="s-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2.5">
-                            <circle cx="11" cy="11" r="8" />
-                            <path d="m21 21-4.3-4.3" />
-                        </svg></span>
-                    <input type="text" id="client-search" placeholder="Search clients, GSTINs, PAN…">
-                </div>
-                <div class="filter-tabs">
-                    <button class="filter-tab active" data-filter="all">All</button>
-                    <button class="filter-tab" data-filter="active">Active</button>
-                    <button class="filter-tab" data-filter="new">New</button>
-                </div>
-                <div class="toolbar-right">
-                    <div class="view-toggle">
-                        <button class="view-btn active" id="grid-btn" title="Grid view" onclick="setView('grid')"><svg
-                                width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <rect x="3" y="3" width="7" height="7" rx="1" />
-                                <rect x="14" y="3" width="7" height="7" rx="1" />
-                                <rect x="3" y="14" width="7" height="7" rx="1" />
-                                <rect x="14" y="14" width="7" height="7" rx="1" />
-                            </svg></button>
-                        <button class="view-btn" id="list-btn" title="List view" onclick="setView('list')"><svg
-                                width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <line x1="8" y1="6" x2="21" y2="6" />
-                                <line x1="8" y1="12" x2="21" y2="12" />
-                                <line x1="8" y1="18" x2="21" y2="18" />
-                                <line x1="3" y1="6" x2="3.01" y2="6" />
-                                <line x1="3" y1="12" x2="3.01" y2="12" />
-                                <line x1="3" y1="18" x2="3.01" y2="18" />
-                            </svg></button>
+                <div class="hiw-steps">
+                    <div class="hiw-step">
+                        <div class="hiw-num">1</div>
+                        <h4>Add Your Client</h4>
+                        <p>Onboard clients with their GSTIN, PAN, and entity details.</p>
+                        <div class="hiw-arrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m9 18 6-6-6-6"/></svg></div>
                     </div>
-                    <button class="btn-add" onclick="openDrawer()">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2.5">
-                            <path d="M12 5v14" />
-                            <path d="M5 12h14" />
-                        </svg>
-                        Add Client
-                    </button>
+                    <div class="hiw-step">
+                        <div class="hiw-num">2</div>
+                        <h4>Open Client Workspace</h4>
+                        <p>Click a client to enter their workspace with all services ready.</p>
+                        <div class="hiw-arrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m9 18 6-6-6-6"/></svg></div>
+                    </div>
+                    <div class="hiw-step">
+                        <div class="hiw-num">3</div>
+                        <h4>Use Any Service</h4>
+                        <p>File GST, generate certificates, or enter data — all AI-powered.</p>
+                    </div>
                 </div>
             </div>
-            <div id="clients-grid" class="clients-grid"></div>
+
+            <!-- ═══ Quick Tools ═══ -->
+            <div class="qt-section">
+                <div class="qt-header">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+                    Quick Tools
+                </div>
+                <div class="qt-row">
+                    <a href="agreements.html" class="qt-card">
+                        <div class="qt-icon" style="background:#f1f5f9">📋</div>
+                        <div class="qt-info">
+                            <h4>Agreements</h4>
+                            <p>Create 30+ legal agreements with AI clause selection</p>
+                        </div>
+                    </a>
+                    <a href="ai-gpt.html" class="qt-card">
+                        <div class="qt-icon" style="background:#f1f5f9">🤖</div>
+                        <div class="qt-info">
+                            <h4>AI GPT Assistant</h4>
+                            <p>Chat with AI for tax queries & document analysis</p>
+                        </div>
+                    </a>
+                    <a href="tool-gstin-validator.html" class="qt-card">
+                        <div class="qt-icon" style="background:#f1f5f9">🔍</div>
+                        <div class="qt-info">
+                            <h4>GSTIN Validator</h4>
+                            <p>Single or bulk GSTIN verification in seconds</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Hidden stat elements for JS compatibility -->
+            <div style="display:none">
+                <span id="stat-total">0</span>
+                <span id="stat-services">0</span>
+                <span id="stat-gstins">0</span>
+                <span id="stat-pans">0</span>
+                <div id="clients-grid"></div>
+            </div>
         </main>
     </div>
 
@@ -1670,11 +1922,17 @@
         function getAvatarColor(name) { let h = 0; for (let i = 0; i < name.length; i++)h = name.charCodeAt(i) + ((h << 5) - h); return avatarColors[Math.abs(h) % avatarColors.length] }
         function getSvcColor(i) { return svcColors[i % svcColors.length] }
 
+        // Scroll to clients section when CTA is clicked
+        function scrollToClients() {
+            const el = document.getElementById('clients-grid');
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
         // ====== LOAD CLIENTS ======
         async function loadClients() {
             try {
                 const r = await authFetch('/clients/'); if (!r.ok) throw new Error();
-                allClients = await r.json(); updateStats(); renderClients(allClients);
+                allClients = await r.json(); clientsLoaded = true; updateStats(); renderClients(allClients);
             } catch (e) {
                 console.error(e);
                 document.getElementById('clients-grid').innerHTML = '<div class="empty-state"><div style="font-size:2.5rem;margin-bottom:0.75rem">📋</div><h3>No clients found</h3><p>Add your first client to get started.</p></div>';
@@ -1694,7 +1952,7 @@
             animateCounter('stat-gstins', gstins);
             animateCounter('stat-pans', pans);
             const sbc = document.getElementById('sb-client-count'); if (sbc) sbc.textContent = total;
-            const sbm = document.getElementById('sb-main-client-count'); if (sbm) sbm.textContent = total;
+            const sbm = document.getElementById('sb-main-client-count'); if (sbm) sbm.textContent = total ? `(${total})` : '';
         }
 
         function animateCounter(id, target) {
@@ -1703,31 +1961,58 @@
             requestAnimationFrame(step);
         }
 
+        const avColors = ['av-1','av-2','av-3','av-4','av-5','av-6'];
+        function getAvColor(name) { let h = 0; for (let i = 0; i < name.length; i++) h = name.charCodeAt(i) + ((h << 5) - h); return avColors[Math.abs(h) % avColors.length] }
+
         function renderClients(clients) {
             const grid = document.getElementById('clients-grid'); grid.innerHTML = '';
-            if (!clients.length) { grid.innerHTML = '<div class="empty-state"><div style="font-size:2.5rem;margin-bottom:0.75rem">📋</div><h3>No clients found</h3><p>Add your first client to get started with compliance tracking.</p></div>'; return }
+            if (!clients.length) {
+                grid.innerHTML = `<div class="empty-state">
+                    <div style="font-size:2rem;margin-bottom:0.65rem;opacity:.5">👤</div>
+                    <h3>No clients yet</h3>
+                    <p>Add your first client to begin using GST Filing, Certificates, and Data Entry services.</p>
+                </div>`;
+                return;
+            }
             clients.forEach(client => {
                 const initial = client.name.charAt(0).toUpperCase();
-                const colorClass = getAvatarColor(client.name);
+                const avClass = getAvColor(client.name);
+                const isActive = client.services && client.services.length > 0;
+                const gstin = (client.gstins && client.gstins[0]) || '';
+                const pan = client.pan || '';
+                let idLine = '';
+                if (gstin) idLine = gstin;
+                else if (pan) idLine = `PAN: ${pan}`;
+                else idLine = 'No GSTIN';
+
+                const svcCount = (client.services && client.services.length) || 0;
+                const gstinCount = (client.gstins && client.gstins.length) || 0;
+
                 const card = document.createElement('div');
                 card.className = `client-card${selectedClientId === client.id ? ' selected' : ''}`;
                 card.dataset.id = client.id;
                 card.dataset.clientName = client.name.toLowerCase();
-                card.dataset.clientGstin = (client.gstins && client.gstins[0]) || '';
-                card.dataset.services = (client.services && client.services.length > 0) ? 'active' : 'new';
+                card.dataset.clientGstin = gstin;
+                card.dataset.services = isActive ? 'active' : 'new';
                 card.onclick = () => openPanel(client);
-                const displayId = (client.gstins && client.gstins[0]) ? client.gstins[0] : (client.pan ? `PAN: ${client.pan}` : '—');
-                let svcHtml = '';
-                if (client.services && client.services.length > 0) {
-                    svcHtml = client.services.slice(0, 3).map((s, i) => { const n = typeof s === 'object' ? s.name : s; return `<span class="svc-pill ${getSvcColor(i)}">${n}</span>` }).join('');
-                    if (client.services.length > 3) svcHtml += `<span class="svc-pill svc-gray">+${client.services.length - 3}</span>`;
-                } else { svcHtml = '<span class="svc-pill svc-gray">No services</span>' }
+
                 card.innerHTML = `
-                    <div class="card-header"><div class="client-avatar ${colorClass}">${initial}</div><div class="client-meta"><h3>${client.name}</h3><span class="client-meta-id">${displayId}</span></div></div>
-                    <div class="card-body pan-section"><span class="info-label">PAN</span><div class="info-row"><span class="info-value">${client.pan || '—'}</span><span class="active-count">${(client.services && client.services.length) || 0} active</span></div></div>
-                    <div class="card-services">${svcHtml}</div>
-                    <div class="card-divider"></div>
-                    <div class="card-footer" onclick="event.stopPropagation()"><div class="footer-icons"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg></div><button class="card-btn-add" onclick="window.location.href='services-dashboard.html?clientId=${client.id}'">Open Workspace</button></div>`;
+                    <div class="cc-avatar ${avClass}">${initial}</div>
+                    <div class="cc-content">
+                        <div class="cc-name">${client.name}</div>
+                        <div class="cc-id-line">${idLine}</div>
+                        <div class="cc-details">
+                            ${gstinCount ? `<span class="cc-detail-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>${gstinCount} GSTIN${gstinCount > 1 ? 's' : ''}</span>` : ''}
+                            ${pan ? `<span class="cc-detail-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>${pan}</span>` : ''}
+                            ${svcCount ? `<span class="cc-detail-chip" style="color:#15803d;background:#f0fdf4;border-color:#dcfce7"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color:#22c55e"><polyline points="20 6 9 17 4 12"/></svg>${svcCount} svc</span>` : ''}
+                        </div>
+                    </div>
+                    <div class="cc-right">
+                        <span class="cc-status${isActive ? ' active' : ''}" title="${isActive ? 'Active' : 'New'}"></span>
+                        <button class="cc-open-btn" title="Open Workspace" onclick="event.stopPropagation();window.location.href='services-dashboard.html?clientId=${client.id}'">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg>
+                        </button>
+                    </div>`;
                 grid.appendChild(card);
             });
         }
@@ -1777,16 +2062,26 @@
 
         document.addEventListener('keydown', e => { if (e.key === 'Escape') { closePanel(); closeDrawer(); closeClientListPanel() } });
 
-        // ====== CLIENT LIST PANEL ======
         let clSortCol = 'name', clSortAsc = true;
-
+        let clientsLoaded = false;
         function toggleClientListPanel() {
             const p = document.getElementById('cl-panel');
             if (p.classList.contains('open')) { closeClientListPanel() } else { openClientListPanel() }
         }
-        function openClientListPanel() {
+        window.toggleClientListPanel = toggleClientListPanel;
+
+        async function openClientListPanel() {
             document.getElementById('cl-panel').classList.add('open');
             document.getElementById('cl-overlay').classList.add('open');
+            if (!clientsLoaded || !allClients.length) {
+                const tbody = document.getElementById('cl-table-body');
+                tbody.innerHTML = '<tr><td colspan="7" class="cl-empty" style="text-align:center;padding:2rem"><div style="font-size:1.5rem;margin-bottom:0.5rem">⏳</div>Loading clients...</td></tr>';
+                document.getElementById('cl-panel-count').textContent = '…';
+                try {
+                    const r = await authFetch('/clients/');
+                    if (r.ok) { allClients = await r.json(); clientsLoaded = true; updateStats(); renderClients(allClients); }
+                } catch(e) { console.error(e); }
+            }
             renderClientTable(allClients);
         }
         function closeClientListPanel() {

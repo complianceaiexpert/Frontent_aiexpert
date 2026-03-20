@@ -92,7 +92,7 @@
                     <button class="dp-close" onclick="closeDrivePicker()">✕</button>
                 </div>
                 <div class="dp-body" id="dp-body"></div>
-                <div class="dp-footer">Files are loaded from the client's ComplianceAI Drive</div>
+                <div class="dp-footer">Files are loaded from the client's Suvidha AI Drive</div>
             </div>
         </div>`;
         document.body.appendChild(div.firstElementChild);

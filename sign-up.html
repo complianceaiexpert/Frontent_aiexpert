@@ -4,9 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up — ComplianceAI Expert</title>
+    <title>Sign Up — Suvidha AI</title>
     <meta name="description"
-        content="Create your ComplianceAI Expert account. Sign up with Email, Phone Number, or Google to access 30+ CA tools and AI-powered compliance features.">
+        content="Create your Suvidha AI account. Sign up with Email, Phone Number, or Google to access 30+ CA tools and AI-powered compliance features.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -701,8 +701,8 @@
         <!-- ══════ LEFT — BRAND + FEATURES ══════ -->
         <div class="auth-left">
             <a href="index.html" class="left-logo">
-                <div class="logo-box">CE</div>
-                <span class="logo-text">ComplianceAIexpert</span>
+                <div class="logo-box">SA</div>
+                <span class="logo-text">Suvidha AI</span>
             </a>
 
             <div class="left-hero">
@@ -827,11 +827,7 @@
                             </div>
                         </div>
 
-                        <div class="checkbox-row">
-                            <input type="checkbox" id="emailTerms" required>
-                            <label for="emailTerms">I agree to the <a href="#">Terms of Service</a> and <a
-                                    href="#">Privacy Policy</a></label>
-                        </div>
+
 
                         <button type="submit" class="btn-submit" id="btn-email-submit">Create Account</button>
                     </form>
@@ -884,18 +880,14 @@
                                 number</div>
                         </div>
 
-                        <div class="checkbox-row">
-                            <input type="checkbox" id="phoneTerms" required>
-                            <label for="phoneTerms">I agree to the <a href="#">Terms of Service</a> and <a
-                                    href="#">Privacy Policy</a></label>
-                        </div>
+
 
                         <button type="submit" class="btn-submit" id="btn-phone-submit">Create Account</button>
                     </form>
                 </div>
 
                 <p class="terms-note">
-                    By signing up, you'll get full access to 30+ CA tools and AI-powered features.
+                    By clicking Create Account, you agree to our <a href="terms-conditions.html">Terms & Conditions</a>.
                 </p>
             </div>
         </div>
@@ -1018,7 +1010,6 @@
             const firm_name = document.getElementById('emailFirmName').value.trim();
             const email = document.getElementById('emailAddress').value.trim();
             const password = document.getElementById('emailPassword').value;
-            const terms = document.getElementById('emailTerms').checked;
             const btn = document.getElementById('btn-email-submit');
 
             // Validation
@@ -1028,10 +1019,6 @@
             }
             if (!isValidPassword(password)) {
                 showFieldError('passwordError', true);
-                return;
-            }
-            if (!terms) {
-                showToast('❌ Please agree to the Terms of Service', 'error');
                 return;
             }
 
@@ -1075,7 +1062,6 @@
             const phone_number = document.getElementById('phoneNumber').value.trim();
             const email = document.getElementById('phoneEmail').value.trim() || null;
             const password = document.getElementById('phonePassword').value;
-            const terms = document.getElementById('phoneTerms').checked;
             const btn = document.getElementById('btn-phone-submit');
 
             // Validation
@@ -1085,10 +1071,6 @@
             }
             if (!isValidPassword(password)) {
                 showFieldError('phonePasswordError', true);
-                return;
-            }
-            if (!terms) {
-                showToast('❌ Please agree to the Terms of Service', 'error');
                 return;
             }
 
