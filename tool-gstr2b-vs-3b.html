@@ -805,6 +805,227 @@
                 display: none
             }
         }
+
+        /* ═══ RECENT JOBS SECTION ═══ */
+        .jobs-section {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .jobs-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .jobs-header h3 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #111827;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0;
+        }
+
+        .jobs-header h3 svg {
+            width: 18px;
+            height: 18px;
+            color: #6b7280;
+        }
+
+        .jobs-count {
+            font-size: 0.62rem;
+            font-weight: 700;
+            background: #dbeafe;
+            color: #1e3a8a;
+            padding: 0.15rem 0.45rem;
+            border-radius: 6px;
+            margin-left: 0.25rem;
+        }
+
+        .job-row {
+            display: flex;
+            align-items: center;
+            padding: 0.85rem 1rem;
+            border: 1px solid #f1f5f9;
+            border-radius: 10px;
+            margin-bottom: 0.5rem;
+            transition: all 0.15s;
+            gap: 1rem;
+        }
+
+        .job-row:hover {
+            background: #f8fafc;
+            border-color: #e5e7eb;
+        }
+
+        .job-row.has-drive {
+            border-left: 3px solid #0891b2;
+        }
+
+        .job-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 9px;
+            background: #eff6ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .job-details {
+            flex: 1;
+        }
+
+        .job-name {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 0.15rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .job-drive-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.2rem;
+            font-size: 0.58rem;
+            font-weight: 700;
+            color: #0891b2;
+            background: #ecfeff;
+            padding: 0.12rem 0.4rem;
+            border-radius: 5px;
+            border: 1px solid #cffafe;
+        }
+
+        .job-meta {
+            font-size: 0.7rem;
+            color: #9ca3af;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            flex-wrap: wrap;
+        }
+
+        .job-meta-sep {
+            color: #d1d5db;
+        }
+
+        .job-time {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.2rem;
+        }
+
+        .job-file-tag {
+            background: #f1f5f9;
+            padding: 0.1rem 0.35rem;
+            border-radius: 4px;
+            font-size: 0.62rem;
+            color: #64748b;
+        }
+
+        .job-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+        }
+
+        .job-status {
+            font-size: 0.62rem;
+            font-weight: 700;
+            padding: 0.2rem 0.55rem;
+            border-radius: 9999px;
+            text-transform: uppercase;
+        }
+
+        .job-status.queued {
+            background: #f3f4f6;
+            color: #4b5563;
+        }
+
+        .job-status.processing {
+            background: #dbeafe;
+            color: #1e3a8a;
+        }
+
+        .job-status.completed {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .job-status.failed {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .job-download {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.3rem 0.7rem;
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: #fff;
+            border: none;
+            border-radius: 7px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .job-download:hover {
+            box-shadow: 0 2px 8px rgba(30, 58, 138, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .job-view-drive {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.3rem 0.65rem;
+            background: #ecfeff;
+            color: #0891b2;
+            border: 1px solid #cffafe;
+            border-radius: 7px;
+            font-size: 0.68rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .job-view-drive:hover {
+            background: #cffafe;
+            border-color: #0891b2;
+        }
+
+        .jobs-empty {
+            text-align: center;
+            padding: 2.5rem 1rem;
+            color: #9ca3af;
+        }
+
+        .jobs-empty .empty-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.75rem;
+            opacity: 0.4;
+        }
+
+        .jobs-empty p {
+            font-size: 0.82rem;
+            margin: 0;
+        }
     </style>
 </head>
 
@@ -984,6 +1205,29 @@
                     </div>
                 </div>
 
+                <!-- ═══ RECENT JOBS ═══ -->
+                <div class="jobs-section" id="jobs-section">
+                    <div class="jobs-header">
+                        <h3>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10" />
+                                <polyline points="12 6 12 12 16 14" />
+                            </svg>
+                            Recent Reconciliation Jobs
+                            <span class="jobs-count" id="jobs-count">0</span>
+                        </h3>
+                        <button class="compare-btn" onclick="loadJobs()" style="font-size:0.72rem;padding:0.35rem 0.75rem;box-shadow:none;background:#f1f5f9;color:#374151">
+                            ↻ Refresh
+                        </button>
+                    </div>
+                    <div id="jobs-list">
+                        <div class="jobs-empty">
+                            <div class="empty-icon">📂</div>
+                            <p>No reconciliation jobs yet. Upload files and run a comparison above.</p>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </main>
     </div>
@@ -1000,6 +1244,7 @@
         let parsed2B = null, parsed3B = null;
         let detected3BPeriod = null;  // { month: 'April', year: '2025', monthNum: 4 }
         let file2BName = '', file3BName = '';
+        let rawFile2B = null, rawFile3B = null; // Keep raw File refs for backend submission
 
         const MONTH_MAP = {
             'jan': 1, 'january': 1, 'feb': 2, 'february': 2, 'mar': 3, 'march': 3,
@@ -1074,8 +1319,8 @@
             fi.className = 'fi done';
             fi.textContent = (type === '2b' ? '📊 2B: ✓ ' : '📈 3B: ✓ ') + file.name;
 
-            if (type === '2b') file2BName = file.name;
-            else file3BName = file.name;
+            if (type === '2b') { file2BName = file.name; rawFile2B = file; }
+            else { file3BName = file.name; rawFile3B = file; }
 
             // Parse
             if (file.name.endsWith('.pdf')) {
@@ -1753,6 +1998,42 @@
             document.getElementById('results-dash').classList.add('visible');
             document.getElementById('results-dash').scrollIntoView({ behavior: 'smooth', block: 'start' });
             showToast('ITC comparison complete!', 'success');
+
+            // ── Save to backend (background) ── creates job record + downloadable report
+            submitToBackend();
+        }
+
+        // ── Submit files to backend to create a job record + downloadable report ──
+        async function submitToBackend() {
+            if (!rawFile2B || !rawFile3B) {
+                console.log('No raw files to submit to backend');
+                return;
+            }
+            try {
+                const token = localStorage.getItem('access_token');
+                const params = new URLSearchParams(window.location.search);
+                const clientId = params.get('clientId');
+
+                const fd = new FormData();
+                fd.append('file1', rawFile2B);
+                fd.append('file2', rawFile3B);
+                if (clientId) fd.append('client_id', clientId);
+
+                const res = await fetch(`${API_BASE_URL}/reconciliation/gstr2b-vs-3b`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    body: fd
+                });
+
+                if (res.ok) {
+                    showToast('Report saved — available in Recent Jobs below', 'success');
+                    loadJobs();
+                } else {
+                    console.warn('Backend job creation returned', res.status);
+                }
+            } catch (err) {
+                console.warn('Backend submit (non-blocking):', err.message);
+            }
         }
 
         function showToast(msg, type) {
@@ -1761,6 +2042,148 @@
             t.className = 'tool-toast ' + type; t.classList.add('show');
             setTimeout(() => t.classList.remove('show'), 3000);
         }
+
+        // ═══ RECENT JOBS ═══
+        let pollingInterval = null;
+
+        function timeAgo(dateStr) {
+            const now = new Date();
+            const date = new Date(dateStr);
+            const diffMs = now - date;
+            const diffSec = Math.floor(diffMs / 1000);
+            const diffMin = Math.floor(diffSec / 60);
+            const diffHr = Math.floor(diffMin / 60);
+            const diffDay = Math.floor(diffHr / 24);
+            if (diffSec < 60) return 'Just now';
+            if (diffMin < 60) return `${diffMin} min${diffMin > 1 ? 's' : ''} ago`;
+            if (diffHr < 24) return `${diffHr} hr${diffHr > 1 ? 's' : ''} ago`;
+            if (diffDay === 1) return 'Yesterday';
+            if (diffDay < 7) return `${diffDay} days ago`;
+            return date.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+        }
+
+        async function loadJobs() {
+            const params = new URLSearchParams(window.location.search);
+            const clientId = params.get('clientId');
+
+            try {
+                const url = clientId
+                    ? `/jobs/?skip=0&limit=50&client_id=${clientId}`
+                    : `/jobs/?skip=0&limit=50`;
+                const res = await authFetch(url);
+                if (res && res.ok) {
+                    const jobs = await res.json();
+                    const taskJobs = jobs.filter(j => j.job_type === 'gstr2b_vs_3b');
+                    renderJobs(taskJobs);
+
+                    const hasInProgress = taskJobs.some(j => j.status === 'QUEUED' || j.status === 'PROCESSING');
+                    if (hasInProgress && !pollingInterval) {
+                        pollingInterval = setInterval(loadJobs, 5000);
+                    } else if (!hasInProgress && pollingInterval) {
+                        clearInterval(pollingInterval);
+                        pollingInterval = null;
+                    }
+                }
+            } catch (e) {
+                console.error('Error loading jobs:', e);
+            }
+        }
+
+        function renderJobs(jobs) {
+            const list = document.getElementById('jobs-list');
+            if (!jobs || jobs.length === 0) {
+                list.innerHTML = `
+                    <div class="jobs-empty">
+                        <div class="empty-icon">📂</div>
+                        <p>No reconciliation jobs yet. Upload files and run a comparison above.</p>
+                    </div>`;
+                document.getElementById('jobs-count').textContent = '0';
+                return;
+            }
+
+            document.getElementById('jobs-count').textContent = jobs.length;
+
+            list.innerHTML = jobs.map(job => {
+                const relTime = timeAgo(job.created_at);
+                const fullDate = new Date(job.created_at).toLocaleString('en-IN', {
+                    day: '2-digit', month: 'short', year: 'numeric',
+                    hour: '2-digit', minute: '2-digit'
+                });
+                const statusClass = job.status.toLowerCase();
+                const statusIcon = {
+                    'QUEUED': '⏳',
+                    'PROCESSING': '⚙️',
+                    'COMPLETED': '✅',
+                    'FAILED': '❌'
+                }[job.status] || '📄';
+
+                const hasDrive = !!job.drive_folder_name;
+                const driveTag = hasDrive
+                    ? `<span class="job-drive-tag">📁 Saved to ${job.drive_folder_name}</span>`
+                    : '';
+
+                const files = (job.input_files || []).map(f => {
+                    const name = typeof f === 'string' ? f.split('/').pop() : 'file';
+                    return `<span class="job-file-tag">📄 ${name}</span>`;
+                }).join(' ');
+
+                const params = new URLSearchParams(window.location.search);
+                const clientId = params.get('clientId');
+                const driveBtn = hasDrive && clientId
+                    ? `<a href="drive.html?clientId=${clientId}" class="job-view-drive">📁 Drive</a>`
+                    : '';
+
+                return `
+                    <div class="job-row${hasDrive ? ' has-drive' : ''}">
+                        <div class="job-icon">${statusIcon}</div>
+                        <div class="job-details">
+                            <div class="job-name">GSTR-2B vs GSTR-3B ${driveTag}</div>
+                            <div class="job-meta">
+                                <span class="job-time" title="${fullDate}">🕐 ${relTime}</span>
+                                <span class="job-meta-sep">•</span>
+                                <span>ID: ${job.id.substring(0, 8)}</span>
+                                ${files ? `<span class="job-meta-sep">•</span> ${files}` : ''}
+                            </div>
+                        </div>
+                        <div class="job-actions">
+                            <span class="job-status ${statusClass}">${job.status}</span>
+                            ${driveBtn}
+                            ${job.status === 'COMPLETED'
+                    ? `<button class="job-download" onclick="downloadJobFile('${job.id}')">⬇ Download</button>`
+                    : job.status === 'FAILED' && job.events && job.events.length
+                        ? `<span style="font-size:0.65rem;color:#dc2626;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${job.events[job.events.length - 1].message}">❌ ${job.events[job.events.length - 1].message.substring(0, 50)}</span>`
+                        : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function downloadJobFile(jobId) {
+            try {
+                const response = await authFetch(`/jobs/${jobId}/download`);
+                if (!response || !response.ok) {
+                    showToast('Download failed', 'error');
+                    return;
+                }
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `GSTR2B_vs_3B_Report_${jobId.substring(0, 8)}.xlsx`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+                showToast('Report downloaded successfully!', 'success');
+            } catch (e) {
+                console.error(e);
+                showToast('Error downloading file', 'error');
+            }
+        }
+
+        // Load jobs on init
+        loadJobs();
     </script>
 </body>
 

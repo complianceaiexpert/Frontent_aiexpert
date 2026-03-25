@@ -8,11 +8,16 @@
     <meta name="description" content="Step-by-step guide to connect Tally Prime / ERP 9 with Suvidha AI.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap"
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     <style>
-        body { background: #f8fafc; margin: 0; font-family: 'Inter', sans-serif }
+        body {
+            background: #f8fafc;
+            margin: 0;
+            font-family: 'Inter', sans-serif
+        }
 
         .page-wrap {
             max-width: 960px;
@@ -22,12 +27,25 @@
 
         /* ── Back link ── */
         .back-link {
-            display: inline-flex; align-items: center; gap: 0.35rem;
-            font-size: 0.78rem; font-weight: 600; color: #64748b;
-            text-decoration: none; margin-bottom: 1.5rem; transition: color .15s
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #64748b;
+            text-decoration: none;
+            margin-bottom: 1.5rem;
+            transition: color .15s
         }
-        .back-link:hover { color: #1e3a8a }
-        .back-link svg { width: 14px; height: 14px }
+
+        .back-link:hover {
+            color: #1e3a8a
+        }
+
+        .back-link svg {
+            width: 14px;
+            height: 14px
+        }
 
         /* ── Header ── */
         .page-title {
@@ -38,6 +56,7 @@
             margin: 0 0 0.4rem;
             letter-spacing: -0.01em
         }
+
         .page-sub {
             font-size: 0.95rem;
             color: #64748b;
@@ -57,37 +76,82 @@
             border-radius: 10px;
             margin-bottom: 2rem
         }
+
         .status-icon {
-            width: 38px; height: 38px;
+            width: 38px;
+            height: 38px;
             border-radius: 9px;
             background: linear-gradient(135deg, #1e3a8a, #3b82f6);
             color: #fff;
-            display: flex; align-items: center; justify-content: center;
-            font-weight: 800; font-size: 1rem; font-family: 'Outfit', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1rem;
+            font-family: 'Outfit', sans-serif;
             flex-shrink: 0
         }
-        .status-info { flex: 1 }
+
+        .status-info {
+            flex: 1
+        }
+
         .status-name {
-            font-size: 0.88rem; font-weight: 700; color: #0f172a; margin: 0 0 0.1rem
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin: 0 0 0.1rem
         }
-        .status-detail { font-size: 0.72rem; color: #64748b; margin: 0 }
+
+        .status-detail {
+            font-size: 0.72rem;
+            color: #64748b;
+            margin: 0
+        }
+
         .status-pill {
-            display: inline-flex; align-items: center; gap: 0.3rem;
-            padding: 0.2rem 0.65rem; border-radius: 999px;
-            font-size: 0.68rem; font-weight: 700;
-            background: #f3f4f6; color: #6b7280
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.2rem 0.65rem;
+            border-radius: 999px;
+            font-size: 0.68rem;
+            font-weight: 700;
+            background: #f3f4f6;
+            color: #6b7280
         }
+
         .status-dot {
-            width: 6px; height: 6px; border-radius: 50%; background: #9ca3af
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #9ca3af
         }
+
         .sync-btn {
-            display: inline-flex; align-items: center; gap: 0.35rem;
-            padding: 0.45rem 0.95rem; background: #1e3a8a; color: #fff;
-            border: none; border-radius: 8px; font-weight: 600; font-size: 0.78rem;
-            cursor: pointer; transition: all .15s; font-family: inherit
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.45rem 0.95rem;
+            background: #1e3a8a;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.78rem;
+            cursor: pointer;
+            transition: all .15s;
+            font-family: inherit
         }
-        .sync-btn:hover { background: #1e40af }
-        .sync-btn:disabled { opacity: .5; cursor: not-allowed }
+
+        .sync-btn:hover {
+            background: #1e40af
+        }
+
+        .sync-btn:disabled {
+            opacity: .5;
+            cursor: not-allowed
+        }
 
         /* ── Steps ── */
         .section-label {
@@ -107,20 +171,28 @@
             margin-bottom: 1.5rem;
             position: relative
         }
-        .step:last-of-type .step-line { display: none }
+
+        .step:last-of-type .step-line {
+            display: none
+        }
 
         .step-num {
-            width: 36px; height: 36px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             background: #1e3a8a;
             color: #fff;
-            display: flex; align-items: center; justify-content: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-family: 'Outfit', sans-serif;
-            font-weight: 800; font-size: 0.9rem;
+            font-weight: 800;
+            font-size: 0.9rem;
             flex-shrink: 0;
             position: relative;
             z-index: 1
         }
+
         .step-line {
             position: absolute;
             left: 17px;
@@ -134,18 +206,21 @@
             padding-top: 0.35rem;
             flex: 1
         }
+
         .step-title {
             font-size: 1.05rem;
             font-weight: 700;
             color: #0f172a;
             margin: 0 0 0.35rem
         }
+
         .step-desc {
             font-size: 0.88rem;
             color: #475569;
             line-height: 1.65;
             margin: 0
         }
+
         .step-desc code {
             background: #f1f5f9;
             padding: 2px 7px;
@@ -157,17 +232,32 @@
 
         /* download button inside a step */
         .download-btn {
-            display: inline-flex; align-items: center; gap: 0.4rem;
-            padding: 0.55rem 1.15rem; margin-top: 0.65rem;
-            background: #1e3a8a; color: #fff; border: none; border-radius: 8px;
-            font-weight: 700; font-size: 0.88rem; cursor: pointer;
-            transition: all .15s; font-family: inherit
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.55rem 1.15rem;
+            margin-top: 0.65rem;
+            background: #1e3a8a;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.88rem;
+            cursor: pointer;
+            transition: all .15s;
+            font-family: inherit
         }
-        .download-btn:hover { background: #1e40af; transform: translateY(-1px) }
+
+        .download-btn:hover {
+            background: #1e40af;
+            transform: translateY(-1px)
+        }
 
         /* ── Divider ── */
         .section-divider {
-            height: 1px; background: #e2e8f0; margin: 2.5rem 0
+            height: 1px;
+            background: #e2e8f0;
+            margin: 2.5rem 0
         }
 
         /* ── FAQ ── */
@@ -184,7 +274,10 @@
             overflow: hidden;
             transition: box-shadow .15s
         }
-        .faq-item:hover { box-shadow: 0 2px 8px rgba(0,0,0,.03) }
+
+        .faq-item:hover {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, .03)
+        }
 
         .faq-q {
             display: flex;
@@ -195,6 +288,7 @@
             user-select: none;
             gap: 0.5rem
         }
+
         .faq-q h4 {
             font-size: 0.88rem;
             font-weight: 700;
@@ -202,20 +296,28 @@
             margin: 0;
             flex: 1
         }
+
         .faq-chevron {
-            width: 16px; height: 16px;
+            width: 16px;
+            height: 16px;
             color: #94a3b8;
             transition: transform .2s;
             flex-shrink: 0
         }
-        .faq-item.open .faq-chevron { transform: rotate(180deg) }
+
+        .faq-item.open .faq-chevron {
+            transform: rotate(180deg)
+        }
 
         .faq-a {
             max-height: 0;
             overflow: hidden;
             transition: max-height .25s ease
         }
-        .faq-item.open .faq-a { max-height: 400px }
+
+        .faq-item.open .faq-a {
+            max-height: 400px
+        }
 
         .faq-a-inner {
             padding: 0 1.15rem 1rem;
@@ -223,6 +325,7 @@
             color: #475569;
             line-height: 1.65
         }
+
         .faq-a-inner code {
             background: #f1f5f9;
             padding: 2px 6px;
@@ -230,18 +333,30 @@
             font-size: 0.78rem;
             color: #1e3a8a
         }
+
         .faq-a-inner ul {
             margin: 0.35rem 0 0;
             padding-left: 1.25rem
         }
-        .faq-a-inner ul li { margin-bottom: 0.25rem }
+
+        .faq-a-inner ul li {
+            margin-bottom: 0.25rem
+        }
 
         @media(max-width:860px) {
-            .faq-grid { grid-template-columns: 1fr }
+            .faq-grid {
+                grid-template-columns: 1fr
+            }
         }
+
         @media(max-width:640px) {
-            .page-wrap { padding: 5rem 1rem 2rem }
-            .status-bar { flex-wrap: wrap }
+            .page-wrap {
+                padding: 5rem 1rem 2rem
+            }
+
+            .status-bar {
+                flex-wrap: wrap
+            }
         }
     </style>
 </head>
@@ -253,14 +368,15 @@
     <div class="page-wrap">
         <a class="back-link" href="clients.html">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <line x1="19" y1="12" x2="5" y2="12"/>
-                <polyline points="12 19 5 12 12 5"/>
+                <line x1="19" y1="12" x2="5" y2="12" />
+                <polyline points="12 19 5 12 12 5" />
             </svg>
             Back to Dashboard
         </a>
 
         <h1 class="page-title">Connect Tally to Suvidha AI</h1>
-        <p class="page-sub">Follow these simple steps to connect your Tally Prime or ERP 9 with Suvidha AI. Once connected, your ledgers, vouchers, and company data sync automatically.</p>
+        <p class="page-sub">Follow these simple steps to connect your Tally Prime or ERP 9 with Suvidha AI. Once
+            connected, your ledgers, vouchers, and company data sync automatically.</p>
 
         <!-- Status Bar -->
         <div class="status-bar">
@@ -273,7 +389,8 @@
                 <span class="status-dot" id="tally-status-dot"></span>
                 <span id="tally-status-text">Not Connected</span>
             </div>
-            <button class="download-btn" onclick="downloadConnector()" style="margin:0;padding:0.5rem 1.2rem;font-size:0.82rem">
+            <button class="download-btn" onclick="downloadConnector()"
+                style="margin:0;padding:0.5rem 1.2rem;font-size:0.82rem">
                 ⬇️ Download Connector
             </button>
         </div>
@@ -286,7 +403,8 @@
             <div class="step-line"></div>
             <div class="step-content">
                 <h3 class="step-title">Download the Suvidha AI Connector</h3>
-                <p class="step-desc">Download and install the small connector utility on the same computer where Tally is installed. This bridges the connection between Tally and Suvidha AI.</p>
+                <p class="step-desc">Download and install the small connector utility on the same computer where Tally
+                    is installed. This bridges the connection between Tally and Suvidha AI.</p>
                 <button class="download-btn" onclick="downloadConnector()">
                     ⬇️ Download Connector (.exe)
                 </button>
@@ -298,7 +416,8 @@
             <div class="step-line"></div>
             <div class="step-content">
                 <h3 class="step-title">Open Tally and load your company</h3>
-                <p class="step-desc">Launch <strong>Tally Prime</strong> or <strong>Tally ERP 9</strong> on your computer. Make sure the company you want to sync is <strong>loaded and active</strong> in Tally.</p>
+                <p class="step-desc">Launch <strong>Tally Prime</strong> or <strong>Tally ERP 9</strong> on your
+                    computer. Make sure the company you want to sync is <strong>loaded and active</strong> in Tally.</p>
             </div>
         </div>
 
@@ -307,7 +426,9 @@
             <div class="step-line"></div>
             <div class="step-content">
                 <h3 class="step-title">Run the Connector</h3>
-                <p class="step-desc">Open the <strong>Suvidha AI Connector</strong> app you installed in Step 1. It will automatically detect Tally running on <code>localhost:9000</code>. Keep it running in the background.</p>
+                <p class="step-desc">Open the <strong>Suvidha AI Connector</strong> app you installed in Step 1. It will
+                    automatically detect Tally running on <code>localhost:9999</code>. Keep it running in the
+                    background.</p>
             </div>
         </div>
 
@@ -316,7 +437,8 @@
             <div class="step-line"></div>
             <div class="step-content">
                 <h3 class="step-title">Test the connection</h3>
-                <p class="step-desc">Click the <strong>"Test Connection"</strong> button above. If everything is set up correctly, the status will turn <strong>green</strong> and show your company name.</p>
+                <p class="step-desc">Click the <strong>"Test Connection"</strong> button above. If everything is set up
+                    correctly, the status will turn <strong>green</strong> and show your company name.</p>
             </div>
         </div>
 
@@ -324,7 +446,9 @@
             <div class="step-num">5</div>
             <div class="step-content">
                 <h3 class="step-title">You're all set!</h3>
-                <p class="step-desc">Go to the <strong>Data Entry</strong> service and start working. Your ledgers, vouchers, and trial balances will sync automatically whenever Tally and the Connector are running.</p>
+                <p class="step-desc">Go to the <strong>Data Entry</strong> service and start working. Your ledgers,
+                    vouchers, and trial balances will sync automatically whenever Tally and the Connector are running.
+                </p>
             </div>
         </div>
 
@@ -337,15 +461,18 @@
             <div class="faq-item">
                 <div class="faq-q" onclick="toggleFaq(this)">
                     <h4>Why am I seeing "Bridge not running" error?</h4>
-                    <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+                    <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path d="m6 9 6 6 6-6" />
+                    </svg>
                 </div>
                 <div class="faq-a">
                     <div class="faq-a-inner">
                         This means the Connector app is not running or Tally is not open. Check these:
                         <ul>
                             <li>Make sure <strong>Tally is open</strong> with a company loaded</li>
-                            <li>Make sure the <strong>Suvidha AI Connector</strong> is running (check your system tray)</li>
-                            <li>Tally must be accessible on <code>localhost:9000</code> — this is the default port</li>
+                            <li>Make sure the <strong>Suvidha AI Connector</strong> is running (check your system tray)
+                            </li>
+                            <li>Tally must be accessible on <code>localhost:9999</code> — this is the default port</li>
                             <li>If you changed Tally's port, update it in the Connector settings</li>
                         </ul>
                     </div>
@@ -355,14 +482,17 @@
             <div class="faq-item">
                 <div class="faq-q" onclick="toggleFaq(this)">
                     <h4>What if Tally says "port already in use"?</h4>
-                    <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+                    <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path d="m6 9 6 6 6-6" />
+                    </svg>
                 </div>
                 <div class="faq-a">
                     <div class="faq-a-inner">
                         Another application is using port 9000. To fix this:
                         <ul>
                             <li>Close any other app using port 9000 (like another Tally instance)</li>
-                            <li>Or change Tally's server port: Go to <strong>Tally → F12 → Advanced Configuration → Set Client/Server port</strong></li>
+                            <li>Or change Tally's server port: Go to <strong>Tally → F12 → Advanced Configuration → Set
+                                    Client/Server port</strong></li>
                             <li>Then update the same port in the Connector settings</li>
                         </ul>
                     </div>
@@ -372,7 +502,9 @@
             <div class="faq-item">
                 <div class="faq-q" onclick="toggleFaq(this)">
                     <h4>Why is my company name not showing after connecting?</h4>
-                    <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+                    <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path d="m6 9 6 6 6-6" />
+                    </svg>
                 </div>
                 <div class="faq-a">
                     <div class="faq-a-inner">
@@ -389,7 +521,9 @@
             <div class="faq-item">
                 <div class="faq-q" onclick="toggleFaq(this)">
                     <h4>Why won't the Connector app start after installing?</h4>
-                    <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+                    <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path d="m6 9 6 6 6-6" />
+                    </svg>
                 </div>
                 <div class="faq-a">
                     <div class="faq-a-inner">
@@ -407,7 +541,9 @@
             <div class="faq-item">
                 <div class="faq-q" onclick="toggleFaq(this)">
                     <h4>Why is my data not syncing even though I'm connected?</h4>
-                    <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+                    <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path d="m6 9 6 6 6-6" />
+                    </svg>
                 </div>
                 <div class="faq-a">
                     <div class="faq-a-inner">
@@ -415,7 +551,8 @@
                         <ul>
                             <li>Make sure the correct <strong>company is loaded</strong> in Tally</li>
                             <li>Try refreshing the page and navigating to Data Entry again</li>
-                            <li>Check that Tally's <strong>ODBC/XML Server</strong> is enabled (Tally → F12 → Advanced Config → Enable ODBC Server = Yes)</li>
+                            <li>Check that Tally's <strong>ODBC/XML Server</strong> is enabled (Tally → F12 → Advanced
+                                Config → Enable ODBC Server = Yes)</li>
                             <li>Restart both Tally and the Connector</li>
                         </ul>
                     </div>
@@ -425,11 +562,16 @@
             <div class="faq-item">
                 <div class="faq-q" onclick="toggleFaq(this)">
                     <h4>Can I use Suvidha AI on Mac or Linux?</h4>
-                    <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+                    <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path d="m6 9 6 6 6-6" />
+                    </svg>
                 </div>
                 <div class="faq-a">
                     <div class="faq-a-inner">
-                        Tally itself only runs on Windows. However, you can access <strong>Suvidha AI from any browser</strong> (Mac, Linux, iPad). The Connector and Tally just need to be running on <strong>any Windows machine</strong> on your network — it doesn't have to be the same computer you're browsing from.
+                        Tally itself only runs on Windows. However, you can access <strong>Suvidha AI from any
+                            browser</strong> (Mac, Linux, iPad). The Connector and Tally just need to be running on
+                        <strong>any Windows machine</strong> on your network — it doesn't have to be the same computer
+                        you're browsing from.
                     </div>
                 </div>
             </div>
@@ -443,8 +585,8 @@
 
         function downloadConnector() {
             const link = document.createElement('a');
-            link.href = 'assets/downloads/Suvidha AI-Desktop-Setup.exe';
-            link.download = 'Suvidha AI-Connector-Setup.exe';
+            link.href = 'assets/downloads/ComplianceAI-Connector-setup.exe';
+            link.download = 'ComplianceAI-Connector-Setup.exe';
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);

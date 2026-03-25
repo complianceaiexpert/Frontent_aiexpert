@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review Invoice — Suvidha AI</title>
+    <meta name="description" content="Review and approve AI-extracted invoice data with side-by-side document viewer.">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0 }
+        body { font-family: 'Inter', sans-serif; background: #f8fafc; overflow: hidden; height: 100vh }
+
+        /* ═══ TOP BAR ═══ */
+        .rv-topbar {
+            height: 54px;
+            background: #fff;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            padding: 0 1.25rem;
+            gap: .75rem;
+            z-index: 100;
+            position: relative;
+        }
+        .rv-back {
+            display: flex; align-items: center; gap: .4rem;
+            font-size: .82rem; font-weight: 600; color: #6b7280;
+            text-decoration: none; padding: .35rem .6rem;
+            border-radius: 7px; transition: all .15s;
+        }
+        .rv-back:hover { background: #f1f5f9; color: #1e3a8a }
+        .rv-back svg { width: 18px; height: 18px }
+        .rv-topbar-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: .95rem; font-weight: 800; color: #0f172a;
+            display: flex; align-items: center; gap: .4rem;
+        }
+        .rv-topbar-divider { width: 1px; height: 24px; background: #e5e7eb; margin: 0 .35rem }
+        .rv-topbar-company {
+            font-size: .78rem; font-weight: 600; color: #6b7280;
+        }
+        .rv-topbar-right {
+            margin-left: auto;
+            display: flex; align-items: center; gap: .5rem;
+        }
+        .rv-topbar-badge {
+            font-size: .62rem; font-weight: 700; padding: 3px 10px;
+            border-radius: 6px; text-transform: uppercase; letter-spacing: .04em;
+        }
+        .rv-topbar-badge.pending { background: #fef3c7; color: #d97706 }
+        .rv-topbar-badge.synced { background: #ecfdf5; color: #059669 }
+        .rv-topbar-badge.ai { background: linear-gradient(135deg,#6366f1,#8b5cf6); color: #fff }
+
+        /* ═══ MAIN LAYOUT ═══ */
+        .rv-layout {
+            display: flex;
+            height: calc(100vh - 54px);
+        }
+
+        /* ═══ LEFT: PDF VIEWER ═══ */
+        .rv-pdf-panel {
+            width: 42%;
+            min-width: 320px;
+            background: #1e293b;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid #334155;
+        }
+        .rv-pdf-toolbar {
+            display: flex;
+            align-items: center;
+            padding: .5rem .75rem;
+            background: #0f172a;
+            border-bottom: 1px solid #334155;
+            gap: .5rem;
+            flex-shrink: 0;
+        }
+        .rv-pdf-page-info {
+            font-size: .72rem; font-weight: 600; color: #94a3b8;
+            display: flex; align-items: center; gap: .35rem;
+        }
+        .rv-pdf-page-info input {
+            width: 28px; text-align: center; background: #1e293b;
+            border: 1px solid #475569; border-radius: 4px; color: #e2e8f0;
+            font-size: .72rem; font-weight: 600; padding: 2px;
+        }
+        .rv-pdf-btn {
+            width: 28px; height: 28px; border-radius: 5px; border: none;
+            background: transparent; color: #94a3b8; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            font-size: .75rem; transition: all .12s;
+        }
+        .rv-pdf-btn:hover { background: #334155; color: #e2e8f0 }
+        .rv-pdf-sep { width: 1px; height: 20px; background: #334155 }
+        .rv-pdf-toolbar-right { margin-left: auto; display: flex; gap: .25rem }
+        .rv-pdf-body {
+            flex: 1;
+            overflow: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: #334155;
+            padding: .5rem;
+            gap: .5rem;
+        }
+        .rv-pdf-body canvas {
+            display: block;
+            box-shadow: 0 2px 12px rgba(0,0,0,.3);
+            background: #fff;
+            border-radius: 2px;
+        }
+        .rv-pdf-placeholder {
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            gap: .75rem; color: rgba(255,255,255,.35);
+            padding: 2rem; text-align: center;
+            flex: 1;
+        }
+        .rv-pdf-placeholder-icon { font-size: 3.5rem; opacity: .3 }
+        .rv-pdf-placeholder h3 {
+            font-family: 'Outfit', sans-serif; font-size: .95rem;
+            font-weight: 700; color: rgba(255,255,255,.5);
+        }
+        .rv-pdf-placeholder p { font-size: .78rem; color: rgba(255,255,255,.3); line-height: 1.5 }
+        .rv-pdf-img {
+            max-width: 100%; max-height: 100%;
+            object-fit: contain; padding: .5rem;
+        }
+
+        /* ═══ RIGHT: FORM ═══ */
+        .rv-form-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #fff;
+            overflow: hidden;
+        }
+        .rv-form-scroll {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.25rem 1.5rem 2rem;
+        }
+
+        /* Form sections */
+        .rv-form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: .75rem;
+            margin-bottom: 1rem;
+        }
+        .rv-form-row.two-col { grid-template-columns: 1fr 1fr }
+        .rv-form-row.four-col { grid-template-columns: 1fr 1fr 1fr 1fr }
+        .rv-fg {
+            display: flex;
+            flex-direction: column;
+            gap: .25rem;
+        }
+        .rv-fg.span-2 { grid-column: span 2 }
+        .rv-fg label {
+            font-size: .65rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: .04em; color: #6b7280;
+            display: flex; align-items: center; gap: .25rem;
+        }
+        .rv-fg label .req { color: #ef4444; font-weight: 800 }
+        .rv-fg input, .rv-fg select {
+            width: 100%;
+            padding: .5rem .65rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 7px;
+            font-size: .85rem;
+            font-weight: 500;
+            color: #1e293b;
+            font-family: inherit;
+            transition: all .15s;
+            background: #fff;
+        }
+        .rv-fg input:focus, .rv-fg select:focus {
+            border-color: #3b82f6; outline: none;
+            box-shadow: 0 0 0 3px rgba(59,130,246,.08);
+        }
+        .rv-fg input.ai-fill {
+            background: #f0fdf4;
+            border-color: #86efac;
+        }
+        .rv-fg input:disabled, .rv-fg select:disabled {
+            background: #f8fafc; color: #9ca3af;
+        }
+        .rv-fg .ai-tag {
+            font-size: .55rem; font-weight: 700; padding: 1px 5px;
+            border-radius: 3px; background: #ecfdf5; color: #059669;
+            margin-left: auto;
+        }
+        .rv-fg .link-btn {
+            font-size: .72rem; font-weight: 600; color: #3b82f6;
+            text-decoration: none; cursor: pointer; background: none; border: none;
+            font-family: inherit; display: inline-flex; align-items: center; gap: .2rem;
+        }
+        .rv-fg .link-btn:hover { text-decoration: underline }
+        .rv-fg .gst-detail-btn {
+            padding: .4rem .65rem; border: 1px solid #e2e8f0; border-radius: 6px;
+            font-size: .72rem; font-weight: 600; color: #f97316; background: #fff;
+            cursor: pointer; font-family: inherit; transition: all .12s;
+        }
+        .rv-fg .gst-detail-btn:hover { border-color: #f97316; background: #fff7ed }
+
+        /* Section dividers */
+        .rv-section-title {
+            font-size: .68rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: .06em; color: #94a3b8; margin: .75rem 0 .6rem;
+            display: flex; align-items: center; gap: .5rem;
+            padding-bottom: .4rem; border-bottom: 1px solid #f1f5f9;
+        }
+        .rv-section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #f1f5f9;
+        }
+
+        /* ═══ ITEM DETAILS TABLE ═══ */
+        .rv-items-card {
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: .5rem;
+            box-shadow: 0 1px 4px rgba(0,0,0,.04);
+        }
+        .rv-items-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .rv-items-table thead th {
+            font-size: .68rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: .04em; color: #374151; padding: .7rem .75rem;
+            text-align: left; background: #f8faff;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        .rv-items-table thead th.right { text-align: right }
+        .rv-items-table tbody td {
+            padding: .6rem .75rem;
+            font-size: .85rem; color: #1e293b;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: middle;
+        }
+        .rv-items-table tbody tr[data-item-row] { transition: background .1s; background: #fff }
+        .rv-items-table tbody tr[data-item-row]:hover { background: #f0f9ff }
+        .rv-items-table tbody tr[data-item-row]:nth-child(even) { background: #fafbff }
+        .rv-items-table tbody tr[data-item-row]:nth-child(even):hover { background: #f0f9ff }
+        .rv-items-table .item-sr {
+            font-size: .82rem; font-weight: 700; color: #6b7280; width: 48px; text-align: center;
+        }
+        .rv-items-table .item-name-cell {
+            min-width: 220px;
+        }
+        .rv-items-table .item-ledger {
+            font-size: .72rem; color: #6b7280; margin-top: 3px;
+        }
+        .rv-items-table .item-ledger input {
+            border: 1px dashed #d1d5db; background: #f8fafc; font-size: .72rem; color: #6b7280;
+            font-family: inherit; width: 100%; padding: 3px 6px; border-radius: 4px;
+        }
+        .rv-items-table .item-ledger input:focus { color: #1e293b; outline: none; border-color: #3b82f6; background: #fff }
+        .rv-items-table .action-cell { text-align: center; width: 44px }
+        .rv-item-action {
+            width: 28px; height: 28px; border-radius: 6px; border: 1px solid #fecaca;
+            background: #fff; color: #f87171; cursor: pointer;
+            display: inline-flex; align-items: center; justify-content: center;
+            font-size: .7rem; transition: all .12s;
+        }
+        .rv-item-action:hover { background: #fef2f2; color: #dc2626 }
+        .rv-input-cell {
+            padding: .4rem .5rem; border: 1px solid #e2e8f0; border-radius: 6px;
+            font-size: .85rem; font-family: inherit; font-weight: 600;
+            transition: all .15s; background: #fff;
+        }
+        .rv-input-cell:focus { border-color: #3b82f6; outline: none; box-shadow: 0 0 0 2px rgba(59,130,246,.1) }
+        .rv-input-cell.name-input {
+            border: none; background: none; font-weight: 700; color: #1e3a8a;
+            font-size: .88rem; width: 100%; padding: 3px 0;
+        }
+        .rv-input-cell.name-input:focus { color: #0f172a }
+        .rv-input-cell.num-input {
+            text-align: right; font-family: 'Outfit', sans-serif;
+        }
+
+        /* ═══ TAX LEDGER TABLE ═══ */
+        .rv-tax-card {
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: .5rem;
+            box-shadow: 0 1px 4px rgba(0,0,0,.04);
+        }
+        .rv-tax-table { width: 100%; border-collapse: collapse }
+        .rv-tax-table thead th {
+            font-size: .68rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: .04em; color: #374151; padding: .65rem .75rem;
+            text-align: left; background: #fefce8;
+            border-bottom: 2px solid #fde68a;
+        }
+        .rv-tax-table tbody td {
+            padding: .55rem .75rem; font-size: .85rem; color: #1e293b;
+            border-bottom: 1px solid #f5f3ff; vertical-align: middle;
+        }
+        .rv-tax-table tbody tr { transition: background .1s }
+        .rv-tax-table tbody tr:hover { background: #fffbeb }
+        .rv-tax-select {
+            padding: .4rem .5rem; border: 1px solid #e2e8f0; border-radius: 6px;
+            font-size: .82rem; font-family: inherit; background: #fff; width: 100%;
+            color: #374151; font-weight: 500;
+        }
+        .rv-tax-select:focus { border-color: #f59e0b; outline: none }
+        .rv-tax-desc {
+            padding: .4rem .6rem; border: 1px solid #e2e8f0; border-radius: 6px;
+            font-size: .82rem; font-family: inherit; background: #f0f9ff; width: 100%;
+            color: #1e3a8a; font-weight: 600;
+        }
+        .rv-tax-desc:focus { border-color: #3b82f6; outline: none; background: #fff }
+        .rv-add-ledger-btn {
+            display: inline-flex; align-items: center; gap: .3rem;
+            padding: .4rem .75rem; border: 2px dashed #3b82f6; border-radius: 6px;
+            background: none; color: #3b82f6; font-size: .78rem; font-weight: 700;
+            cursor: pointer; font-family: inherit; transition: all .15s;
+            margin: .5rem 0 .5rem .75rem;
+        }
+        .rv-add-ledger-btn:hover { background: #eff6ff; border-color: #1e3a8a; color: #1e3a8a }
+
+        /* ═══ GRAND TOTAL BAR ═══ */
+        .rv-grand-total-bar {
+            display: flex; align-items: center; justify-content: flex-end; gap: 1rem;
+            margin-top: .75rem; padding: .65rem 1rem;
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            border-radius: 10px; color: #fff;
+        }
+        .rv-grand-total-bar .gt-label {
+            font-size: .82rem; font-weight: 600; opacity: .7;
+        }
+        .rv-grand-total-bar .gt-value {
+            font-size: 1.2rem; font-weight: 800; font-family: 'Outfit', sans-serif;
+        }
+
+        /* Alert badges on fields */
+        .rv-field-alert {
+            width: 16px; height: 16px; border-radius: 50%;
+            display: inline-flex; align-items: center; justify-content: center;
+            font-size: .55rem; cursor: help;
+        }
+        .rv-field-alert.ok { background: #ecfdf5; color: #059669 }
+        .rv-field-alert.warn { background: #fef3c7; color: #d97706 }
+
+        /* ═══ BOTTOM BAR ═══ */
+        .rv-bottom-bar {
+            padding: .75rem 1.5rem;
+            background: #fff;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+        }
+        .rv-bottom-left {
+            display: flex; align-items: center; gap: .75rem;
+        }
+        .rv-bottom-stat {
+            font-size: .75rem; color: #6b7280; font-weight: 500;
+        }
+        .rv-bottom-stat strong {
+            font-weight: 800; font-family: 'Outfit',sans-serif; color: #0f172a;
+        }
+        .rv-bottom-right { display: flex; gap: .5rem }
+        .rv-action-btn {
+            padding: .55rem 1.15rem;
+            border-radius: 8px;
+            font-size: .82rem;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: inherit;
+            border: 1px solid #e2e8f0;
+            background: #fff;
+            color: #374151;
+            transition: all .15s;
+        }
+        .rv-action-btn:hover { border-color: #1e3a8a; color: #1e3a8a }
+        .rv-action-btn.save-btn {
+            background: #1e293b; color: #fff; border-color: #1e293b;
+        }
+        .rv-action-btn.save-btn:hover { background: #0f172a }
+        .rv-action-btn.approve-btn {
+            background: linear-gradient(135deg, #059669, #10b981);
+            color: #fff; border-color: transparent;
+        }
+        .rv-action-btn.approve-btn:hover { box-shadow: 0 4px 16px rgba(5,150,105,.3); transform: translateY(-1px) }
+        .rv-action-btn:disabled { opacity: .5; cursor: not-allowed; pointer-events: none }
+        .rv-topbar-badge.approved { background: #ecfdf5; color: #059669 }
+        .rv-form-panel.form-disabled input,
+        .rv-form-panel.form-disabled select { background: #f8fafc; color: #9ca3af; pointer-events: none }
+        .rv-form-panel.form-disabled .rv-item-action,
+        .rv-form-panel.form-disabled .gst-detail-btn { pointer-events: none; opacity: .4 }
+
+        /* Toast */
+        #toast-container {
+            position: fixed; top: 1rem; right: 1rem; z-index: 30000;
+            display: flex; flex-direction: column; gap: .4rem;
+        }
+
+        @media (max-width: 900px) {
+            .rv-layout { flex-direction: column }
+            .rv-pdf-panel { width: 100%; height: 40vh; min-width: unset }
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+</head>
+
+<body>
+    <!-- ═══ TOP BAR ═══ -->
+    <div class="rv-topbar">
+        <a href="#" class="rv-back" id="back-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+            </svg>
+            Back
+        </a>
+        <div class="rv-topbar-divider"></div>
+        <div class="rv-topbar-title">📄 Invoice Review</div>
+        <div class="rv-topbar-divider"></div>
+        <div class="rv-topbar-company" id="rv-company-name">Loading...</div>
+        <div class="rv-topbar-right">
+            <span class="rv-topbar-badge ai">AI Extracted</span>
+            <span class="rv-topbar-badge pending" id="rv-status-badge">Pending</span>
+        </div>
+    </div>
+
+    <!-- ═══ MAIN LAYOUT ═══ -->
+    <div class="rv-layout">
+        <!-- LEFT: Document Viewer -->
+        <div class="rv-pdf-panel">
+            <div class="rv-pdf-toolbar">
+                <div class="rv-pdf-page-info">
+                    <input type="text" value="1" id="rv-page-num" readonly>
+                    <span>/ <span id="rv-page-total">1</span></span>
+                </div>
+                <div class="rv-pdf-sep"></div>
+                <button class="rv-pdf-btn" title="Zoom Out" onclick="zoomPdf(-0.1)">−</button>
+                <button class="rv-pdf-btn" title="Zoom In" onclick="zoomPdf(0.1)">+</button>
+                <button class="rv-pdf-btn" title="Fit Width" onclick="zoomPdf(0)" style="font-size:.6rem;font-weight:700">FIT</button>
+                <div class="rv-pdf-toolbar-right">
+                    <button class="rv-pdf-btn" title="Open in new tab" onclick="openPdfNewTab()">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                    </button>
+                </div>
+            </div>
+            <div class="rv-pdf-body" id="rv-pdf-body">
+                <div class="rv-pdf-placeholder">
+                    <div class="rv-pdf-placeholder-icon">📄</div>
+                    <h3>Loading document...</h3>
+                    <p>Fetching the source file from storage</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT: Form -->
+        <div class="rv-form-panel">
+            <div class="rv-form-scroll" id="rv-form-scroll">
+                <!-- Voucher Header -->
+                <div class="rv-form-row">
+                    <div class="rv-fg">
+                        <label><span class="req">*</span> Voucher Type</label>
+                        <select id="rv-voucher-type">
+                            <option value="Purchase">Purchase</option>
+                            <option value="Sales">Sales</option>
+                            <option value="Payment">Payment</option>
+                            <option value="Receipt">Receipt</option>
+                            <option value="Journal">Journal</option>
+                            <option value="Contra">Contra</option>
+                            <option value="Credit Note">Credit Note</option>
+                            <option value="Debit Note">Debit Note</option>
+                        </select>
+                    </div>
+                    <div class="rv-fg">
+                        <label><span class="req">*</span> Voucher No.</label>
+                        <input type="text" id="rv-voucher-no" placeholder="Auto / Manual" class="ai-fill">
+                    </div>
+                    <div class="rv-fg">
+                        <label><span class="req">*</span> Voucher Date</label>
+                        <input type="date" id="rv-voucher-date" class="ai-fill">
+                    </div>
+                </div>
+
+                <!-- Party & GST -->
+                <div class="rv-form-row two-col">
+                    <div class="rv-fg">
+                        <label><span class="req">*</span> Party Name <span class="ai-tag">AI</span></label>
+                        <input type="text" id="rv-party-name" placeholder="Party / Vendor Name" class="ai-fill">
+                    </div>
+                    <div class="rv-fg">
+                        <label>GST Number <button class="gst-detail-btn" onclick="lookupGst()" style="margin-left:auto">Details</button></label>
+                        <input type="text" id="rv-gst-number" placeholder="Enter GST Number" class="ai-fill">
+                    </div>
+                </div>
+
+                <!-- Ledger -->
+                <div class="rv-form-row two-col">
+                    <div class="rv-fg">
+                        <label><span class="req">*</span> Expense / Ledger Category</label>
+                        <select id="rv-ledger-type">
+                            <option value="">— Select Ledger —</option>
+                            <option value="Purchase Account">Purchase Account</option>
+                            <option value="Sales Account">Sales Account</option>
+                            <option value="Advertising">Advertising</option>
+                            <option value="Audit Fees">Audit Fees</option>
+                            <option value="Bank Charges">Bank Charges</option>
+                            <option value="Commission">Commission</option>
+                            <option value="Communication">Communication</option>
+                            <option value="Conveyance">Conveyance</option>
+                            <option value="Depreciation">Depreciation</option>
+                            <option value="Electricity">Electricity</option>
+                            <option value="Food & Beverages">Food & Beverages</option>
+                            <option value="Freight">Freight</option>
+                            <option value="Insurance">Insurance</option>
+                            <option value="Interest">Interest</option>
+                            <option value="Legal">Legal</option>
+                            <option value="Miscellaneous">Miscellaneous</option>
+                            <option value="Office Supplies">Office Supplies</option>
+                            <option value="Printing">Printing</option>
+                            <option value="Professional Fees">Professional Fees</option>
+                            <option value="Rent">Rent</option>
+                            <option value="Repairs">Repairs</option>
+                            <option value="Salaries">Salaries</option>
+                            <option value="Staff Welfare">Staff Welfare</option>
+                            <option value="Stationery">Stationery</option>
+                            <option value="Subscription">Subscription</option>
+                            <option value="Telephone">Telephone</option>
+                            <option value="Transport">Transport</option>
+                            <option value="Travel">Travel</option>
+                        </select>
+                    </div>
+                    <div class="rv-fg">
+                        <label>Source</label>
+                        <input type="text" id="rv-source" disabled style="background:#f8fafc">
+                    </div>
+                </div>
+
+                <!-- Narration -->
+                <div class="rv-form-row" style="grid-template-columns:1fr">
+                    <div class="rv-fg">
+                        <label>Narration</label>
+                        <input type="text" id="rv-narration" placeholder="Add narration / notes for this entry">
+                    </div>
+                </div>
+
+                <!-- Item Details -->
+                <div class="rv-section-title">Item Details</div>
+                <div class="rv-items-card">
+                    <table class="rv-items-table">
+                        <thead>
+                            <tr>
+                                <th style="width:48px;text-align:center">Sr. No</th>
+                                <th><span class="req">*</span> Item Details / Ledger</th>
+                                <th style="width:65px"><span class="req">*</span> Qty</th>
+                                <th class="right" style="width:120px"><span class="req">*</span> Rate / Price</th>
+                                <th class="right" style="width:130px">Amount</th>
+                                <th style="width:44px">⊕</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rv-items-tbody">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+                <div style="display:flex;justify-content:flex-end;padding:.4rem .75rem;font-size:.82rem;color:#6b7280;font-weight:600">
+                    Subtotal: <span style="font-weight:800;color:#0f172a;font-family:'Outfit',sans-serif;margin-left:.4rem" id="rv-subtotal">₹ 0.00</span>
+                </div>
+
+                <!-- Tax Ledger Details -->
+                <div class="rv-section-title" style="margin-top:.5rem">Tax Ledger Details</div>
+                <div class="rv-tax-card">
+                    <table class="rv-tax-table">
+                        <thead>
+                            <tr>
+                                <th style="width:48px;text-align:center">Sr. No</th>
+                                <th><span class="req">*</span> Ledger Name</th>
+                                <th style="width:220px">Description</th>
+                                <th class="right" style="width:130px">Amount</th>
+                                <th style="width:44px"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="rv-tax-tbody">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                    <button class="rv-add-ledger-btn" onclick="addTaxLedgerRow()" id="btn-add-ledger">+ Add Ledger</button>
+                </div>
+                <div style="display:flex;justify-content:flex-end;padding:.4rem .75rem;font-size:.82rem;color:#6b7280;font-weight:600">
+                    Tax Total: <span style="font-weight:800;color:#0f172a;font-family:'Outfit',sans-serif;margin-left:.4rem" id="rv-tax-total">₹ 0.00</span>
+                </div>
+
+                <!-- Grand Total -->
+                <div class="rv-grand-total-bar">
+                    <span class="gt-label">Grand Total</span>
+                    <span class="gt-value" id="rv-grand-total">₹ 0.00</span>
+                </div>
+            </div>
+
+            <!-- Bottom Action Bar -->
+            <div class="rv-bottom-bar">
+                <div class="rv-bottom-left">
+                    <div class="rv-bottom-stat">Invoice: <strong id="rv-inv-label">-</strong></div>
+                    <div class="rv-bottom-stat">|</div>
+                    <div class="rv-bottom-stat">Vendor: <strong id="rv-vendor-label">-</strong></div>
+                </div>
+                <div class="rv-bottom-right">
+                    <button class="rv-action-btn" onclick="goBack()">Cancel</button>
+                    <button class="rv-action-btn save-btn" id="btn-save" onclick="handleSave()">💾 Save</button>
+                    <button class="rv-action-btn approve-btn" id="btn-approve" onclick="handleApprove()">✅ Approve</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast-container"></div>
+
+    <script src="api_config.js"></script>
+    <script src="session-manager.js?v=2"></script>
+    <script>
+        if (!requireAuth()) { }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const invoiceId = urlParams.get('invoiceId');
+        const clientId = urlParams.get('clientId');
+        const serviceName = urlParams.get('service') || 'Data Entry';
+
+        const backUrl = `transactions.html?clientId=${clientId}&service=${encodeURIComponent(serviceName)}`;
+        document.getElementById('back-link').href = backUrl;
+
+        let currentFileUrl = null;
+
+        // ═══ HELPERS ═══
+        function formatINR(val) {
+            const n = Math.abs(Number(val) || 0);
+            return '₹ ' + n.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+        function showToast(msg, type = 'info') {
+            const tc = document.getElementById('toast-container');
+            const bg = type === 'success' ? '#059669' : type === 'error' ? '#dc2626' : '#1e3a8a';
+            const t = document.createElement('div');
+            t.style.cssText = `background:${bg};color:#fff;padding:.6rem 1.1rem;border-radius:8px;font-size:.82rem;font-weight:600;box-shadow:0 4px 14px rgba(0,0,0,.15);font-family:inherit`;
+            t.textContent = msg;
+            tc.appendChild(t);
+            setTimeout(() => { t.style.opacity = '0'; t.style.transition = 'opacity .3s'; setTimeout(() => t.remove(), 300); }, 3500);
+        }
+        function goBack() { window.location.href = backUrl; }
+
+        // ═══ LOAD INVOICE ═══
+        async function loadInvoice() {
+            if (!invoiceId) {
+                showToast('No invoice ID provided', 'error');
+                return;
+            }
+
+            try {
+                const res = await authFetch(`/invoices/${invoiceId}`);
+                if (!res.ok) throw new Error('Invoice not found');
+                const inv = await res.json();
+
+                populateForm(inv);
+                loadDocument(inv);
+            } catch (e) {
+                showToast('Failed to load invoice: ' + e.message, 'error');
+            }
+        }
+
+        // Store loaded invoice data for reference
+        let currentInvoice = null;
+
+        function populateForm(inv) {
+            currentInvoice = inv;
+
+            // Top bar
+            document.getElementById('rv-company-name').textContent = inv.vendor_name || 'Unknown Vendor';
+            const status = inv.status || 'pending';
+            const badge = document.getElementById('rv-status-badge');
+            if (status === 'approved') {
+                badge.textContent = 'Approved';
+                badge.className = 'rv-topbar-badge approved';
+            } else if (inv.synced_to_tally) {
+                badge.textContent = 'Synced';
+                badge.className = 'rv-topbar-badge synced';
+            } else {
+                badge.textContent = 'Pending';
+                badge.className = 'rv-topbar-badge pending';
+            }
+
+            // Form fields — all editable
+            document.getElementById('rv-voucher-no').value = inv.invoice_number || '';
+            const dt = inv.invoice_date || inv.received_at;
+            if (dt) {
+                try { document.getElementById('rv-voucher-date').value = new Date(dt).toISOString().split('T')[0]; } catch(e) {}
+            }
+            document.getElementById('rv-party-name').value = inv.vendor_name || '';
+            document.getElementById('rv-gst-number').value = inv.gst_number || '';
+            document.getElementById('rv-source').value = (inv.source || 'upload').toUpperCase();
+            document.getElementById('rv-narration').value = `${inv.invoice_number || ''} - ${inv.vendor_name || ''}`;
+
+            // Set voucher type & ledger based on expenses_type
+            const expType = inv.expenses_type || 'Purchase';
+            const vtSel = document.getElementById('rv-voucher-type');
+            for (let o of vtSel.options) { if (o.value === expType) { o.selected = true; break; } }
+
+            const ledgerSel = document.getElementById('rv-ledger-type');
+            for (let o of ledgerSel.options) { if (o.value === expType) { o.selected = true; break; } }
+
+            // Fetch real line items from get_invoice_items table
+            loadInvoiceItems(inv);
+
+            // Bottom bar
+            document.getElementById('rv-inv-label').textContent = inv.invoice_number || 'N/A';
+            document.getElementById('rv-vendor-label').textContent = inv.vendor_name || 'Unknown';
+
+            // If approved, lock the form
+            if (status === 'approved') {
+                document.querySelector('.rv-form-panel').classList.add('form-disabled');
+                document.getElementById('btn-save').disabled = true;
+                document.getElementById('btn-approve').disabled = true;
+                document.getElementById('btn-approve').textContent = '✅ Approved';
+            }
+        }
+
+        async function loadInvoiceItems(inv) {
+            const baseAmt = Number(String(inv.amount || '0').replace(/,/g, '')) || 0;
+            const gstAmt = Number(String(inv.gst_amount || '0').replace(/,/g, '')) || 0;
+            const totalAmt = Number(String(inv.total_amount || '0').replace(/,/g, '')) || 0;
+            const halfGst = gstAmt / 2;
+
+            try {
+                const res = await authFetch(`/invoices/${inv.id}/items`);
+                if (res.ok) {
+                    const items = await res.json();
+                    if (items && items.length > 0) {
+                        const lineItems = items.map(it => ({
+                            name: it.description || 'Item',
+                            ledger: it.service_code || (inv.expenses_type || 'Purchase Account'),
+                            qty: Number(it.quantity) || 1,
+                            rate: Number(String(it.price || '0').replace(/,/g, '')) || 0,
+                            amount: Number(String(it.amount || '0').replace(/,/g, '')) || 0,
+                        }));
+                        renderItems(lineItems);
+                        renderTaxLedgers(halfGst);
+                        recalcAllTotals();
+                        return;
+                    }
+                }
+            } catch (e) {
+                console.warn('Could not fetch invoice items, falling back:', e);
+            }
+
+            // Fallback: legacy behavior
+            const lineItems = [{
+                name: inv.invoice_number || 'Invoice Item',
+                ledger: inv.expenses_type || 'Purchase Account',
+                qty: 1, rate: baseAmt, amount: baseAmt
+            }];
+            renderItems(lineItems);
+            renderTaxLedgers(halfGst);
+            recalcAllTotals();
+        }
+
+        function renderItems(items) {
+            const tbody = document.getElementById('rv-items-tbody');
+            tbody.innerHTML = items.map((item, i) => `
+                <tr data-item-row>
+                    <td class="item-sr">${i + 1}</td>
+                    <td class="item-name-cell">
+                        <input type="text" class="rv-input-cell name-input item-name-input" value="${escAttr(item.name)}" placeholder="Item description" />
+                        <div class="item-ledger">
+                            <input type="text" class="item-ledger-input" value="${escAttr(item.ledger)}" placeholder="Ledger / HSN code">
+                        </div>
+                    </td>
+                    <td><input type="number" class="rv-input-cell item-qty-input" value="${item.qty}" min="1" style="width:55px;text-align:center" onchange="recalcItemRow(this)"></td>
+                    <td><input type="number" class="rv-input-cell num-input item-rate-input" value="${item.rate}" step="0.01" style="width:110px" onchange="recalcItemRow(this)"></td>
+                    <td><input type="number" class="rv-input-cell num-input item-amount-input" value="${item.amount}" step="0.01" style="width:120px;font-weight:800" onchange="recalcAllTotals()"></td>
+                    <td class="action-cell">
+                        <button class="rv-item-action" title="Remove" onclick="this.closest('tr').remove();recalcAllTotals()">✕</button>
+                    </td>
+                </tr>
+            `).join('');
+
+            tbody.innerHTML += `
+                <tr style="opacity:.5" id="add-item-row">
+                    <td class="item-sr">${items.length + 1}</td>
+                    <td><input type="text" placeholder="+ Add item..." style="border:none;background:none;font-size:.85rem;width:100%;color:#3b82f6;font-weight:600;font-family:inherit" onfocus="this.closest('tr').style.opacity='1'" onkeydown="if(event.key==='Enter'){addNewItemRow(this.value);this.value='';}"></td>
+                    <td></td><td></td><td></td><td></td>
+                </tr>
+            `;
+        }
+
+        function escAttr(s) { return String(s || '').replace(/"/g, '&quot;').replace(/</g, '&lt;'); }
+
+        // ═══ TAX LEDGER ═══
+        const TAX_LEDGER_OPTIONS = [
+            'CGST', 'SGST', 'IGST', 'Cess', 'TDS', 'TCS',
+            'Input CGST', 'Input SGST', 'Input IGST',
+            'Output CGST', 'Output SGST', 'Output IGST',
+            'Discount', 'Rounding',
+        ];
+
+        function renderTaxLedgers(halfGst) {
+            const tbody = document.getElementById('rv-tax-tbody');
+            const ledgers = [];
+            if (halfGst > 0) {
+                ledgers.push({ name: 'CGST', desc: 'CGST (9%)', amount: halfGst });
+                ledgers.push({ name: 'SGST', desc: 'SGST (9%)', amount: halfGst });
+            }
+            // Always show at least one row
+            if (ledgers.length === 0) {
+                ledgers.push({ name: 'CGST', desc: 'CGST (0%)', amount: 0 });
+            }
+
+            tbody.innerHTML = ledgers.map((l, i) => `
+                <tr data-tax-row>
+                    <td style="text-align:center;font-weight:700;color:#6b7280">${i + 1}</td>
+                    <td>
+                        <select class="rv-tax-select tax-ledger-name" onchange="recalcAllTotals()">
+                            ${TAX_LEDGER_OPTIONS.map(o => `<option value="${o}" ${o === l.name ? 'selected' : ''}>${o}</option>`).join('')}
+                        </select>
+                    </td>
+                    <td><input type="text" class="rv-tax-desc tax-ledger-desc" value="${escAttr(l.desc)}" placeholder="Description"></td>
+                    <td><input type="number" class="rv-input-cell num-input tax-ledger-amount" value="${l.amount}" step="0.01" style="width:120px" onchange="recalcAllTotals()"></td>
+                    <td class="action-cell">
+                        <button class="rv-item-action" title="Remove" onclick="this.closest('tr').remove();recalcAllTotals()">✕</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function addTaxLedgerRow() {
+            const tbody = document.getElementById('rv-tax-tbody');
+            const sr = tbody.querySelectorAll('[data-tax-row]').length + 1;
+            const tr = document.createElement('tr');
+            tr.setAttribute('data-tax-row', '');
+            tr.innerHTML = `
+                <td style="text-align:center;font-weight:700;color:#6b7280">${sr}</td>
+                <td>
+                    <select class="rv-tax-select tax-ledger-name" onchange="recalcAllTotals()">
+                        ${TAX_LEDGER_OPTIONS.map(o => `<option value="${o}">${o}</option>`).join('')}
+                    </select>
+                </td>
+                <td><input type="text" class="rv-tax-desc tax-ledger-desc" value="" placeholder="Description"></td>
+                <td><input type="number" class="rv-input-cell num-input tax-ledger-amount" value="0" step="0.01" style="width:120px" onchange="recalcAllTotals()"></td>
+                <td class="action-cell">
+                    <button class="rv-item-action" title="Remove" onclick="this.closest('tr').remove();recalcAllTotals()">✕</button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+            tr.querySelector('.tax-ledger-amount').focus();
+        }
+
+        function addNewItemRow(name) {
+            if (!name || !name.trim()) return;
+            const addRow = document.getElementById('add-item-row');
+            const tbody = document.getElementById('rv-items-tbody');
+            const existingRows = tbody.querySelectorAll('[data-item-row]').length;
+            const newSr = existingRows + 1;
+            const tr = document.createElement('tr');
+            tr.setAttribute('data-item-row', '');
+            tr.innerHTML = `
+                <td class="item-sr">${newSr}</td>
+                <td class="item-name-cell">
+                    <input type="text" class="rv-input-cell name-input item-name-input" value="${escAttr(name)}" />
+                    <div class="item-ledger"><input type="text" class="item-ledger-input" value="" placeholder="Ledger / HSN code"></div>
+                </td>
+                <td><input type="number" class="rv-input-cell item-qty-input" value="1" min="1" style="width:55px;text-align:center" onchange="recalcItemRow(this)"></td>
+                <td><input type="number" class="rv-input-cell num-input item-rate-input" value="0" step="0.01" style="width:110px" onchange="recalcItemRow(this)"></td>
+                <td><input type="number" class="rv-input-cell num-input item-amount-input" value="0" step="0.01" style="width:120px;font-weight:800" onchange="recalcAllTotals()"></td>
+                <td class="action-cell"><button class="rv-item-action" title="Remove" onclick="this.closest('tr').remove();recalcAllTotals()">✕</button></td>
+            `;
+            tbody.insertBefore(tr, addRow);
+            addRow.querySelector('.item-sr').textContent = newSr + 1;
+            tr.querySelector('.item-rate-input').focus();
+        }
+
+        function recalcItemRow(el) {
+            const tr = el.closest('tr');
+            const qty = Number(tr.querySelector('.item-qty-input').value) || 1;
+            const rate = Number(tr.querySelector('.item-rate-input').value) || 0;
+            tr.querySelector('.item-amount-input').value = (qty * rate).toFixed(2);
+            recalcAllTotals();
+        }
+
+        function recalcAllTotals() {
+            // Item subtotal
+            let itemSub = 0;
+            document.querySelectorAll('#rv-items-tbody [data-item-row]').forEach(r => {
+                itemSub += Number(r.querySelector('.item-amount-input').value) || 0;
+            });
+            document.getElementById('rv-subtotal').textContent = formatINR(itemSub);
+
+            // Tax total
+            let taxTotal = 0;
+            document.querySelectorAll('#rv-tax-tbody [data-tax-row]').forEach(r => {
+                taxTotal += Number(r.querySelector('.tax-ledger-amount').value) || 0;
+            });
+            document.getElementById('rv-tax-total').textContent = formatINR(taxTotal);
+
+            // Grand total = items + tax
+            document.getElementById('rv-grand-total').textContent = formatINR(itemSub + taxTotal);
+        }
+
+        // ═══ PDF.js VIEWER ═══
+        let pdfDoc = null;
+        let pdfScale = 1.2;
+        const pdfjsLib = window['pdfjs-dist/build/pdf'] || window.pdfjsLib;
+        if (pdfjsLib) {
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        }
+
+        async function loadDocument(inv) {
+            const pdfBody = document.getElementById('rv-pdf-body');
+
+            if (!inv.file_path) {
+                pdfBody.innerHTML = `
+                    <div class="rv-pdf-placeholder">
+                        <div class="rv-pdf-placeholder-icon">📄</div>
+                        <h3>No Source Document</h3>
+                        <p>This invoice was received without an attached file.<br>You can still review and approve the AI-extracted data.</p>
+                    </div>`;
+                return;
+            }
+
+            pdfBody.innerHTML = `
+                <div class="rv-pdf-placeholder">
+                    <div class="rv-pdf-placeholder-icon">⏳</div>
+                    <h3>Loading document...</h3>
+                    <p>Fetching from storage</p>
+                </div>`;
+
+            // Use the backend proxy to avoid CORS + Content-Type issues
+            const proxyUrl = `${API_BASE_URL}/invoices/${inv.id}/file`;
+            const token = localStorage.getItem('access_token');
+            currentFileUrl = proxyUrl;
+
+            const fileType = inv.file_path.rsplit ? 'pdf' : (inv.file_path.split('.').pop() || '').toLowerCase();
+
+            try {
+                if (fileType === 'pdf') {
+                    await renderPdfWithPdfJs(proxyUrl, token);
+                } else if (['jpg','jpeg','png','gif','webp'].includes(fileType)) {
+                    // For images, use an img tag with the proxy URL
+                    const imgResp = await fetch(proxyUrl, { headers: { 'Authorization': `Bearer ${token}` } });
+                    const blob = await imgResp.blob();
+                    const blobUrl = URL.createObjectURL(blob);
+                    pdfBody.innerHTML = `<img class="rv-pdf-img" src="${blobUrl}" alt="Invoice document">`;
+                    document.getElementById('rv-page-num').value = '1';
+                    document.getElementById('rv-page-total').textContent = '1';
+                } else {
+                    pdfBody.innerHTML = `
+                        <div class="rv-pdf-placeholder">
+                            <div class="rv-pdf-placeholder-icon">📎</div>
+                            <h3>File: .${fileType}</h3>
+                            <p>Preview not available for this file type</p>
+                        </div>`;
+                }
+            } catch (e) {
+                pdfBody.innerHTML = `
+                    <div class="rv-pdf-placeholder">
+                        <div class="rv-pdf-placeholder-icon">⚠️</div>
+                        <h3>Could not load document</h3>
+                        <p>${e.message}</p>
+                    </div>`;
+            }
+        }
+
+        async function renderPdfWithPdfJs(url, token) {
+            const pdfBody = document.getElementById('rv-pdf-body');
+
+            try {
+                // Fetch PDF as arraybuffer through our backend proxy
+                const headers = {};
+                if (token) headers['Authorization'] = `Bearer ${token}`;
+                const resp = await fetch(url, { headers });
+                if (!resp.ok) throw new Error('Download failed: ' + resp.status);
+                const arrayBuffer = await resp.arrayBuffer();
+
+                // Load with PDF.js
+                const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+                pdfDoc = await loadingTask.promise;
+
+                const totalPages = pdfDoc.numPages;
+                document.getElementById('rv-page-num').value = '1';
+                document.getElementById('rv-page-total').textContent = totalPages;
+
+                // Clear and render all pages
+                pdfBody.innerHTML = '';
+                await renderAllPages();
+            } catch (e) {
+                console.error('PDF.js error:', e);
+                pdfBody.innerHTML = `
+                    <div class="rv-pdf-placeholder">
+                        <div class="rv-pdf-placeholder-icon">⚠️</div>
+                        <h3>PDF render error</h3>
+                        <p>${e.message}</p>
+                        <a href="${url}" target="_blank" style="color:#93c5fd;font-size:.82rem;margin-top:.5rem">Download PDF →</a>
+                    </div>`;
+            }
+        }
+
+        async function renderAllPages() {
+            if (!pdfDoc) return;
+            const pdfBody = document.getElementById('rv-pdf-body');
+            pdfBody.innerHTML = '';
+            const containerWidth = pdfBody.clientWidth - 16; // minus padding
+
+            for (let i = 1; i <= pdfDoc.numPages; i++) {
+                const page = await pdfDoc.getPage(i);
+                const viewport = page.getViewport({ scale: pdfScale });
+
+                // Auto-fit to container width
+                const fitScale = containerWidth / viewport.width;
+                const finalScale = pdfScale === 0 ? fitScale : Math.min(pdfScale, fitScale * 1.2);
+                const finalViewport = page.getViewport({ scale: finalScale });
+
+                const canvas = document.createElement('canvas');
+                canvas.width = finalViewport.width;
+                canvas.height = finalViewport.height;
+                canvas.style.width = finalViewport.width + 'px';
+
+                const ctx = canvas.getContext('2d');
+                await page.render({ canvasContext: ctx, viewport: finalViewport }).promise;
+
+                pdfBody.appendChild(canvas);
+            }
+        }
+
+        function openPdfNewTab() {
+            if (currentFileUrl) window.open(currentFileUrl, '_blank');
+            else showToast('No document URL available', 'error');
+        }
+
+        function zoomPdf(delta) {
+            if (!pdfDoc) return;
+            if (delta === 0) {
+                pdfScale = 0; // fit-width mode
+            } else {
+                if (pdfScale === 0) pdfScale = 1.2;
+                pdfScale = Math.max(0.5, Math.min(3.0, pdfScale + delta));
+            }
+            renderAllPages();
+        }
+
+        function lookupGst() {
+            const gst = document.getElementById('rv-gst-number').value;
+            if (!gst) { showToast('Enter a GST number first', 'error'); return; }
+            showToast('GST lookup coming soon', 'info');
+        }
+
+        // ═══ COLLECT FORM DATA ═══
+        function collectFormData() {
+            const dateVal = document.getElementById('rv-voucher-date').value;
+            // Compute tax total from tax ledger rows
+            let taxTotal = 0;
+            document.querySelectorAll('#rv-tax-tbody [data-tax-row]').forEach(r => {
+                taxTotal += Number(r.querySelector('.tax-ledger-amount').value) || 0;
+            });
+            return {
+                vendor_name: document.getElementById('rv-party-name').value || undefined,
+                gst_number: document.getElementById('rv-gst-number').value || undefined,
+                invoice_number: document.getElementById('rv-voucher-no').value || undefined,
+                invoice_date: dateVal ? new Date(dateVal).toISOString() : undefined,
+                expenses_type: document.getElementById('rv-ledger-type').value || undefined,
+                amount: document.getElementById('rv-subtotal').textContent.replace(/[^\d.]/g, '') || undefined,
+                gst_amount: String(taxTotal) || undefined,
+                total_amount: document.getElementById('rv-grand-total').textContent.replace(/[^\d.]/g, '') || undefined,
+            };
+        }
+
+        function collectItemsData() {
+            const rows = document.querySelectorAll('#rv-items-tbody [data-item-row]');
+            return Array.from(rows).map(r => ({
+                description: r.querySelector('.item-name-input')?.value || 'Item',
+                service_code: r.querySelector('.item-ledger-input')?.value || '',
+                quantity: String(r.querySelector('.item-qty-input')?.value || '1'),
+                price: String(r.querySelector('.item-rate-input')?.value || '0'),
+                amount: String(r.querySelector('.item-amount-input')?.value || '0'),
+            })).filter(it => it.description.trim());
+        }
+
+        // ═══ SAVE ═══
+        async function handleSave() {
+            const btn = document.getElementById('btn-save');
+            btn.disabled = true;
+            btn.textContent = '⏳ Saving...';
+
+            try {
+                await saveInvoice();
+                await saveItems();
+                showSaveToast('✅ Invoice saved successfully!');
+                // Update bottom bar labels with potentially changed values
+                document.getElementById('rv-inv-label').textContent = document.getElementById('rv-voucher-no').value || 'N/A';
+                document.getElementById('rv-vendor-label').textContent = document.getElementById('rv-party-name').value || 'Unknown';
+                document.getElementById('rv-company-name').textContent = document.getElementById('rv-party-name').value || 'Unknown Vendor';
+            } catch (e) {
+                showToast('❌ Save failed: ' + e.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '💾 Save';
+            }
+        }
+
+        // Toast with Close option
+        function showSaveToast(msg) {
+            const tc = document.getElementById('toast-container');
+            const t = document.createElement('div');
+            t.style.cssText = 'background:#059669;color:#fff;padding:.6rem 1.1rem;border-radius:8px;font-size:.82rem;font-weight:600;box-shadow:0 4px 14px rgba(0,0,0,.15);font-family:inherit;display:flex;align-items:center;gap:.75rem';
+            t.innerHTML = `<span>${msg}</span><button onclick="goBack()" style="background:rgba(255,255,255,.2);border:none;color:#fff;padding:.3rem .6rem;border-radius:5px;font-size:.75rem;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap">← Close & Go Back</button>`;
+            tc.appendChild(t);
+            setTimeout(() => { t.style.opacity = '0'; t.style.transition = 'opacity .3s'; setTimeout(() => t.remove(), 300); }, 6000);
+        }
+
+        async function saveInvoice() {
+            const data = collectFormData();
+            const res = await authFetch(`/invoices/${invoiceId}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            if (!res.ok) throw new Error('Failed to update invoice');
+        }
+
+        async function saveItems() {
+            const items = collectItemsData();
+            // Save items via PUT (replace all)
+            const res = await authFetch(`/invoices/${invoiceId}/items`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(items)
+            });
+            if (!res.ok) {
+                console.warn('Items save returned non-OK, items may not have been updated');
+            }
+        }
+
+        // ═══ APPROVE ═══
+        async function handleApprove() {
+            if (!confirm('Approve this invoice? This will lock the fields for editing.')) return;
+
+            const btn = document.getElementById('btn-approve');
+            btn.disabled = true;
+            btn.textContent = '⏳ Approving...';
+
+            try {
+                // Save all current edits first
+                await saveInvoice();
+                await saveItems();
+
+                // Then mark as approved
+                const res = await authFetch(`/invoices/${invoiceId}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: 'approved' })
+                });
+                if (!res.ok) throw new Error('Failed to approve');
+
+                showToast('✅ Invoice approved!', 'success');
+
+                // Update UI to reflect approved state
+                const badge = document.getElementById('rv-status-badge');
+                badge.textContent = 'Approved';
+                badge.className = 'rv-topbar-badge approved';
+                document.querySelector('.rv-form-panel').classList.add('form-disabled');
+                document.getElementById('btn-save').disabled = true;
+                btn.textContent = '✅ Approved';
+
+                // Auto-redirect after a short delay
+                showToast('↩ Redirecting to transactions...', 'info');
+                setTimeout(() => goBack(), 1500);
+            } catch (e) {
+                showToast('❌ Approve failed: ' + e.message, 'error');
+                btn.disabled = false;
+                btn.textContent = '✅ Approve';
+            }
+        }
+
+        // Keyboard: Escape to go back
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') goBack();
+        });
+
+        // ═══ INIT ═══
+        loadInvoice();
+    </script>
+</body>
+</html>

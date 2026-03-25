@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transactions — Suvidha AI</title>
+    <meta name="description" content="View, review, and approve uploaded transaction entries in Suvidha AI.">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="data-entry.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .tx-layout { display: flex; height: 100vh; padding-top: 64px }
+        .tx-sidebar {
+            width: 240px; background: #fff; border-right: 1px solid #e5e7eb;
+            display: flex; flex-direction: column; flex-shrink: 0; overflow-y: auto;
+        }
+        .tx-sb-header { padding: 1.15rem 1.25rem; border-bottom: 1px solid #f1f5f9 }
+        .tx-sb-header h3 {
+            font-family: 'Outfit', sans-serif; font-size: .95rem; font-weight: 800;
+            color: #111827; margin: 0 0 .15rem; display: flex; align-items: center; gap: .4rem;
+        }
+        .tx-sb-header p { font-size: .72rem; color: #9ca3af; margin: 0 }
+        .tx-sb-section { padding: .75rem .65rem }
+        .tx-sb-label {
+            font-size: .6rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em;
+            color: #9ca3af; padding: 0 .5rem; margin-bottom: .3rem;
+        }
+        .tx-sb-item {
+            display: flex; align-items: center; gap: .6rem;
+            padding: .5rem .65rem; border-radius: 8px; font-size: .8rem; font-weight: 500;
+            color: #6b7280; cursor: pointer; transition: all .15s; margin-bottom: 1px;
+        }
+        .tx-sb-item:hover { background: #f8fafc; color: #1e3a8a }
+        .tx-sb-item.active { background: #eff6ff; color: #1e3a8a; font-weight: 600 }
+        .tx-sb-item svg { width: 16px; height: 16px; flex-shrink: 0 }
+        .tx-sb-badge {
+            margin-left: auto; font-size: .6rem; font-weight: 700; padding: 1px 6px;
+            border-radius: 4px; background: #fee2e2; color: #dc2626;
+        }
+        .tx-sb-divider { height: 1px; background: #f1f5f9; margin: .4rem .65rem }
+        .tx-sb-back {
+            display: flex; align-items: center; gap: .5rem;
+            padding: .85rem 1.25rem; border-top: 1px solid #f1f5f9;
+            font-size: .8rem; font-weight: 600; color: #6b7280;
+            cursor: pointer; text-decoration: none; transition: all .15s; margin-top: auto;
+        }
+        .tx-sb-back:hover { color: #1e3a8a; background: #f8fafc }
+        .tx-sb-back svg { width: 16px; height: 16px }
+
+        /* Main */
+        .tx-main { flex: 1; overflow-y: auto; padding: 1.25rem 1.5rem 3rem; background: #f8fafc }
+        .tx-breadcrumb {
+            font-size: .75rem; color: #9ca3af; margin-bottom: .75rem;
+            display: flex; align-items: center; gap: .35rem;
+        }
+        .tx-breadcrumb a { color: #6b7280; text-decoration: none; font-weight: 500 }
+        .tx-breadcrumb a:hover { color: #1e3a8a }
+        .tx-header {
+            display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 1rem;
+        }
+        .tx-header h1 {
+            font-family: 'Outfit', sans-serif; font-size: 1.35rem; font-weight: 800; color: #0f172a; margin: 0 0 .2rem;
+        }
+        .tx-header h1 span { background: linear-gradient(135deg,#1e3a8a,#3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text }
+        .tx-header p { font-size: .82rem; color: #6b7280; margin: 0 }
+
+        /* Stats bar */
+        .tx-stats {
+            display: flex; gap: .75rem; margin-bottom: 1rem;
+        }
+        .tx-stat {
+            background: #fff; border: 1px solid #e5e7eb; border-radius: 10px;
+            padding: .6rem 1rem; display: flex; align-items: center; gap: .6rem; flex: 1;
+        }
+        .tx-stat-icon { font-size: 1.1rem }
+        .tx-stat-num {
+            font-family: 'Outfit', sans-serif; font-size: 1.15rem; font-weight: 800; color: #0f172a;
+        }
+        .tx-stat-label { font-size: .65rem; font-weight: 600; color: #9ca3af; text-transform: uppercase; letter-spacing: .04em }
+
+        /* Filter bar */
+        .tx-filter {
+            display: flex; align-items: center; gap: .5rem;
+            padding: .65rem 1rem; background: #fff; border: 1px solid #e5e7eb;
+            border-radius: 10px 10px 0 0; border-bottom: 1px solid #f1f5f9;
+        }
+        .tx-filter input {
+            flex: 1; padding: .45rem .7rem; border: 1px solid #e2e8f0;
+            border-radius: 7px; font-size: .82rem; font-family: inherit; outline: none;
+        }
+        .tx-filter input:focus { border-color: #3b82f6 }
+        .tx-filter select {
+            padding: .45rem .6rem; border: 1px solid #e2e8f0;
+            border-radius: 7px; font-size: .78rem; font-family: inherit; background: #fff;
+        }
+
+        /* Table */
+        .tx-table-wrap {
+            background: #fff; border: 1px solid #e5e7eb; border-top: none;
+            border-radius: 0 0 10px 10px; overflow-x: auto;
+        }
+        .tx-table { width: 100%; border-collapse: collapse; min-width: 900px }
+        .tx-table thead th {
+            font-size: .68rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: .04em; color: #9ca3af; padding: .6rem .75rem;
+            border-bottom: 1px solid #f1f5f9; text-align: left; background: #fafbff;
+        }
+        .tx-table tbody td {
+            font-size: .82rem; padding: .65rem .75rem;
+            border-bottom: 1px solid #f8fafc; color: #374151;
+        }
+        .tx-table tbody tr { cursor: pointer; transition: background .12s }
+        .tx-table tbody tr:hover { background: #f8faff }
+        .tx-badge {
+            display: inline-block; font-size: .68rem; font-weight: 600;
+            padding: 2px 8px; border-radius: 5px;
+        }
+        .tx-badge.pending { background: #fef3c7; color: #d97706 }
+        .tx-badge.synced { background: #ecfdf5; color: #059669 }
+        .tx-badge.approved { background: #dbeafe; color: #1e40af }
+        .tx-badge.sales { background: #eff6ff; color: #1e3a8a }
+        .tx-badge.purchase { background: #fdf2f8; color: #9d174d }
+        .tx-badge.banking { background: #f0fdf4; color: #166534 }
+        .tx-badge.journal { background: #f5f3ff; color: #7c3aed }
+        .tx-badge.receipt { background: #ecfdf5; color: #059669 }
+        .tx-badge.contra { background: #fef3c7; color: #92400e }
+
+        .tx-upload-btn {
+            display: inline-flex; align-items: center; gap: .4rem;
+            padding: .5rem 1rem; border-radius: 8px; font-size: .82rem;
+            font-weight: 700; cursor: pointer; font-family: inherit;
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6); color: #fff;
+            border: none; transition: all .2s; position: relative; overflow: hidden;
+        }
+        .tx-upload-btn:hover { box-shadow: 0 4px 14px rgba(30,58,138,.3); transform: translateY(-1px) }
+        .tx-upload-btn input { position: absolute; inset: 0; opacity: 0; cursor: pointer }
+        .tx-header-sub {
+            font-size: .82rem; color: #6b7280; margin: .2rem 0 0; line-height: 1.55; max-width: 600px;
+        }
+
+        .tx-btn {
+            padding: .35rem .7rem; border-radius: 6px; font-size: .72rem;
+            font-weight: 600; cursor: pointer; font-family: inherit;
+            border: 1px solid #e5e7eb; background: #fff; color: #374151; transition: all .15s;
+        }
+        .tx-btn:hover { border-color: #1e3a8a; color: #1e3a8a }
+        .tx-btn.success { background: #059669; color: #fff; border-color: #059669 }
+        .tx-btn.success:hover { background: #047857 }
+        .tx-btn.primary { background: #1e3a8a; color: #fff; border-color: #1e3a8a }
+        .tx-btn.primary:hover { background: #1e40af }
+        .tx-btn:disabled { opacity: .5; cursor: not-allowed }
+
+        .tx-empty {
+            text-align: center; padding: 3rem 1rem; color: #9ca3af; font-size: .85rem;
+        }
+        .tx-empty-icon { font-size: 2.5rem; margin-bottom: .5rem; opacity: .5 }
+        .tx-pagination {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: .65rem 1rem; background: #fff; border: 1px solid #e5e7eb;
+            border-top: none; border-radius: 0 0 10px 10px; font-size: .78rem; color: #6b7280;
+        }
+
+        /* Refresh button */
+        .tx-refresh-btn {
+            display: inline-flex; align-items: center; gap: .35rem;
+            padding: .5rem .85rem; border-radius: 8px; font-size: .82rem;
+            font-weight: 600; cursor: pointer; font-family: inherit;
+            background: #fff; color: #374151; border: 1px solid #e2e8f0;
+            transition: all .2s;
+        }
+        .tx-refresh-btn:hover { border-color: #3b82f6; color: #1e3a8a; background: #f8faff }
+        .tx-refresh-btn.spinning svg { animation: spin .8s linear infinite }
+        @keyframes spin { to { transform: rotate(360deg) } }
+
+        /* ═══ AI PROCESSING ROW ═══ */
+        .tx-processing-row td {
+            background: linear-gradient(90deg, #f8faff 0%, #eff6ff 40%, #f8faff 80%);
+            background-size: 200% 100%;
+            animation: shimmer 2s ease-in-out infinite;
+            border-bottom: 1px solid #dbeafe !important;
+        }
+        @keyframes shimmer {
+            0% { background-position: 200% 0 }
+            100% { background-position: -200% 0 }
+        }
+        .ai-processing-cell {
+            display: flex; align-items: center; gap: .75rem;
+            padding: .35rem 0;
+        }
+        .ai-brain-icon {
+            width: 36px; height: 36px; border-radius: 10px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.05rem;
+            animation: pulse-brain 1.5s ease-in-out infinite;
+            box-shadow: 0 2px 10px rgba(99,102,241,.3);
+        }
+        @keyframes pulse-brain {
+            0%, 100% { transform: scale(1); box-shadow: 0 2px 10px rgba(99,102,241,.3) }
+            50% { transform: scale(1.08); box-shadow: 0 4px 18px rgba(99,102,241,.5) }
+        }
+        .ai-processing-info {
+            display: flex; flex-direction: column; gap: 2px;
+        }
+        .ai-processing-filename {
+            font-weight: 700; font-size: .82rem; color: #1e3a8a;
+        }
+        .ai-processing-status {
+            font-size: .72rem; color: #6366f1; font-weight: 500;
+            display: flex; align-items: center; gap: .4rem;
+        }
+        .ai-processing-dots::after {
+            content: '';
+            animation: dots 1.5s steps(4, end) infinite;
+        }
+        @keyframes dots {
+            0% { content: '' }
+            25% { content: '.' }
+            50% { content: '..' }
+            75% { content: '...' }
+        }
+        .ai-timer {
+            display: inline-flex; align-items: center; gap: .3rem;
+            padding: 3px 10px; border-radius: 20px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: #fff; font-size: .72rem; font-weight: 700;
+            font-family: 'Outfit', sans-serif;
+            letter-spacing: .02em;
+            box-shadow: 0 2px 8px rgba(99,102,241,.25);
+        }
+        .ai-timer-progress {
+            width: 80px; height: 4px; border-radius: 2px;
+            background: rgba(255,255,255,.2); overflow: hidden;
+            margin-left: .35rem;
+        }
+        .ai-timer-bar {
+            height: 100%; border-radius: 2px;
+            background: #fff;
+            transition: width 1s linear;
+        }
+
+        @media (max-width: 900px) {
+            .tx-sidebar { display: none }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app-topbar" data-active="dashboard"></div>
+    <script src="app-topbar.js"></script>
+
+    <div class="tx-layout">
+        <!-- ══ SIDEBAR ══ -->
+        <aside class="tx-sidebar">
+            <div class="tx-sb-header">
+                <h3>💰 Transactions</h3>
+                <p>Review & approve uploaded entries</p>
+            </div>
+            <div class="tx-sb-section">
+                <div class="tx-sb-label">Filter by Type</div>
+                <div class="tx-sb-item active" onclick="filterByType('all',this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                    All Types
+                    <span class="tx-sb-badge" id="sb-count-all" style="background:#f1f5f9;color:#475569">0</span>
+                </div>
+                <div class="tx-sb-item" onclick="filterByType('Sales',this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                    Sales
+                </div>
+                <div class="tx-sb-item" onclick="filterByType('Purchase',this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/></svg>
+                    Purchase
+                </div>
+                <div class="tx-sb-item" onclick="filterByType('Banking',this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+                    Banking
+                </div>
+                <div class="tx-sb-item" onclick="filterByType('Journal',this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    Journal
+                </div>
+                <div class="tx-sb-item" onclick="filterByType('Receipt',this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4v16l3-2 3 2 3-2 3 2 3-2 3 2V4l-3 2-3-2-3 2-3-2-3 2z"/></svg>
+                    Receipt
+                </div>
+                <div class="tx-sb-item" onclick="filterByType('Contra',this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+                    Contra
+                </div>
+            </div>
+            <div class="tx-sb-divider"></div>
+            <div class="tx-sb-section">
+                <div class="tx-sb-label">Filter by Status</div>
+                <div class="tx-sb-item" onclick="filterByStatus('Pending',this)">
+                    ⏳ Pending Review
+                    <span class="tx-sb-badge" id="sb-count-pending">0</span>
+                </div>
+                <div class="tx-sb-item" onclick="filterByStatus('Approved',this)">
+                    ✅ Approved
+                    <span class="tx-sb-badge" id="sb-count-approved" style="background:#dbeafe;color:#1e40af">0</span>
+                </div>
+                <div class="tx-sb-item" onclick="filterByStatus('PendingSync',this)">
+                    🔄 Pending Tally Sync
+                    <span class="tx-sb-badge" id="sb-count-pendingsync" style="background:#fef3c7;color:#b45309">0</span>
+                </div>
+                <div class="tx-sb-item" onclick="filterByStatus('Synced',this)">
+                    📊 Synced to Tally
+                    <span class="tx-sb-badge" id="sb-count-synced" style="background:#ecfdf5;color:#059669">0</span>
+                </div>
+                <div class="tx-sb-divider"></div>
+                <div class="tx-sb-item" onclick="filterByStatus('Uncategorised',this)">
+                    ❓ Uncategorised
+                    <span class="tx-sb-badge" id="sb-count-uncat" style="background:#fef2f2;color:#dc2626">0</span>
+                </div>
+            </div>
+            <a class="tx-sb-back" id="back-link" href="service-data-entry.html">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                Back to Data Entry
+            </a>
+        </aside>
+
+        <!-- ══ MAIN ══ -->
+        <main class="tx-main">
+            <div class="tx-breadcrumb">
+                <a href="clients.html">Firm</a><span style="color:#d1d5db">›</span>
+                <a href="service-data-entry.html" id="bc-de-link">Data Entry</a><span style="color:#d1d5db">›</span>
+                <span style="color:#374151;font-weight:600">Transactions</span>
+            </div>
+
+            <div class="tx-header">
+                <div>
+                    <h1>💰 <span>Transactions</span></h1>
+                    <p class="tx-header-sub">Upload any invoice, receipt, bank statement or bill — <strong>Suvidha AI reads the document</strong>, automatically extracts vendor details, amounts, GST info and assigns the right category. Just review and approve to push directly to Tally.</p>
+                </div>
+                <div style="display:flex;gap:.5rem;align-items:flex-start;flex-shrink:0">
+                    <button class="tx-refresh-btn" id="btn-refresh" onclick="refreshList()" title="Reload transactions">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                        Refresh
+                    </button>
+                    <label class="tx-upload-btn">
+                        📤 Upload Document
+                        <input type="file" multiple accept=".pdf,.xlsx,.xls,.csv,.jpg,.jpeg,.png" onchange="handleUpload(this)">
+                    </label>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="tx-stats">
+                <div class="tx-stat">
+                    <div class="tx-stat-icon">📋</div>
+                    <div>
+                        <div class="tx-stat-num" id="stat-total">0</div>
+                        <div class="tx-stat-label">Total</div>
+                    </div>
+                </div>
+                <div class="tx-stat" style="cursor:pointer" onclick="filterByStatus('Pending',findSbItem('Pending'))">
+                    <div class="tx-stat-icon">⏳</div>
+                    <div>
+                        <div class="tx-stat-num" id="stat-pending">0</div>
+                        <div class="tx-stat-label">Pending</div>
+                    </div>
+                </div>
+                <div class="tx-stat" style="cursor:pointer" onclick="filterByStatus('Approved',findSbItem('Approved'))">
+                    <div class="tx-stat-icon">✅</div>
+                    <div>
+                        <div class="tx-stat-num" id="stat-approved">0</div>
+                        <div class="tx-stat-label">Approved</div>
+                    </div>
+                </div>
+                <div class="tx-stat" style="cursor:pointer" onclick="filterByStatus('Synced',findSbItem('Synced'))">
+                    <div class="tx-stat-icon">📊</div>
+                    <div>
+                        <div class="tx-stat-num" id="stat-synced">0</div>
+                        <div class="tx-stat-label">Synced</div>
+                    </div>
+                </div>
+                <div class="tx-stat" style="cursor:pointer" onclick="filterByStatus('Uncategorised',findSbItem('Uncategorised'))">
+                    <div class="tx-stat-icon">❓</div>
+                    <div>
+                        <div class="tx-stat-num" id="stat-uncat">0</div>
+                        <div class="tx-stat-label">Uncategorised</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filter bar -->
+            <div class="tx-filter">
+                <input type="text" placeholder="Search by vendor, invoice no, GST..." id="tx-search" oninput="applyFilters()">
+                <select id="tx-status-filter" onchange="filterByStatusDropdown(this.value)" style="min-width:140px">
+                    <option value="">All Statuses</option>
+                    <option value="Pending">⏳ Pending</option>
+                    <option value="Approved">✅ Approved</option>
+                    <option value="PendingSync">🔄 Pending Sync</option>
+                    <option value="Synced">📊 Synced</option>
+                    <option value="Uncategorised">❓ Uncategorised</option>
+                </select>
+                <select id="tx-sort" onchange="applyFilters()">
+                    <option value="newest">Newest First</option>
+                    <option value="oldest">Oldest First</option>
+                    <option value="amount-high">Amount: High → Low</option>
+                    <option value="amount-low">Amount: Low → High</option>
+                </select>
+            </div>
+
+            <!-- Table -->
+            <div class="tx-table-wrap">
+                <table class="tx-table">
+                    <thead>
+                        <tr>
+                            <th>Sr.</th>
+                            <th>Source</th>
+                            <th>Inv. No.</th>
+                            <th>Vendor</th>
+                            <th>GST No.</th>
+                            <th>Type</th>
+                            <th>Date</th>
+                            <th style="text-align:right">Amount</th>
+                            <th style="text-align:right">GST</th>
+                            <th style="text-align:right">Total</th>
+                            <th>📄</th>
+                            <th>Status</th>
+                            <th style="text-align:right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tx-tbody">
+                        <tr><td colspan="13" style="text-align:center;padding:3rem;color:#9ca3af">Loading transactions...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+
+
+    <!-- Toast -->
+    <div id="toast-container" style="position:fixed;top:1.5rem;right:1.5rem;z-index:30000;display:flex;flex-direction:column;gap:.5rem"></div>
+
+    <script src="api_config.js"></script>
+    <script src="session-manager.js?v=2"></script>
+    <script>
+        if (!requireAuth()) { }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const clientId = urlParams.get('clientId');
+        const serviceName = urlParams.get('service') || 'Data Entry';
+
+        // Fix back link
+        document.getElementById('back-link').href = `service-data-entry.html?clientId=${clientId}&service=${encodeURIComponent(serviceName)}`;
+        document.getElementById('bc-de-link').href = `service-data-entry.html?clientId=${clientId}&service=${encodeURIComponent(serviceName)}`;
+
+        // ═══ HELPERS ═══
+        function formatINR(val) {
+            const num = Math.abs(Number(val) || 0);
+            return '₹ ' + num.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+        function showToast(msg, type = 'info') {
+            const tc = document.getElementById('toast-container');
+            const bg = type === 'success' ? '#059669' : type === 'error' ? '#dc2626' : '#1e3a8a';
+            const t = document.createElement('div');
+            t.style.cssText = `background:${bg};color:#fff;padding:.6rem 1.1rem;border-radius:8px;font-size:.82rem;font-weight:600;box-shadow:0 4px 14px rgba(0,0,0,.15);animation:slideIn .3s;font-family:inherit`;
+            t.textContent = msg;
+            tc.appendChild(t);
+            setTimeout(() => { t.style.opacity = '0'; t.style.transition = 'opacity .3s'; setTimeout(() => t.remove(), 300); }, 3000);
+        }
+
+        // ═══ DATA ═══
+        let allInvoices = [];
+        let currentFilter = 'all';
+        let currentStatus = '';
+
+
+        async function loadInvoices() {
+            try {
+                const url = clientId ? `/invoices/?client_id=${clientId}` : '/invoices/';
+                const res = await authFetch(url);
+                if (!res.ok) throw new Error('Failed');
+                const data = await res.json();
+                allInvoices = data.map(inv => ({
+                    id: inv.id,
+                    source: inv.source || 'upload',
+                    invoiceNo: inv.invoice_number || 'N/A',
+                    vendor: inv.vendor_name || 'Unknown',
+                    gstin: inv.gst_number || '-',
+                    type: inv.expenses_type || 'Uncategorized',
+                    date: inv.received_at || inv.invoice_date,
+                    amount: inv.amount || 0,
+                    gstAmount: inv.gst_amount || 0,
+                    totalAmount: inv.total_amount || 0,
+                    status: inv.status === 'approved' ? 'Approved' : (inv.synced_to_tally ? 'Synced' : 'Pending'),
+                    filePath: inv.file_path || null,
+                    raw: inv
+                }));
+                updateStats();
+                applyFilters();
+            } catch (e) {
+                console.error('Load error:', e);
+                document.getElementById('tx-tbody').innerHTML = '<tr><td colspan="13" style="text-align:center;padding:3rem;color:#dc2626">⚠️ Failed to load transactions</td></tr>';
+            }
+        }
+
+        function updateStats() {
+            const pending = allInvoices.filter(t => t.status === 'Pending').length;
+            const approved = allInvoices.filter(t => t.status === 'Approved').length;
+            const synced = allInvoices.filter(t => t.status === 'Synced').length;
+            const pendingSync = allInvoices.filter(t => t.status === 'Approved' && !t.raw.synced_to_tally).length;
+            const uncat = allInvoices.filter(t => t.type === 'Uncategorized').length;
+
+            document.getElementById('stat-total').textContent = allInvoices.length;
+            document.getElementById('stat-pending').textContent = pending;
+            document.getElementById('stat-approved').textContent = approved;
+            document.getElementById('stat-synced').textContent = synced;
+            document.getElementById('stat-uncat').textContent = uncat;
+
+            document.getElementById('sb-count-all').textContent = allInvoices.length;
+            document.getElementById('sb-count-pending').textContent = pending;
+            document.getElementById('sb-count-approved').textContent = approved;
+            document.getElementById('sb-count-pendingsync').textContent = pendingSync;
+            document.getElementById('sb-count-synced').textContent = synced;
+            document.getElementById('sb-count-uncat').textContent = uncat;
+        }
+
+        function applyFilters() {
+            let data = allInvoices.slice();
+            const search = document.getElementById('tx-search').value.toLowerCase();
+            const sort = document.getElementById('tx-sort').value;
+
+            // Type filter from sidebar
+            if (currentFilter !== 'all') {
+                data = data.filter(t => t.type === currentFilter);
+            }
+
+            // Status filter from sidebar or dropdown
+            if (currentStatus) {
+                if (currentStatus === 'PendingSync') {
+                    // Approved but not yet synced to Tally
+                    data = data.filter(t => t.status === 'Approved' && !t.raw.synced_to_tally);
+                } else if (currentStatus === 'Uncategorised') {
+                    data = data.filter(t => t.type === 'Uncategorized');
+                } else {
+                    data = data.filter(t => t.status === currentStatus);
+                }
+            }
+
+            if (search) data = data.filter(t =>
+                t.vendor.toLowerCase().includes(search) ||
+                t.invoiceNo.toLowerCase().includes(search) ||
+                (t.gstin && t.gstin.toLowerCase().includes(search))
+            );
+
+            data.sort((a, b) => {
+                if (sort === 'newest') return new Date(b.date || 0) - new Date(a.date || 0);
+                if (sort === 'oldest') return new Date(a.date || 0) - new Date(b.date || 0);
+                if (sort === 'amount-high') return (Number(b.totalAmount) || 0) - (Number(a.totalAmount) || 0);
+                return (Number(a.totalAmount) || 0) - (Number(b.totalAmount) || 0);
+            });
+
+            renderTable(data);
+        }
+
+        function renderTable(data) {
+            const tbody = document.getElementById('tx-tbody');
+            if (!data.length) {
+                tbody.innerHTML = `<tr><td colspan="13"><div class="tx-empty"><div class="tx-empty-icon">📂</div>No transactions found</div></td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = data.map((tx, i) => {
+                const typeCls = (tx.type || '').toLowerCase().replace(/[^a-z]/g, '');
+                const statusCls = tx.status === 'Approved' ? 'approved' : (tx.status === 'Synced' ? 'synced' : 'pending');
+                const hasFile = tx.filePath ? '📄' : '<span style="color:#d1d5db">—</span>';
+                const isApproved = tx.status === 'Approved';
+                const isSynced = tx.status === 'Synced';
+                const reviewLabel = isApproved ? '↻ Review Again' : '✓ Review';
+                return `<tr onclick="openReview(${tx.id})">
+                    <td style="color:#9ca3af">${i + 1}</td>
+                    <td><span class="tx-badge" style="background:#f1f5f9;color:#475569;text-transform:uppercase;font-size:.62rem">${tx.source}</span></td>
+                    <td style="color:#3b82f6;font-weight:600">${tx.invoiceNo}</td>
+                    <td><strong style="font-weight:600;color:#0f172a">${tx.vendor}</strong></td>
+                    <td style="font-size:.78rem;color:#475569;font-family:monospace">${tx.gstin !== '-' ? tx.gstin : '<span style="color:#d1d5db">—</span>'}</td>
+                    <td><span class="tx-badge ${typeCls}">${tx.type}</span></td>
+                    <td>${tx.date ? new Date(tx.date).toLocaleDateString('en-GB') : '-'}</td>
+                    <td style="text-align:right">${formatINR(tx.amount)}</td>
+                    <td style="text-align:right">${formatINR(tx.gstAmount)}</td>
+                    <td style="text-align:right;font-weight:700">${formatINR(tx.totalAmount)}</td>
+                    <td style="text-align:center">${hasFile}</td>
+                    <td><span class="tx-badge ${statusCls}">${tx.status}</span></td>
+                    <td style="text-align:right;white-space:nowrap" onclick="event.stopPropagation()">
+                        <button class="tx-btn success" onclick="openReview(${tx.id})">${reviewLabel}</button>
+                        <button class="tx-btn primary" onclick="doSyncToTally(${tx.id})" ${isSynced ? 'disabled' : ''} style="margin-left:3px">⟳ ${isSynced ? 'Synced' : 'Send to Tally'}</button>
+                    </td>
+                </tr>`;
+            }).join('');
+        }
+
+        function filterByType(type, el) {
+            currentFilter = type;
+            currentStatus = '';
+            document.querySelectorAll('.tx-sb-item').forEach(i => i.classList.remove('active'));
+            if (el) el.classList.add('active');
+            applyFilters();
+        }
+
+        function filterByStatus(status, el) {
+            currentStatus = status;
+            currentFilter = 'all';
+            document.querySelectorAll('.tx-sb-item').forEach(i => i.classList.remove('active'));
+            if (el) el.classList.add('active');
+            // Sync dropdown
+            document.getElementById('tx-status-filter').value = status;
+            applyFilters();
+        }
+
+        function filterByStatusDropdown(status) {
+            currentStatus = status;
+            // Clear sidebar active
+            document.querySelectorAll('.tx-sb-item').forEach(i => i.classList.remove('active'));
+            applyFilters();
+        }
+
+        // Helper to find sidebar item for stat clicks
+        function findSbItem(status) {
+            const items = document.querySelectorAll('.tx-sb-item');
+            for (const it of items) {
+                if (it.textContent.includes(status)) return it;
+            }
+            return null;
+        }
+
+        // ═══ OPEN REVIEW PAGE ═══
+        function openReview(invoiceId) {
+            window.location.href = `transaction-review.html?invoiceId=${invoiceId}&clientId=${clientId}&service=${encodeURIComponent(serviceName)}`;
+        }
+
+        // ═══ REFRESH ═══
+        async function refreshList() {
+            const btn = document.getElementById('btn-refresh');
+            btn.classList.add('spinning');
+            btn.disabled = true;
+            await loadInvoices();
+            showToast('🔄 Transactions refreshed', 'success');
+            btn.classList.remove('spinning');
+            btn.disabled = false;
+        }
+
+        // ═══ UPLOAD HANDLER ═══
+        const N8N_WEBHOOK_URL = 'https://rahul250192.app.n8n.cloud/webhook/4e082356-d55f-4174-a1eb-7bb275db59c5';
+        const AI_PROCESSING_TIME = 50; // seconds
+        let processingFiles = []; // track files being processed
+
+        async function handleUpload(input) {
+            const files = Array.from(input.files);
+            if (!files.length) return;
+            showToast(`📤 Uploading ${files.length} file(s)...`, 'info');
+
+            for (const f of files) {
+                try {
+                    const formData = new FormData();
+                    formData.append('file', f);
+                    formData.append('clientId', clientId || '');
+                    formData.append('client_id', clientId || '');
+
+                    const resp = await fetch(N8N_WEBHOOK_URL, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    if (resp.ok) {
+                        showToast(`✅ ${f.name} uploaded — AI processing started`, 'success');
+                        addProcessingRow(f.name);
+                    } else {
+                        showToast(`⚠️ ${f.name} upload failed`, 'error');
+                    }
+                } catch (e) {
+                    showToast(`❌ ${f.name} — ${e.message}`, 'error');
+                }
+            }
+            input.value = '';
+        }
+
+        function addProcessingRow(fileName) {
+            const tbody = document.getElementById('tx-tbody');
+            const rowId = 'proc-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5);
+            processingFiles.push({ rowId, fileName });
+
+            const tr = document.createElement('tr');
+            tr.className = 'tx-processing-row';
+            tr.id = rowId;
+            tr.innerHTML = `
+                <td style="color:#9ca3af">—</td>
+                <td colspan="9">
+                    <div class="ai-processing-cell">
+                        <div class="ai-brain-icon">🧠</div>
+                        <div class="ai-processing-info">
+                            <div class="ai-processing-filename">${escHtml(fileName)}</div>
+                            <div class="ai-processing-status">
+                                <span>AI is reading your document</span><span class="ai-processing-dots"></span>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td colspan="3" style="text-align:right;vertical-align:middle">
+                    <div class="ai-timer">
+                        ⏱ <span class="ai-timer-seconds">${AI_PROCESSING_TIME}</span>s
+                        <div class="ai-timer-progress"><div class="ai-timer-bar" style="width:100%"></div></div>
+                    </div>
+                </td>
+            `;
+
+            // Insert at top of table body
+            tbody.insertBefore(tr, tbody.firstChild);
+
+            // Start countdown
+            let remaining = AI_PROCESSING_TIME;
+            const timerEl = tr.querySelector('.ai-timer-seconds');
+            const barEl = tr.querySelector('.ai-timer-bar');
+
+            const interval = setInterval(() => {
+                remaining--;
+                if (timerEl) timerEl.textContent = Math.max(0, remaining);
+                if (barEl) barEl.style.width = Math.max(0, (remaining / AI_PROCESSING_TIME) * 100) + '%';
+
+                if (remaining <= 0) {
+                    clearInterval(interval);
+                    // Auto-refresh when timer completes
+                    finishProcessingRow(rowId, fileName);
+                }
+            }, 1000);
+        }
+
+        async function finishProcessingRow(rowId, fileName) {
+            const row = document.getElementById(rowId);
+            if (row) {
+                // Update row to show completion
+                row.querySelector('.ai-processing-status').innerHTML = '<span style="color:#059669;font-weight:600">✅ Processing complete — refreshing...</span>';
+                row.querySelector('.ai-brain-icon').textContent = '✅';
+                row.querySelector('.ai-brain-icon').style.background = 'linear-gradient(135deg, #059669, #10b981)';
+                row.querySelector('.ai-brain-icon').style.animation = 'none';
+                const timerDiv = row.querySelector('.ai-timer');
+                if (timerDiv) { timerDiv.textContent = '✅ Done'; timerDiv.style.background = 'linear-gradient(135deg, #059669, #10b981)'; }
+            }
+
+            // Remove from processing list
+            processingFiles = processingFiles.filter(p => p.rowId !== rowId);
+
+            // Reload data to get the newly processed invoice
+            await loadInvoices();
+            showToast(`🎉 ${fileName} — AI processing complete!`, 'success');
+        }
+
+        function escHtml(s) {
+            return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+
+        // ═══ DIRECT SYNC TO TALLY ═══
+        async function doSyncToTally(invoiceId) {
+            const tx = allInvoices.find(t => t.id === invoiceId);
+            if (!tx) return;
+            showToast('🔄 Preparing to sync to Tally...', 'info');
+
+            try {
+                const xml = buildTallyXml(tx);
+                const resp = await fetch('http://localhost:9999', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/xml' },
+                    body: xml
+                });
+                const text = await resp.text();
+                if (resp.ok && !text.includes('ERROR') && !text.includes('error')) {
+                    showToast('✅ Voucher synced to Tally!', 'success');
+                    const token = localStorage.getItem('access_token');
+                    await fetch(`${API_BASE_URL}/invoices/${invoiceId}`, {
+                        method: 'PATCH',
+                        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ synced_to_tally: true })
+                    });
+                    tx.status = 'Synced';
+                    applyFilters();
+                    updateStats();
+                } else {
+                    showToast('❌ Tally sync error: ' + (text.substring(0, 80)), 'error');
+                }
+            } catch (e) {
+                showToast('❌ Connector not reachable. Is Suvidha AI connector running?', 'error');
+            }
+        }
+
+        function buildTallyXml(tx) {
+            const dt = tx.date ? new Date(tx.date).toISOString().split('T')[0].replace(/-/g, '') : '';
+            return `<ENVELOPE>
+<HEADER><TALLYREQUEST>Import Data</TALLYREQUEST></HEADER>
+<BODY><IMPORTDATA><REQUESTDESC><REPORTNAME>All Masters</REPORTNAME><STATICVARIABLES><SVCURRENTCOMPANY></SVCURRENTCOMPANY></STATICVARIABLES></REQUESTDESC>
+<REQUESTDATA><TALLYMESSAGE xmlns:UDF="TallyUDF">
+<VOUCHER VCHTYPE="Purchase" ACTION="Create">
+<DATE>${dt}</DATE>
+<NARRATION>${tx.invoiceNo || ''} - ${tx.vendor || ''}</NARRATION>
+<VOUCHERTYPENAME>Purchase</VOUCHERTYPENAME>
+<VOUCHERNUMBER>${tx.invoiceNo || ''}</VOUCHERNUMBER>
+<PARTYLEDGERNAME>${tx.vendor || ''}</PARTYLEDGERNAME>
+<ALLLEDGERENTRIES.LIST>
+<LEDGERNAME>${tx.vendor || ''}</LEDGERNAME>
+<ISDEEMEDPOSITIVE>No</ISDEEMEDPOSITIVE>
+<AMOUNT>${tx.totalAmount || 0}</AMOUNT>
+</ALLLEDGERENTRIES.LIST>
+<ALLLEDGERENTRIES.LIST>
+<LEDGERNAME>Purchase Account</LEDGERNAME>
+<ISDEEMEDPOSITIVE>Yes</ISDEEMEDPOSITIVE>
+<AMOUNT>-${tx.amount || 0}</AMOUNT>
+</ALLLEDGERENTRIES.LIST>
+</VOUCHER>
+</TALLYMESSAGE></REQUESTDATA></IMPORTDATA></BODY></ENVELOPE>`;
+        }
+
+        // ═══ INIT ═══
+        loadInvoices();
+    </script>
+</body>
+</html>

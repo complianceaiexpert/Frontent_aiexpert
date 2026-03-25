@@ -36,16 +36,9 @@
                     Dashboard
                 </div>
 
-                <div class="de-sb-item" onclick="deNav('bulk-upload',this)">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                        <polyline points="17 8 12 3 7 8" />
-                        <line x1="12" y1="3" x2="12" y2="15" />
-                    </svg>
-                    Bulk Upload
-                </div>
 
-                <div class="de-sb-item" onclick="deNav('transactions',this)">
+
+                <div class="de-sb-item" onclick="goToTransactions()">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <line x1="12" y1="1" x2="12" y2="23" />
                         <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
@@ -106,14 +99,44 @@
             <!-- ═══ DASHBOARD ═══ -->
             <div class="de-section active" id="sec-dashboard">
 
-                <!-- Tally Sync Overview — compact single-row layout -->
+                <!-- Invoice Stats Overview -->
                 <div class="de-panel" style="padding:1rem 1.25rem">
                     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem">
-                        <h3 class="de-panel-title" style="margin:0">Tally Sync Overview</h3>
-                        <div style="display:flex;gap:.4rem">
-                            <select class="de-select" style="font-size:.7rem;padding:.25rem .4rem"><option>All</option></select>
-                            <select class="de-select" style="font-size:.7rem;padding:.25rem .4rem"><option>Today</option><option>This Week</option><option>This Month</option></select>
+                        <h3 class="de-panel-title" style="margin:0">📊 Data Entry Overview</h3>
+                        <span style="font-size:.68rem;font-weight:600;color:#9ca3af" id="dash-loading">Loading...</span>
+                    </div>
+                    <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:.75rem">
+                        <div style="background:#f8fafc;border-radius:10px;padding:.65rem .85rem;border:1px solid #e2e8f0;text-align:center">
+                            <div style="font-size:1.35rem;font-weight:800;font-family:'Outfit',sans-serif;color:#1e293b" id="stat-inv-total">—</div>
+                            <div style="font-size:.58rem;font-weight:600;color:#9ca3af;text-transform:uppercase;letter-spacing:.04em">Total Invoices</div>
                         </div>
+                        <div style="background:#fef3c7;border-radius:10px;padding:.65rem .85rem;border:1px solid #fde68a;text-align:center">
+                            <div style="font-size:1.35rem;font-weight:800;font-family:'Outfit',sans-serif;color:#d97706" id="stat-inv-pending">—</div>
+                            <div style="font-size:.58rem;font-weight:600;color:#92400e;text-transform:uppercase;letter-spacing:.04em">Pending Review</div>
+                        </div>
+                        <div style="background:#ecfdf5;border-radius:10px;padding:.65rem .85rem;border:1px solid #a7f3d0;text-align:center">
+                            <div style="font-size:1.35rem;font-weight:800;font-family:'Outfit',sans-serif;color:#059669" id="stat-inv-synced">—</div>
+                            <div style="font-size:.58rem;font-weight:600;color:#065f46;text-transform:uppercase;letter-spacing:.04em">Synced to Tally</div>
+                        </div>
+                        <div style="background:#eff6ff;border-radius:10px;padding:.65rem .85rem;border:1px solid #bfdbfe;text-align:center">
+                            <div style="font-size:1.35rem;font-weight:800;font-family:'Outfit',sans-serif;color:#2563eb" id="stat-inv-docs">—</div>
+                            <div style="font-size:.58rem;font-weight:600;color:#1e40af;text-transform:uppercase;letter-spacing:.04em">With Documents</div>
+                        </div>
+                        <div style="background:#faf5ff;border-radius:10px;padding:.65rem .85rem;border:1px solid #e9d5ff;text-align:center">
+                            <div style="font-size:1.35rem;font-weight:800;font-family:'Outfit',sans-serif;color:#7c3aed" id="stat-inv-vendors">—</div>
+                            <div style="font-size:.58rem;font-weight:600;color:#5b21b6;text-transform:uppercase;letter-spacing:.04em">Unique Vendors</div>
+                        </div>
+                        <div style="background:linear-gradient(135deg,#1e3a8a,#3b82f6);border-radius:10px;padding:.65rem .85rem;text-align:center">
+                            <div style="font-size:1.05rem;font-weight:800;font-family:'Outfit',sans-serif;color:#fff" id="stat-inv-amount">—</div>
+                            <div style="font-size:.58rem;font-weight:600;color:rgba(255,255,255,.7);text-transform:uppercase;letter-spacing:.04em">Total Amount</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tally Sync Overview -->
+                <div class="de-panel" style="padding:1rem 1.25rem">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem">
+                        <h3 class="de-panel-title" style="margin:0">🔄 Tally Sync Overview</h3>
                     </div>
                     <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">
                         <!-- Masters -->
@@ -124,19 +147,19 @@
                             </div>
                             <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem">
                                 <div style="text-align:center">
-                                    <div style="font-size:1.15rem;font-weight:800;font-family:'Outfit',sans-serif;color:#1e293b" id="stat-master-ledgers">0</div>
+                                    <div style="font-size:1.15rem;font-weight:800;font-family:'Outfit',sans-serif;color:#1e293b" id="stat-master-ledgers">—</div>
                                     <div style="font-size:.58rem;font-weight:600;color:#9ca3af;text-transform:uppercase;letter-spacing:.04em">Ledgers</div>
                                 </div>
                                 <div style="text-align:center">
-                                    <div style="font-size:1.15rem;font-weight:800;font-family:'Outfit',sans-serif;color:#1e293b" id="stat-master-items">0</div>
+                                    <div style="font-size:1.15rem;font-weight:800;font-family:'Outfit',sans-serif;color:#1e293b" id="stat-master-items">—</div>
                                     <div style="font-size:.58rem;font-weight:600;color:#9ca3af;text-transform:uppercase;letter-spacing:.04em">Items</div>
                                 </div>
                                 <div style="text-align:center">
-                                    <div style="font-size:1.15rem;font-weight:800;font-family:'Outfit',sans-serif;color:#1e293b" id="stat-master-groups">0</div>
+                                    <div style="font-size:1.15rem;font-weight:800;font-family:'Outfit',sans-serif;color:#1e293b" id="stat-master-groups">—</div>
                                     <div style="font-size:.58rem;font-weight:600;color:#9ca3af;text-transform:uppercase;letter-spacing:.04em">Groups</div>
                                 </div>
                                 <div style="text-align:center">
-                                    <div style="font-size:1.15rem;font-weight:800;font-family:'Outfit',sans-serif;color:#1e293b" id="stat-master-costcentres">0</div>
+                                    <div style="font-size:1.15rem;font-weight:800;font-family:'Outfit',sans-serif;color:#1e293b" id="stat-master-costcentres">—</div>
                                     <div style="font-size:.58rem;font-weight:600;color:#9ca3af;text-transform:uppercase;letter-spacing:.04em">Cost Centres</div>
                                 </div>
                             </div>
@@ -149,23 +172,23 @@
                             </div>
                             <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:.5rem">
                                 <div style="text-align:center">
-                                    <div style="font-size:1.15rem;font-weight:800;font-family:'Outfit',sans-serif;color:#1e293b" id="stat-total">0</div>
+                                    <div style="font-size:1.15rem;font-weight:800;font-family:'Outfit',sans-serif;color:#1e293b" id="stat-total">—</div>
                                     <div style="font-size:.58rem;font-weight:600;color:#9ca3af;text-transform:uppercase;letter-spacing:.04em">Total</div>
                                 </div>
                                 <div style="text-align:center">
-                                    <div style="font-size:1.15rem;font-weight:800;font-family:'Outfit',sans-serif;color:#1e293b" id="stat-banking">0</div>
+                                    <div style="font-size:1.15rem;font-weight:800;font-family:'Outfit',sans-serif;color:#1e293b" id="stat-banking">—</div>
                                     <div style="font-size:.58rem;font-weight:600;color:#9ca3af;text-transform:uppercase;letter-spacing:.04em">Banking</div>
                                 </div>
                                 <div style="text-align:center">
-                                    <div style="font-size:1.15rem;font-weight:800;font-family:'Outfit',sans-serif;color:#1e293b" id="stat-sales">0</div>
+                                    <div style="font-size:1.15rem;font-weight:800;font-family:'Outfit',sans-serif;color:#1e293b" id="stat-sales">—</div>
                                     <div style="font-size:.58rem;font-weight:600;color:#9ca3af;text-transform:uppercase;letter-spacing:.04em">Sales</div>
                                 </div>
                                 <div style="text-align:center">
-                                    <div style="font-size:1.15rem;font-weight:800;font-family:'Outfit',sans-serif;color:#1e293b" id="stat-purchase">0</div>
+                                    <div style="font-size:1.15rem;font-weight:800;font-family:'Outfit',sans-serif;color:#1e293b" id="stat-purchase">—</div>
                                     <div style="font-size:.58rem;font-weight:600;color:#9ca3af;text-transform:uppercase;letter-spacing:.04em">Purchase</div>
                                 </div>
                                 <div style="text-align:center">
-                                    <div style="font-size:1.15rem;font-weight:800;font-family:'Outfit',sans-serif;color:#1e293b" id="stat-journal">0</div>
+                                    <div style="font-size:1.15rem;font-weight:800;font-family:'Outfit',sans-serif;color:#1e293b" id="stat-journal">—</div>
                                     <div style="font-size:.58rem;font-weight:600;color:#9ca3af;text-transform:uppercase;letter-spacing:.04em">Journal</div>
                                 </div>
                             </div>
@@ -194,33 +217,27 @@
                     </div>
                 </div>
 
-                <!-- Top 5 Grid — two columns only, no Payment vs Receipt -->
+                <!-- Top Vendors & Suppliers from real data -->
                 <div class="de-top5-grid" style="grid-template-columns:1fr 1fr">
                     <div class="de-top5">
                         <div class="de-top5-header">
-                            <h4 class="de-top5-title">Top 5 Customer</h4>
-                            <select class="de-select" style="font-size:.72rem;padding:.25rem .4rem">
-                                <option>Top 5</option><option>Top 10</option>
-                            </select>
+                            <h4 class="de-top5-title">Top Vendors (Uploaded)</h4>
                         </div>
                         <table class="de-table" style="min-width:auto">
-                            <thead><tr><th>Sr.</th><th>Customer Name</th><th>Total Amount</th></tr></thead>
+                            <thead><tr><th>Sr.</th><th>Vendor Name</th><th>Invoices</th></tr></thead>
                             <tbody id="top5-customers">
-                                <tr><td colspan="3" style="text-align:center;color:#9ca3af;padding:1.5rem"><div style="font-size:1.5rem;margin-bottom:.3rem">📋</div>No data</td></tr>
+                                <tr><td colspan="3" style="text-align:center;color:#9ca3af;padding:1.5rem"><div style="font-size:1.5rem;margin-bottom:.3rem">📋</div>Loading...</td></tr>
                             </tbody>
                         </table>
                     </div>
                     <div class="de-top5">
                         <div class="de-top5-header">
-                            <h4 class="de-top5-title green">Top 5 Supplier</h4>
-                            <select class="de-select" style="font-size:.72rem;padding:.25rem .4rem">
-                                <option>Top 5</option><option>Top 10</option>
-                            </select>
+                            <h4 class="de-top5-title green">Top 5 Supplier (Tally)</h4>
                         </div>
                         <table class="de-table" style="min-width:auto">
                             <thead><tr><th>Sr.</th><th>Supplier Name</th><th>Total Amount</th></tr></thead>
                             <tbody id="top5-suppliers">
-                                <tr><td colspan="3" style="text-align:center;color:#9ca3af;padding:1.5rem"><div style="font-size:1.5rem;margin-bottom:.3rem">📋</div>No data</td></tr>
+                                <tr><td colspan="3" style="text-align:center;color:#9ca3af;padding:1.5rem"><div style="font-size:1.5rem;margin-bottom:.3rem">📋</div>Loading...</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -293,7 +310,7 @@
                     <div class="de-sh" style="margin-bottom:0">
                         <h1>📓 Master</h1>
                     </div>
-                    <div style="margin-left:auto;display:flex;gap:.5rem">
+                    <div style="margin-left:auto;display:flex;gap:.5rem" id="master-search-bar">
                         <input type="text" class="de-search" placeholder="Search by Name" id="ledger-search"
                             oninput="filterLedger(this.value)">
                         <button class="de-btn primary">+ Add New</button>
@@ -302,10 +319,12 @@
                 <div class="de-panel" style="padding:0">
                     <div class="de-master-tabs" style="padding:0 1rem">
                         <div class="de-master-tab active" onclick="switchMasterTab('ledger',this)">Ledger</div>
+                        <div class="de-master-tab" onclick="switchMasterTab('vouchers',this)">Vouchers</div>
                         <div class="de-master-tab" onclick="switchMasterTab('item',this)">Item</div>
-                        <div class="de-master-tab" onclick="switchMasterTab('rule-list',this)">Rule List</div>
                     </div>
-                    <div id="master-content">
+
+                    <!-- Ledger Content -->
+                    <div id="master-content-ledger">
                         <div class="de-table-wrap">
                             <table class="de-table">
                                 <thead>
@@ -323,6 +342,42 @@
                             </table>
                         </div>
                         <div class="de-pagination" id="ledger-pagination"></div>
+                    </div>
+
+                    <!-- Vouchers Content -->
+                    <div id="master-content-vouchers" style="display:none">
+                        <div class="de-filter-bar" style="padding:.5rem 1rem;border-bottom:1px solid #f1f5f9">
+                            <input type="text" class="de-search" placeholder="Search by party name, voucher no..."
+                                id="voucher-search" oninput="filterVouchers(this.value)">
+                            <select class="de-select" id="voucher-type-filter" onchange="filterVoucherType(this.value)">
+                                <option value="all">All Types</option>
+                                <option value="Sales">Sales</option>
+                                <option value="Purchase">Purchase</option>
+                                <option value="Payment">Payment</option>
+                                <option value="Receipt">Receipt</option>
+                                <option value="Journal">Journal</option>
+                                <option value="Contra">Contra</option>
+                            </select>
+                        </div>
+                        <div class="de-table-wrap">
+                            <table class="de-table" id="vouchers-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width:40px"></th>
+                                        <th style="width:60px">Sr.</th>
+                                        <th>Date</th>
+                                        <th>Type</th>
+                                        <th>Voucher No.</th>
+                                        <th>Party Name</th>
+                                        <th style="text-align:right">Amount</th>
+                                        <th style="text-align:center">Entries</th>
+                                        <th>Narration</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="vouchers-tbody"></tbody>
+                            </table>
+                        </div>
+                        <div class="de-pagination" id="voucher-pagination"></div>
                     </div>
                 </div>
             </div>
@@ -569,6 +624,10 @@
 
         document.getElementById('back-link').href = `services-dashboard.html?clientId=${clientId}`;
 
+        function goToTransactions() {
+            window.location.href = `transactions.html?clientId=${clientId}&service=${encodeURIComponent(serviceName)}`;
+        }
+
         function pickFromDriveDE() {
             if (!clientId) { alert('No client context'); return; }
             openDrivePicker({
@@ -608,10 +667,44 @@
             if (sectionId === 'transactions') renderTransactions();
         }
 
-        // ═══ DASHBOARD — LIVE STATS ═══
+        // ═══ DASHBOARD — INVOICE STATS (REAL DATA) ═══
+        async function loadInvoiceStats() {
+            try {
+                const url = clientId ? `/invoices/stats?client_id=${clientId}` : '/invoices/stats';
+                const res = await authFetch(url);
+                if (res.ok) {
+                    const s = await res.json();
+                    document.getElementById('stat-inv-total').textContent = s.total || 0;
+                    document.getElementById('stat-inv-pending').textContent = s.pending || 0;
+                    document.getElementById('stat-inv-synced').textContent = s.synced || 0;
+                    document.getElementById('stat-inv-docs').textContent = s.with_file || 0;
+                    document.getElementById('stat-inv-vendors').textContent = s.vendor_count || 0;
+                    document.getElementById('stat-inv-amount').textContent = formatINR(s.total_amount || 0);
+
+                    // Top vendors table
+                    const tbody = document.getElementById('top5-customers');
+                    if (s.top_vendors && s.top_vendors.length > 0) {
+                        tbody.innerHTML = s.top_vendors.map((v, i) => `<tr>
+                            <td style="text-align:center">${i + 1}</td>
+                            <td style="font-weight:500">${v.name}</td>
+                            <td style="font-weight:600;text-align:center">${v.count}</td>
+                        </tr>`).join('');
+                    } else {
+                        tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:#9ca3af;padding:1.5rem"><div style="font-size:1.5rem;margin-bottom:.3rem">📋</div>No invoices uploaded yet</td></tr>';
+                    }
+                }
+                document.getElementById('dash-loading').textContent = '✅ Live';
+                document.getElementById('dash-loading').style.color = '#059669';
+            } catch (e) {
+                console.error('Invoice stats error:', e);
+                document.getElementById('dash-loading').textContent = '⚠️ Error';
+                document.getElementById('dash-loading').style.color = '#dc2626';
+            }
+        }
+
+        // ═══ DASHBOARD — TALLY STATS ═══
         async function loadDashboardStats() {
             try {
-                // Master stats (ledgers, items, groups, cost centres)
                 const lRes = await authFetch(withCompany('/tally/ledgers/stats'));
                 if (lRes.ok) {
                     const ls = await lRes.json();
@@ -620,7 +713,6 @@
                     document.getElementById('stat-master-groups').textContent = ls.total_groups || 0;
                     document.getElementById('stat-master-costcentres').textContent = ls.total_cost_centres || 0;
                 }
-                // Voucher stats
                 const vRes = await authFetch(withCompany('/tally/vouchers/stats'));
                 if (vRes.ok) {
                     const vs = await vRes.json();
@@ -630,38 +722,25 @@
                     document.getElementById('stat-purchase').textContent = vs.purchase || 0;
                     document.getElementById('stat-journal').textContent = vs.journal || 0;
                 }
-            } catch (e) { console.error('Dashboard stats error:', e); }
+            } catch (e) { console.error('Tally stats error:', e); }
         }
 
-        // ═══ DASHBOARD — TOP 5 CUSTOMER / SUPPLIER ═══
+        // ═══ DASHBOARD — TOP 5 SUPPLIER (TALLY) ═══
         async function loadTop5() {
             try {
-                // Top 5 Customers = Sundry Debtors sorted by closing_balance desc
-                const cRes = await authFetch(withCompany('/tally/ledgers?parent=Sundry+Debtors&per_page=5&page=1'));
-                if (cRes.ok) {
-                    const cd = await cRes.json();
-                    const tbody = document.getElementById('top5-customers');
-                    if (cd.data.length > 0) {
-                        const sorted = cd.data.sort((a, b) => Math.abs(b.closing_balance) - Math.abs(a.closing_balance));
-                        tbody.innerHTML = sorted.map((l, i) => `<tr>
-                            <td style="text-align:center">${i + 1}</td>
-                            <td style="font-weight:500">${l.name}</td>
-                            <td style="font-weight:600">${formatINR(l.closing_balance)}</td>
-                        </tr>`).join('');
-                    }
-                }
-                // Top 5 Suppliers = Sundry Creditors sorted by closing_balance desc
                 const sRes = await authFetch(withCompany('/tally/ledgers?parent=Sundry+Creditors&per_page=5&page=1'));
                 if (sRes.ok) {
                     const sd = await sRes.json();
                     const tbody = document.getElementById('top5-suppliers');
-                    if (sd.data.length > 0) {
+                    if (sd.data && sd.data.length > 0) {
                         const sorted = sd.data.sort((a, b) => Math.abs(b.closing_balance) - Math.abs(a.closing_balance));
                         tbody.innerHTML = sorted.map((l, i) => `<tr>
                             <td style="text-align:center">${i + 1}</td>
                             <td style="font-weight:500">${l.name}</td>
                             <td style="font-weight:600">${formatINR(l.closing_balance)}</td>
                         </tr>`).join('');
+                    } else {
+                        tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:#9ca3af;padding:1.5rem"><div style="font-size:1.5rem;margin-bottom:.3rem">📋</div>No Tally data synced</td></tr>';
                     }
                 }
             } catch (e) { console.error('Top5 error:', e); }
@@ -775,8 +854,253 @@
         function switchMasterTab(tab, el) {
             document.querySelectorAll('.de-master-tab').forEach(t => t.classList.remove('active'));
             el.classList.add('active');
+
+            // Hide all master content panes
+            const panes = ['ledger', 'vouchers'];
+            panes.forEach(p => {
+                const pane = document.getElementById('master-content-' + p);
+                if (pane) pane.style.display = 'none';
+            });
+
+            // Show the selected pane
+            const activePane = document.getElementById('master-content-' + tab);
+            if (activePane) activePane.style.display = '';
+
+            // Update search placeholder
+            const searchBar = document.getElementById('master-search-bar');
+            if (tab === 'vouchers') {
+                searchBar.style.display = 'none';
+            } else {
+                searchBar.style.display = 'flex';
+            }
+
             if (tab === 'ledger') loadLedgerData();
+            if (tab === 'vouchers') loadVoucherData();
         }
+
+        // ═══ VOUCHERS TAB — TALLY SYNCED VOUCHERS ═══
+        let voucherPage = 1;
+        let voucherTotalPages = 1;
+        let voucherTotal = 0;
+        const VOUCHER_PER_PAGE = 20;
+        let voucherSearchVal = '';
+        let voucherTypeFilter = 'all';
+        let expandedVoucherGuid = null;
+
+        async function loadVoucherData(page) {
+            if (page) voucherPage = page;
+            const tbody = document.getElementById('vouchers-tbody');
+            tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:2rem;color:#9ca3af">Loading vouchers from Tally...</td></tr>';
+
+            try {
+                let url = withCompany(`/tally/vouchers?page=${voucherPage}&per_page=${VOUCHER_PER_PAGE}`);
+                if (voucherSearchVal) url += `&search=${encodeURIComponent(voucherSearchVal)}`;
+                if (voucherTypeFilter !== 'all') url += `&voucher_type=${encodeURIComponent(voucherTypeFilter)}`;
+
+                const res = await authFetch(url);
+                if (!res.ok) throw new Error('Failed to load vouchers');
+                const result = await res.json();
+
+                voucherTotal = result.total;
+                voucherTotalPages = result.total_pages;
+                const vouchers = result.data;
+
+                if (vouchers.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:3rem;color:#9ca3af"><div style="font-size:2rem;margin-bottom:.5rem">📋</div>No vouchers found</td></tr>';
+                    document.getElementById('voucher-pagination').innerHTML = '';
+                    return;
+                }
+
+                tbody.innerHTML = vouchers.map((v, i) => {
+                    const srNo = (voucherPage - 1) * VOUCHER_PER_PAGE + i + 1;
+                    const dateStr = v.date ? formatTallyDate(v.date) : '-';
+                    const typeBg = getVoucherTypeBg(v.voucher_type);
+                    const amt = v.amount ? formatINR(v.amount) : '—';
+                    const narr = v.narration ? (v.narration.length > 40 ? v.narration.substring(0, 40) + '…' : v.narration) : '-';
+
+                    return `<tr class="voucher-row" style="cursor:pointer" onclick="toggleVoucherEntries('${v.guid}', this)">
+                        <td style="text-align:center;font-size:.85rem;color:#9ca3af" id="expand-icon-${v.guid}">▶</td>
+                        <td style="text-align:center;color:#6b7280">${srNo}</td>
+                        <td style="font-size:.82rem;font-weight:500">${dateStr}</td>
+                        <td><span style="display:inline-block;padding:.2rem .55rem;border-radius:6px;font-size:.72rem;font-weight:600;background:${typeBg.bg};color:${typeBg.color}">${v.voucher_type}</span></td>
+                        <td style="color:#3b82f6;font-weight:500;font-size:.82rem">${v.voucher_number || '-'}</td>
+                        <td><strong style="font-weight:600;color:#0f172a">${v.party_name || '-'}</strong></td>
+                        <td style="text-align:right;font-weight:600">${amt}</td>
+                        <td style="text-align:center"><span style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:#eff6ff;color:#3b82f6;font-size:.72rem;font-weight:700">${v.entry_count || 0}</span></td>
+                        <td style="color:#6b7280;font-size:.78rem">${narr}</td>
+                    </tr>
+                    <tr id="entries-row-${v.guid}" style="display:none">
+                        <td colspan="9" style="padding:0;background:#f8fafc">
+                            <div id="entries-content-${v.guid}" style="padding:.75rem 1.25rem">Loading...</div>
+                        </td>
+                    </tr>`;
+                }).join('');
+
+                renderVoucherPagination();
+            } catch (e) {
+                console.error('Voucher load error:', e);
+                tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:3rem;color:#dc2626">⚠️ Failed to load vouchers</td></tr>';
+            }
+        }
+
+        function formatTallyDate(d) {
+            if (!d || d.length !== 8) return d || '-';
+            return `${d.substring(6,8)}-${d.substring(4,6)}-${d.substring(0,4)}`;
+        }
+
+        function getVoucherTypeBg(type) {
+            const map = {
+                'Sales':    { bg: '#ecfdf5', color: '#059669' },
+                'Purchase': { bg: '#fef2f2', color: '#dc2626' },
+                'Payment':  { bg: '#fff7ed', color: '#d97706' },
+                'Receipt':  { bg: '#eff6ff', color: '#2563eb' },
+                'Journal':  { bg: '#f5f3ff', color: '#7c3aed' },
+                'Contra':   { bg: '#fdf4ff', color: '#c026d3' },
+            };
+            return map[type] || { bg: '#f1f5f9', color: '#475569' };
+        }
+
+        async function toggleVoucherEntries(guid, rowEl) {
+            const entriesRow = document.getElementById('entries-row-' + guid);
+            const icon = document.getElementById('expand-icon-' + guid);
+
+            if (expandedVoucherGuid === guid) {
+                // Collapse
+                entriesRow.style.display = 'none';
+                icon.textContent = '▶';
+                expandedVoucherGuid = null;
+                return;
+            }
+
+            // Collapse previous
+            if (expandedVoucherGuid) {
+                const prevRow = document.getElementById('entries-row-' + expandedVoucherGuid);
+                const prevIcon = document.getElementById('expand-icon-' + expandedVoucherGuid);
+                if (prevRow) prevRow.style.display = 'none';
+                if (prevIcon) prevIcon.textContent = '▶';
+            }
+
+            // Expand this one
+            entriesRow.style.display = '';
+            icon.textContent = '▼';
+            expandedVoucherGuid = guid;
+
+            const contentEl = document.getElementById('entries-content-' + guid);
+            contentEl.innerHTML = '<div style="text-align:center;padding:1rem;color:#9ca3af">⏳ Loading entries...</div>';
+
+            try {
+                const res = await authFetch(`/tally/vouchers/${guid}`);
+                if (!res.ok) throw new Error('Failed');
+                const data = await res.json();
+
+                let html = '';
+
+                // Ledger Entries
+                if (data.ledger_entries && data.ledger_entries.length > 0) {
+                    let totalDr = 0, totalCr = 0;
+                    html += `<div style="margin-bottom:.75rem">
+                        <div style="font-size:.68rem;font-weight:700;text-transform:uppercase;color:#9ca3af;letter-spacing:.05em;margin-bottom:.5rem;display:flex;align-items:center;gap:.35rem">
+                            <div style="width:3px;height:12px;background:#3b82f6;border-radius:2px"></div> Ledger Entries (${data.ledger_entries.length})
+                        </div>
+                        <table style="width:100%;border-collapse:collapse;font-size:.8rem">
+                            <thead><tr style="background:#eef2ff">
+                                <th style="text-align:left;padding:.4rem .6rem;font-size:.65rem;font-weight:700;text-transform:uppercase;color:#6366f1">Ledger Name</th>
+                                <th style="text-align:right;padding:.4rem .6rem;font-size:.65rem;font-weight:700;text-transform:uppercase;color:#6366f1;width:140px">Debit (Dr)</th>
+                                <th style="text-align:right;padding:.4rem .6rem;font-size:.65rem;font-weight:700;text-transform:uppercase;color:#6366f1;width:140px">Credit (Cr)</th>
+                            </tr></thead><tbody>`;
+
+                    data.ledger_entries.forEach(e => {
+                        const amt = Math.abs(e.amount);
+                        const isDr = e.is_debit;
+                        if (isDr) totalDr += amt; else totalCr += amt;
+                        html += `<tr style="border-bottom:1px solid #f1f5f9">
+                            <td style="padding:.4rem .6rem;font-weight:500">${e.ledger_name}</td>
+                            <td style="text-align:right;padding:.4rem .6rem;color:#dc2626;font-weight:600">${isDr ? formatINR(amt) : ''}</td>
+                            <td style="text-align:right;padding:.4rem .6rem;color:#059669;font-weight:600">${!isDr ? formatINR(amt) : ''}</td>
+                        </tr>`;
+                    });
+
+                    html += `<tr style="background:#f0fdf4;font-weight:700;border-top:2px solid #d1d5db">
+                        <td style="padding:.45rem .6rem;font-size:.75rem">TOTAL</td>
+                        <td style="text-align:right;padding:.45rem .6rem;color:#dc2626">${formatINR(totalDr)}</td>
+                        <td style="text-align:right;padding:.45rem .6rem;color:#059669">${formatINR(totalCr)}</td>
+                    </tr></tbody></table></div>`;
+                }
+
+                // Inventory Entries
+                if (data.inventory_entries && data.inventory_entries.length > 0) {
+                    html += `<div>
+                        <div style="font-size:.68rem;font-weight:700;text-transform:uppercase;color:#9ca3af;letter-spacing:.05em;margin-bottom:.5rem;display:flex;align-items:center;gap:.35rem">
+                            <div style="width:3px;height:12px;background:#059669;border-radius:2px"></div> Inventory Entries (${data.inventory_entries.length})
+                        </div>
+                        <table style="width:100%;border-collapse:collapse;font-size:.8rem">
+                            <thead><tr style="background:#ecfdf5">
+                                <th style="text-align:left;padding:.4rem .6rem;font-size:.65rem;font-weight:700;text-transform:uppercase;color:#059669">Item</th>
+                                <th style="text-align:right;padding:.4rem .6rem;font-size:.65rem;font-weight:700;text-transform:uppercase;color:#059669">HSN</th>
+                                <th style="text-align:right;padding:.4rem .6rem;font-size:.65rem;font-weight:700;text-transform:uppercase;color:#059669">Qty</th>
+                                <th style="text-align:left;padding:.4rem .6rem;font-size:.65rem;font-weight:700;text-transform:uppercase;color:#059669">UOM</th>
+                                <th style="text-align:right;padding:.4rem .6rem;font-size:.65rem;font-weight:700;text-transform:uppercase;color:#059669">Rate</th>
+                                <th style="text-align:right;padding:.4rem .6rem;font-size:.65rem;font-weight:700;text-transform:uppercase;color:#059669">Amount</th>
+                                <th style="text-align:left;padding:.4rem .6rem;font-size:.65rem;font-weight:700;text-transform:uppercase;color:#059669">Godown</th>
+                            </tr></thead><tbody>`;
+
+                    data.inventory_entries.forEach(e => {
+                        html += `<tr style="border-bottom:1px solid #f1f5f9">
+                            <td style="padding:.4rem .6rem;font-weight:500">${e.stock_item_name}</td>
+                            <td style="text-align:right;padding:.4rem .6rem;font-family:monospace;font-size:.75rem;color:#6b7280">${e.hsn_code || '-'}</td>
+                            <td style="text-align:right;padding:.4rem .6rem;font-weight:600">${e.quantity}</td>
+                            <td style="padding:.4rem .6rem;color:#6b7280">${e.uom || '-'}</td>
+                            <td style="text-align:right;padding:.4rem .6rem">${formatINR(e.rate)}</td>
+                            <td style="text-align:right;padding:.4rem .6rem;font-weight:600">${formatINR(e.amount)}</td>
+                            <td style="padding:.4rem .6rem;color:#6b7280">${e.godown || '-'}</td>
+                        </tr>`;
+                    });
+                    html += '</tbody></table></div>';
+                }
+
+                if (!html) {
+                    html = '<div style="text-align:center;padding:1rem;color:#9ca3af">No entries found for this voucher</div>';
+                }
+
+                contentEl.innerHTML = html;
+            } catch (e) {
+                console.error('Load entries error:', e);
+                contentEl.innerHTML = '<div style="text-align:center;padding:1rem;color:#dc2626">⚠️ Failed to load entries</div>';
+            }
+        }
+
+        function renderVoucherPagination() {
+            const pagEl = document.getElementById('voucher-pagination');
+            if (voucherTotalPages <= 1) { pagEl.innerHTML = `<div class="de-page-info">${voucherTotal} voucher(s)</div><div></div><div></div>`; return; }
+
+            const startItem = (voucherPage - 1) * VOUCHER_PER_PAGE + 1;
+            const endItem = Math.min(voucherPage * VOUCHER_PER_PAGE, voucherTotal);
+
+            let pagHtml = `<div class="de-page-info">Showing ${startItem}–${endItem} of ${voucherTotal} vouchers</div>`;
+            pagHtml += `<div class="de-page-btns">`;
+            pagHtml += `<button class="de-page-btn" ${voucherPage === 1 ? 'disabled' : ''} onclick="loadVoucherData(${voucherPage - 1})">‹</button>`;
+
+            let startP = Math.max(1, voucherPage - 2);
+            let endP = Math.min(voucherTotalPages, startP + 4);
+            if (endP - startP < 4) startP = Math.max(1, endP - 4);
+
+            if (startP > 1) pagHtml += `<button class="de-page-btn" onclick="loadVoucherData(1)">1</button><button class="de-page-btn" disabled>…</button>`;
+            for (let p = startP; p <= endP; p++) {
+                pagHtml += `<button class="de-page-btn ${p === voucherPage ? 'active' : ''}" onclick="loadVoucherData(${p})">${p}</button>`;
+            }
+            if (endP < voucherTotalPages) pagHtml += `<button class="de-page-btn" disabled>…</button><button class="de-page-btn" onclick="loadVoucherData(${voucherTotalPages})">${voucherTotalPages}</button>`;
+
+            pagHtml += `<button class="de-page-btn" ${voucherPage === voucherTotalPages ? 'disabled' : ''} onclick="loadVoucherData(${voucherPage + 1})">›</button>`;
+            pagHtml += `</div><div style="font-size:.78rem;color:#9ca3af">${VOUCHER_PER_PAGE} / page</div>`;
+            pagEl.innerHTML = pagHtml;
+        }
+
+        let voucherSearchDebounce = null;
+        function filterVouchers(val) {
+            clearTimeout(voucherSearchDebounce);
+            voucherSearchDebounce = setTimeout(() => { voucherSearchVal = val; voucherPage = 1; loadVoucherData(); }, 300);
+        }
+        function filterVoucherType(val) { voucherTypeFilter = val; voucherPage = 1; loadVoucherData(); }
 
         // ═══ TOAST SYSTEM ═══
         function showToast(msg, type = 'success') {
@@ -1137,7 +1461,7 @@
                     <td style="font-weight:700">${formatINR(tx.totalAmount)}</td>
                     <td><span class="de-badge ${badgeCls}">${tx.status}</span></td>
                     <td style="text-align:right;display:flex;gap:.4rem;justify-content:flex-end">
-                        <button class="de-btn success" onclick="event.stopPropagation();openTallyModal(${tx.id})" ${tx.status === 'Synced' ? 'disabled' : ''}>✓ Approve</button>
+                        <button class="de-btn success" onclick="event.stopPropagation();openReviewModal(${tx.id})" ${tx.status === 'Synced' ? 'disabled' : ''}>✓ Review & Approve</button>
                         <button class="de-btn primary" onclick="event.stopPropagation();syncToTally(${tx.id})" ${tx.status === 'Synced' ? 'disabled' : ''}>⟳ ${tx.status === 'Synced' ? 'Synced' : 'Sync'}</button>
                     </td>
                 </tr>`;
@@ -1177,6 +1501,7 @@
                 const formData = new FormData();
                 formData.append('file', file);
                 formData.append('clientId', clientId || '');
+                formData.append('client_id', clientId || '');
                 formData.append('fileName', file.name);
                 formData.append('clientName', clientCompanyName || '');
 
@@ -1218,6 +1543,7 @@
 
             // Load all data in parallel (now filtered by company)
             await Promise.allSettled([
+                loadInvoiceStats(),
                 loadDashboardStats(),
                 loadTop5(),
                 loadInvoices(),
@@ -1231,6 +1557,512 @@
             }
         });
     </script>
+
+    <!-- ═══ REVIEW & APPROVE MODAL (Split-View) ═══ -->
+    <style>
+        .rv-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.5);
+            z-index: 20000;
+            align-items: stretch;
+            justify-content: center;
+        }
+        .rv-overlay.open { display: flex }
+        .rv-modal {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            background: #f8fafc;
+        }
+        /* Left Panel — Source Document */
+        .rv-left {
+            width: 42%;
+            background: #1e293b;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .rv-left-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,.08);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .rv-left-header h3 {
+            margin: 0;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+        }
+        .rv-left-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem;
+        }
+        .rv-source-card {
+            background: rgba(255,255,255,.06);
+            border: 1px solid rgba(255,255,255,.08);
+            border-radius: 12px;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+        }
+        .rv-source-label {
+            font-size: .62rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            color: rgba(255,255,255,.4);
+            margin-bottom: .35rem;
+        }
+        .rv-source-value {
+            font-size: .88rem;
+            font-weight: 600;
+            color: #e2e8f0;
+            line-height: 1.6;
+        }
+        .rv-source-meta {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: .75rem;
+        }
+        .rv-source-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: .3rem;
+            font-size: .7rem;
+            font-weight: 600;
+            padding: .25rem .65rem;
+            border-radius: 6px;
+            background: rgba(59,130,246,.15);
+            color: #93c5fd;
+        }
+        /* Right Panel — Editable Fields */
+        .rv-right {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .rv-right-header {
+            padding: 1rem 1.5rem;
+            background: #fff;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .rv-right-header h3 {
+            margin: 0;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            font-weight: 800;
+            color: #0f172a;
+        }
+        .rv-close-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: .85rem;
+            color: #64748b;
+            transition: all .15s;
+        }
+        .rv-close-btn:hover { background: #fee2e2; color: #dc2626; border-color: #fecaca }
+        .rv-right-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem;
+        }
+        .rv-field-group {
+            margin-bottom: 1.5rem;
+        }
+        .rv-field-group-title {
+            font-size: .68rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            color: #94a3b8;
+            margin-bottom: .75rem;
+            display: flex;
+            align-items: center;
+            gap: .4rem;
+        }
+        .rv-field-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: .75rem;
+        }
+        .rv-field {
+            display: flex;
+            flex-direction: column;
+            gap: .25rem;
+        }
+        .rv-field.full-width { grid-column: 1 / -1 }
+        .rv-field label {
+            font-size: .68rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .04em;
+            color: #6b7280;
+        }
+        .rv-field input, .rv-field select {
+            width: 100%;
+            padding: .55rem .75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: .85rem;
+            font-weight: 500;
+            color: #1e293b;
+            font-family: inherit;
+            transition: all .15s;
+            background: #fff;
+        }
+        .rv-field input:focus, .rv-field select:focus {
+            border-color: #3b82f6;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(59,130,246,.1);
+        }
+        .rv-field input.ai-detected {
+            background: #f0fdf4;
+            border-color: #86efac;
+        }
+        .rv-field .rv-hint {
+            font-size: .62rem;
+            color: #94a3b8;
+            font-weight: 500;
+        }
+        .rv-amount-summary {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 1rem 1.25rem;
+        }
+        .rv-amount-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: .4rem 0;
+            font-size: .85rem;
+        }
+        .rv-amount-row.total {
+            border-top: 2px solid #e2e8f0;
+            margin-top: .4rem;
+            padding-top: .65rem;
+            font-weight: 800;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.05rem;
+            color: #0f172a;
+        }
+        .rv-amount-row span:first-child { color: #6b7280; font-weight: 500 }
+        /* Footer Actions */
+        .rv-footer {
+            padding: 1rem 1.5rem;
+            background: #fff;
+            border-top: 1px solid #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .rv-footer-left {
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+        }
+        .rv-footer-right {
+            display: flex;
+            gap: .5rem;
+        }
+        .rv-btn {
+            padding: .55rem 1.15rem;
+            border-radius: 8px;
+            font-size: .82rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            border: 1px solid #e2e8f0;
+            background: #fff;
+            color: #374151;
+            transition: all .15s;
+        }
+        .rv-btn:hover { border-color: #1e3a8a; color: #1e3a8a }
+        .rv-btn.approve {
+            background: #059669;
+            color: #fff;
+            border-color: #059669;
+        }
+        .rv-btn.approve:hover { background: #047857 }
+        .rv-btn.push {
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: #fff;
+            border-color: transparent;
+        }
+        .rv-btn.push:hover { box-shadow: 0 4px 14px rgba(30,58,138,.3) }
+        .rv-btn.reject {
+            color: #dc2626;
+            border-color: #fecaca;
+        }
+        .rv-btn.reject:hover { background: #fef2f2 }
+        .rv-status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: .3rem;
+            font-size: .75rem;
+            font-weight: 700;
+            padding: .3rem .75rem;
+            border-radius: 8px;
+        }
+        .rv-status-badge.pending { background: #fef3c7; color: #d97706 }
+        .rv-status-badge.synced { background: #ecfdf5; color: #059669 }
+
+        @media (max-width: 900px) {
+            .rv-modal { flex-direction: column }
+            .rv-left { width: 100%; max-height: 40vh }
+        }
+    </style>
+
+    <div class="rv-overlay" id="review-overlay" onclick="if(event.target===this)closeReviewModal()">
+        <div class="rv-modal">
+            <!-- Left Panel — Source Document Info -->
+            <div class="rv-left">
+                <div class="rv-left-header">
+                    <h3>📄 Source Document</h3>
+                    <div id="rv-source-badge" class="rv-source-tag">UPLOAD</div>
+                </div>
+                <div class="rv-left-body" id="rv-left-content">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+            <!-- Right Panel — Editable Fields -->
+            <div class="rv-right">
+                <div class="rv-right-header">
+                    <h3>✏️ Review & Edit Fields</h3>
+                    <button class="rv-close-btn" onclick="closeReviewModal()">✕</button>
+                </div>
+                <div class="rv-right-body" id="rv-right-content">
+                    <!-- Populated by JS -->
+                </div>
+                <div class="rv-footer">
+                    <div class="rv-footer-left">
+                        <div id="rv-status-display"></div>
+                    </div>
+                    <div class="rv-footer-right">
+                        <button class="rv-btn reject" onclick="closeReviewModal()">✕ Cancel</button>
+                        <button class="rv-btn approve" id="rv-approve-btn" onclick="approveFromReview()">✅ Approve</button>
+                        <button class="rv-btn push" id="rv-push-btn" onclick="pushFromReview()">🔄 Approve & Push to Tally</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ═══ REVIEW MODAL LOGIC ═══
+        let reviewInvoiceId = null;
+
+        function openReviewModal(invoiceId) {
+            reviewInvoiceId = invoiceId;
+            const tx = allInvoices.find(t => t.id === invoiceId);
+            if (!tx) { showToast('Invoice not found', 'error'); return; }
+
+            // Source badge
+            document.getElementById('rv-source-badge').textContent = (tx.source || 'upload').toUpperCase();
+
+            // Left panel — Source document info
+            const leftContent = document.getElementById('rv-left-content');
+            leftContent.innerHTML = `
+                <div class="rv-source-card">
+                    <div class="rv-source-label">Invoice Number</div>
+                    <div class="rv-source-value" style="font-size:1.15rem;font-weight:700">${tx.invoiceNo || 'N/A'}</div>
+                </div>
+                <div class="rv-source-card">
+                    <div class="rv-source-label">Vendor / Party</div>
+                    <div class="rv-source-value" style="font-size:1.05rem">${tx.vendor || 'Unknown'}</div>
+                    ${tx.gstin && tx.gstin !== '-' ? `<div style="margin-top:.35rem"><span class="rv-source-tag">GSTIN: ${tx.gstin}</span></div>` : ''}
+                </div>
+                <div class="rv-source-card">
+                    <div class="rv-source-meta">
+                        <div>
+                            <div class="rv-source-label">Date</div>
+                            <div class="rv-source-value">${tx.date ? new Date(tx.date).toLocaleDateString('en-IN', {day:'numeric',month:'long',year:'numeric'}) : 'N/A'}</div>
+                        </div>
+                        <div>
+                            <div class="rv-source-label">Type</div>
+                            <div class="rv-source-value">${tx.type || 'Uncategorized'}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="rv-source-card">
+                    <div class="rv-source-label">Amount Breakdown</div>
+                    <div style="margin-top:.5rem">
+                        <div style="display:flex;justify-content:space-between;padding:.3rem 0;font-size:.85rem;color:#94a3b8">
+                            <span>Base Amount</span>
+                            <span style="color:#e2e8f0;font-weight:600">${formatINR(tx.amount)}</span>
+                        </div>
+                        <div style="display:flex;justify-content:space-between;padding:.3rem 0;font-size:.85rem;color:#94a3b8">
+                            <span>GST Amount</span>
+                            <span style="color:#e2e8f0;font-weight:600">${formatINR(tx.gstAmount)}</span>
+                        </div>
+                        <div style="display:flex;justify-content:space-between;padding:.5rem 0;font-size:1.1rem;color:#fff;font-weight:800;border-top:1px solid rgba(255,255,255,.1);margin-top:.3rem">
+                            <span>Total</span>
+                            <span>${formatINR(tx.totalAmount)}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="rv-source-card" style="background:rgba(59,130,246,.08);border-color:rgba(59,130,246,.15)">
+                    <div class="rv-source-label" style="color:rgba(147,197,253,.7)">Source</div>
+                    <div class="rv-source-value" style="color:#93c5fd">${tx.source || 'Manual Upload'}</div>
+                    <div style="margin-top:.5rem;font-size:.72rem;color:rgba(255,255,255,.35)">
+                        ${tx.raw?.received_at ? 'Received: ' + new Date(tx.raw.received_at).toLocaleString('en-IN') : ''}
+                    </div>
+                </div>
+            `;
+
+            // Right panel — Editable fields
+            const rightContent = document.getElementById('rv-right-content');
+            const dateVal = tx.date ? new Date(tx.date).toISOString().split('T')[0] : '';
+            rightContent.innerHTML = `
+                <div class="rv-field-group">
+                    <div class="rv-field-group-title">👤 Party Details</div>
+                    <div class="rv-field-grid">
+                        <div class="rv-field full-width">
+                            <label>Vendor / Party Name</label>
+                            <input type="text" id="rv-vendor" value="${tx.vendor || ''}" class="ai-detected">
+                            <span class="rv-hint">🤖 AI Detected</span>
+                        </div>
+                        <div class="rv-field">
+                            <label>GSTIN</label>
+                            <input type="text" id="rv-gstin" value="${tx.gstin && tx.gstin !== '-' ? tx.gstin : ''}" class="${tx.gstin && tx.gstin !== '-' ? 'ai-detected' : ''}" placeholder="Enter GSTIN">
+                        </div>
+                        <div class="rv-field">
+                            <label>Email ID (Source)</label>
+                            <input type="text" id="rv-email" value="${tx.raw?.client_email_id || ''}" placeholder="client@example.com" disabled style="background:#f8fafc">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="rv-field-group">
+                    <div class="rv-field-group-title">📋 Invoice Details</div>
+                    <div class="rv-field-grid">
+                        <div class="rv-field">
+                            <label>Invoice Number</label>
+                            <input type="text" id="rv-invno" value="${tx.invoiceNo || ''}" class="ai-detected">
+                        </div>
+                        <div class="rv-field">
+                            <label>Invoice Date</label>
+                            <input type="date" id="rv-date" value="${dateVal}" class="${dateVal ? 'ai-detected' : ''}">
+                        </div>
+                        <div class="rv-field">
+                            <label>Expense / Category Type</label>
+                            <select id="rv-type">
+                                <option value="">— Select —</option>
+                                ${['Banking','Sales','Purchase','Journal','Advertising','Audit Fees','Commission','Communication','Conveyance','Depreciation','Electricity','Food & Beverages','Freight','Insurance','Interest','Legal','Miscellaneous','Office Supplies','Postal','Printing','Professional Fees','Provision','Rent','Repairs','Salaries','Staff Welfare','Stationery','Subscription','Telephone','Transport','Travel','Uncategorized']
+                                    .map(t => `<option value="${t}" ${tx.type === t ? 'selected' : ''}>${t}</option>`).join('')}
+                            </select>
+                        </div>
+                        <div class="rv-field">
+                            <label>Currency</label>
+                            <input type="text" id="rv-currency" value="${tx.raw?.currency || 'INR'}" style="background:#f8fafc" disabled>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="rv-field-group">
+                    <div class="rv-field-group-title">💰 Amount Breakdown</div>
+                    <div class="rv-amount-summary">
+                        <div class="rv-field-grid" style="margin-bottom:.75rem">
+                            <div class="rv-field">
+                                <label>Base Amount (₹)</label>
+                                <input type="number" id="rv-amount" value="${tx.amount || 0}" step="0.01" class="ai-detected" oninput="recalcTotal()">
+                            </div>
+                            <div class="rv-field">
+                                <label>GST Amount (₹)</label>
+                                <input type="number" id="rv-gst" value="${tx.gstAmount || 0}" step="0.01" class="ai-detected" oninput="recalcTotal()">
+                            </div>
+                        </div>
+                        <div class="rv-amount-row total">
+                            <span>Total Amount</span>
+                            <span id="rv-total-display">${formatINR(tx.totalAmount)}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Status display
+            const statusEl = document.getElementById('rv-status-display');
+            const isSynced = tx.status === 'Synced';
+            statusEl.innerHTML = `<span class="rv-status-badge ${isSynced ? 'synced' : 'pending'}">${isSynced ? '✅ Synced' : '⏳ Pending'}</span>`;
+
+            // Disable buttons if already synced
+            document.getElementById('rv-approve-btn').disabled = isSynced;
+            document.getElementById('rv-push-btn').disabled = isSynced;
+
+            // Open modal
+            document.getElementById('review-overlay').classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeReviewModal() {
+            document.getElementById('review-overlay').classList.remove('open');
+            document.body.style.overflow = '';
+            reviewInvoiceId = null;
+        }
+
+        function recalcTotal() {
+            const base = parseFloat(document.getElementById('rv-amount').value) || 0;
+            const gst = parseFloat(document.getElementById('rv-gst').value) || 0;
+            document.getElementById('rv-total-display').textContent = formatINR(base + gst);
+        }
+
+        async function approveFromReview() {
+            if (!reviewInvoiceId) return;
+            try {
+                const updateData = {
+                    expenses_type: document.getElementById('rv-type').value || undefined,
+                    synced_to_tally: false
+                };
+                const token = localStorage.getItem('access_token');
+                await fetch(`${API_BASE_URL}/invoices/${reviewInvoiceId}`, {
+                    method: 'PATCH',
+                    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify(updateData)
+                });
+
+                showToast('✅ Invoice reviewed & approved!', 'success');
+                closeReviewModal();
+                await loadInvoices();
+            } catch (e) {
+                showToast('❌ Failed to approve: ' + e.message, 'error');
+            }
+        }
+
+        async function pushFromReview() {
+            if (!reviewInvoiceId) return;
+            // First approve
+            await approveFromReview();
+            // Then open Tally push modal
+            setTimeout(() => openTallyModal(reviewInvoiceId), 300);
+        }
+
+        // Close on Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && document.getElementById('review-overlay').classList.contains('open')) {
+                closeReviewModal();
+            }
+        });
+    </script>
+
     <script src="app-topbar.js"></script>
 </body>
 

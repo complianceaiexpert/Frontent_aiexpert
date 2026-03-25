@@ -794,6 +794,36 @@
                 display: none
             }
         }
+
+        /* ═══ RECENT JOBS SECTION ═══ */
+        .jobs-section { background:#fff; border:1px solid #e5e7eb; border-radius:14px; padding:1.5rem; margin-top:1.5rem; margin-bottom:1.5rem; }
+        .jobs-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:1rem; }
+        .jobs-header h3 { font-size:0.95rem; font-weight:700; color:#111827; display:flex; align-items:center; gap:0.5rem; margin:0; }
+        .jobs-header h3 svg { width:18px; height:18px; color:#6b7280; }
+        .jobs-count { font-size:0.62rem; font-weight:700; background:#dbeafe; color:#1e3a8a; padding:0.15rem 0.45rem; border-radius:6px; margin-left:0.25rem; }
+        .job-row { display:flex; align-items:center; padding:0.85rem 1rem; border:1px solid #f1f5f9; border-radius:10px; margin-bottom:0.5rem; transition:all .15s; gap:1rem; }
+        .job-row:hover { background:#f8fafc; border-color:#e5e7eb; }
+        .job-row.has-drive { border-left:3px solid #0891b2; }
+        .job-icon { width:36px; height:36px; border-radius:9px; background:#ecfdf5; display:flex; align-items:center; justify-content:center; font-size:1rem; flex-shrink:0; }
+        .job-details { flex:1; }
+        .job-name { font-size:0.82rem; font-weight:600; color:#111827; margin-bottom:0.15rem; display:flex; align-items:center; gap:0.5rem; }
+        .job-drive-tag { display:inline-flex; align-items:center; gap:0.2rem; font-size:0.58rem; font-weight:700; color:#0891b2; background:#ecfeff; padding:0.12rem 0.4rem; border-radius:5px; border:1px solid #cffafe; }
+        .job-meta { font-size:0.7rem; color:#9ca3af; display:flex; align-items:center; gap:0.4rem; flex-wrap:wrap; }
+        .job-meta-sep { color:#d1d5db; }
+        .job-file-tag { background:#f1f5f9; padding:0.1rem 0.35rem; border-radius:4px; font-size:0.62rem; color:#64748b; }
+        .job-actions { display:flex; align-items:center; gap:0.65rem; }
+        .job-status { font-size:0.62rem; font-weight:700; padding:0.2rem 0.55rem; border-radius:9999px; text-transform:uppercase; }
+        .job-status.queued { background:#f3f4f6; color:#4b5563; }
+        .job-status.processing { background:#dbeafe; color:#1e3a8a; }
+        .job-status.completed { background:#dcfce7; color:#166534; }
+        .job-status.failed { background:#fee2e2; color:#991b1b; }
+        .job-download { display:inline-flex; align-items:center; gap:0.35rem; padding:0.3rem 0.7rem; background:linear-gradient(135deg,#166534,#22c55e); color:#fff; border:none; border-radius:7px; font-size:0.72rem; font-weight:600; cursor:pointer; transition:all .2s; }
+        .job-download:hover { box-shadow:0 2px 8px rgba(22,101,52,0.2); transform:translateY(-1px); }
+        .job-view-drive { display:inline-flex; align-items:center; gap:0.3rem; padding:0.3rem 0.65rem; background:#ecfeff; color:#0891b2; border:1px solid #cffafe; border-radius:7px; font-size:0.68rem; font-weight:600; cursor:pointer; transition:all .2s; text-decoration:none; }
+        .job-view-drive:hover { background:#cffafe; border-color:#0891b2; }
+        .jobs-empty { text-align:center; padding:2.5rem 1rem; color:#9ca3af; }
+        .jobs-empty .empty-icon { font-size:2.5rem; margin-bottom:0.75rem; opacity:0.4; }
+        .jobs-empty p { font-size:0.82rem; margin:0; }
     </style>
 </head>
 
@@ -968,6 +998,30 @@
                         <div id="action-items"></div>
                     </div>
                 </div>
+
+                <!-- ═══ RECENT JOBS ═══ -->
+                <div class="jobs-section" id="jobs-section">
+                    <div class="jobs-header">
+                        <h3>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10" />
+                                <polyline points="12 6 12 12 16 14" />
+                            </svg>
+                            Recent Reconciliation Jobs
+                            <span class="jobs-count" id="jobs-count">0</span>
+                        </h3>
+                        <button class="compare-btn" onclick="loadJobs()" style="font-size:0.72rem;padding:0.35rem 0.75rem;box-shadow:none;background:#f1f5f9;color:#374151">
+                            ↻ Refresh
+                        </button>
+                    </div>
+                    <div id="jobs-list">
+                        <div class="jobs-empty">
+                            <div class="empty-icon">📂</div>
+                            <p>No reconciliation jobs yet. Upload files and run a comparison above.</p>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </main>
     </div>
@@ -1062,6 +1116,7 @@
 
                 renderResults(data);
                 showToast('Liability comparison complete!', 'success');
+                loadJobs();
             } catch (e) {
                 console.error(e);
                 showToast('Error: ' + e.message, 'error');
@@ -1194,6 +1249,91 @@
             t.className = 'tool-toast ' + type; t.classList.add('show');
             setTimeout(() => t.classList.remove('show'), 3000);
         }
+
+        // ═══ RECENT JOBS ═══
+        let pollingInterval = null;
+
+        function timeAgo(dateStr) {
+            const now = new Date(), date = new Date(dateStr);
+            const s = Math.floor((now - date) / 1000);
+            if (s < 60) return 'Just now';
+            const m = Math.floor(s / 60); if (m < 60) return `${m} min${m > 1 ? 's' : ''} ago`;
+            const h = Math.floor(m / 60); if (h < 24) return `${h} hr${h > 1 ? 's' : ''} ago`;
+            const d = Math.floor(h / 24); if (d === 1) return 'Yesterday'; if (d < 7) return `${d} days ago`;
+            return date.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+        }
+
+        async function loadJobs() {
+            const params = new URLSearchParams(window.location.search);
+            const clientId = params.get('clientId');
+            try {
+                const url = clientId ? `/jobs/?skip=0&limit=50&client_id=${clientId}` : `/jobs/?skip=0&limit=50`;
+                const res = await authFetch(url);
+                if (res && res.ok) {
+                    const jobs = await res.json();
+                    const taskJobs = jobs.filter(j => j.job_type === 'gstr1_vs_3b');
+                    renderJobs(taskJobs);
+                    const hasInProgress = taskJobs.some(j => j.status === 'QUEUED' || j.status === 'PROCESSING');
+                    if (hasInProgress && !pollingInterval) pollingInterval = setInterval(loadJobs, 5000);
+                    else if (!hasInProgress && pollingInterval) { clearInterval(pollingInterval); pollingInterval = null; }
+                }
+            } catch (e) { console.error('Error loading jobs:', e); }
+        }
+
+        function renderJobs(jobs) {
+            const list = document.getElementById('jobs-list');
+            if (!jobs || jobs.length === 0) {
+                list.innerHTML = `<div class="jobs-empty"><div class="empty-icon">📂</div><p>No reconciliation jobs yet.</p></div>`;
+                document.getElementById('jobs-count').textContent = '0';
+                return;
+            }
+            document.getElementById('jobs-count').textContent = jobs.length;
+            list.innerHTML = jobs.map(job => {
+                const relTime = timeAgo(job.created_at);
+                const fullDate = new Date(job.created_at).toLocaleString('en-IN', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
+                const statusClass = job.status.toLowerCase();
+                const statusIcon = { 'QUEUED':'⏳','PROCESSING':'⚙️','COMPLETED':'✅','FAILED':'❌' }[job.status] || '📄';
+                const hasDrive = !!job.drive_folder_name;
+                const driveTag = hasDrive ? `<span class="job-drive-tag">📁 Saved to ${job.drive_folder_name}</span>` : '';
+                const files = (job.input_files || []).map(f => { const name = typeof f === 'string' ? f.split('/').pop() : 'file'; return `<span class="job-file-tag">📄 ${name}</span>`; }).join(' ');
+                const params = new URLSearchParams(window.location.search);
+                const clientId = params.get('clientId');
+                const driveBtn = hasDrive && clientId ? `<a href="drive.html?clientId=${clientId}" class="job-view-drive">📁 Drive</a>` : '';
+                return `<div class="job-row${hasDrive ? ' has-drive' : ''}">
+                    <div class="job-icon">${statusIcon}</div>
+                    <div class="job-details">
+                        <div class="job-name">GSTR-1 vs GSTR-3B ${driveTag}</div>
+                        <div class="job-meta">
+                            <span class="job-time" title="${fullDate}">🕐 ${relTime}</span>
+                            <span class="job-meta-sep">•</span><span>ID: ${job.id.substring(0, 8)}</span>
+                            ${files ? `<span class="job-meta-sep">•</span> ${files}` : ''}
+                        </div>
+                    </div>
+                    <div class="job-actions">
+                        <span class="job-status ${statusClass}">${job.status}</span>
+                        ${driveBtn}
+                        ${job.status === 'COMPLETED' ? `<button class="job-download" onclick="downloadJobFile('${job.id}')">⬇ Download</button>` : job.status === 'FAILED' && job.events && job.events.length ? `<span style="font-size:0.65rem;color:#dc2626;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${job.events[job.events.length - 1].message}">❌ ${job.events[job.events.length - 1].message.substring(0, 50)}</span>` : ''}
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        async function downloadJobFile(jobId) {
+            try {
+                const res = await authFetch(`/jobs/${jobId}/download`);
+                if (!res || !res.ok) { showToast('Download failed', 'error'); return; }
+                const blob = await res.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url; a.download = `GSTR1_vs_3B_Report_${jobId.substring(0, 8)}.xlsx`;
+                document.body.appendChild(a); a.click();
+                window.URL.revokeObjectURL(url); document.body.removeChild(a);
+                showToast('Report downloaded!', 'success');
+            } catch (e) { console.error(e); showToast('Error downloading file', 'error'); }
+        }
+
+        // Load jobs on init
+        loadJobs();
     </script>
 </body>
 

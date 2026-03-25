@@ -1035,8 +1035,33 @@
                 const data = await response.json();
 
                 if (response.ok) {
-                    showToast('✅ Account created! Redirecting to sign in...', 'success');
-                    setTimeout(() => { window.location.href = 'sign-in.html'; }, 1200);
+                    // Auto-login with the same credentials
+                    showToast('✅ Account created! Logging you in...', 'success');
+                    try {
+                        const loginRes = await fetch(`${API_BASE_URL}/auth/login`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                            body: new URLSearchParams({ username: email, password })
+                        });
+                        if (loginRes.ok) {
+                            const loginData = await loginRes.json();
+                            localStorage.setItem('access_token', loginData.access_token);
+                            // Fetch user profile
+                            const userRes = await authFetch('/auth/me');
+                            if (userRes.ok) {
+                                const userData = await userRes.json();
+                                localStorage.setItem('user', JSON.stringify(userData));
+                                localStorage.setItem('lastActivity', Date.now().toString());
+                            }
+                            setTimeout(() => { window.location.href = 'clients.html'; }, 600);
+                        } else {
+                            // Fallback: send to sign-in if auto-login fails
+                            setTimeout(() => { window.location.href = 'sign-in.html'; }, 1200);
+                        }
+                    } catch (loginErr) {
+                        console.error('Auto-login error:', loginErr);
+                        setTimeout(() => { window.location.href = 'sign-in.html'; }, 1200);
+                    }
                 } else {
                     showToast('❌ ' + (data.detail || 'Unknown error'), 'error');
                 }
@@ -1090,8 +1115,33 @@
                 const data = await response.json();
 
                 if (response.ok) {
-                    showToast('✅ Account created! Redirecting to sign in...', 'success');
-                    setTimeout(() => { window.location.href = 'sign-in.html'; }, 1200);
+                    // Auto-login with the same credentials
+                    showToast('✅ Account created! Logging you in...', 'success');
+                    try {
+                        const cleaned = phone_number.replace(/[\s\-\(\)]+/g, '');
+                        const loginRes = await fetch(`${API_BASE_URL}/auth/login/phone`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ phone_number: cleaned, password })
+                        });
+                        if (loginRes.ok) {
+                            const loginData = await loginRes.json();
+                            localStorage.setItem('access_token', loginData.access_token);
+                            // Fetch user profile
+                            const userRes = await authFetch('/auth/me');
+                            if (userRes.ok) {
+                                const userData = await userRes.json();
+                                localStorage.setItem('user', JSON.stringify(userData));
+                                localStorage.setItem('lastActivity', Date.now().toString());
+                            }
+                            setTimeout(() => { window.location.href = 'clients.html'; }, 600);
+                        } else {
+                            setTimeout(() => { window.location.href = 'sign-in.html'; }, 1200);
+                        }
+                    } catch (loginErr) {
+                        console.error('Auto-login error:', loginErr);
+                        setTimeout(() => { window.location.href = 'sign-in.html'; }, 1200);
+                    }
                 } else {
                     showToast('❌ ' + (data.detail || 'Unknown error'), 'error');
                 }
