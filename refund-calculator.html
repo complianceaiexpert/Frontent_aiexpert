@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GST Refund Calculator — Suvidha AI</title>
+    <meta name="description"
+        content="Calculate your GST refund using manual entry, file upload, or GST portal integration. Supports Rule 89(4), 89(5), and 96.">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="refund-calculator.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div id="app-topbar" data-active="dashboard"></div>
+    <script src="app-topbar.js"></script>
+
+    <div class="rc-app-layout">
+        <!-- ═══ LEFT SIDEBAR ═══ -->
+        <aside class="rc-sidebar">
+            <div id="app-client-nav" data-active="gst-refund"></div>
+            <script src="app-client-nav.js"></script>
+            <ul class="rc-sidebar-nav">
+                <li>
+                    <a class="rc-sb-link" onclick="navigateToPage('service-gst-refund-webview.html')">
+                        <span class="rc-icon">📊</span>
+                        <span>Refund Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="rc-sb-link" onclick="navigateToPage('gst-refund.html')">
+                        <span class="rc-icon">📝</span>
+                        <span>File GST Refund</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="rc-sb-link active">
+                        <span class="rc-icon">🧮</span>
+                        <span>Calculate Refund</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="rc-sb-link"
+                        onclick="navigateToPage('service-gst-refund-webview.html', 'reconciliation')">
+                        <span class="rc-icon">⚖️</span>
+                        <span>GST Reconciliation</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="rc-sb-link" onclick="navigateToPage('service-gst-refund-webview.html', 'reports')">
+                        <span class="rc-icon">📄</span>
+                        <span>Reports</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="rc-sb-link" onclick="navigateToPage('service-gst-refund-webview.html', 'tools')">
+                        <span class="rc-icon">🛠️</span>
+                        <span>Tools</span>
+                    </a>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- ═══ MAIN CONTENT ═══ -->
+        <main class="rc-main">
+            <div class="rc-inner">
+
+                <!-- ═══ PAGE HEADER ═══ -->
+                <div class="rc-page-header">
+                    <h1>🧮 GST Refund Calculator</h1>
+                    <p>Compute your maximum admissible refund using Rule 89(4), 89(5), or 96. Choose your preferred
+                        input method below.</p>
+                </div>
+
+                <!-- ═══ MODE SELECTOR CARDS ═══ -->
+                <div class="rc-mode-cards" id="rc-mode-cards">
+                    <div class="rc-mode-card active" onclick="selectMode('manual')" id="rc-mode-manual">
+                        <div class="rc-mode-icon manual">📝</div>
+                        <div>
+                            <div class="rc-mode-title">Manual Entry</div>
+                            <div class="rc-mode-desc">Enter turnover, ITC & other values manually to compute refund
+                            </div>
+                        </div>
+                    </div>
+                    <div class="rc-mode-card" onclick="selectMode('upload')" id="rc-mode-upload">
+                        <div class="rc-mode-icon upload">📤</div>
+                        <div>
+                            <div class="rc-mode-title">Upload Files</div>
+                            <div class="rc-mode-desc">Upload GSTR-3B, GSTR-1, Purchase Register & let AI extract
+                                values</div>
+                        </div>
+                    </div>
+                    <div class="rc-mode-card" onclick="selectMode('portal')" id="rc-mode-portal">
+                        <div class="rc-mode-icon portal">🌐</div>
+                        <div>
+                            <div class="rc-mode-title">Connect GST Portal</div>
+                            <div class="rc-mode-desc">Fetch data directly from the GST portal using your credentials
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ═══ CONFIG ROW (GST Type Selector) ═══ -->
+                <div class="rc-config-row">
+                    <div class="rc-config-group">
+                        <label for="rc-gst-type">GST Refund Type</label>
+                        <select id="rc-gst-type" class="rc-select" onchange="onGstTypeChange()">
+                            <option value="">— Select Refund Type —</option>
+                            <option value="export_goods_lut">🚢 Export of Goods — LUT (Rule 89(4))</option>
+                            <option value="export_service_lut">💻 Export of Services — LUT (Rule 89(4))</option>
+                            <option value="export_igst">🧾 Export with IGST Payment (Rule 96)</option>
+                            <option value="inverted_duty">⚖️ Inverted Duty Structure (Rule 89(5))</option>
+                            <option value="deemed_export">📦 Deemed Exports (Rule 89(4))</option>
+                            <option value="excess_cash">💵 Excess Cash Ledger Balance</option>
+                        </select>
+                    </div>
+                    <div class="rc-config-group">
+                        <label for="rc-period">Tax Period</label>
+                        <select id="rc-period" class="rc-select">
+                            <option value="">— Select Period —</option>
+                            <option value="2025-04">April 2025</option>
+                            <option value="2025-03">March 2025</option>
+                            <option value="2025-02">February 2025</option>
+                            <option value="2025-01">January 2025</option>
+                            <option value="2024-12">December 2024</option>
+                            <option value="2024-11">November 2024</option>
+                            <option value="2024-10">October 2024</option>
+                            <option value="2024-09">September 2024</option>
+                            <option value="2024-08">August 2024</option>
+                            <option value="2024-07">July 2024</option>
+                            <option value="2024-06">June 2024</option>
+                            <option value="2024-05">May 2024</option>
+                            <option value="2024-04">April 2024</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- ═══ FORMULA BANNER (dynamic) ═══ -->
+                <div class="rc-formula-banner" id="rc-formula-banner" style="display:none;">
+                    <div>
+                        <span class="rc-formula-badge" id="rc-formula-badge">Rule</span>
+                    </div>
+                    <div>
+                        <div class="rc-formula-text" id="rc-formula-text"></div>
+                        <div class="rc-formula-rule" id="rc-formula-desc"></div>
+                    </div>
+                </div>
+
+                <div class="rc-divider"></div>
+
+                <!-- ════════════════════════════════════════════════════════
+                     PANEL 1: MANUAL ENTRY
+                ════════════════════════════════════════════════════════ -->
+                <div class="rc-panel active" id="rc-panel-manual">
+                    <div id="rc-manual-empty" class="rc-empty-state">
+                        <div class="rc-es-icon">📋</div>
+                        <h3>Select a Refund Type</h3>
+                        <p>Choose a GST refund type from the dropdown above to see the calculation form.</p>
+                    </div>
+
+                    <div id="rc-manual-form" style="display:none;">
+                        <div class="rc-fields-grid" id="rc-manual-fields">
+                            <!-- Fields populated by JS -->
+                        </div>
+                        <div class="rc-btn-row">
+                            <button class="rc-btn rc-btn-primary" id="rc-manual-calc-btn" onclick="runManualCalc()">
+                                🧮 Calculate Refund
+                            </button>
+                            <button class="rc-btn rc-btn-secondary" onclick="clearManualForm()">
+                                Clear
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ════════════════════════════════════════════════════════
+                     PANEL 2: FILE UPLOAD
+                ════════════════════════════════════════════════════════ -->
+                <div class="rc-panel" id="rc-panel-upload">
+                    <div id="rc-upload-empty" class="rc-empty-state" style="display:none;">
+                        <div class="rc-es-icon">📤</div>
+                        <h3>Select a Refund Type</h3>
+                        <p>Choose a GST refund type from the dropdown above to see required files.</p>
+                    </div>
+
+                    <div id="rc-upload-form">
+                        <!-- Required Files Info -->
+                        <div class="rc-required-files" id="rc-required-info">
+                            <h4>📎 Required Files for Calculation</h4>
+                            <ul id="rc-required-list">
+                                <li>Select a refund type above to see required files</li>
+                            </ul>
+                        </div>
+
+                        <!-- Upload Zone -->
+                        <div class="rc-upload-zone" id="rc-upload-zone" onclick="document.getElementById('rc-file-input').click()">
+                            <div class="rc-up-icon">📁</div>
+                            <div class="rc-up-title">Drop files here or click to browse</div>
+                            <div class="rc-up-sub">Supports <strong>Excel (.xlsx, .xls)</strong>, <strong>CSV</strong>,
+                                <strong>JSON</strong>, and <strong>PDF</strong> formats
+                            </div>
+                        </div>
+                        <input type="file" id="rc-file-input" multiple accept=".xlsx,.xls,.csv,.json,.pdf"
+                            style="display:none" onchange="handleFileUpload(event)">
+
+                        <!-- Uploaded Files List -->
+                        <div class="rc-file-list" id="rc-file-list"></div>
+
+                        <div class="rc-btn-row">
+                            <button class="rc-btn rc-btn-primary" id="rc-upload-calc-btn"
+                                onclick="runUploadCalc()" disabled>
+                                📤 Upload & Calculate
+                            </button>
+                            <button class="rc-btn rc-btn-secondary" onclick="clearUploadedFiles()">
+                                Clear Files
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ════════════════════════════════════════════════════════
+                     PANEL 3: GST PORTAL CONNECT
+                ════════════════════════════════════════════════════════ -->
+                <div class="rc-panel" id="rc-panel-portal">
+                    <div class="rc-portal-card" style="text-align:center; padding:3rem 2rem;">
+                        <div style="font-size:3.5rem; margin-bottom:1rem; filter:grayscale(0.3); animation: rc-float 3s ease-in-out infinite;">🌐</div>
+                        <div class="rc-portal-title" style="font-size:1.4rem; margin-bottom:0.5rem;">GST Portal Connect</div>
+                        <div style="display:inline-block; background:linear-gradient(135deg,#f59e0b,#f97316); color:#fff; font-size:0.7rem; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; padding:0.3rem 1rem; border-radius:20px; margin-bottom:1.2rem;">
+                            Coming Soon
+                        </div>
+                        <div class="rc-portal-desc" style="max-width:500px; margin:0 auto 1.5rem; color:var(--rc-text-secondary); line-height:1.7;">
+                            We're building a secure integration with the GST portal to automatically fetch
+                            GSTR-3B, GSTR-1, and return data for one-click refund calculation.<br><br>
+                            In the meantime, use <strong>Manual Entry</strong> or <strong>Upload Files</strong> to calculate your refund.
+                        </div>
+
+                        <div style="background:rgba(99,102,241,0.06); border:1px dashed rgba(99,102,241,0.25); border-radius:12px; padding:1.2rem 1.5rem; max-width:420px; margin:0 auto 1.5rem; text-align:left;">
+                            <div style="font-weight:600; font-size:0.82rem; color:var(--rc-text); margin-bottom:0.6rem;">✨ What to expect:</div>
+                            <div style="font-size:0.78rem; color:var(--rc-text-secondary); line-height:1.8;">
+                                • Secure OTP-based login to GST portal<br>
+                                • Auto-fetch GSTR-3B, GSTR-1, and ITC data<br>
+                                • One-click refund calculation with pre-filled values<br>
+                                • Period selection for any return month
+                            </div>
+                        </div>
+
+                        <div class="rc-btn-row" style="justify-content:center;">
+                            <button class="rc-btn rc-btn-secondary" onclick="selectMode('upload')" style="gap:0.4rem;">
+                                📤 Use File Upload Instead
+                            </button>
+                            <button class="rc-btn rc-btn-secondary" onclick="selectMode('manual')" style="gap:0.4rem;">
+                                ✏️ Use Manual Entry
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ════════════════════════════════════════════════════════
+                     RESULTS PANEL (shared across modes)
+                ════════════════════════════════════════════════════════ -->
+                <div id="rc-results" style="display:none;">
+                    <div class="rc-divider" style="margin-top:1.5rem;"></div>
+
+                    <div class="rc-result-hero">
+                        <div class="rc-result-label">Maximum Admissible Refund</div>
+                        <div class="rc-result-amount" id="rc-result-amount">₹ 0.00</div>
+                        <div class="rc-result-rule" id="rc-result-rule"></div>
+                    </div>
+
+                    <!-- Formula Applied -->
+                    <div class="rc-result-formula-box">
+                        <div class="rc-result-formula-label">Formula Applied</div>
+                        <div class="rc-result-formula-display" id="rc-result-formula-display"></div>
+                        <div class="rc-result-formula-values" id="rc-result-formula-values"></div>
+                    </div>
+
+                    <!-- Breakdown Table -->
+                    <div id="rc-result-breakdown"></div>
+
+                    <!-- Warnings -->
+                    <div id="rc-result-warnings"></div>
+
+                    <div class="rc-btn-row" style="margin-top:1rem;">
+                        <button class="rc-btn rc-btn-primary" onclick="resetCalculator()">
+                            🔄 New Calculation
+                        </button>
+                        <button class="rc-btn rc-btn-secondary" onclick="navigateToPage('gst-refund.html')">
+                            📝 File RFD-01
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script src="api_config.js?v=2"></script>
+    <script src="session-manager.js"></script>
+    <script>
+        // ═══════════════════════════════════════════════════════
+        //  NAVIGATION
+        // ═══════════════════════════════════════════════════════
+        function navigateToPage(page, section) {
+            const p = new URLSearchParams(window.location.search);
+            let url = page + '?' + p.toString();
+            if (section) url += '&section=' + section;
+            window.location.href = url;
+        }
+
+        // ═══════════════════════════════════════════════════════
+        //  STATE
+        // ═══════════════════════════════════════════════════════
+        let currentMode = 'manual';
+        let currentGstType = '';
+        let uploadedFiles = [];
+        let portalConnected = false;
+        let portalFetchedData = {};
+
+        // ═══════════════════════════════════════════════════════
+        //  TYPE CONFIGS (same as webview)
+        // ═══════════════════════════════════════════════════════
+        const typeConfigs = {
+            export_goods_lut: {
+                title: 'Export of Goods — LUT', rule: 'Rule 89(4)',
+                formula: '(Zero-Rated Turnover ÷ Adjusted Total Turnover) × Net ITC',
+                desc: 'Refund for exporters without IGST payment under LUT',
+                fields: [
+                    { id: 'turnover_zero_rated_goods', label: 'Turnover of Zero-Rated Goods (₹)', hint: 'FOB value of exported goods' },
+                    { id: 'total_turnover', label: 'Total Turnover in State (₹)', hint: 'Total turnover excluding zero-rated supply' },
+                    { id: 'exempt_turnover', label: 'Exempt Turnover (₹)', hint: 'Excluding zero-rated supply' },
+                    { id: 'itc_availed', label: 'Total ITC Availed (₹)', hint: 'From GSTR-3B Table 4' },
+                    { id: 'itc_capital_goods', label: 'ITC on Capital Goods (₹)', hint: 'Excluded from Net ITC' },
+                    { id: 'blocked_credit', label: 'Blocked Credit u/s 17(5) (₹)', hint: 'Personal, food, etc.' },
+                    { id: 'itc_input_services', label: 'ITC on Input Services (₹)', hint: 'Excluded for goods export per Circular 135' },
+                ],
+                requiredFiles: [
+                    'GSTR-3B (Excel/JSON) — ITC availed details',
+                    'GSTR-1 (Excel/JSON) — Export turnover from Table 6A',
+                    'Purchase Register (Excel) — For ITC verification',
+                    'Shipping Bills (PDF/Excel) — Optional, for cross-check',
+                ]
+            },
+            export_service_lut: {
+                title: 'Export of Services — LUT', rule: 'Rule 89(4)',
+                formula: '(Zero-Rated Turnover ÷ Adjusted Total Turnover) × Net ITC',
+                desc: 'IT/ITES service export refund without IGST',
+                fields: [
+                    { id: 'turnover_zero_rated_services', label: 'Turnover of Zero-Rated Services (₹)', hint: 'Exported service value' },
+                    { id: 'total_turnover', label: 'Total Turnover in State (₹)', hint: 'Total turnover excluding zero-rated supply' },
+                    { id: 'exempt_turnover', label: 'Exempt Turnover (₹)', hint: 'Excluding zero-rated supply' },
+                    { id: 'itc_availed', label: 'Total ITC Availed (₹)', hint: 'From GSTR-3B Table 4' },
+                    { id: 'itc_capital_goods', label: 'ITC on Capital Goods (₹)', hint: 'Excluded from Net ITC' },
+                    { id: 'blocked_credit', label: 'Blocked Credit u/s 17(5) (₹)', hint: 'Personal, food, etc.' },
+                ],
+                requiredFiles: [
+                    'GSTR-3B (Excel/JSON) — ITC availed details',
+                    'GSTR-1 (Excel/JSON) — Export service turnover from Table 6A',
+                    'Purchase Register (Excel) — For ITC verification',
+                    'FIRC/BRC documents (PDF) — Proof of foreign exchange receipt',
+                ]
+            },
+            export_igst: {
+                title: 'Export with IGST Payment', rule: 'Rule 96',
+                formula: 'IGST Paid on Exports − Withheld Amount',
+                desc: 'Auto-refund via shipping bill matching on ICEGATE',
+                fields: [
+                    { id: 'igst_paid_on_exports', label: 'IGST Paid on Export of Goods (₹)', hint: 'From tax invoices' },
+                    { id: 'igst_paid_on_services', label: 'IGST Paid on Export of Services (₹)', hint: 'If applicable' },
+                    { id: 'shipping_bills_total', label: 'Total Shipping Bills Filed', hint: 'Number of SBs' },
+                    { id: 'shipping_bills_matched', label: 'Shipping Bills Matched (ICEGATE)', hint: 'Matched with GSTR-1' },
+                    { id: 'withheld_amount', label: 'Withheld Amount (₹)', hint: 'Risky exporter flag, mismatches' },
+                ],
+                requiredFiles: [
+                    'GSTR-1 (Excel/JSON) — Table 6A export details with shipping bills',
+                    'GSTR-3B (Excel/JSON) — IGST paid on exports',
+                    'Shipping Bills (Excel/PDF) — For ICEGATE matching verification',
+                ]
+            },
+            inverted_duty: {
+                title: 'Inverted Duty Structure', rule: 'Rule 89(5)',
+                formula: '[(Inverted Turnover × Net ITC) ÷ Adjusted Total Turnover] − Tax Payable',
+                desc: 'Where input GST rate exceeds output rate',
+                fields: [
+                    { id: 'turnover_inverted', label: 'Turnover of Inverted Rated Supply (₹)', hint: 'Output with lower rate' },
+                    { id: 'total_turnover', label: 'Total Turnover in State (₹)', hint: 'From GSTR-3B' },
+                    { id: 'exempt_turnover', label: 'Exempt Turnover (₹)', hint: 'Excluding inverted supply' },
+                    { id: 'itc_availed', label: 'Total ITC Availed on Inputs (₹)', hint: 'Higher rate inputs only' },
+                    { id: 'itc_capital_goods', label: 'ITC on Capital Goods (₹)', hint: 'Excluded from Net ITC' },
+                    { id: 'blocked_credit', label: 'Blocked Credit u/s 17(5) (₹)', hint: 'Non-deductible ITC' },
+                    { id: 'tax_payable_inverted', label: 'Tax Payable on Inverted Supply (₹)', hint: 'Output tax at lower rate' },
+                ],
+                requiredFiles: [
+                    'GSTR-3B (Excel/JSON) — ITC availed on inputs and output tax',
+                    'GSTR-1 (Excel/JSON) — Inverted rated supply details',
+                    'Purchase Register (Excel) — HSN-wise input details',
+                    'Sales Register (Excel) — HSN-wise output details',
+                ]
+            },
+            deemed_export: {
+                title: 'Deemed Exports', rule: 'Rule 89(4)',
+                formula: '(Zero-Rated Turnover ÷ Adjusted Total Turnover) × Net ITC',
+                desc: 'SEZ/EOU supply refunds',
+                fields: [
+                    { id: 'turnover_zero_rated_goods', label: 'Turnover of Deemed Export (₹)', hint: 'SEZ/EOU supply value' },
+                    { id: 'total_turnover', label: 'Total Turnover in State (₹)', hint: 'From GSTR-3B' },
+                    { id: 'exempt_turnover', label: 'Exempt Turnover (₹)', hint: 'Excluding deemed export' },
+                    { id: 'itc_availed', label: 'Total ITC Availed (₹)', hint: 'From GSTR-3B Table 4' },
+                    { id: 'itc_capital_goods', label: 'ITC on Capital Goods (₹)', hint: 'Excluded from Net ITC' },
+                    { id: 'blocked_credit', label: 'Blocked Credit u/s 17(5) (₹)', hint: '' },
+                ],
+                requiredFiles: [
+                    'GSTR-3B (Excel/JSON) — ITC availed details',
+                    'GSTR-1 (Excel/JSON) — Table 6B deemed export details',
+                    'Purchase Register (Excel) — For ITC verification',
+                    'SEZ endorsement documents (PDF) — Supply endorsement',
+                ]
+            },
+            excess_cash: {
+                title: 'Excess Cash Ledger Balance', rule: 'Direct Refund',
+                formula: 'Cash Ledger Balance − Earmarked Amount',
+                desc: 'Claim excess deposited in Electronic Cash Ledger',
+                fields: [
+                    { id: 'cash_ledger_balance', label: 'Electronic Cash Ledger Balance (₹)', hint: 'From GST Portal' },
+                    { id: 'amount_earmarked', label: 'Amount Earmarked Against Demand (₹)', hint: 'Recovery/demand block' },
+                    { id: 'refund_amount', label: 'Claim Amount (₹)', hint: 'Leave 0 for max available' },
+                ],
+                requiredFiles: [
+                    'Electronic Cash Ledger statement (PDF/Excel) — From GST portal',
+                    'Challans (PDF) — Proof of excess deposit',
+                ]
+            }
+        };
+
+        // ═══════════════════════════════════════════════════════
+        //  MODE SWITCHING
+        // ═══════════════════════════════════════════════════════
+        function selectMode(mode) {
+            currentMode = mode;
+
+            // Update mode cards
+            document.querySelectorAll('.rc-mode-card').forEach(c => c.classList.remove('active'));
+            document.getElementById('rc-mode-' + mode).classList.add('active');
+
+            // Switch panels
+            document.querySelectorAll('.rc-panel').forEach(p => p.classList.remove('active'));
+            const panel = document.getElementById('rc-panel-' + mode);
+            if (panel) {
+                panel.classList.add('active');
+                // Re-trigger animation
+                panel.style.animation = 'none';
+                panel.offsetHeight;
+                panel.style.animation = '';
+            }
+
+            // Hide results when switching modes
+            document.getElementById('rc-results').style.display = 'none';
+
+            // Refresh the form based on current type selection
+            if (currentGstType) {
+                onGstTypeChange();
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════
+        //  GST TYPE CHANGE
+        // ═══════════════════════════════════════════════════════
+        function onGstTypeChange() {
+            const sel = document.getElementById('rc-gst-type');
+            currentGstType = sel.value;
+
+            // Hide results
+            document.getElementById('rc-results').style.display = 'none';
+
+            if (!currentGstType) {
+                // Show empty states
+                document.getElementById('rc-formula-banner').style.display = 'none';
+                if (currentMode === 'manual') {
+                    document.getElementById('rc-manual-empty').style.display = 'block';
+                    document.getElementById('rc-manual-form').style.display = 'none';
+                }
+                if (currentMode === 'upload') {
+                    document.getElementById('rc-required-list').innerHTML = '<li>Select a refund type above to see required files</li>';
+                }
+                return;
+            }
+
+            const cfg = typeConfigs[currentGstType];
+            if (!cfg) return;
+
+            // Show formula banner
+            const banner = document.getElementById('rc-formula-banner');
+            banner.style.display = 'flex';
+            document.getElementById('rc-formula-badge').textContent = cfg.rule;
+            document.getElementById('rc-formula-text').textContent = cfg.formula;
+            document.getElementById('rc-formula-desc').textContent = cfg.title + ' — ' + cfg.desc;
+
+            // === MANUAL MODE ===
+            if (currentMode === 'manual') {
+                document.getElementById('rc-manual-empty').style.display = 'none';
+                document.getElementById('rc-manual-form').style.display = 'block';
+                renderManualFields(cfg);
+            }
+
+            // === UPLOAD MODE ===
+            if (currentMode === 'upload') {
+                document.getElementById('rc-upload-empty').style.display = 'none';
+                document.getElementById('rc-upload-form').style.display = 'block';
+                renderRequiredFiles(cfg);
+            }
+
+            // === PORTAL MODE (update fields if connected) ===
+            if (currentMode === 'portal' && portalConnected) {
+                renderPortalFields(cfg);
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════
+        //  MANUAL MODE
+        // ═══════════════════════════════════════════════════════
+        function renderManualFields(cfg) {
+            const container = document.getElementById('rc-manual-fields');
+            container.innerHTML = cfg.fields.map(f => `
+                <div class="rc-field">
+                    <label for="rcf-${f.id}">${f.label}</label>
+                    <input type="number" id="rcf-${f.id}" placeholder="0" step="any" min="0">
+                    ${f.hint ? `<div class="rc-hint">${f.hint}</div>` : ''}
+                </div>
+            `).join('');
+        }
+
+        function clearManualForm() {
+            document.querySelectorAll('#rc-manual-fields input').forEach(i => i.value = '');
+        }
+
+        async function runManualCalc() {
+            if (!currentGstType) {
+                alert('Please select a refund type first.');
+                return;
+            }
+
+            const cfg = typeConfigs[currentGstType];
+            const payload = { refund_type: currentGstType };
+            cfg.fields.forEach(f => {
+                const el = document.getElementById(`rcf-${f.id}`);
+                payload[f.id] = parseFloat(el?.value || 0) || 0;
+            });
+
+            const btn = document.getElementById('rc-manual-calc-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="rc-spinner"></span> Calculating...';
+
+            try {
+                const response = await authFetch('/reconciliation/calculate-refund', {
+                    method: 'POST',
+                    body: JSON.stringify(payload),
+                });
+
+                if (!response.ok) {
+                    const err = await response.json();
+                    alert('Calculation error: ' + (err.detail || 'Unknown error'));
+                    return;
+                }
+
+                const result = await response.json();
+                showResults(result);
+
+            } catch (e) {
+                console.error('Calc error:', e);
+                alert('Error: ' + e.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '🧮 Calculate Refund';
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════
+        //  UPLOAD MODE
+        // ═══════════════════════════════════════════════════════
+        function renderRequiredFiles(cfg) {
+            const list = document.getElementById('rc-required-list');
+            list.innerHTML = (cfg.requiredFiles || []).map(f => `<li>${f}</li>`).join('');
+        }
+
+        function handleFileUpload(event) {
+            const files = Array.from(event.target.files);
+            files.forEach(file => {
+                if (!uploadedFiles.find(f => f.name === file.name)) {
+                    uploadedFiles.push(file);
+                }
+            });
+            renderFileList();
+            event.target.value = '';
+        }
+
+        function renderFileList() {
+            const container = document.getElementById('rc-file-list');
+            const zone = document.getElementById('rc-upload-zone');
+            const btn = document.getElementById('rc-upload-calc-btn');
+
+            if (uploadedFiles.length === 0) {
+                container.innerHTML = '';
+                zone.classList.remove('has-files');
+                btn.disabled = true;
+                return;
+            }
+
+            zone.classList.add('has-files');
+            btn.disabled = false;
+
+            const extIcons = {
+                'xlsx': '📊', 'xls': '📊', 'csv': '📋',
+                'json': '📦', 'pdf': '📄'
+            };
+
+            container.innerHTML = uploadedFiles.map((file, idx) => {
+                const ext = file.name.split('.').pop().toLowerCase();
+                const icon = extIcons[ext] || '📎';
+                const size = (file.size / 1024).toFixed(1) + ' KB';
+                return `
+                    <div class="rc-file-item">
+                        <div class="rc-file-name">
+                            ${icon} ${file.name}
+                            <span class="rc-file-badge">${ext.toUpperCase()}</span>
+                            <span style="font-size:0.68rem;color:#9ca3af;">${size}</span>
+                        </div>
+                        <span class="rc-file-remove" onclick="removeFile(${idx})">✕</span>
+                    </div>`;
+            }).join('');
+        }
+
+        function removeFile(idx) {
+            uploadedFiles.splice(idx, 1);
+            renderFileList();
+        }
+
+        function clearUploadedFiles() {
+            uploadedFiles = [];
+            renderFileList();
+        }
+
+        // Drag & drop support
+        const dropZone = document.getElementById('rc-upload-zone');
+        if (dropZone) {
+            ['dragenter', 'dragover'].forEach(event => {
+                dropZone.addEventListener(event, (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    dropZone.style.borderColor = '#3b82f6';
+                    dropZone.style.background = '#eff6ff';
+                });
+            });
+            ['dragleave', 'drop'].forEach(event => {
+                dropZone.addEventListener(event, (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    dropZone.style.borderColor = '';
+                    dropZone.style.background = '';
+                });
+            });
+            dropZone.addEventListener('drop', (e) => {
+                const files = Array.from(e.dataTransfer.files);
+                files.forEach(file => {
+                    if (!uploadedFiles.find(f => f.name === file.name)) {
+                        uploadedFiles.push(file);
+                    }
+                });
+                renderFileList();
+            });
+        }
+
+        async function runUploadCalc() {
+            if (!currentGstType) {
+                alert('Please select a refund type first.');
+                return;
+            }
+            if (uploadedFiles.length === 0) {
+                alert('Please upload at least one file.');
+                return;
+            }
+
+            const btn = document.getElementById('rc-upload-calc-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="rc-spinner"></span> Uploading & Processing...';
+
+            try {
+                // Build multipart FormData with all files + params
+                const formData = new FormData();
+                formData.append('refund_type', currentGstType);
+                formData.append('period', document.getElementById('rc-period').value || '');
+                for (const file of uploadedFiles) {
+                    formData.append('files', file);
+                }
+
+                // Single call to the file-based endpoint
+                const response = await fetch(`${API_BASE_URL}/reconciliation/calculate-refund-from-files`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+                    },
+                    body: formData
+                });
+
+                if (response.status === 401) {
+                    localStorage.removeItem('user');
+                    localStorage.removeItem('access_token');
+                    window.location.href = 'index.html';
+                    return;
+                }
+
+                if (!response.ok) {
+                    const err = await response.json();
+                    alert('Calculation error: ' + (err.detail || 'Unknown error'));
+                    return;
+                }
+
+                const result = await response.json();
+                showResults(result);
+
+            } catch (e) {
+                console.error('Upload calc error:', e);
+                alert('Error: ' + e.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '📤 Upload & Calculate';
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════
+        //  PORTAL MODE — Coming Soon (deferred)
+        // ═══════════════════════════════════════════════════════
+
+        // ═══════════════════════════════════════════════════════
+        //  SHARED RESULTS RENDERER
+        // ═══════════════════════════════════════════════════════
+        function showResults(result) {
+            const resultsDiv = document.getElementById('rc-results');
+            resultsDiv.style.display = 'block';
+
+            // Smooth scroll to results
+            setTimeout(() => resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+
+            // Amount
+            const formatted = new Intl.NumberFormat('en-IN', {
+                style: 'currency', currency: 'INR', maximumFractionDigits: 2
+            }).format(result.max_refund || 0);
+            document.getElementById('rc-result-amount').textContent = formatted;
+            document.getElementById('rc-result-rule').textContent = result.rule || '';
+
+            // Formula
+            document.getElementById('rc-result-formula-display').textContent = result.formula_display || '';
+            document.getElementById('rc-result-formula-values').textContent = result.formula || '';
+
+            // Breakdown Table
+            const bd = result.breakdown || {};
+            const labelMap = {
+                turnover_zero_rated_goods: 'Zero-Rated Goods Turnover',
+                turnover_zero_rated_services: 'Zero-Rated Services Turnover',
+                turnover_zero_rated: 'Total Zero-Rated Turnover',
+                turnover_inverted: 'Inverted Rated Supply Turnover',
+                total_turnover: 'Total Turnover in State',
+                exempt_turnover: 'Exempt Turnover',
+                adjusted_total_turnover: 'Adjusted Total Turnover',
+                itc_availed: 'ITC Availed (Total)',
+                itc_capital_goods: 'Less: ITC on Capital Goods',
+                blocked_credit: 'Less: Blocked Credit u/s 17(5)',
+                itc_input_services: 'Less: ITC on Input Services',
+                net_itc: 'Net ITC',
+                ratio: 'Ratio (Turnover ÷ Adjusted)',
+                part_a: 'Part A (Turnover × ITC ÷ Adj.)',
+                tax_payable_inverted: 'Less: Tax Payable on Inverted',
+                igst_paid_on_exports: 'IGST Paid on Exports',
+                igst_paid_on_services: 'IGST Paid on Services',
+                total_igst: 'Total IGST',
+                withheld_amount: 'Less: Withheld',
+                shipping_bills_matched: 'Shipping Bills Matched',
+                shipping_bills_total: 'Total Shipping Bills',
+                cash_ledger_balance: 'Cash Ledger Balance',
+                amount_earmarked: 'Less: Earmarked Against Demand',
+                available_for_refund: 'Available for Refund',
+                claim_amount: 'Claim Amount',
+            };
+
+            let tableHtml = '<table class="rc-breakdown-table"><thead><tr><th>Component</th><th style="text-align:right;">Amount</th></tr></thead><tbody>';
+            const skipKeys = ['net_itc_note'];
+            Object.entries(bd).forEach(([key, val]) => {
+                if (skipKeys.includes(key)) return;
+                const label = labelMap[key] || key.replace(/_/g, ' ');
+                const isNum = typeof val === 'number';
+                const display = isNum
+                    ? (key === 'ratio' ? val.toFixed(6) : '₹ ' + val.toLocaleString('en-IN', { minimumFractionDigits: 2 }))
+                    : val;
+                tableHtml += `<tr><td>${label}</td><td style="text-align:right;font-family:monospace;">${display}</td></tr>`;
+            });
+            tableHtml += `<tr><td><strong>Maximum Admissible Refund</strong></td><td style="text-align:right;font-family:monospace;"><strong>${formatted}</strong></td></tr>`;
+            tableHtml += '</tbody></table>';
+            document.getElementById('rc-result-breakdown').innerHTML = tableHtml;
+
+            // Warnings
+            let warnHtml = (result.warnings || []).map(w => `<div class="rc-warning">${w}</div>`).join('');
+            if (result.note) {
+                warnHtml += `<div class="rc-note">${result.note}</div>`;
+            }
+
+            // Extraction info (file upload mode)
+            if (result.extraction) {
+                const ext = result.extraction;
+                let extractHtml = '<div class="rc-note" style="margin-top:0.65rem;">';
+                extractHtml += '<strong>📁 Files Processed:</strong> ' + (ext.files_processed || []).join(', ');
+                if (ext.file_types_detected && ext.file_types_detected.length) {
+                    extractHtml += '<br><strong>Detected as:</strong> ' + ext.file_types_detected.join(', ');
+                }
+                if (ext.extracted_values && Object.keys(ext.extracted_values).length) {
+                    extractHtml += '<br><strong>Auto-extracted values:</strong><br>';
+                    Object.entries(ext.extracted_values).forEach(([k, v]) => {
+                        const label = labelMap[k] || k.replace(/_/g, ' ');
+                        extractHtml += `&nbsp;&nbsp;• ${label}: ₹${Number(v).toLocaleString('en-IN', {minimumFractionDigits: 2})}<br>`;
+                    });
+                }
+                if (ext.notes && ext.notes.length) {
+                    extractHtml += '<br><em>' + ext.notes.join('<br>') + '</em>';
+                }
+                extractHtml += '</div>';
+                warnHtml += extractHtml;
+            }
+
+            document.getElementById('rc-result-warnings').innerHTML = warnHtml;
+        }
+
+        function resetCalculator() {
+            document.getElementById('rc-results').style.display = 'none';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ═══════════════════════════════════════════════════════
+        //  INIT — Deep-link support
+        // ═══════════════════════════════════════════════════════
+        (function init() {
+            const urlParams = new URLSearchParams(window.location.search);
+
+            // Auto-select refund type if passed
+            const refundType = urlParams.get('refundType') || urlParams.get('type');
+            if (refundType && typeConfigs[refundType]) {
+                document.getElementById('rc-gst-type').value = refundType;
+                onGstTypeChange();
+            }
+
+            // Auto-select mode if passed
+            const mode = urlParams.get('mode');
+            if (mode && ['manual', 'upload', 'portal'].includes(mode)) {
+                selectMode(mode);
+            }
+        })();
+    </script>
+</body>
+
+</html>

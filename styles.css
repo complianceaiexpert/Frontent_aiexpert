@@ -1496,6 +1496,64 @@ select:focus {
   letter-spacing: 0.03em;
 }
 
+/* Client Context Badge — matches index.html premium dark aesthetic */
+.app-client-ctx {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.38rem 0.9rem 0.38rem 0.6rem;
+  border-radius: 999px;
+  text-decoration: none;
+  background: #0f172a;
+  border: 1px solid rgba(255,255,255,0.08);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  max-width: 210px;
+  position: relative;
+}
+.app-client-ctx:hover {
+  border-color: rgba(235,103,17,0.35);
+  box-shadow: 0 0 16px rgba(235,103,17,0.12), 0 2px 8px rgba(0,0,0,0.15);
+  transform: translateY(-1px);
+}
+.app-client-ctx-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10b981;
+  flex-shrink: 0;
+  box-shadow: 0 0 6px rgba(16,185,129,0.5);
+  animation: ctxDotPulse 2.5s ease-in-out infinite;
+}
+@keyframes ctxDotPulse {
+  0%, 100% { box-shadow: 0 0 4px rgba(16,185,129,0.4); opacity: 1; }
+  50%      { box-shadow: 0 0 10px rgba(16,185,129,0.7); opacity: 0.75; }
+}
+.app-client-ctx-svg {
+  flex-shrink: 0;
+  stroke: #EB6711;
+  opacity: 0.9;
+}
+.app-client-ctx-name {
+  font-size: 0.76rem;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: var(--font-display, 'Outfit', sans-serif);
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: 0.01em;
+}
+.app-client-ctx:hover .app-client-ctx-name {
+  background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 40%, #f59e0b 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
 /* Right Section */
 .app-nav-right {
   display: flex;

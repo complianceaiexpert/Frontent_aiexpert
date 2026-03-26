@@ -1157,7 +1157,12 @@
 
             if (tx.date) {
                 const d = new Date(tx.date);
-                if (!isNaN(d)) document.getElementById('tm-date').value = d.toISOString().split('T')[0];
+                if (!isNaN(d)) {
+                    const yyyy = d.getFullYear();
+                    const mm = String(d.getMonth() + 1).padStart(2, '0');
+                    const dd = String(d.getDate()).padStart(2, '0');
+                    document.getElementById('tm-date').value = `${yyyy}-${mm}-${dd}`;
+                }
             }
             document.getElementById('tm-voucherno').value = tx.invoiceNo !== 'N/A' ? tx.invoiceNo : '';
             document.getElementById('tm-party').value = tx.vendor !== 'Unknown' ? tx.vendor : '';
@@ -1356,7 +1361,14 @@
                 ledger_entries.push({ ledger_name: 'SGST', amount: gstAmt - halfGst, is_debit: false });
             }
 
-            const dateVal = tx.date ? new Date(tx.date).toISOString().split('T')[0].replace(/-/g, '') : '';
+            let dateVal = '';
+            if (tx.date) {
+                const d = new Date(tx.date);
+                const yyyy = d.getFullYear();
+                const mm = String(d.getMonth() + 1).padStart(2, '0');
+                const dd = String(d.getDate()).padStart(2, '0');
+                dateVal = `${yyyy}${mm}${dd}`;
+            }
             const payload = {
                 company,
                 voucher_type: typeMap[tx.type] || 'Sales',
@@ -1504,6 +1516,8 @@
                 formData.append('client_id', clientId || '');
                 formData.append('fileName', file.name);
                 formData.append('clientName', clientCompanyName || '');
+                // Tell AI to prefer "Ship To" / "Bill To" party as vendor name
+                formData.append('vendor_name_preference', 'ship_to_party');
 
                 const res = await fetch(N8N_WEBHOOK_URL, {
                     method: 'POST',
@@ -1931,7 +1945,14 @@
 
             // Right panel — Editable fields
             const rightContent = document.getElementById('rv-right-content');
-            const dateVal = tx.date ? new Date(tx.date).toISOString().split('T')[0] : '';
+            let dateVal = '';
+            if (tx.date) {
+                const d = new Date(tx.date);
+                const yyyy = d.getFullYear();
+                const mm = String(d.getMonth() + 1).padStart(2, '0');
+                const dd = String(d.getDate()).padStart(2, '0');
+                dateVal = `${yyyy}-${mm}-${dd}`;
+            }
             rightContent.innerHTML = `
                 <div class="rv-field-group">
                     <div class="rv-field-group-title">👤 Party Details</div>

@@ -10,6 +10,19 @@
 
   const active = (container.getAttribute('data-active') || '').toLowerCase();
 
+  // ── Client Context Detection ──
+  const _urlParams = new URLSearchParams(window.location.search);
+  const _clientId = _urlParams.get('clientId') || '';
+  let _clientName = '';
+  let _clientGstin = '';
+  try {
+    const sc = JSON.parse(localStorage.getItem('selectedClient') || '{}');
+    if (sc && sc.name) {
+      _clientName = sc.name;
+      _clientGstin = (sc.gstins && sc.gstins.length > 0) ? sc.gstins[0] : (sc.pan || '');
+    }
+  } catch (_) { }
+
   function cls(id) {
     return active === id ? 'app-nav-link app-nav-active' : 'app-nav-link';
   }
@@ -59,6 +72,21 @@
 
       <!-- Right -->
       <div class="app-nav-right">
+
+        ${_clientId ? `
+        <!-- Client Context Badge -->
+        <a href="services-dashboard.html?clientId=${_clientId}" class="app-client-ctx" id="app-client-ctx" title="Currently working on: ${_clientName || 'Loading…'}">
+          <span class="app-client-ctx-dot"></span>
+          <svg class="app-client-ctx-svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/>
+            <path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/>
+            <path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/>
+          </svg>
+          <span class="app-client-ctx-name" id="app-client-ctx-name">${_clientName || 'Loading…'}</span>
+        </a>
+        <div class="app-nav-divider"></div>
+        ` : ''}
+
         <a href="integrations.html" class="app-icon-btn ${active === 'settings' ? 'app-icon-active' : ''}" title="Integrations">
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="12" cy="12" r="3"/>
@@ -161,4 +189,28 @@
     const de = document.getElementById('dd-email');
     if (de) de.textContent = email;
   } catch (_) { }
+
+  // ── Client Context: Fetch from API if not in localStorage ──
+  if (_clientId && !_clientName) {
+    const _tryLoadClientCtx = () => {
+      if (typeof authFetch === 'function') {
+        authFetch(`/clients/${_clientId}`).then(r => r.ok ? r.json() : null).then(client => {
+          if (!client) return;
+          const nameEl = document.getElementById('app-client-ctx-name');
+          const ctxEl = document.getElementById('app-client-ctx');
+          if (nameEl) nameEl.textContent = client.name || 'Client';
+          if (ctxEl) ctxEl.title = 'Currently working on: ' + (client.name || 'Client');
+        }).catch(() => {});
+      } else {
+        setTimeout(_tryLoadClientCtx, 200);
+      }
+    };
+    _tryLoadClientCtx();
+  }
+
+  // ── Expose helper so app-client-nav.js can also update topbar ──
+  window.__updateTopbarClientCtx = function (name) {
+    const nameEl = document.getElementById('app-client-ctx-name');
+    if (nameEl && name) nameEl.textContent = name;
+  };
 })();

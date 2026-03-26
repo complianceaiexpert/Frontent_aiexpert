@@ -10,170 +10,559 @@
     <link rel="stylesheet" href="data-entry.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap"
+        rel="stylesheet">
     <style>
-        .tx-layout { display: flex; height: 100vh; padding-top: 64px }
+        .tx-layout {
+            display: flex;
+            height: 100vh;
+            padding-top: 64px
+        }
+
         .tx-sidebar {
-            width: 240px; background: #fff; border-right: 1px solid #e5e7eb;
-            display: flex; flex-direction: column; flex-shrink: 0; overflow-y: auto;
+            width: 240px;
+            background: #fff;
+            border-right: 1px solid #e5e7eb;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            overflow-y: auto;
         }
-        .tx-sb-header { padding: 1.15rem 1.25rem; border-bottom: 1px solid #f1f5f9 }
+
+        .tx-sb-header {
+            padding: 1.15rem 1.25rem;
+            border-bottom: 1px solid #f1f5f9
+        }
+
         .tx-sb-header h3 {
-            font-family: 'Outfit', sans-serif; font-size: .95rem; font-weight: 800;
-            color: #111827; margin: 0 0 .15rem; display: flex; align-items: center; gap: .4rem;
+            font-family: 'Outfit', sans-serif;
+            font-size: .95rem;
+            font-weight: 800;
+            color: #111827;
+            margin: 0 0 .15rem;
+            display: flex;
+            align-items: center;
+            gap: .4rem;
         }
-        .tx-sb-header p { font-size: .72rem; color: #9ca3af; margin: 0 }
-        .tx-sb-section { padding: .75rem .65rem }
+
+        .tx-sb-header p {
+            font-size: .72rem;
+            color: #9ca3af;
+            margin: 0
+        }
+
+        .tx-sb-section {
+            padding: .75rem .65rem
+        }
+
         .tx-sb-label {
-            font-size: .6rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em;
-            color: #9ca3af; padding: 0 .5rem; margin-bottom: .3rem;
+            font-size: .6rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            color: #9ca3af;
+            padding: 0 .5rem;
+            margin-bottom: .3rem;
         }
+
         .tx-sb-item {
-            display: flex; align-items: center; gap: .6rem;
-            padding: .5rem .65rem; border-radius: 8px; font-size: .8rem; font-weight: 500;
-            color: #6b7280; cursor: pointer; transition: all .15s; margin-bottom: 1px;
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+            padding: .5rem .65rem;
+            border-radius: 8px;
+            font-size: .8rem;
+            font-weight: 500;
+            color: #6b7280;
+            cursor: pointer;
+            transition: all .15s;
+            margin-bottom: 1px;
         }
-        .tx-sb-item:hover { background: #f8fafc; color: #1e3a8a }
-        .tx-sb-item.active { background: #eff6ff; color: #1e3a8a; font-weight: 600 }
-        .tx-sb-item svg { width: 16px; height: 16px; flex-shrink: 0 }
+
+        .tx-sb-item:hover {
+            background: #f8fafc;
+            color: #1e3a8a
+        }
+
+        .tx-sb-item.active {
+            background: #eff6ff;
+            color: #1e3a8a;
+            font-weight: 600
+        }
+
+        .tx-sb-item svg {
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0
+        }
+
         .tx-sb-badge {
-            margin-left: auto; font-size: .6rem; font-weight: 700; padding: 1px 6px;
-            border-radius: 4px; background: #fee2e2; color: #dc2626;
+            margin-left: auto;
+            font-size: .6rem;
+            font-weight: 700;
+            padding: 1px 6px;
+            border-radius: 4px;
+            background: #fee2e2;
+            color: #dc2626;
         }
-        .tx-sb-divider { height: 1px; background: #f1f5f9; margin: .4rem .65rem }
+
+        .tx-sb-divider {
+            height: 1px;
+            background: #f1f5f9;
+            margin: .4rem .65rem
+        }
+
         .tx-sb-back {
-            display: flex; align-items: center; gap: .5rem;
-            padding: .85rem 1.25rem; border-top: 1px solid #f1f5f9;
-            font-size: .8rem; font-weight: 600; color: #6b7280;
-            cursor: pointer; text-decoration: none; transition: all .15s; margin-top: auto;
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+            padding: .85rem 1.25rem;
+            border-top: 1px solid #f1f5f9;
+            font-size: .8rem;
+            font-weight: 600;
+            color: #6b7280;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all .15s;
+            margin-top: auto;
         }
-        .tx-sb-back:hover { color: #1e3a8a; background: #f8fafc }
-        .tx-sb-back svg { width: 16px; height: 16px }
+
+        .tx-sb-back:hover {
+            color: #1e3a8a;
+            background: #f8fafc
+        }
+
+        .tx-sb-back svg {
+            width: 16px;
+            height: 16px
+        }
 
         /* Main */
-        .tx-main { flex: 1; overflow-y: auto; padding: 1.25rem 1.5rem 3rem; background: #f8fafc }
+        .tx-main {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.25rem 1.5rem 3rem;
+            background: #f8fafc
+        }
+
         .tx-breadcrumb {
-            font-size: .75rem; color: #9ca3af; margin-bottom: .75rem;
-            display: flex; align-items: center; gap: .35rem;
+            font-size: .75rem;
+            color: #9ca3af;
+            margin-bottom: .75rem;
+            display: flex;
+            align-items: center;
+            gap: .35rem;
         }
-        .tx-breadcrumb a { color: #6b7280; text-decoration: none; font-weight: 500 }
-        .tx-breadcrumb a:hover { color: #1e3a8a }
+
+        .tx-breadcrumb a {
+            color: #6b7280;
+            text-decoration: none;
+            font-weight: 500
+        }
+
+        .tx-breadcrumb a:hover {
+            color: #1e3a8a
+        }
+
         .tx-header {
-            display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 1rem;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 1rem;
         }
+
         .tx-header h1 {
-            font-family: 'Outfit', sans-serif; font-size: 1.35rem; font-weight: 800; color: #0f172a; margin: 0 0 .2rem;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: #0f172a;
+            margin: 0 0 .2rem;
         }
-        .tx-header h1 span { background: linear-gradient(135deg,#1e3a8a,#3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text }
-        .tx-header p { font-size: .82rem; color: #6b7280; margin: 0 }
+
+        .tx-header h1 span {
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text
+        }
+
+        .tx-header p {
+            font-size: .82rem;
+            color: #6b7280;
+            margin: 0
+        }
 
         /* Stats bar */
         .tx-stats {
-            display: flex; gap: .75rem; margin-bottom: 1rem;
+            display: flex;
+            gap: .75rem;
+            margin-bottom: 1rem;
         }
+
         .tx-stat {
-            background: #fff; border: 1px solid #e5e7eb; border-radius: 10px;
-            padding: .6rem 1rem; display: flex; align-items: center; gap: .6rem; flex: 1;
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: .6rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+            flex: 1;
         }
-        .tx-stat-icon { font-size: 1.1rem }
+
+        .tx-stat-icon {
+            font-size: 1.1rem
+        }
+
         .tx-stat-num {
-            font-family: 'Outfit', sans-serif; font-size: 1.15rem; font-weight: 800; color: #0f172a;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #0f172a;
         }
-        .tx-stat-label { font-size: .65rem; font-weight: 600; color: #9ca3af; text-transform: uppercase; letter-spacing: .04em }
+
+        .tx-stat-label {
+            font-size: .65rem;
+            font-weight: 600;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: .04em
+        }
 
         /* Filter bar */
         .tx-filter {
-            display: flex; align-items: center; gap: .5rem;
-            padding: .65rem 1rem; background: #fff; border: 1px solid #e5e7eb;
-            border-radius: 10px 10px 0 0; border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+            padding: .65rem 1rem;
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px 10px 0 0;
+            border-bottom: 1px solid #f1f5f9;
         }
+
         .tx-filter input {
-            flex: 1; padding: .45rem .7rem; border: 1px solid #e2e8f0;
-            border-radius: 7px; font-size: .82rem; font-family: inherit; outline: none;
+            flex: 1;
+            padding: .45rem .7rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 7px;
+            font-size: .82rem;
+            font-family: inherit;
+            outline: none;
         }
-        .tx-filter input:focus { border-color: #3b82f6 }
+
+        .tx-filter input:focus {
+            border-color: #3b82f6
+        }
+
         .tx-filter select {
-            padding: .45rem .6rem; border: 1px solid #e2e8f0;
-            border-radius: 7px; font-size: .78rem; font-family: inherit; background: #fff;
+            padding: .45rem .6rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 7px;
+            font-size: .78rem;
+            font-family: inherit;
+            background: #fff;
         }
 
         /* Table */
         .tx-table-wrap {
-            background: #fff; border: 1px solid #e5e7eb; border-top: none;
-            border-radius: 0 0 10px 10px; overflow-x: auto;
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-top: none;
+            border-radius: 0 0 10px 10px;
+            overflow-x: auto;
         }
-        .tx-table { width: 100%; border-collapse: collapse; min-width: 900px }
+
+        .tx-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1200px;
+            table-layout: fixed;
+        }
+
         .tx-table thead th {
-            font-size: .68rem; font-weight: 700; text-transform: uppercase;
-            letter-spacing: .04em; color: #9ca3af; padding: .6rem .75rem;
-            border-bottom: 1px solid #f1f5f9; text-align: left; background: #fafbff;
+            font-size: .66rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .04em;
+            color: #94a3b8;
+            padding: .55rem .6rem;
+            border-bottom: 2px solid #e2e8f0;
+            text-align: left;
+            background: #f8fafc;
+            white-space: nowrap;
         }
+
         .tx-table tbody td {
-            font-size: .82rem; padding: .65rem .75rem;
-            border-bottom: 1px solid #f8fafc; color: #374151;
+            font-size: .8rem;
+            padding: .55rem .6rem;
+            border-bottom: 1px solid #f1f5f9;
+            color: #374151;
+            vertical-align: middle;
         }
-        .tx-table tbody tr { cursor: pointer; transition: background .12s }
-        .tx-table tbody tr:hover { background: #f8faff }
+
+        .tx-table tbody tr {
+            cursor: pointer;
+            transition: background .15s;
+        }
+
+        .tx-table tbody tr:nth-child(even) {
+            background: #fafbfd;
+        }
+
+        .tx-table tbody tr:hover {
+            background: #eff6ff;
+        }
+
+        /* Column widths — total ~1200px */
+        .tx-table .col-sr { width: 34px; }
+        .tx-table .col-inv { width: 120px; }
+        .tx-table .col-vendor { width: 200px; }
+        .tx-table .col-gstin { width: 145px; }
+        .tx-table .col-type { width: 100px; }
+        .tx-table .col-dates { width: 115px; }
+        .tx-table .col-amt { width: 120px; }
+        .tx-table .col-total { width: 130px; }
+        .tx-table .col-status { width: 74px; }
+        .tx-table .col-actions { width: 155px; }
+
+        .tx-vendor-cell {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 200px;
+            font-weight: 600;
+            color: #0f172a;
+        }
+        .tx-gstin-cell {
+            font-size: .72rem;
+            font-family: 'SF Mono', SFMono-Regular, monospace;
+            color: #64748b;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 145px;
+        }
+        .tx-dates-cell .dt-primary {
+            font-size: .8rem;
+            font-weight: 500;
+            color: #1e293b;
+            white-space: nowrap;
+        }
+        .tx-dates-cell .dt-secondary {
+            font-size: .68rem;
+            color: #94a3b8;
+            margin-top: 1px;
+            white-space: nowrap;
+        }
+        .tx-amt-cell {
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+            white-space: nowrap;
+            font-size: .8rem;
+        }
+        .tx-amt-cell.total {
+            font-weight: 700;
+            color: #0f172a;
+        }
+        .tx-amt-cell.muted {
+            color: #94a3b8;
+            font-size: .75rem;
+        }
+
         .tx-badge {
-            display: inline-block; font-size: .68rem; font-weight: 600;
-            padding: 2px 8px; border-radius: 5px;
+            display: inline-block;
+            font-size: .68rem;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 5px;
         }
-        .tx-badge.pending { background: #fef3c7; color: #d97706 }
-        .tx-badge.synced { background: #ecfdf5; color: #059669 }
-        .tx-badge.approved { background: #dbeafe; color: #1e40af }
-        .tx-badge.sales { background: #eff6ff; color: #1e3a8a }
-        .tx-badge.purchase { background: #fdf2f8; color: #9d174d }
-        .tx-badge.banking { background: #f0fdf4; color: #166534 }
-        .tx-badge.journal { background: #f5f3ff; color: #7c3aed }
-        .tx-badge.receipt { background: #ecfdf5; color: #059669 }
-        .tx-badge.contra { background: #fef3c7; color: #92400e }
+
+        .tx-badge.pending {
+            background: #fef3c7;
+            color: #d97706
+        }
+
+        .tx-badge.synced {
+            background: #ecfdf5;
+            color: #059669
+        }
+
+        .tx-badge.approved {
+            background: #dbeafe;
+            color: #1e40af
+        }
+
+        .tx-badge.sales {
+            background: #eff6ff;
+            color: #1e3a8a
+        }
+
+        .tx-badge.purchase {
+            background: #fdf2f8;
+            color: #9d174d
+        }
+
+        .tx-badge.banking {
+            background: #f0fdf4;
+            color: #166534
+        }
+
+        .tx-badge.journal {
+            background: #f5f3ff;
+            color: #7c3aed
+        }
+
+        .tx-badge.receipt {
+            background: #ecfdf5;
+            color: #059669
+        }
+
+        .tx-badge.contra {
+            background: #fef3c7;
+            color: #92400e
+        }
 
         .tx-upload-btn {
-            display: inline-flex; align-items: center; gap: .4rem;
-            padding: .5rem 1rem; border-radius: 8px; font-size: .82rem;
-            font-weight: 700; cursor: pointer; font-family: inherit;
-            background: linear-gradient(135deg, #1e3a8a, #3b82f6); color: #fff;
-            border: none; transition: all .2s; position: relative; overflow: hidden;
+            display: inline-flex;
+            align-items: center;
+            gap: .4rem;
+            padding: .5rem 1rem;
+            border-radius: 8px;
+            font-size: .82rem;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: inherit;
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: #fff;
+            border: none;
+            transition: all .2s;
+            position: relative;
+            overflow: hidden;
         }
-        .tx-upload-btn:hover { box-shadow: 0 4px 14px rgba(30,58,138,.3); transform: translateY(-1px) }
-        .tx-upload-btn input { position: absolute; inset: 0; opacity: 0; cursor: pointer }
+
+        .tx-upload-btn:hover {
+            box-shadow: 0 4px 14px rgba(30, 58, 138, .3);
+            transform: translateY(-1px)
+        }
+
+        .tx-upload-btn input {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer
+        }
+
         .tx-header-sub {
-            font-size: .82rem; color: #6b7280; margin: .2rem 0 0; line-height: 1.55; max-width: 600px;
+            font-size: .82rem;
+            color: #6b7280;
+            margin: .2rem 0 0;
+            line-height: 1.55;
+            max-width: 600px;
         }
 
         .tx-btn {
-            padding: .35rem .7rem; border-radius: 6px; font-size: .72rem;
-            font-weight: 600; cursor: pointer; font-family: inherit;
-            border: 1px solid #e5e7eb; background: #fff; color: #374151; transition: all .15s;
+            padding: .35rem .7rem;
+            border-radius: 6px;
+            font-size: .72rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            border: 1px solid #e5e7eb;
+            background: #fff;
+            color: #374151;
+            transition: all .15s;
         }
-        .tx-btn:hover { border-color: #1e3a8a; color: #1e3a8a }
-        .tx-btn.success { background: #059669; color: #fff; border-color: #059669 }
-        .tx-btn.success:hover { background: #047857 }
-        .tx-btn.primary { background: #1e3a8a; color: #fff; border-color: #1e3a8a }
-        .tx-btn.primary:hover { background: #1e40af }
-        .tx-btn:disabled { opacity: .5; cursor: not-allowed }
+
+        .tx-btn:hover {
+            border-color: #1e3a8a;
+            color: #1e3a8a
+        }
+
+        .tx-btn.success {
+            background: #059669;
+            color: #fff;
+            border-color: #059669
+        }
+
+        .tx-btn.success:hover {
+            background: #047857
+        }
+
+        .tx-btn.primary {
+            background: #1e3a8a;
+            color: #fff;
+            border-color: #1e3a8a
+        }
+
+        .tx-btn.primary:hover {
+            background: #1e40af
+        }
+
+        .tx-btn:disabled {
+            opacity: .5;
+            cursor: not-allowed
+        }
 
         .tx-empty {
-            text-align: center; padding: 3rem 1rem; color: #9ca3af; font-size: .85rem;
+            text-align: center;
+            padding: 3rem 1rem;
+            color: #9ca3af;
+            font-size: .85rem;
         }
-        .tx-empty-icon { font-size: 2.5rem; margin-bottom: .5rem; opacity: .5 }
+
+        .tx-empty-icon {
+            font-size: 2.5rem;
+            margin-bottom: .5rem;
+            opacity: .5
+        }
+
         .tx-pagination {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: .65rem 1rem; background: #fff; border: 1px solid #e5e7eb;
-            border-top: none; border-radius: 0 0 10px 10px; font-size: .78rem; color: #6b7280;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: .65rem 1rem;
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-top: none;
+            border-radius: 0 0 10px 10px;
+            font-size: .78rem;
+            color: #6b7280;
         }
 
         /* Refresh button */
         .tx-refresh-btn {
-            display: inline-flex; align-items: center; gap: .35rem;
-            padding: .5rem .85rem; border-radius: 8px; font-size: .82rem;
-            font-weight: 600; cursor: pointer; font-family: inherit;
-            background: #fff; color: #374151; border: 1px solid #e2e8f0;
+            display: inline-flex;
+            align-items: center;
+            gap: .35rem;
+            padding: .5rem .85rem;
+            border-radius: 8px;
+            font-size: .82rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            background: #fff;
+            color: #374151;
+            border: 1px solid #e2e8f0;
             transition: all .2s;
         }
-        .tx-refresh-btn:hover { border-color: #3b82f6; color: #1e3a8a; background: #f8faff }
-        .tx-refresh-btn.spinning svg { animation: spin .8s linear infinite }
-        @keyframes spin { to { transform: rotate(360deg) } }
+
+        .tx-refresh-btn:hover {
+            border-color: #3b82f6;
+            color: #1e3a8a;
+            background: #f8faff
+        }
+
+        .tx-refresh-btn.spinning svg {
+            animation: spin .8s linear infinite
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg)
+            }
+        }
 
         /* ═══ AI PROCESSING ROW ═══ */
         .tx-processing-row td {
@@ -182,68 +571,130 @@
             animation: shimmer 2s ease-in-out infinite;
             border-bottom: 1px solid #dbeafe !important;
         }
+
         @keyframes shimmer {
-            0% { background-position: 200% 0 }
-            100% { background-position: -200% 0 }
+            0% {
+                background-position: 200% 0
+            }
+
+            100% {
+                background-position: -200% 0
+            }
         }
+
         .ai-processing-cell {
-            display: flex; align-items: center; gap: .75rem;
+            display: flex;
+            align-items: center;
+            gap: .75rem;
             padding: .35rem 0;
         }
+
         .ai-brain-icon {
-            width: 36px; height: 36px; border-radius: 10px;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
             background: linear-gradient(135deg, #6366f1, #8b5cf6);
-            display: flex; align-items: center; justify-content: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-size: 1.05rem;
             animation: pulse-brain 1.5s ease-in-out infinite;
-            box-shadow: 0 2px 10px rgba(99,102,241,.3);
+            box-shadow: 0 2px 10px rgba(99, 102, 241, .3);
         }
+
         @keyframes pulse-brain {
-            0%, 100% { transform: scale(1); box-shadow: 0 2px 10px rgba(99,102,241,.3) }
-            50% { transform: scale(1.08); box-shadow: 0 4px 18px rgba(99,102,241,.5) }
+
+            0%,
+            100% {
+                transform: scale(1);
+                box-shadow: 0 2px 10px rgba(99, 102, 241, .3)
+            }
+
+            50% {
+                transform: scale(1.08);
+                box-shadow: 0 4px 18px rgba(99, 102, 241, .5)
+            }
         }
+
         .ai-processing-info {
-            display: flex; flex-direction: column; gap: 2px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
         }
+
         .ai-processing-filename {
-            font-weight: 700; font-size: .82rem; color: #1e3a8a;
+            font-weight: 700;
+            font-size: .82rem;
+            color: #1e3a8a;
         }
+
         .ai-processing-status {
-            font-size: .72rem; color: #6366f1; font-weight: 500;
-            display: flex; align-items: center; gap: .4rem;
+            font-size: .72rem;
+            color: #6366f1;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: .4rem;
         }
+
         .ai-processing-dots::after {
             content: '';
             animation: dots 1.5s steps(4, end) infinite;
         }
+
         @keyframes dots {
-            0% { content: '' }
-            25% { content: '.' }
-            50% { content: '..' }
-            75% { content: '...' }
+            0% {
+                content: ''
+            }
+
+            25% {
+                content: '.'
+            }
+
+            50% {
+                content: '..'
+            }
+
+            75% {
+                content: '...'
+            }
         }
+
         .ai-timer {
-            display: inline-flex; align-items: center; gap: .3rem;
-            padding: 3px 10px; border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: .3rem;
+            padding: 3px 10px;
+            border-radius: 20px;
             background: linear-gradient(135deg, #6366f1, #8b5cf6);
-            color: #fff; font-size: .72rem; font-weight: 700;
+            color: #fff;
+            font-size: .72rem;
+            font-weight: 700;
             font-family: 'Outfit', sans-serif;
             letter-spacing: .02em;
-            box-shadow: 0 2px 8px rgba(99,102,241,.25);
+            box-shadow: 0 2px 8px rgba(99, 102, 241, .25);
         }
+
         .ai-timer-progress {
-            width: 80px; height: 4px; border-radius: 2px;
-            background: rgba(255,255,255,.2); overflow: hidden;
+            width: 80px;
+            height: 4px;
+            border-radius: 2px;
+            background: rgba(255, 255, 255, .2);
+            overflow: hidden;
             margin-left: .35rem;
         }
+
         .ai-timer-bar {
-            height: 100%; border-radius: 2px;
+            height: 100%;
+            border-radius: 2px;
             background: #fff;
             transition: width 1s linear;
         }
 
         @media (max-width: 900px) {
-            .tx-sidebar { display: none }
+            .tx-sidebar {
+                display: none
+            }
         }
     </style>
 </head>
@@ -262,32 +713,56 @@
             <div class="tx-sb-section">
                 <div class="tx-sb-label">Filter by Type</div>
                 <div class="tx-sb-item active" onclick="filterByType('all',this)">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7" rx="1" />
+                        <rect x="14" y="3" width="7" height="7" rx="1" />
+                        <rect x="3" y="14" width="7" height="7" rx="1" />
+                        <rect x="14" y="14" width="7" height="7" rx="1" />
+                    </svg>
                     All Types
                     <span class="tx-sb-badge" id="sb-count-all" style="background:#f1f5f9;color:#475569">0</span>
                 </div>
                 <div class="tx-sb-item" onclick="filterByType('Sales',this)">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="1" x2="12" y2="23" />
+                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                    </svg>
                     Sales
                 </div>
                 <div class="tx-sb-item" onclick="filterByType('Purchase',this)">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/></svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                        <line x1="3" y1="6" x2="21" y2="6" />
+                    </svg>
                     Purchase
                 </div>
                 <div class="tx-sb-item" onclick="filterByType('Banking',this)">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="2" y="5" width="20" height="14" rx="2" />
+                        <line x1="2" y1="10" x2="22" y2="10" />
+                    </svg>
                     Banking
                 </div>
                 <div class="tx-sb-item" onclick="filterByType('Journal',this)">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                        <polyline points="14 2 14 8 20 8" />
+                    </svg>
                     Journal
                 </div>
                 <div class="tx-sb-item" onclick="filterByType('Receipt',this)">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4v16l3-2 3 2 3-2 3 2 3-2 3 2V4l-3 2-3-2-3 2-3-2-3 2z"/></svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 4v16l3-2 3 2 3-2 3 2 3-2 3 2V4l-3 2-3-2-3 2-3-2-3 2z" />
+                    </svg>
                     Receipt
                 </div>
                 <div class="tx-sb-item" onclick="filterByType('Contra',this)">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M17 1l4 4-4 4" />
+                        <path d="M3 11V9a4 4 0 0 1 4-4h14" />
+                        <path d="M7 23l-4-4 4-4" />
+                        <path d="M21 13v2a4 4 0 0 1-4 4H3" />
+                    </svg>
                     Contra
                 </div>
             </div>
@@ -304,7 +779,8 @@
                 </div>
                 <div class="tx-sb-item" onclick="filterByStatus('PendingSync',this)">
                     🔄 Pending Tally Sync
-                    <span class="tx-sb-badge" id="sb-count-pendingsync" style="background:#fef3c7;color:#b45309">0</span>
+                    <span class="tx-sb-badge" id="sb-count-pendingsync"
+                        style="background:#fef3c7;color:#b45309">0</span>
                 </div>
                 <div class="tx-sb-item" onclick="filterByStatus('Synced',this)">
                     📊 Synced to Tally
@@ -317,7 +793,10 @@
                 </div>
             </div>
             <a class="tx-sb-back" id="back-link" href="service-data-entry.html">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="19" y1="12" x2="5" y2="12" />
+                    <polyline points="12 19 5 12 12 5" />
+                </svg>
                 Back to Data Entry
             </a>
         </aside>
@@ -333,16 +812,24 @@
             <div class="tx-header">
                 <div>
                     <h1>💰 <span>Transactions</span></h1>
-                    <p class="tx-header-sub">Upload any invoice, receipt, bank statement or bill — <strong>Suvidha AI reads the document</strong>, automatically extracts vendor details, amounts, GST info and assigns the right category. Just review and approve to push directly to Tally.</p>
+                    <p class="tx-header-sub">Upload any invoice, receipt, bank statement or bill — <strong>Suvidha AI
+                            reads the document</strong>, automatically extracts vendor details, amounts, GST info and
+                        assigns the right category. Just review and approve to push directly to Tally.</p>
                 </div>
                 <div style="display:flex;gap:.5rem;align-items:flex-start;flex-shrink:0">
                     <button class="tx-refresh-btn" id="btn-refresh" onclick="refreshList()" title="Reload transactions">
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5">
+                            <polyline points="23 4 23 10 17 10" />
+                            <polyline points="1 20 1 14 7 14" />
+                            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
+                        </svg>
                         Refresh
                     </button>
                     <label class="tx-upload-btn">
                         📤 Upload Document
-                        <input type="file" multiple accept=".pdf,.xlsx,.xls,.csv,.jpg,.jpeg,.png" onchange="handleUpload(this)">
+                        <input type="file" multiple accept=".pdf,.xlsx,.xls,.csv,.jpg,.jpeg,.png"
+                            onchange="handleUpload(this)">
                     </label>
                 </div>
             </div>
@@ -377,7 +864,8 @@
                         <div class="tx-stat-label">Synced</div>
                     </div>
                 </div>
-                <div class="tx-stat" style="cursor:pointer" onclick="filterByStatus('Uncategorised',findSbItem('Uncategorised'))">
+                <div class="tx-stat" style="cursor:pointer"
+                    onclick="filterByStatus('Uncategorised',findSbItem('Uncategorised'))">
                     <div class="tx-stat-icon">❓</div>
                     <div>
                         <div class="tx-stat-num" id="stat-uncat">0</div>
@@ -388,7 +876,8 @@
 
             <!-- Filter bar -->
             <div class="tx-filter">
-                <input type="text" placeholder="Search by vendor, invoice no, GST..." id="tx-search" oninput="applyFilters()">
+                <input type="text" placeholder="Search by vendor, invoice no, GST..." id="tx-search"
+                    oninput="applyFilters()">
                 <select id="tx-status-filter" onchange="filterByStatusDropdown(this.value)" style="min-width:140px">
                     <option value="">All Statuses</option>
                     <option value="Pending">⏳ Pending</option>
@@ -410,25 +899,113 @@
                 <table class="tx-table">
                     <thead>
                         <tr>
-                            <th>Sr.</th>
-                            <th>Source</th>
-                            <th>Inv. No.</th>
-                            <th>Vendor</th>
-                            <th>GST No.</th>
-                            <th>Type</th>
-                            <th>Date</th>
-                            <th style="text-align:right">Amount</th>
-                            <th style="text-align:right">GST</th>
-                            <th style="text-align:right">Total</th>
-                            <th>📄</th>
-                            <th>Status</th>
-                            <th style="text-align:right">Actions</th>
+                            <th class="col-sr">#</th>
+                            <th class="col-inv">Invoice</th>
+                            <th class="col-vendor">Vendor</th>
+                            <th class="col-gstin">GSTIN</th>
+                            <th class="col-type">Type</th>
+                            <th class="col-dates">Date</th>
+                            <th class="col-amt" style="text-align:right">Amount</th>
+                            <th class="col-amt" style="text-align:right">GST</th>
+                            <th class="col-total" style="text-align:right">Total</th>
+                            <th class="col-status">Status</th>
+                            <th class="col-actions" style="text-align:right">Actions</th>
                         </tr>
                     </thead>
                     <tbody id="tx-tbody">
-                        <tr><td colspan="13" style="text-align:center;padding:3rem;color:#9ca3af">Loading transactions...</td></tr>
+                        <tr>
+                            <td colspan="11" style="text-align:center;padding:3rem;color:#9ca3af">Loading transactions...</td>
+                        </tr>
                     </tbody>
                 </table>
+            </div>
+
+            <!-- ══════ BANKING STATEMENTS VIEW (hidden by default) ══════ -->
+            <div id="banking-section" style="display:none">
+                <!-- Statement List -->
+                <div id="banking-list-view">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+                        <h2 style="font-size:1.1rem;font-weight:700;color:#0f172a;margin:0">🏦 Bank Statements</h2>
+                        <label class="tx-upload-btn" style="margin:0">
+                            📤 Upload Bank Statement
+                            <input type="file" accept=".pdf" onchange="handleBankUpload(this)">
+                        </label>
+                    </div>
+                    <div class="tx-table-wrap">
+                        <table class="tx-table" style="min-width:900px">
+                            <thead>
+                                <tr>
+                                    <th style="width:30px">#</th>
+                                    <th>Bank</th>
+                                    <th>Account</th>
+                                    <th>Period</th>
+                                    <th style="text-align:right">Credits</th>
+                                    <th style="text-align:right">Debits</th>
+                                    <th style="text-align:right">Closing Bal</th>
+                                    <th style="text-align:center">Txns</th>
+                                    <th>Status</th>
+                                    <th style="text-align:right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bs-tbody">
+                                <tr><td colspan="10" style="text-align:center;padding:3rem;color:#9ca3af">Click Banking tab to load statements</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Transaction Detail (drill-down) — Split Pane -->
+                <div id="banking-detail-view" style="display:none">
+                    <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.75rem">
+                        <button onclick="closeBankingDetail()" style="background:none;border:1px solid #e2e8f0;border-radius:6px;padding:4px 10px;cursor:pointer;font-size:.85rem;color:#3b82f6;font-weight:600">← Back</button>
+                        <h2 style="font-size:1rem;font-weight:700;color:#0f172a;margin:0;flex:1" id="bs-detail-title">Bank Transactions</h2>
+                        <button onclick="togglePdfPane()" id="bs-pdf-toggle" style="background:none;border:1px solid #e2e8f0;border-radius:6px;padding:4px 10px;cursor:pointer;font-size:.82rem;color:#6b7280" title="Toggle PDF viewer">📄 Toggle PDF</button>
+                        <button onclick="saveBankTransactions()" class="tx-upload-btn" style="margin:0;padding:6px 18px;font-size:.85rem" id="bs-save-btn">💾 Save Changes</button>
+                    </div>
+                    <div style="display:flex;gap:1rem;margin-bottom:.75rem;flex-wrap:wrap">
+                        <div class="tx-stat" style="flex:1;min-width:100px"><div class="tx-stat-icon">🏦</div><div><div class="tx-stat-num" id="bs-d-opening">0</div><div class="tx-stat-label">Opening</div></div></div>
+                        <div class="tx-stat" style="flex:1;min-width:100px"><div class="tx-stat-icon">📈</div><div><div class="tx-stat-num" id="bs-d-credits" style="color:#059669">0</div><div class="tx-stat-label">Credits</div></div></div>
+                        <div class="tx-stat" style="flex:1;min-width:100px"><div class="tx-stat-icon">📉</div><div><div class="tx-stat-num" id="bs-d-debits" style="color:#dc2626">0</div><div class="tx-stat-label">Debits</div></div></div>
+                        <div class="tx-stat" style="flex:1;min-width:100px"><div class="tx-stat-icon">💰</div><div><div class="tx-stat-num" id="bs-d-closing">0</div><div class="tx-stat-label">Closing</div></div></div>
+                    </div>
+
+                    <!-- Split Pane: PDF + Table -->
+                    <div style="display:flex;gap:.75rem;height:calc(100vh - 320px);min-height:400px">
+                        <!-- Left: PDF Viewer -->
+                        <div id="bs-pdf-pane" style="width:40%;min-width:300px;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden;background:#f8fafc;display:flex;flex-direction:column">
+                            <div style="padding:8px 12px;background:#f1f5f9;border-bottom:1px solid #e2e8f0;font-size:.75rem;font-weight:600;color:#64748b;display:flex;align-items:center;gap:6px">
+                                📄 <span id="bs-pdf-label">Bank Statement PDF</span>
+                            </div>
+                            <div style="flex:1;overflow:hidden" id="bs-pdf-container">
+                                <div style="display:flex;align-items:center;justify-content:center;height:100%;color:#94a3b8;font-size:.85rem">
+                                    Loading PDF...
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right: Transactions Table -->
+                        <div style="flex:1;overflow:auto;border:1px solid #e2e8f0;border-radius:8px">
+                            <table class="tx-table" style="min-width:850px">
+                                <thead style="position:sticky;top:0;z-index:2">
+                                    <tr>
+                                        <th style="width:30px">#</th>
+                                        <th style="width:110px">Date</th>
+                                        <th>Description</th>
+                                        <th style="width:100px">Reference</th>
+                                        <th style="width:95px;text-align:right">Debit</th>
+                                        <th style="width:95px;text-align:right">Credit</th>
+                                        <th style="width:100px;text-align:right">Balance</th>
+                                        <th style="width:100px">Category</th>
+                                        <th>Party</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="bs-txn-tbody">
+                                    <tr><td colspan="9" style="text-align:center;padding:3rem;color:#9ca3af">Loading...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </main>
     </div>
@@ -436,7 +1013,8 @@
 
 
     <!-- Toast -->
-    <div id="toast-container" style="position:fixed;top:1.5rem;right:1.5rem;z-index:30000;display:flex;flex-direction:column;gap:.5rem"></div>
+    <div id="toast-container"
+        style="position:fixed;top:1.5rem;right:1.5rem;z-index:30000;display:flex;flex-direction:column;gap:.5rem"></div>
 
     <script src="api_config.js"></script>
     <script src="session-manager.js?v=2"></script>
@@ -452,8 +1030,13 @@
         document.getElementById('bc-de-link').href = `service-data-entry.html?clientId=${clientId}&service=${encodeURIComponent(serviceName)}`;
 
         // ═══ HELPERS ═══
+        function parseAmount(val) {
+            if (!val) return 0;
+            // Strip ₹ symbol, commas, spaces and any non-numeric chars except . and -
+            return Number(String(val).replace(/[₹,\s]/g, '').replace(/[^\d.\-]/g, '')) || 0;
+        }
         function formatINR(val) {
-            const num = Math.abs(Number(val) || 0);
+            const num = Math.abs(parseAmount(val));
             return '₹ ' + num.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         }
         function showToast(msg, type = 'info') {
@@ -485,10 +1068,11 @@
                     vendor: inv.vendor_name || 'Unknown',
                     gstin: inv.gst_number || '-',
                     type: inv.expenses_type || 'Uncategorized',
-                    date: inv.received_at || inv.invoice_date,
-                    amount: inv.amount || 0,
-                    gstAmount: inv.gst_amount || 0,
-                    totalAmount: inv.total_amount || 0,
+                    date: inv.invoice_date || inv.received_at,
+                    receivedAt: inv.received_at,
+                    amount: parseAmount(inv.amount),
+                    gstAmount: parseAmount(inv.gst_amount),
+                    totalAmount: parseAmount(inv.total_amount),
                     status: inv.status === 'approved' ? 'Approved' : (inv.synced_to_tally ? 'Synced' : 'Pending'),
                     filePath: inv.file_path || null,
                     raw: inv
@@ -497,7 +1081,7 @@
                 applyFilters();
             } catch (e) {
                 console.error('Load error:', e);
-                document.getElementById('tx-tbody').innerHTML = '<tr><td colspan="13" style="text-align:center;padding:3rem;color:#dc2626">⚠️ Failed to load transactions</td></tr>';
+                document.getElementById('tx-tbody').innerHTML = '<tr><td colspan="11" style="text-align:center;padding:3rem;color:#dc2626">⚠️ Failed to load transactions</td></tr>';
             }
         }
 
@@ -551,8 +1135,8 @@
             );
 
             data.sort((a, b) => {
-                if (sort === 'newest') return new Date(b.date || 0) - new Date(a.date || 0);
-                if (sort === 'oldest') return new Date(a.date || 0) - new Date(b.date || 0);
+                if (sort === 'newest') return new Date(b.receivedAt || 0) - new Date(a.receivedAt || 0);
+                if (sort === 'oldest') return new Date(a.receivedAt || 0) - new Date(b.receivedAt || 0);
                 if (sort === 'amount-high') return (Number(b.totalAmount) || 0) - (Number(a.totalAmount) || 0);
                 return (Number(a.totalAmount) || 0) - (Number(b.totalAmount) || 0);
             });
@@ -574,22 +1158,33 @@
                 const isApproved = tx.status === 'Approved';
                 const isSynced = tx.status === 'Synced';
                 const reviewLabel = isApproved ? '↻ Review Again' : '✓ Review';
+                const invDate = tx.date ? new Date(tx.date).toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric'}) : '—';
+                const recDate = tx.receivedAt ? new Date(tx.receivedAt).toLocaleDateString('en-GB', {day:'2-digit',month:'short'}) : '';
+                const srcIcon = tx.source === 'email' ? '✉️' : tx.source === 'web' ? '🌐' : '📤';
                 return `<tr onclick="openReview(${tx.id})">
-                    <td style="color:#9ca3af">${i + 1}</td>
-                    <td><span class="tx-badge" style="background:#f1f5f9;color:#475569;text-transform:uppercase;font-size:.62rem">${tx.source}</span></td>
-                    <td style="color:#3b82f6;font-weight:600">${tx.invoiceNo}</td>
-                    <td><strong style="font-weight:600;color:#0f172a">${tx.vendor}</strong></td>
-                    <td style="font-size:.78rem;color:#475569;font-family:monospace">${tx.gstin !== '-' ? tx.gstin : '<span style="color:#d1d5db">—</span>'}</td>
+                    <td style="color:#b0b8c4;font-size:.72rem;text-align:center">${i + 1}</td>
+                    <td>
+                        <div style="color:#3b82f6;font-weight:600;font-size:.8rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${tx.invoiceNo}</div>
+                        <div style="font-size:.64rem;color:#94a3b8;text-transform:uppercase;margin-top:1px">${srcIcon} ${tx.source}</div>
+                    </td>
+                    <td>
+                        <div class="tx-vendor-cell" title="${tx.vendor}">${tx.vendor}</div>
+                    </td>
+                    <td>
+                        <span class="tx-gstin-cell" title="${tx.gstin !== '-' ? tx.gstin : ''}">${tx.gstin !== '-' ? tx.gstin : '<span style="color:#d1d5db">—</span>'}</span>
+                    </td>
                     <td><span class="tx-badge ${typeCls}">${tx.type}</span></td>
-                    <td>${tx.date ? new Date(tx.date).toLocaleDateString('en-GB') : '-'}</td>
-                    <td style="text-align:right">${formatINR(tx.amount)}</td>
-                    <td style="text-align:right">${formatINR(tx.gstAmount)}</td>
-                    <td style="text-align:right;font-weight:700">${formatINR(tx.totalAmount)}</td>
-                    <td style="text-align:center">${hasFile}</td>
+                    <td class="tx-dates-cell">
+                        <div class="dt-primary">${invDate}</div>
+                        ${recDate ? '<div class="dt-secondary">Rcvd: ' + recDate + '</div>' : ''}
+                    </td>
+                    <td class="tx-amt-cell">${formatINR(tx.amount)}</td>
+                    <td class="tx-amt-cell muted">${formatINR(tx.gstAmount)}</td>
+                    <td class="tx-amt-cell total">${formatINR(tx.totalAmount)}</td>
                     <td><span class="tx-badge ${statusCls}">${tx.status}</span></td>
                     <td style="text-align:right;white-space:nowrap" onclick="event.stopPropagation()">
-                        <button class="tx-btn success" onclick="openReview(${tx.id})">${reviewLabel}</button>
-                        <button class="tx-btn primary" onclick="doSyncToTally(${tx.id})" ${isSynced ? 'disabled' : ''} style="margin-left:3px">⟳ ${isSynced ? 'Synced' : 'Send to Tally'}</button>
+                        <button class="tx-btn success" onclick="openReview(${tx.id})" title="${reviewLabel}">${isApproved ? '↻' : '✓'} Review</button>
+                        <button class="tx-btn primary" onclick="doSyncToTally(${tx.id})" ${isSynced ? 'disabled' : ''} style="margin-left:3px" title="${isSynced ? 'Already synced' : 'Send to Tally'}">⟳ ${isSynced ? 'Synced' : 'Tally'}</button>
                     </td>
                 </tr>`;
             }).join('');
@@ -600,6 +1195,33 @@
             currentStatus = '';
             document.querySelectorAll('.tx-sb-item').forEach(i => i.classList.remove('active'));
             if (el) el.classList.add('active');
+            // Update upload button label to reflect active type
+            const uploadLabel = document.querySelector('.tx-upload-btn');
+            if (uploadLabel) {
+                const typeLabel = type !== 'all' ? ` (${type})` : '';
+                uploadLabel.childNodes[0].textContent = `📤 Upload Document${typeLabel} `;
+            }
+            // Banking tab: toggle section visibility
+            if (type === 'Banking') {
+                document.getElementById('banking-section').style.display = '';
+                document.querySelector('.tx-stats').style.display = 'none';
+                document.querySelector('.tx-filter').style.display = 'none';
+                document.querySelector('.tx-table-wrap').style.display = 'none';
+                // Hide the top upload/refresh buttons (banking has its own)
+                if (uploadLabel) uploadLabel.style.display = 'none';
+                const refreshBtn = document.querySelector('.tx-refresh-btn');
+                if (refreshBtn) refreshBtn.style.display = 'none';
+                loadBankStatements();
+            } else {
+                document.getElementById('banking-section').style.display = 'none';
+                document.querySelector('.tx-stats').style.display = '';
+                document.querySelector('.tx-filter').style.display = '';
+                document.querySelector('.tx-table-wrap').style.display = '';
+                // Show the top upload/refresh buttons
+                if (uploadLabel) uploadLabel.style.display = '';
+                const refreshBtn = document.querySelector('.tx-refresh-btn');
+                if (refreshBtn) refreshBtn.style.display = '';
+            }
             applyFilters();
         }
 
@@ -648,41 +1270,84 @@
         // ═══ UPLOAD HANDLER ═══
         const N8N_WEBHOOK_URL = 'https://rahul250192.app.n8n.cloud/webhook/4e082356-d55f-4174-a1eb-7bb275db59c5';
         const AI_PROCESSING_TIME = 50; // seconds
+        const MAX_FILE_SIZE_MB = 10;
+        const MAX_RETRIES = 2;
+        const RETRY_INTERVAL = 15; // seconds between retries
         let processingFiles = []; // track files being processed
 
         async function handleUpload(input) {
             const files = Array.from(input.files);
             if (!files.length) return;
-            showToast(`📤 Uploading ${files.length} file(s)...`, 'info');
+
+            // Warn about oversized files
+            const oversized = files.filter(f => f.size > MAX_FILE_SIZE_MB * 1024 * 1024);
+            if (oversized.length > 0) {
+                oversized.forEach(f => {
+                    const sizeMB = (f.size / (1024 * 1024)).toFixed(1);
+                    showToast(`⚠️ ${f.name} is ${sizeMB}MB — files over ${MAX_FILE_SIZE_MB}MB may fail`, 'error');
+                });
+            }
+
+            // Determine voucher type from active sidebar tab
+            const activeVoucherType = (currentFilter && currentFilter !== 'all') ? currentFilter : '';
+            if (activeVoucherType) {
+                showToast(`📤 Uploading ${files.length} file(s) as ${activeVoucherType}...`, 'info');
+            } else {
+                showToast(`📤 Uploading ${files.length} file(s)...`, 'info');
+            }
 
             for (const f of files) {
+                const sizeMB = (f.size / (1024 * 1024)).toFixed(1);
                 try {
                     const formData = new FormData();
                     formData.append('file', f);
                     formData.append('clientId', clientId || '');
                     formData.append('client_id', clientId || '');
+                    // Pass the active voucher type so AI categorizes correctly
+                    if (activeVoucherType) {
+                        formData.append('voucher_type', activeVoucherType);
+                    }
+                    // Tell AI to prefer "Ship To" / "Bill To" party as vendor name
+                    formData.append('vendor_name_preference', 'ship_to_party');
+
+                    // 60s timeout for upload
+                    const controller = new AbortController();
+                    const uploadTimeout = setTimeout(() => controller.abort(), 60000);
 
                     const resp = await fetch(N8N_WEBHOOK_URL, {
                         method: 'POST',
-                        body: formData
+                        body: formData,
+                        signal: controller.signal
                     });
+                    clearTimeout(uploadTimeout);
+
                     if (resp.ok) {
-                        showToast(`✅ ${f.name} uploaded — AI processing started`, 'success');
-                        addProcessingRow(f.name);
+                        showToast(`✅ ${f.name} (${sizeMB}MB) uploaded — AI processing started`, 'success');
+                        addProcessingRow(f.name, sizeMB);
                     } else {
-                        showToast(`⚠️ ${f.name} upload failed`, 'error');
+                        const reason = resp.status === 413 ? 'File too large for server'
+                            : resp.status === 504 ? 'Server timed out'
+                                : resp.status >= 500 ? 'Server error (' + resp.status + ')'
+                                    : 'Upload rejected (' + resp.status + ')';
+                        showToast(`⚠️ ${f.name} — ${reason}`, 'error');
+                        addErrorRow(f.name, sizeMB, reason);
                     }
                 } catch (e) {
-                    showToast(`❌ ${f.name} — ${e.message}`, 'error');
+                    const reason = e.name === 'AbortError'
+                        ? 'Upload timed out — file may be too large'
+                        : 'Network error — check your connection';
+                    showToast(`❌ ${f.name} — ${reason}`, 'error');
+                    addErrorRow(f.name, sizeMB, reason);
                 }
             }
             input.value = '';
         }
 
-        function addProcessingRow(fileName) {
+        function addProcessingRow(fileName, sizeMB) {
             const tbody = document.getElementById('tx-tbody');
             const rowId = 'proc-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5);
-            processingFiles.push({ rowId, fileName });
+            const prevCount = allInvoices.length;
+            processingFiles.push({ rowId, fileName, prevCount });
 
             const tr = document.createElement('tr');
             tr.className = 'tx-processing-row';
@@ -693,7 +1358,7 @@
                     <div class="ai-processing-cell">
                         <div class="ai-brain-icon">🧠</div>
                         <div class="ai-processing-info">
-                            <div class="ai-processing-filename">${escHtml(fileName)}</div>
+                            <div class="ai-processing-filename">${escHtml(fileName)} <span style="font-size:.65rem;color:#9ca3af;font-weight:400">(${sizeMB}MB)</span></div>
                             <div class="ai-processing-status">
                                 <span>AI is reading your document</span><span class="ai-processing-dots"></span>
                             </div>
@@ -708,10 +1373,8 @@
                 </td>
             `;
 
-            // Insert at top of table body
             tbody.insertBefore(tr, tbody.firstChild);
 
-            // Start countdown
             let remaining = AI_PROCESSING_TIME;
             const timerEl = tr.querySelector('.ai-timer-seconds');
             const barEl = tr.querySelector('.ai-timer-bar');
@@ -723,30 +1386,91 @@
 
                 if (remaining <= 0) {
                     clearInterval(interval);
-                    // Auto-refresh when timer completes
-                    finishProcessingRow(rowId, fileName);
+                    verifyAndFinishRow(rowId, fileName, 0);
                 }
             }, 1000);
         }
 
-        async function finishProcessingRow(rowId, fileName) {
+        // Immediate error row for failed uploads
+        function addErrorRow(fileName, sizeMB, reason) {
+            const tbody = document.getElementById('tx-tbody');
+            const tr = document.createElement('tr');
+            tr.style.cssText = 'background:linear-gradient(90deg,#fef2f2,#fff1f2,#fef2f2);border-left:3px solid #ef4444';
+            tr.innerHTML = `
+                <td style="color:#ef4444;font-weight:700">✕</td>
+                <td colspan="9">
+                    <div style="display:flex;align-items:center;gap:.6rem">
+                        <div style="width:32px;height:32px;border-radius:8px;background:#fee2e2;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0">❌</div>
+                        <div>
+                            <div style="font-weight:700;color:#dc2626;font-size:.82rem">${escHtml(fileName)} <span style="font-size:.65rem;color:#9ca3af;font-weight:400">(${sizeMB}MB)</span></div>
+                            <div style="font-size:.72rem;color:#9ca3af;margin-top:1px">${escHtml(reason)}</div>
+                        </div>
+                    </div>
+                </td>
+                <td colspan="3" style="text-align:right;vertical-align:middle">
+                    <button onclick="this.closest('tr').remove()" style="padding:.3rem .6rem;border:1px solid #fecaca;background:#fff;color:#ef4444;border-radius:5px;font-size:.7rem;font-weight:600;cursor:pointer;font-family:inherit">✕ Dismiss</button>
+                </td>
+            `;
+            tbody.insertBefore(tr, tbody.firstChild);
+        }
+
+        // After countdown, verify the invoice actually appeared in the backend
+        async function verifyAndFinishRow(rowId, fileName, retryCount) {
             const row = document.getElementById(rowId);
-            if (row) {
-                // Update row to show completion
-                row.querySelector('.ai-processing-status').innerHTML = '<span style="color:#059669;font-weight:600">✅ Processing complete — refreshing...</span>';
+            if (!row) return;
+            const procFile = processingFiles.find(p => p.rowId === rowId);
+
+            row.querySelector('.ai-processing-status').innerHTML = '<span style="color:#3b82f6;font-weight:600">🔍 Verifying processed result...</span>';
+
+            const prevCount = procFile ? procFile.prevCount : 0;
+            await loadInvoices();
+
+            if (allInvoices.length > prevCount) {
+                // ✅ Success — invoice appeared
+                row.querySelector('.ai-processing-status').innerHTML = '<span style="color:#059669;font-weight:600">✅ Processing complete!</span>';
                 row.querySelector('.ai-brain-icon').textContent = '✅';
                 row.querySelector('.ai-brain-icon').style.background = 'linear-gradient(135deg, #059669, #10b981)';
                 row.querySelector('.ai-brain-icon').style.animation = 'none';
                 const timerDiv = row.querySelector('.ai-timer');
                 if (timerDiv) { timerDiv.textContent = '✅ Done'; timerDiv.style.background = 'linear-gradient(135deg, #059669, #10b981)'; }
+
+                processingFiles = processingFiles.filter(p => p.rowId !== rowId);
+                showToast(`🎉 ${fileName} — AI processing complete!`, 'success');
+                setTimeout(() => { const r = document.getElementById(rowId); if (r) r.remove(); }, 3000);
+            } else if (retryCount < MAX_RETRIES) {
+                // ⏳ Not found yet — retry
+                const next = retryCount + 1;
+                row.querySelector('.ai-processing-status').innerHTML = `<span style="color:#d97706;font-weight:600">⏳ Still processing... retrying in ${RETRY_INTERVAL}s (attempt ${next + 1}/${MAX_RETRIES + 1})</span>`;
+                const timerDiv = row.querySelector('.ai-timer');
+                if (timerDiv) {
+                    timerDiv.innerHTML = `⏳ Retry ${next}/${MAX_RETRIES}`;
+                    timerDiv.style.background = 'linear-gradient(135deg, #d97706, #f59e0b)';
+                }
+                setTimeout(() => verifyAndFinishRow(rowId, fileName, next), RETRY_INTERVAL * 1000);
+            } else {
+                // ❌ All retries exhausted — show error
+                processingFiles = processingFiles.filter(p => p.rowId !== rowId);
+                row.style.cssText = 'background:linear-gradient(90deg,#fef2f2,#fff1f2,#fef2f2);border-left:3px solid #ef4444';
+                row.innerHTML = `
+                    <td style="color:#ef4444;font-weight:700">✕</td>
+                    <td colspan="9">
+                        <div style="display:flex;align-items:center;gap:.6rem">
+                            <div style="width:32px;height:32px;border-radius:8px;background:#fee2e2;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0">⚠️</div>
+                            <div>
+                                <div style="font-weight:700;color:#dc2626;font-size:.85rem">${escHtml(fileName)}</div>
+                                <div style="font-size:.75rem;color:#6b7280;margin-top:2px">
+                                    AI could not process this file. It may be too large, corrupted, or in an unsupported format.
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td colspan="3" style="text-align:right;vertical-align:middle;white-space:nowrap">
+                        <button onclick="this.closest('tr').remove();loadInvoices()" style="padding:.35rem .65rem;border:1px solid #e2e8f0;background:#fff;color:#374151;border-radius:6px;font-size:.72rem;font-weight:600;cursor:pointer;font-family:inherit;margin-right:4px">🔄 Refresh</button>
+                        <button onclick="this.closest('tr').remove()" style="padding:.35rem .65rem;border:1px solid #fecaca;background:#fff;color:#ef4444;border-radius:6px;font-size:.72rem;font-weight:600;cursor:pointer;font-family:inherit">✕ Dismiss</button>
+                    </td>
+                `;
+                showToast(`⚠️ ${fileName} — processing may have failed. Try re-uploading a smaller file.`, 'error');
             }
-
-            // Remove from processing list
-            processingFiles = processingFiles.filter(p => p.rowId !== rowId);
-
-            // Reload data to get the newly processed invoice
-            await loadInvoices();
-            showToast(`🎉 ${fileName} — AI processing complete!`, 'success');
         }
 
         function escHtml(s) {
@@ -757,17 +1481,41 @@
         async function doSyncToTally(invoiceId) {
             const tx = allInvoices.find(t => t.id === invoiceId);
             if (!tx) return;
-            showToast('🔄 Preparing to sync to Tally...', 'info');
+
+            // Company name — prompt user (later you can pull from client record)
+            const company = prompt('Enter Tally Company Name:');
+            if (!company || !company.trim()) {
+                showToast('❌ Company name is required', 'error');
+                return;
+            }
+
+            showToast('🔄 Sending voucher to Tally...', 'info');
 
             try {
-                const xml = buildTallyXml(tx);
-                const resp = await fetch('http://localhost:9999', {
+                // Use actual voucher type from the invoice instead of hardcoding
+                const voucherType = tx.type || 'Uncategorized';
+                const payload = {
+                    company: company.trim(),
+                    voucher_type: voucherType,
+                    // date: tx.date ? new Date(tx.date).toLocaleDateString('en-GB').split('/').join('-') : '',
+                    date: tx.raw.invoice_date ? new Date(tx.raw.invoice_date).toLocaleDateString('en-GB').split('/').join('-') : '',
+                    narration: `${tx.invoiceNo || ''} - ${tx.vendor || ''}`,
+                    party_ledger: tx.vendor || '',
+                    voucher_number: tx.invoiceNo || '',
+                    ledger_entries: [
+                        { ledger_name: tx.vendor || '', amount: Number(tx.totalAmount) || 0, is_debit: false },
+                        { ledger_name: 'Purchases' || '', amount: Number(tx.totalAmount) || 0, is_debit: true }
+                    ]
+                };
+
+                const resp = await fetch('http://localhost:17890/tally/push-voucher', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/xml' },
-                    body: xml
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
                 });
-                const text = await resp.text();
-                if (resp.ok && !text.includes('ERROR') && !text.includes('error')) {
+                const result = await resp.json();
+
+                if (result.ok) {
                     showToast('✅ Voucher synced to Tally!', 'success');
                     const token = localStorage.getItem('access_token');
                     await fetch(`${API_BASE_URL}/invoices/${invoiceId}`, {
@@ -779,15 +1527,51 @@
                     applyFilters();
                     updateStats();
                 } else {
-                    showToast('❌ Tally sync error: ' + (text.substring(0, 80)), 'error');
+                    showToast('❌ Tally error: ' + (result.details || result.error || 'Unknown'), 'error');
                 }
             } catch (e) {
                 showToast('❌ Connector not reachable. Is Suvidha AI connector running?', 'error');
             }
         }
+        // async function doSyncToTally(invoiceId) {
+        //     const tx = allInvoices.find(t => t.id === invoiceId);
+        //     if (!tx) return;
+        //     showToast('🔄 Preparing to sync to Tally...', 'info');
+
+        //     try {
+        //         const xml = buildTallyXml(tx);
+        //         const resp = await fetch('http://localhost:17890/tally/push-voucher', {
+        //             method: 'POST',
+        //             headers: { 'Content-Type': 'application/xml' },
+        //             body: xml
+        //         });
+        //         const text = await resp.text();
+        //         if (resp.ok && !text.includes('ERROR') && !text.includes('error')) {
+        //             showToast('✅ Voucher synced to Tally!', 'success');
+        //             const token = localStorage.getItem('access_token');
+        //             await fetch(`${API_BASE_URL}/invoices/${invoiceId}`, {
+        //                 method: 'PATCH',
+        //                 headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+        //                 body: JSON.stringify({ synced_to_tally: true })
+        //             });
+        //             tx.status = 'Synced';
+        //             applyFilters();
+        //             updateStats();
+        //         } else {
+        //             showToast('❌ Tally sync error: ' + (text.substring(0, 80)), 'error');
+        //         }
+        //     } catch (e) {
+        //         showToast('❌ Connector not reachable. Is Suvidha AI connector running?', 'error');
+        //     }
+        // }
+
 
         function buildTallyXml(tx) {
-            const dt = tx.date ? new Date(tx.date).toISOString().split('T')[0].replace(/-/g, '') : '';
+            let dt = '';
+            if (tx.date) {
+                const d = new Date(tx.date);
+                dt = `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
+            }
             return `<ENVELOPE>
 <HEADER><TALLYREQUEST>Import Data</TALLYREQUEST></HEADER>
 <BODY><IMPORTDATA><REQUESTDESC><REPORTNAME>All Masters</REPORTNAME><STATICVARIABLES><SVCURRENTCOMPANY></SVCURRENTCOMPANY></STATICVARIABLES></REQUESTDESC>
@@ -812,8 +1596,294 @@
 </TALLYMESSAGE></REQUESTDATA></IMPORTDATA></BODY></ENVELOPE>`;
         }
 
+        // ═══ BANKING STATEMENTS ═══
+        let bankStatements = [];
+
+        async function loadBankStatements() {
+            const tbody = document.getElementById('bs-tbody');
+            tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:2rem;color:#9ca3af">Loading bank statements...</td></tr>';
+
+            try {
+                const url = clientId ? `/bank-statements/?client_id=${clientId}` : '/bank-statements/';
+                const res = await authFetch(url);
+                if (!res || !res.ok) throw new Error('Failed');
+                bankStatements = await res.json();
+
+                if (bankStatements.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:3rem;color:#9ca3af"><div style="font-size:2rem;margin-bottom:.5rem">📂</div>No bank statements uploaded yet.<br><small style="color:#b0b8c4">Upload a bank statement PDF to get started.</small></td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = bankStatements.map((s, i) => {
+                    const period = s.period_start && s.period_end
+                        ? `${new Date(s.period_start).toLocaleDateString('en-GB', {day:'2-digit',month:'short'})} – ${new Date(s.period_end).toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric'})}`
+                        : s.original_filename || '—';
+                    const statusCls = s.status === 'completed' ? 'approved' : s.status === 'failed' ? 'synced' : 'pending';
+                    const statusLabel = s.status === 'completed' ? '✅ Ready' : s.status === 'failed' ? '❌ Failed' : '⏳ Processing';
+                    const isReady = s.status === 'completed';
+                    const reviewUrl = `bank-review.html?id=${s.id}&clientId=${clientId}&service=${encodeURIComponent(serviceName)}`;
+                    return `<tr style="cursor:${isReady ? 'pointer' : 'default'}" onclick="${isReady ? `window.location.href='${reviewUrl}'` : ''}">
+                        <td style="color:#b0b8c4;font-size:.72rem;text-align:center">${i + 1}</td>
+                        <td style="font-weight:600;color:#0f172a">${s.bank_name || '<span style=color:#94a3b8>Extracting...</span>'}<div style="font-size:.65rem;color:#94a3b8;font-weight:400;margin-top:1px;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${s.original_filename || ''}">${s.original_filename || ''}</div></td>
+                        <td style="font-family:monospace;font-size:.78rem;color:#64748b">${s.account_number || '—'}</td>
+                        <td style="font-size:.82rem">${period}<div style="font-size:.62rem;color:#b0b8c4;margin-top:1px">${s.created_at ? new Date(s.created_at).toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}) : ''}</div></td>
+                        <td class="tx-amt-cell" style="color:#059669">${s.total_credits ? formatINR(s.total_credits) : '—'}</td>
+                        <td class="tx-amt-cell" style="color:#dc2626">${s.total_debits ? formatINR(s.total_debits) : '—'}</td>
+                        <td class="tx-amt-cell total">${s.closing_balance != null ? formatINR(s.closing_balance) : '—'}</td>
+                        <td style="text-align:center;font-weight:600">${s.transaction_count || 0}</td>
+                        <td><span class="tx-badge ${statusCls}">${statusLabel}</span></td>
+                        <td style="text-align:right;white-space:nowrap" onclick="event.stopPropagation()">
+                            ${isReady ? `<button class="tx-btn success" onclick="window.location.href='${reviewUrl}'">✓ Review</button>` : ''}
+                            <button class="tx-btn" style="background:#fee2e2;color:#dc2626;margin-left:3px" onclick="deleteBankStatement('${s.id}')">🗑</button>
+                        </td>
+                    </tr>`;
+                }).join('');
+
+            } catch (e) {
+                console.error('Bank load error:', e);
+                tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:3rem;color:#dc2626">⚠️ Failed to load bank statements</td></tr>';
+            }
+        }
+
+        async function handleBankUpload(input) {
+            const file = input.files[0];
+            if (!file) return;
+            input.value = '';
+
+            if (!file.name.toLowerCase().endsWith('.pdf')) {
+                showToast('Only PDF files supported for bank statements', 'error');
+                return;
+            }
+
+            if (!clientId) {
+                showToast('No client selected', 'error');
+                return;
+            }
+
+            showToast(`📤 Uploading ${file.name}...`, 'info');
+
+            try {
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('client_id', clientId);
+
+                const token = localStorage.getItem('access_token');
+                const res = await fetch(`${API_BASE_URL}/bank-statements/upload`, {
+                    method: 'POST',
+                    body: formData,
+                    headers: token ? { 'Authorization': `Bearer ${token}` } : {},
+                });
+
+                if (!res || !res.ok) {
+                    const err = await res.json().catch(() => ({}));
+                    throw new Error(err.detail || 'Upload failed');
+                }
+
+                const data = await res.json();
+                showToast(`✅ ${file.name} uploaded! Processing will take 15-30 seconds...`, 'success');
+
+                // Poll for completion
+                pollStatementStatus(data.id, file.name);
+                loadBankStatements();
+
+            } catch (e) {
+                showToast(`❌ Upload failed: ${e.message}`, 'error');
+            }
+        }
+
+        async function pollStatementStatus(stmtId, filename) {
+            let attempts = 0;
+            const maxAttempts = 30; // 30 * 3s = 90s max
+
+            const poll = setInterval(async () => {
+                attempts++;
+                try {
+                    const res = await authFetch(`/bank-statements/${stmtId}`);
+                    if (!res || !res.ok) return;
+                    const data = await res.json();
+
+                    if (data.status === 'completed') {
+                        clearInterval(poll);
+                        showToast(`🎉 ${filename}: ${data.transaction_count} transactions extracted!`, 'success');
+                        loadBankStatements();
+                    } else if (data.status === 'failed') {
+                        clearInterval(poll);
+                        showToast(`❌ ${filename}: Processing failed – ${data.error_message || 'Unknown error'}`, 'error');
+                        loadBankStatements();
+                    }
+                } catch (e) { /* ignore polling errors */ }
+
+                if (attempts >= maxAttempts) {
+                    clearInterval(poll);
+                    showToast(`⏳ ${filename}: Still processing, please refresh later`, 'info');
+                }
+            }, 3000);
+        }
+
+        async function openBankingDetail(stmtId) {
+            currentBankStmtId = stmtId;
+            document.getElementById('banking-list-view').style.display = 'none';
+            document.getElementById('banking-detail-view').style.display = '';
+
+            // Load PDF in the left pane
+            loadPdfViewer(stmtId);
+
+            const stmt = bankStatements.find(s => s.id === stmtId);
+            if (stmt) {
+                document.getElementById('bs-detail-title').textContent =
+                    `${stmt.bank_name || 'Bank'} — ${stmt.account_number || ''} | ${stmt.transaction_count} transactions`;
+                document.getElementById('bs-d-opening').textContent = stmt.opening_balance != null ? formatINR(stmt.opening_balance) : '—';
+                document.getElementById('bs-d-credits').textContent = stmt.total_credits ? formatINR(stmt.total_credits) : '—';
+                document.getElementById('bs-d-debits').textContent = stmt.total_debits ? formatINR(stmt.total_debits) : '—';
+                document.getElementById('bs-d-closing').textContent = stmt.closing_balance != null ? formatINR(stmt.closing_balance) : '—';
+            }
+
+            const tbody = document.getElementById('bs-txn-tbody');
+            tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:2rem;color:#9ca3af">Loading transactions...</td></tr>';
+
+            try {
+                const res = await authFetch(`/bank-statements/${stmtId}/transactions`);
+                if (!res || !res.ok) throw new Error('Failed');
+                const txns = await res.json();
+
+                if (txns.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:3rem;color:#9ca3af">No transactions found</td></tr>';
+                    return;
+                }
+
+                const catColors = {
+                    'Salary': '#059669', 'Client Receipt': '#059669', 'Interest Income': '#059669', 'Refund': '#059669',
+                    'Vendor Payment': '#dc2626', 'GST Payment': '#dc2626', 'TDS': '#dc2626', 'Loan EMI': '#dc2626',
+                    'Rent': '#f59e0b', 'Utilities': '#f59e0b', 'Insurance': '#f59e0b',
+                    'Bank Charges': '#6b7280', 'Transfer': '#3b82f6', 'UPI': '#8b5cf6',
+                };
+
+                const BANK_CATEGORIES = ['Salary','Rent','Utilities','GST Payment','TDS','Bank Charges','Interest Income','Interest Paid','Loan EMI','Insurance','Vendor Payment','Client Receipt','Transfer','Cash Withdrawal','Cash Deposit','UPI','Dividend','Refund','Government','Other'];
+
+                tbody.innerHTML = txns.map((t, i) => {
+                    const dateFmt = t.date || '';
+                    const catColor = catColors[t.category] || '#64748b';
+                    const catOptions = BANK_CATEGORIES.map(c => `<option value="${c}" ${c === t.category ? 'selected' : ''}>${c}</option>`).join('');
+                    return `<tr data-txn-id="${t.id}">
+                        <td style="color:#b0b8c4;font-size:.72rem;text-align:center">${i + 1}</td>
+                        <td><input type="date" class="bs-edit" data-field="date" value="${dateFmt}" style="font-size:.78rem;width:110px;padding:2px 4px;border:1px solid #e2e8f0;border-radius:4px"></td>
+                        <td><input type="text" class="bs-edit" data-field="description" value="${(t.description || '').replace(/"/g, '&quot;')}" style="font-size:.78rem;width:100%;padding:2px 4px;border:1px solid #e2e8f0;border-radius:4px"></td>
+                        <td><input type="text" class="bs-edit" data-field="reference_no" value="${(t.reference_no || '').replace(/"/g, '&quot;')}" style="font-size:.72rem;font-family:monospace;width:100px;padding:2px 4px;border:1px solid #e2e8f0;border-radius:4px"></td>
+                        <td><input type="number" class="bs-edit" data-field="debit" value="${t.debit || ''}" step="0.01" style="font-size:.78rem;width:90px;text-align:right;padding:2px 4px;border:1px solid #e2e8f0;border-radius:4px;color:#dc2626"></td>
+                        <td><input type="number" class="bs-edit" data-field="credit" value="${t.credit || ''}" step="0.01" style="font-size:.78rem;width:90px;text-align:right;padding:2px 4px;border:1px solid #e2e8f0;border-radius:4px;color:#059669"></td>
+                        <td><input type="number" class="bs-edit" data-field="balance" value="${t.balance != null ? t.balance : ''}" step="0.01" style="font-size:.78rem;width:100px;text-align:right;padding:2px 4px;border:1px solid #e2e8f0;border-radius:4px;font-weight:700"></td>
+                        <td><select class="bs-edit" data-field="category" style="font-size:.68rem;padding:2px 4px;border:1px solid #e2e8f0;border-radius:4px;width:100px">${catOptions}</select></td>
+                        <td><input type="text" class="bs-edit" data-field="party_name" value="${(t.party_name || '').replace(/"/g, '&quot;')}" style="font-size:.78rem;width:100%;padding:2px 4px;border:1px solid #e2e8f0;border-radius:4px"></td>
+                    </tr>`;
+                }).join('');
+
+            } catch (e) {
+                console.error('Txn load error:', e);
+                tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:3rem;color:#dc2626">⚠️ Failed to load transactions</td></tr>';
+            }
+        }
+
+        async function loadPdfViewer(stmtId) {
+            const container = document.getElementById('bs-pdf-container');
+            const label = document.getElementById('bs-pdf-label');
+            container.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#94a3b8;font-size:.85rem">⏳ Loading PDF...</div>';
+
+            try {
+                const res = await authFetch(`/bank-statements/${stmtId}/pdf`);
+                if (!res || !res.ok) {
+                    container.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#94a3b8;font-size:.82rem;text-align:center;padding:1rem">📄 PDF not available<br><small>Upload a new statement to see it here</small></div>';
+                    return;
+                }
+                const data = await res.json();
+                if (data.url) {
+                    container.innerHTML = `<iframe src="${data.url}" style="width:100%;height:100%;border:none" title="Bank Statement PDF"></iframe>`;
+                    const stmt = bankStatements.find(s => s.id === stmtId);
+                    if (stmt) label.textContent = stmt.original_filename || 'Bank Statement PDF';
+                }
+            } catch (e) {
+                container.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#94a3b8;font-size:.82rem">❌ Could not load PDF</div>';
+            }
+        }
+
+        function togglePdfPane() {
+            const pane = document.getElementById('bs-pdf-pane');
+            const btn = document.getElementById('bs-pdf-toggle');
+            if (pane.style.display === 'none') {
+                pane.style.display = 'flex';
+                btn.textContent = '📄 Hide PDF';
+            } else {
+                pane.style.display = 'none';
+                btn.textContent = '📄 Show PDF';
+            }
+        }
+
+        function closeBankingDetail() {
+            document.getElementById('banking-detail-view').style.display = 'none';
+            document.getElementById('banking-list-view').style.display = '';
+        }
+
+        let currentBankStmtId = null;
+
+        async function saveBankTransactions() {
+            if (!currentBankStmtId) return;
+            const rows = document.querySelectorAll('#bs-txn-tbody tr[data-txn-id]');
+            const transactions = [];
+
+            rows.forEach(row => {
+                const txnId = row.dataset.txnId;
+                const data = { id: txnId };
+                row.querySelectorAll('.bs-edit').forEach(inp => {
+                    const field = inp.dataset.field;
+                    if (inp.type === 'number') {
+                        data[field] = inp.value ? parseFloat(inp.value) : null;
+                    } else if (inp.tagName === 'SELECT') {
+                        data[field] = inp.value;
+                    } else {
+                        data[field] = inp.value || null;
+                    }
+                });
+                transactions.push(data);
+            });
+
+            const btn = document.getElementById('bs-save-btn');
+            btn.textContent = '⏳ Saving...';
+            btn.disabled = true;
+
+            try {
+                const res = await authFetch(`/bank-statements/${currentBankStmtId}/transactions`, {
+                    method: 'PUT',
+                    body: JSON.stringify({ transactions }),
+                });
+                if (res && res.ok) {
+                    const data = await res.json();
+                    showToast(`✅ ${data.message}`, 'success');
+                } else {
+                    throw new Error('Save failed');
+                }
+            } catch (e) {
+                showToast('❌ Failed to save changes', 'error');
+            } finally {
+                btn.textContent = '💾 Save Changes';
+                btn.disabled = false;
+            }
+        }
+
+        async function deleteBankStatement(stmtId) {
+            if (!confirm('Delete this bank statement and all its transactions?')) return;
+            try {
+                const res = await authFetch(`/bank-statements/${stmtId}`, { method: 'DELETE' });
+                if (res && res.ok) {
+                    showToast('Statement deleted', 'success');
+                    loadBankStatements();
+                }
+            } catch (e) {
+                showToast('Delete failed', 'error');
+            }
+        }
+
         // ═══ INIT ═══
         loadInvoices();
     </script>
 </body>
+
 </html>

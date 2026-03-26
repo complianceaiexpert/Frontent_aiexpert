@@ -123,7 +123,7 @@ def add_service(client_id: int, req: ServiceReq):
 # --- Tally Integration Logic ---
 
 def send_tally_request(xml_data):
-    url = "http://localhost:9999"
+    url = "http://localhost:9000"
     req = urllib.request.Request(url, data=xml_data.encode('utf-8'), headers={'Content-Type': 'application/xml'})
     try:
         with urllib.request.urlopen(req, timeout=5) as response:

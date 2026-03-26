@@ -1,0 +1,801 @@
+/*
+ * GST Refund Calculator — Module-scoped styles (rc- prefix)
+ * Three modes: Manual Entry, File Upload, GST Portal Connect
+ */
+
+/* ── Body Reset ── */
+body {
+    overflow: hidden;
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background: #f5f7fa;
+}
+
+.rc-app-layout {
+    display: flex;
+    height: 100vh;
+    padding-top: 56px;
+}
+
+/* ── Sidebar ── */
+.rc-sidebar {
+    width: 250px;
+    min-width: 250px;
+    background: #f8fafc;
+    border-right: 1px solid #e5e7eb;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    padding: 0.75rem 0;
+}
+
+.rc-sidebar-nav {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.rc-sb-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.7rem 1.25rem;
+    color: #475569;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-left: 3px solid transparent;
+}
+
+.rc-sb-link:hover {
+    background: #eff6ff;
+    color: #1e3a8a;
+}
+
+.rc-sb-link.active {
+    background: #eff6ff;
+    color: #1e3a8a;
+    border-left-color: #1e3a8a;
+    font-weight: 600;
+}
+
+.rc-sb-link .rc-icon {
+    width: 20px;
+    text-align: center;
+    font-size: 0.95rem;
+    flex-shrink: 0;
+}
+
+.rc-sb-divider {
+    height: 1px;
+    background: #e2e8f0;
+    margin: 0.5rem 1rem;
+}
+
+/* ── Main Content ── */
+.rc-main {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.5rem 2rem;
+    background: #fff;
+}
+
+.rc-inner {
+    max-width: 960px;
+    margin: 0 auto;
+}
+
+/* ── Page Header ── */
+.rc-page-header {
+    margin-bottom: 1.75rem;
+}
+
+.rc-page-header h1 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 800;
+    margin: 0 0 0.25rem;
+    background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.rc-page-header p {
+    color: #6b7280;
+    font-size: 0.82rem;
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* ── Config Row (Mode + Type dropdowns) ── */
+.rc-config-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.75rem;
+    flex-wrap: wrap;
+}
+
+.rc-config-group {
+    flex: 1;
+    min-width: 240px;
+}
+
+.rc-config-group label {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #6b7280;
+    margin-bottom: 0.4rem;
+}
+
+.rc-select {
+    width: 100%;
+    padding: 0.65rem 0.85rem;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    color: #1e293b;
+    background: #f9fafb;
+    cursor: pointer;
+    transition: all 0.2s;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.85rem center;
+    padding-right: 2.5rem;
+}
+
+.rc-select:focus {
+    outline: none;
+    border-color: #1e3a8a;
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.06);
+}
+
+/* ── Mode Indicator Cards ── */
+.rc-mode-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.85rem;
+    margin-bottom: 1.75rem;
+}
+
+.rc-mode-card {
+    border: 1.5px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 1rem 1.15rem;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.85rem;
+    position: relative;
+    background: #fff;
+}
+
+.rc-mode-card:hover {
+    border-color: #93c5fd;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(30, 58, 138, 0.08);
+}
+
+.rc-mode-card.active {
+    border-color: #1e3a8a;
+    background: linear-gradient(135deg, #eff6ff 0%, #f8faff 100%);
+    box-shadow: 0 4px 16px rgba(30, 58, 138, 0.1);
+}
+
+.rc-mode-card.active::after {
+    content: '✓';
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+    color: #fff;
+    font-size: 0.55rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.rc-mode-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+}
+
+.rc-mode-icon.manual { background: #dbeafe; }
+.rc-mode-icon.upload { background: #dcfce7; }
+.rc-mode-icon.portal { background: #fef3c7; }
+
+.rc-mode-title {
+    font-weight: 700;
+    color: #1f2937;
+    font-size: 0.85rem;
+    margin-bottom: 0.15rem;
+}
+
+.rc-mode-desc {
+    font-size: 0.72rem;
+    color: #6b7280;
+    line-height: 1.4;
+}
+
+/* ── Divider ── */
+.rc-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #e5e7eb 20%, #e5e7eb 80%, transparent);
+    margin: 0.25rem 0 1.5rem;
+}
+
+/* ── Formula Banner ── */
+.rc-formula-banner {
+    background: linear-gradient(135deg, #eff6ff 0%, #f0fdf4 100%);
+    border: 1px solid #bfdbfe;
+    border-radius: 12px;
+    padding: 0.85rem 1.15rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+}
+
+.rc-formula-badge {
+    background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+    color: #fff;
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 0.3rem 0.65rem;
+    border-radius: 6px;
+    flex-shrink: 0;
+}
+
+.rc-formula-text {
+    font-size: 0.82rem;
+    color: #1e3a8a;
+    font-weight: 600;
+}
+
+.rc-formula-rule {
+    font-size: 0.68rem;
+    color: #6b7280;
+    margin-top: 0.1rem;
+}
+
+/* ── Section Panels ── */
+.rc-panel {
+    display: none;
+    animation: rcFadeIn 0.3s ease;
+}
+
+.rc-panel.active {
+    display: block;
+}
+
+@keyframes rcFadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Manual Form Fields ── */
+.rc-fields-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.85rem;
+    margin-bottom: 1.5rem;
+}
+
+.rc-field {
+    display: flex;
+    flex-direction: column;
+}
+
+.rc-field label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 0.3rem;
+}
+
+.rc-field input,
+.rc-field select {
+    padding: 0.55rem 0.75rem;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-family: 'Inter', sans-serif;
+    color: #1e293b;
+    background: #f9fafb;
+    transition: all 0.2s;
+}
+
+.rc-field input:focus,
+.rc-field select:focus {
+    outline: none;
+    border-color: #1e3a8a;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.06);
+}
+
+.rc-field .rc-hint {
+    font-size: 0.66rem;
+    color: #9ca3af;
+    margin-top: 0.2rem;
+    font-style: italic;
+}
+
+/* ── Upload Zone ── */
+.rc-upload-zone {
+    border: 2px dashed #d1d5db;
+    border-radius: 14px;
+    padding: 2.5rem 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.25s;
+    margin-bottom: 1.25rem;
+    position: relative;
+}
+
+.rc-upload-zone:hover {
+    border-color: #3b82f6;
+    background: #eff6ff;
+}
+
+.rc-upload-zone.has-files {
+    border-color: #059669;
+    background: #ecfdf5;
+    border-style: solid;
+}
+
+.rc-upload-zone .rc-up-icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.65rem;
+}
+
+.rc-upload-zone .rc-up-title {
+    font-weight: 700;
+    font-size: 0.92rem;
+    color: #374151;
+    margin-bottom: 0.25rem;
+}
+
+.rc-upload-zone .rc-up-sub {
+    font-size: 0.78rem;
+    color: #9ca3af;
+    line-height: 1.5;
+}
+
+.rc-upload-zone .rc-up-sub strong {
+    color: #1e3a8a;
+}
+
+/* ── File List (upload) ── */
+.rc-file-list {
+    margin-bottom: 1.5rem;
+}
+
+.rc-file-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #f8fafc;
+    padding: 0.55rem 0.85rem;
+    border-radius: 8px;
+    margin-bottom: 0.4rem;
+    font-size: 0.8rem;
+    border: 1px solid #f1f5f9;
+    animation: rcFadeIn 0.2s ease;
+}
+
+.rc-file-name {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #374151;
+    font-weight: 500;
+}
+
+.rc-file-name .rc-file-badge {
+    font-size: 0.55rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    background: #dbeafe;
+    color: #1e3a8a;
+    padding: 0.1rem 0.35rem;
+    border-radius: 4px;
+}
+
+.rc-file-remove {
+    color: #ef4444;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.85rem;
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    transition: all 0.15s;
+}
+
+.rc-file-remove:hover {
+    background: #fee2e2;
+}
+
+/* ── Upload Required Files Info ── */
+.rc-required-files {
+    background: #fffbeb;
+    border: 1px solid #fcd34d;
+    border-radius: 10px;
+    padding: 0.85rem 1rem;
+    margin-bottom: 1.25rem;
+}
+
+.rc-required-files h4 {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #92400e;
+    margin: 0 0 0.4rem;
+}
+
+.rc-required-files ul {
+    margin: 0;
+    padding: 0 0 0 1rem;
+    list-style: disc;
+}
+
+.rc-required-files li {
+    font-size: 0.74rem;
+    color: #78350f;
+    line-height: 1.6;
+}
+
+/* ── Portal Connect ── */
+.rc-portal-card {
+    border: 1.5px solid #e5e7eb;
+    border-radius: 14px;
+    padding: 1.75rem;
+    text-align: center;
+    margin-bottom: 1.25rem;
+    background: linear-gradient(135deg, #fafbff 0%, #f8fafc 100%);
+}
+
+.rc-portal-icon {
+    font-size: 3rem;
+    margin-bottom: 0.75rem;
+}
+
+.rc-portal-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 0.3rem;
+}
+
+.rc-portal-desc {
+    font-size: 0.82rem;
+    color: #6b7280;
+    line-height: 1.5;
+    margin-bottom: 1.25rem;
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.rc-portal-fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.85rem;
+    max-width: 480px;
+    margin: 0 auto 1.25rem;
+    text-align: left;
+}
+
+.rc-portal-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.55rem 1.25rem;
+    border-radius: 10px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.rc-portal-status.disconnected {
+    background: #fef2f2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+}
+
+.rc-portal-status.connecting {
+    background: #fffbeb;
+    color: #92400e;
+    border: 1px solid #fcd34d;
+}
+
+.rc-portal-status.connected {
+    background: #ecfdf5;
+    color: #065f46;
+    border: 1px solid #86efac;
+}
+
+/* ── Buttons ── */
+.rc-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.6rem 1.35rem;
+    border-radius: 9px;
+    border: none;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.rc-btn-primary {
+    background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(30, 58, 138, 0.15);
+}
+
+.rc-btn-primary:hover {
+    box-shadow: 0 4px 14px rgba(30, 58, 138, 0.25);
+    transform: translateY(-1px);
+}
+
+.rc-btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.rc-btn-secondary {
+    background: #fff;
+    color: #374151;
+    border: 1px solid #d1d5db;
+}
+
+.rc-btn-secondary:hover {
+    border-color: #1e3a8a;
+    color: #1e3a8a;
+    background: #f8fafc;
+}
+
+.rc-btn-green {
+    background: linear-gradient(135deg, #059669, #34d399);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(5, 150, 105, 0.15);
+}
+
+.rc-btn-green:hover {
+    box-shadow: 0 4px 14px rgba(5, 150, 105, 0.25);
+    transform: translateY(-1px);
+}
+
+.rc-btn-row {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+/* ── Spinner ── */
+.rc-spinner {
+    display: inline-block;
+    width: 0.9rem;
+    height: 0.9rem;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: rcSpin 0.6s linear infinite;
+    vertical-align: middle;
+}
+
+@keyframes rcSpin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes rc-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+}
+
+/* ── Results ── */
+.rc-result-hero {
+    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+    border-radius: 14px;
+    padding: 1.75rem;
+    color: white;
+    text-align: center;
+    margin-bottom: 1.25rem;
+    animation: rcFadeIn 0.4s ease;
+}
+
+.rc-result-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.85;
+    margin-bottom: 0.35rem;
+}
+
+.rc-result-amount {
+    font-size: 2.2rem;
+    font-weight: 800;
+    font-family: 'Outfit', sans-serif;
+}
+
+.rc-result-rule {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 0.2rem 0.65rem;
+    border-radius: 20px;
+    font-size: 0.68rem;
+    font-weight: 600;
+    margin-top: 0.4rem;
+}
+
+.rc-result-formula-box {
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.rc-result-formula-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.3rem;
+}
+
+.rc-result-formula-display {
+    font-size: 0.82rem;
+    color: #1e3a8a;
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+}
+
+.rc-result-formula-values {
+    font-size: 0.78rem;
+    color: #4b5563;
+    font-family: monospace;
+}
+
+/* ── Breakdown Table ── */
+.rc-breakdown-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #e5e7eb;
+    margin-bottom: 1rem;
+}
+
+.rc-breakdown-table th {
+    background: #f9fafb;
+    padding: 0.55rem 0.85rem;
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    text-align: left;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.rc-breakdown-table td {
+    padding: 0.5rem 0.85rem;
+    font-size: 0.82rem;
+    color: #374151;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.rc-breakdown-table tr:last-child td {
+    font-weight: 700;
+    color: #1e3a8a;
+    background: #eff6ff;
+    border-bottom: none;
+}
+
+/* ── Warnings ── */
+.rc-warning {
+    background: #fffbeb;
+    border: 1px solid #fcd34d;
+    border-radius: 8px;
+    padding: 0.65rem 0.85rem;
+    font-size: 0.78rem;
+    color: #92400e;
+    margin-bottom: 0.4rem;
+}
+
+.rc-warning::before {
+    content: '⚠️ ';
+}
+
+.rc-note {
+    background: #f0fdf4;
+    border: 1px solid #86efac;
+    border-radius: 8px;
+    padding: 0.65rem 0.85rem;
+    font-size: 0.78rem;
+    color: #166534;
+}
+
+.rc-note::before {
+    content: '💡 ';
+}
+
+/* ── Empty State ── */
+.rc-empty-state {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: #9ca3af;
+}
+
+.rc-empty-state .rc-es-icon {
+    font-size: 3rem;
+    margin-bottom: 0.85rem;
+}
+
+.rc-empty-state h3 {
+    color: #6b7280;
+    font-size: 0.95rem;
+    margin: 0 0 0.35rem;
+}
+
+.rc-empty-state p {
+    font-size: 0.78rem;
+    color: #9ca3af;
+    margin: 0;
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+    .rc-sidebar {
+        width: 60px;
+        min-width: 60px;
+    }
+
+    .rc-sb-link span:not(.rc-icon) {
+        display: none;
+    }
+
+    .rc-mode-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .rc-fields-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .rc-config-row {
+        flex-direction: column;
+    }
+
+    .rc-portal-fields {
+        grid-template-columns: 1fr;
+    }
+}

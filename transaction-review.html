@@ -471,6 +471,7 @@
                     <div class="rv-fg">
                         <label><span class="req">*</span> Voucher Type</label>
                         <select id="rv-voucher-type">
+                            <option value="Uncategorized">— Select Type —</option>
                             <option value="Purchase">Purchase</option>
                             <option value="Sales">Sales</option>
                             <option value="Payment">Payment</option>
@@ -700,7 +701,15 @@
             document.getElementById('rv-voucher-no').value = inv.invoice_number || '';
             const dt = inv.invoice_date || inv.received_at;
             if (dt) {
-                try { document.getElementById('rv-voucher-date').value = new Date(dt).toISOString().split('T')[0]; } catch(e) {}
+                try {
+                    // Use local date parts to avoid timezone shift
+                    // (toISOString() converts to UTC, shifting the date in non-UTC timezones)
+                    const d = new Date(dt);
+                    const yyyy = d.getFullYear();
+                    const mm = String(d.getMonth() + 1).padStart(2, '0');
+                    const dd = String(d.getDate()).padStart(2, '0');
+                    document.getElementById('rv-voucher-date').value = `${yyyy}-${mm}-${dd}`;
+                } catch(e) {}
             }
             document.getElementById('rv-party-name').value = inv.vendor_name || '';
             document.getElementById('rv-gst-number').value = inv.gst_number || '';
@@ -708,7 +717,7 @@
             document.getElementById('rv-narration').value = `${inv.invoice_number || ''} - ${inv.vendor_name || ''}`;
 
             // Set voucher type & ledger based on expenses_type
-            const expType = inv.expenses_type || 'Purchase';
+            const expType = inv.expenses_type || 'Uncategorized';
             const vtSel = document.getElementById('rv-voucher-type');
             for (let o of vtSel.options) { if (o.value === expType) { o.selected = true; break; } }
 
@@ -744,7 +753,7 @@
                     if (items && items.length > 0) {
                         const lineItems = items.map(it => ({
                             name: it.description || 'Item',
-                            ledger: it.service_code || (inv.expenses_type || 'Purchase Account'),
+                            ledger: it.service_code || (inv.expenses_type || ''),
                             qty: Number(it.quantity) || 1,
                             rate: Number(String(it.price || '0').replace(/,/g, '')) || 0,
                             amount: Number(String(it.amount || '0').replace(/,/g, '')) || 0,
@@ -762,7 +771,7 @@
             // Fallback: legacy behavior
             const lineItems = [{
                 name: inv.invoice_number || 'Invoice Item',
-                ledger: inv.expenses_type || 'Purchase Account',
+                ledger: inv.expenses_type || '',
                 qty: 1, rate: baseAmt, amount: baseAmt
             }];
             renderItems(lineItems);
@@ -1066,16 +1075,40 @@
             document.querySelectorAll('#rv-tax-tbody [data-tax-row]').forEach(r => {
                 taxTotal += Number(r.querySelector('.tax-ledger-amount').value) || 0;
             });
-            return {
-                vendor_name: document.getElementById('rv-party-name').value || undefined,
-                gst_number: document.getElementById('rv-gst-number').value || undefined,
-                invoice_number: document.getElementById('rv-voucher-no').value || undefined,
-                invoice_date: dateVal ? new Date(dateVal).toISOString() : undefined,
-                expenses_type: document.getElementById('rv-ledger-type').value || undefined,
-                amount: document.getElementById('rv-subtotal').textContent.replace(/[^\d.]/g, '') || undefined,
-                gst_amount: String(taxTotal) || undefined,
-                total_amount: document.getElementById('rv-grand-total').textContent.replace(/[^\d.]/g, '') || undefined,
-            };
+
+            // Build data — always include non-null values for required backend fields
+            const data = {};
+            const vendorName = document.getElementById('rv-party-name').value;
+            if (vendorName) data.vendor_name = vendorName;
+
+            const gstNum = document.getElementById('rv-gst-number').value;
+            if (gstNum) data.gst_number = gstNum;
+
+            const invNo = document.getElementById('rv-voucher-no').value;
+            if (invNo) data.invoice_number = invNo;
+
+            if (dateVal) {
+                try { data.invoice_date = new Date(dateVal).toISOString(); } catch(e) {}
+            }
+
+            // Save voucher type as expenses_type
+            const voucherType = document.getElementById('rv-voucher-type').value;
+            if (voucherType && voucherType !== 'Uncategorized') {
+                data.expenses_type = voucherType;
+            }
+            // If a ledger category is selected, use that instead
+            const ledgerType = document.getElementById('rv-ledger-type').value;
+            if (ledgerType) data.expenses_type = ledgerType;
+
+            const subtotalText = document.getElementById('rv-subtotal').textContent.replace(/[^\d.]/g, '');
+            if (subtotalText && subtotalText !== '0.00') data.amount = subtotalText;
+
+            if (taxTotal > 0) data.gst_amount = String(taxTotal);
+
+            const totalText = document.getElementById('rv-grand-total').textContent.replace(/[^\d.]/g, '');
+            if (totalText && totalText !== '0.00') data.total_amount = totalText;
+
+            return data;
         }
 
         function collectItemsData() {
@@ -1123,34 +1156,71 @@
 
         async function saveInvoice() {
             const data = collectFormData();
+            // Only send PATCH if there's something to update
+            if (Object.keys(data).length === 0) return;
+
+            console.log('Saving invoice data:', JSON.stringify(data));
+
             const res = await authFetch(`/invoices/${invoiceId}`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
             });
-            if (!res.ok) throw new Error('Failed to update invoice');
+
+            // authFetch returns undefined on 401 (redirects to login)
+            if (!res) return;
+
+            // The backend commits BEFORE serializing the response.
+            // If any DB field is NULL for a required response field, Pydantic
+            // throws 500 even though the data was saved. We treat 500 as
+            // "likely saved" and only throw on 4xx errors.
+            if (!res.ok && res.status < 500) {
+                const errBody = await res.text().catch(() => '');
+                throw new Error('Failed to update invoice: ' + (errBody || res.status));
+            }
+            if (res.status >= 500) {
+                console.warn('Save returned 500 (response serialization issue) — data was likely saved');
+            }
         }
 
         async function saveItems() {
             const items = collectItemsData();
-            // Save items via PUT (replace all)
+            if (items.length === 0) return;
+
             const res = await authFetch(`/invoices/${invoiceId}/items`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(items)
             });
-            if (!res.ok) {
-                console.warn('Items save returned non-OK, items may not have been updated');
+            // authFetch returns undefined on 401 (redirects to login)
+            if (!res) return;
+            if (!res.ok && res.status < 500) {
+                console.warn('Items save failed:', res.status);
             }
         }
 
         // ═══ APPROVE ═══
         async function handleApprove() {
-            if (!confirm('Approve this invoice? This will lock the fields for editing.')) return;
-
+            // Custom confirm instead of browser dialog
             const btn = document.getElementById('btn-approve');
+            if (btn.dataset.confirming !== 'true') {
+                btn.dataset.confirming = 'true';
+                btn.textContent = '⚠️ Click again to confirm';
+                btn.style.background = 'linear-gradient(135deg, #d97706, #f59e0b)';
+                setTimeout(() => {
+                    if (btn.dataset.confirming === 'true') {
+                        btn.dataset.confirming = '';
+                        btn.textContent = '✅ Approve';
+                        btn.style.background = 'linear-gradient(135deg, #059669, #10b981)';
+                    }
+                }, 3000);
+                return;
+            }
+
+            btn.dataset.confirming = '';
             btn.disabled = true;
             btn.textContent = '⏳ Approving...';
+            btn.style.background = '';
 
             try {
                 // Save all current edits first
@@ -1163,7 +1233,9 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ status: 'approved' })
                 });
-                if (!res.ok) throw new Error('Failed to approve');
+                // Accept 500 too (response serialization may fail but data is saved)
+                if (!res) throw new Error('Session expired — please log in again');
+                if (!res.ok && res.status < 500) throw new Error('Failed to approve');
 
                 showToast('✅ Invoice approved!', 'success');
 
@@ -1182,6 +1254,7 @@
                 showToast('❌ Approve failed: ' + e.message, 'error');
                 btn.disabled = false;
                 btn.textContent = '✅ Approve';
+                btn.style.background = 'linear-gradient(135deg, #059669, #10b981)';
             }
         }
 

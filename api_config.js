@@ -15,18 +15,33 @@ async function authFetch(endpoint, options = {}) {
         headers['Authorization'] = `Bearer ${token}`;
     }
 
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-        ...options,
-        headers,
-    });
+    // Add timeout — 15s for mutations, 20s for reads
+    const timeoutMs = (options.method && options.method !== 'GET') ? 15000 : 20000;
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
 
-    if (response.status === 401) {
-        // Token expired or invalid
-        localStorage.removeItem('user');
-        localStorage.removeItem('access_token');
-        window.location.href = 'index.html';
-        return;
+    try {
+        const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+            ...options,
+            headers,
+            signal: controller.signal,
+        });
+        clearTimeout(timer);
+
+        if (response.status === 401) {
+            // Token expired or invalid
+            localStorage.removeItem('user');
+            localStorage.removeItem('access_token');
+            window.location.href = 'index.html';
+            return;
+        }
+
+        return response;
+    } catch (err) {
+        clearTimeout(timer);
+        if (err.name === 'AbortError') {
+            throw new Error('Server took too long to respond. The backend may be starting up — please try again in 30 seconds.');
+        }
+        throw new Error('Cannot reach the server. Please check if the backend is running.' + (isLocal ? ' (localhost:8000)' : ' (Render may be sleeping)'));
     }
-
-    return response;
 }

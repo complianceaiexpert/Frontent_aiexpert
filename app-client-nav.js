@@ -145,10 +145,16 @@
                     if (card) card.style.display = 'flex';
                     if (avatar) avatar.textContent = (client.name || 'C').charAt(0).toUpperCase();
                     if (name) name.textContent = client.name || 'Client';
+                    const gstin = client.gstins && client.gstins.length > 0 ? client.gstins[0] : (client.pan || '');
                     if (type) {
-                        const gstin = client.gstins && client.gstins.length > 0 ? client.gstins[0] : (client.pan || '');
                         type.textContent = gstin ? gstin : (client.entity_type || 'Client');
                     }
+
+                    // Also update the topbar client context badge
+                    if (typeof window.__updateTopbarClientCtx === 'function') {
+                        window.__updateTopbarClientCtx(client.name || 'Client');
+                    }
+
 
                     /* [COMMENTED OUT] Dynamic services from client.services — now hardcoded above
                     // Render services from client.services array

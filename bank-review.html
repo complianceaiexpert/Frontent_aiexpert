@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bank Statement Review — Suvidha AI</title>
+    <meta name="description" content="Review AI-extracted bank transactions with side-by-side PDF viewer.">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0 }
+        body { font-family: 'Inter', sans-serif; background: #f8fafc; overflow: hidden; height: 100vh }
+
+        /* ═══ TOP BAR ═══ */
+        .rv-topbar {
+            height: 54px;
+            background: #fff;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            padding: 0 1.25rem;
+            gap: .75rem;
+            z-index: 100;
+            position: relative;
+        }
+        .rv-back {
+            display: flex; align-items: center; gap: .4rem;
+            font-size: .82rem; font-weight: 600; color: #6b7280;
+            text-decoration: none; padding: .35rem .6rem;
+            border-radius: 7px; transition: all .15s;
+        }
+        .rv-back:hover { background: #f1f5f9; color: #1e3a8a }
+        .rv-back svg { width: 18px; height: 18px }
+        .rv-topbar-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: .95rem; font-weight: 800; color: #0f172a;
+            display: flex; align-items: center; gap: .4rem;
+        }
+        .rv-topbar-divider { width: 1px; height: 24px; background: #e5e7eb; margin: 0 .35rem }
+        .rv-topbar-company {
+            font-size: .78rem; font-weight: 600; color: #6b7280;
+        }
+        .rv-topbar-right {
+            margin-left: auto;
+            display: flex; align-items: center; gap: .5rem;
+        }
+        .rv-topbar-badge {
+            font-size: .62rem; font-weight: 700; padding: 3px 10px;
+            border-radius: 6px; text-transform: uppercase; letter-spacing: .04em;
+        }
+        .rv-topbar-badge.pending { background: #fef3c7; color: #d97706 }
+        .rv-topbar-badge.completed { background: #ecfdf5; color: #059669 }
+        .rv-topbar-badge.ai { background: linear-gradient(135deg,#6366f1,#8b5cf6); color: #fff }
+
+        /* ═══ MAIN LAYOUT ═══ */
+        .rv-layout {
+            display: flex;
+            height: calc(100vh - 54px);
+        }
+
+        /* ═══ LEFT: PDF VIEWER ═══ */
+        .rv-pdf-panel {
+            width: 42%;
+            min-width: 320px;
+            background: #1e293b;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid #334155;
+        }
+        .rv-pdf-toolbar {
+            display: flex;
+            align-items: center;
+            padding: .5rem .75rem;
+            background: #0f172a;
+            border-bottom: 1px solid #334155;
+            gap: .5rem;
+            flex-shrink: 0;
+        }
+        .rv-pdf-page-info {
+            font-size: .72rem; font-weight: 600; color: #94a3b8;
+            display: flex; align-items: center; gap: .35rem;
+        }
+        .rv-pdf-page-info input {
+            width: 28px; text-align: center; background: #1e293b;
+            border: 1px solid #475569; border-radius: 4px; color: #e2e8f0;
+            font-size: .72rem; font-weight: 600; padding: 2px;
+        }
+        .rv-pdf-btn {
+            width: 28px; height: 28px; border-radius: 5px; border: none;
+            background: transparent; color: #94a3b8; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            font-size: .75rem; transition: all .12s;
+        }
+        .rv-pdf-btn:hover { background: #334155; color: #e2e8f0 }
+        .rv-pdf-sep { width: 1px; height: 20px; background: #334155 }
+        .rv-pdf-toolbar-right { margin-left: auto; display: flex; gap: .25rem }
+        .rv-pdf-body {
+            flex: 1;
+            overflow: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: #334155;
+            padding: .5rem;
+            gap: .5rem;
+        }
+        .rv-pdf-placeholder {
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            gap: .75rem; color: rgba(255,255,255,.35);
+            padding: 2rem; text-align: center;
+            flex: 1;
+        }
+        .rv-pdf-placeholder-icon { font-size: 3.5rem; opacity: .3 }
+        .rv-pdf-placeholder h3 {
+            font-family: 'Outfit', sans-serif; font-size: .95rem;
+            font-weight: 700; color: rgba(255,255,255,.5);
+        }
+        .rv-pdf-placeholder p { font-size: .78rem; color: rgba(255,255,255,.3); line-height: 1.5 }
+
+        /* ═══ RIGHT: FORM ═══ */
+        .rv-form-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #fff;
+            overflow: hidden;
+        }
+        .rv-form-scroll {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.25rem 1.5rem 2rem;
+        }
+
+        /* Form sections */
+        .rv-form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: .75rem;
+            margin-bottom: 1rem;
+        }
+        .rv-form-row.two-col { grid-template-columns: 1fr 1fr }
+        .rv-form-row.four-col { grid-template-columns: 1fr 1fr 1fr 1fr }
+        .rv-fg {
+            display: flex;
+            flex-direction: column;
+            gap: .25rem;
+        }
+        .rv-fg.span-2 { grid-column: span 2 }
+        .rv-fg label {
+            font-size: .65rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: .04em; color: #6b7280;
+            display: flex; align-items: center; gap: .25rem;
+        }
+        .rv-fg label .req { color: #ef4444; font-weight: 800 }
+        .rv-fg input, .rv-fg select {
+            width: 100%;
+            padding: .5rem .65rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 7px;
+            font-size: .85rem;
+            font-weight: 500;
+            color: #1e293b;
+            font-family: inherit;
+            transition: all .15s;
+            background: #fff;
+        }
+        .rv-fg input:focus, .rv-fg select:focus {
+            border-color: #3b82f6; outline: none;
+            box-shadow: 0 0 0 3px rgba(59,130,246,.08);
+        }
+        .rv-fg input.ai-fill {
+            background: #f0fdf4;
+            border-color: #86efac;
+        }
+        .rv-fg .ai-tag {
+            font-size: .55rem; font-weight: 700; padding: 1px 5px;
+            border-radius: 3px; background: #ecfdf5; color: #059669;
+            margin-left: auto;
+        }
+
+        /* Section dividers */
+        .rv-section-title {
+            font-size: .68rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: .06em; color: #94a3b8; margin: .75rem 0 .6rem;
+            display: flex; align-items: center; gap: .5rem;
+            padding-bottom: .4rem; border-bottom: 1px solid #f1f5f9;
+        }
+        .rv-section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #f1f5f9;
+        }
+
+        /* ═══ TRANSACTIONS TABLE ═══ */
+        .rv-items-card {
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: .5rem;
+            box-shadow: 0 1px 4px rgba(0,0,0,.04);
+        }
+        .rv-items-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .rv-items-table thead th {
+            font-size: .68rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: .04em; color: #374151; padding: .7rem .75rem;
+            text-align: left; background: #f8faff;
+            border-bottom: 2px solid #e5e7eb;
+            position: sticky; top: 0; z-index: 2;
+        }
+        .rv-items-table thead th.right { text-align: right }
+        .rv-items-table tbody td {
+            padding: .55rem .65rem;
+            font-size: .85rem; color: #1e293b;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: middle;
+        }
+        .rv-items-table tbody tr { transition: background .1s; background: #fff }
+        .rv-items-table tbody tr:hover { background: #f0f9ff }
+        .rv-items-table tbody tr:nth-child(even) { background: #fafbff }
+        .rv-items-table tbody tr:nth-child(even):hover { background: #f0f9ff }
+        .rv-items-table .item-sr {
+            font-size: .82rem; font-weight: 700; color: #6b7280; width: 40px; text-align: center;
+        }
+        .rv-input-cell {
+            padding: .4rem .5rem; border: 1px solid #e2e8f0; border-radius: 6px;
+            font-size: .82rem; font-family: inherit; font-weight: 500;
+            transition: all .15s; background: #fff; width: 100%;
+        }
+        .rv-input-cell:focus { border-color: #3b82f6; outline: none; box-shadow: 0 0 0 2px rgba(59,130,246,.1) }
+        .rv-input-cell.num-input {
+            text-align: right; font-family: 'Outfit', sans-serif; font-weight: 600;
+        }
+        .rv-select-cell {
+            padding: .35rem .4rem; border: 1px solid #e2e8f0; border-radius: 6px;
+            font-size: .72rem; font-family: inherit; background: #fff;
+            color: #374151; font-weight: 600; width: 100%;
+        }
+        .rv-select-cell:focus { border-color: #3b82f6; outline: none }
+
+        /* Debit/Credit colors */
+        .debit-input { color: #dc2626 !important }
+        .credit-input { color: #059669 !important }
+
+        /* ═══ SUMMARY BAR ═══ */
+        .rv-summary-bar {
+            display: flex; align-items: center; justify-content: flex-end; gap: 1.5rem;
+            margin-top: .75rem; padding: .65rem 1rem;
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            border-radius: 10px; color: #fff;
+        }
+        .rv-summary-item {
+            display: flex; align-items: center; gap: .5rem;
+        }
+        .rv-summary-label {
+            font-size: .72rem; font-weight: 600; opacity: .6;
+        }
+        .rv-summary-value {
+            font-size: 1rem; font-weight: 800; font-family: 'Outfit', sans-serif;
+        }
+        .rv-summary-value.credit { color: #34d399 }
+        .rv-summary-value.debit { color: #fca5a5 }
+
+        /* ═══ BOTTOM BAR ═══ */
+        .rv-bottom-bar {
+            padding: .75rem 1.5rem;
+            background: #fff;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+        }
+        .rv-bottom-left {
+            display: flex; align-items: center; gap: .75rem;
+        }
+        .rv-bottom-stat {
+            font-size: .75rem; color: #6b7280; font-weight: 500;
+        }
+        .rv-bottom-stat strong {
+            font-weight: 800; font-family: 'Outfit',sans-serif; color: #0f172a;
+        }
+        .rv-bottom-right { display: flex; gap: .5rem }
+        .rv-action-btn {
+            padding: .55rem 1.15rem;
+            border-radius: 8px;
+            font-size: .82rem;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: inherit;
+            border: 1px solid #e2e8f0;
+            background: #fff;
+            color: #374151;
+            transition: all .15s;
+        }
+        .rv-action-btn:hover { border-color: #1e3a8a; color: #1e3a8a }
+        .rv-action-btn.save-btn {
+            background: #1e293b; color: #fff; border-color: #1e293b;
+        }
+        .rv-action-btn.save-btn:hover { background: #0f172a }
+        .rv-action-btn.approve-btn {
+            background: linear-gradient(135deg, #059669, #10b981);
+            color: #fff; border-color: transparent;
+        }
+        .rv-action-btn.approve-btn:hover { box-shadow: 0 4px 16px rgba(5,150,105,.3); transform: translateY(-1px) }
+        .rv-action-btn:disabled { opacity: .5; cursor: not-allowed; pointer-events: none }
+
+        /* Toast */
+        #toast-container {
+            position: fixed; top: 1rem; right: 1rem; z-index: 30000;
+            display: flex; flex-direction: column; gap: .4rem;
+        }
+
+        @media (max-width: 900px) {
+            .rv-layout { flex-direction: column }
+            .rv-pdf-panel { width: 100%; height: 40vh; min-width: unset }
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+</head>
+
+<body>
+    <!-- ═══ TOP BAR ═══ -->
+    <div class="rv-topbar">
+        <a href="#" class="rv-back" id="back-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+            </svg>
+            Back
+        </a>
+        <div class="rv-topbar-divider"></div>
+        <div class="rv-topbar-title">🏦 Bank Statement Review</div>
+        <div class="rv-topbar-divider"></div>
+        <div class="rv-topbar-company" id="rv-company-name">Loading...</div>
+        <div class="rv-topbar-right">
+            <span class="rv-topbar-badge ai">AI Extracted</span>
+            <span class="rv-topbar-badge pending" id="rv-status-badge">Processing</span>
+        </div>
+    </div>
+
+    <!-- ═══ MAIN LAYOUT ═══ -->
+    <div class="rv-layout">
+        <!-- LEFT: PDF Viewer -->
+        <div class="rv-pdf-panel">
+            <div class="rv-pdf-toolbar">
+                <div class="rv-pdf-page-info">
+                    <input type="text" value="1" id="rv-page-num" readonly>
+                    <span>/ <span id="rv-page-total">1</span></span>
+                </div>
+                <div class="rv-pdf-sep"></div>
+                <button class="rv-pdf-btn" title="Previous Page" onclick="changePage(-1)">‹</button>
+                <button class="rv-pdf-btn" title="Next Page" onclick="changePage(1)">›</button>
+                <div class="rv-pdf-sep"></div>
+                <button class="rv-pdf-btn" title="Zoom Out" onclick="zoomPdf(-0.15)">−</button>
+                <button class="rv-pdf-btn" title="Zoom In" onclick="zoomPdf(0.15)">+</button>
+                <button class="rv-pdf-btn" title="Fit Width" onclick="zoomPdf(0)" style="font-size:.6rem;font-weight:700">FIT</button>
+                <div class="rv-pdf-toolbar-right">
+                    <button class="rv-pdf-btn" title="Open in new tab" onclick="openPdfNewTab()">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                    </button>
+                </div>
+            </div>
+            <div class="rv-pdf-body" id="rv-pdf-body">
+                <div class="rv-pdf-placeholder">
+                    <div class="rv-pdf-placeholder-icon">📄</div>
+                    <h3>Loading bank statement...</h3>
+                    <p>Fetching the PDF from storage</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT: Form -->
+        <div class="rv-form-panel">
+            <div class="rv-form-scroll" id="rv-form-scroll">
+                <!-- Statement Header -->
+                <div class="rv-form-row">
+                    <div class="rv-fg">
+                        <label><span class="req">*</span> Bank Name <span class="ai-tag">AI</span></label>
+                        <input type="text" id="rv-bank-name" placeholder="Bank Name" class="ai-fill">
+                    </div>
+                    <div class="rv-fg">
+                        <label>Account Number <span class="ai-tag">AI</span></label>
+                        <input type="text" id="rv-account-no" placeholder="Account Number" class="ai-fill">
+                    </div>
+                    <div class="rv-fg">
+                        <label>Statement File</label>
+                        <input type="text" id="rv-filename" disabled style="background:#f8fafc">
+                    </div>
+                </div>
+
+                <!-- Period & Balances -->
+                <div class="rv-form-row four-col">
+                    <div class="rv-fg">
+                        <label>Period Start</label>
+                        <input type="date" id="rv-period-start" class="ai-fill">
+                    </div>
+                    <div class="rv-fg">
+                        <label>Period End</label>
+                        <input type="date" id="rv-period-end" class="ai-fill">
+                    </div>
+                    <div class="rv-fg">
+                        <label>Opening Balance</label>
+                        <input type="text" id="rv-opening" class="ai-fill" style="font-family:'Outfit',sans-serif;font-weight:700">
+                    </div>
+                    <div class="rv-fg">
+                        <label>Closing Balance</label>
+                        <input type="text" id="rv-closing" class="ai-fill" style="font-family:'Outfit',sans-serif;font-weight:700">
+                    </div>
+                </div>
+
+                <!-- Transactions -->
+                <div class="rv-section-title">Transactions <span style="margin-left:auto;font-size:.62rem;font-weight:600;color:#3b82f6" id="rv-txn-count">0 rows</span></div>
+                <div class="rv-items-card">
+                    <div style="max-height:calc(100vh - 420px);overflow-y:auto">
+                    <table class="rv-items-table">
+                        <thead>
+                            <tr>
+                                <th style="width:40px;text-align:center">Sr.</th>
+                                <th style="width:100px">Date</th>
+                                <th style="min-width:200px">Narration / Description</th>
+                                <th style="width:100px">Reference</th>
+                                <th class="right" style="width:110px">Debit (₹)</th>
+                                <th class="right" style="width:110px">Credit (₹)</th>
+                                <th class="right" style="width:110px">Balance (₹)</th>
+                                <th style="width:110px">Category</th>
+                                <th style="width:130px">Party Name</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rv-txn-tbody">
+                            <tr><td colspan="9" style="text-align:center;padding:2rem;color:#9ca3af">Loading transactions...</td></tr>
+                        </tbody>
+                    </table>
+                    </div>
+                </div>
+
+                <!-- Summary -->
+                <div class="rv-summary-bar">
+                    <div class="rv-summary-item">
+                        <span class="rv-summary-label">Total Credits</span>
+                        <span class="rv-summary-value credit" id="rv-total-credits">₹ 0</span>
+                    </div>
+                    <div class="rv-summary-item">
+                        <span class="rv-summary-label">Total Debits</span>
+                        <span class="rv-summary-value debit" id="rv-total-debits">₹ 0</span>
+                    </div>
+                    <div class="rv-summary-item">
+                        <span class="rv-summary-label">Closing</span>
+                        <span class="rv-summary-value" id="rv-closing-final">₹ 0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Action Bar -->
+            <div class="rv-bottom-bar">
+                <div class="rv-bottom-left">
+                    <div class="rv-bottom-stat">Bank: <strong id="rv-bank-label">-</strong></div>
+                    <div class="rv-bottom-stat">|</div>
+                    <div class="rv-bottom-stat">Account: <strong id="rv-acct-label">-</strong></div>
+                    <div class="rv-bottom-stat">|</div>
+                    <div class="rv-bottom-stat">Txns: <strong id="rv-txn-label">0</strong></div>
+                </div>
+                <div class="rv-bottom-right">
+                    <button class="rv-action-btn" onclick="goBack()">Cancel</button>
+                    <button class="rv-action-btn save-btn" id="btn-save" onclick="handleSave()">💾 Save</button>
+                    <button class="rv-action-btn approve-btn" id="btn-approve" onclick="handleApprove()">✅ Approve</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast-container"></div>
+
+    <script src="api_config.js"></script>
+    <script src="session-manager.js?v=2"></script>
+    <script>
+        if (!requireAuth()) { }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const statementId = urlParams.get('id');
+        const clientId = urlParams.get('clientId');
+        const serviceName = urlParams.get('service') || 'Data Entry';
+
+        const backUrl = `transactions.html?clientId=${clientId}&service=${encodeURIComponent(serviceName)}`;
+        document.getElementById('back-link').href = backUrl;
+
+        let pdfUrl = null;
+        let pdfDoc = null;
+        let currentPage = 1;
+        let pdfScale = 1.2;
+        let totalPages = 0;
+        let statementData = null;
+        let transactionsData = [];
+
+        const BANK_CATEGORIES = [
+            'Salary','Rent','Utilities','GST Payment','TDS','Bank Charges',
+            'Interest Income','Interest Paid','Loan EMI','Insurance',
+            'Vendor Payment','Client Receipt','Transfer','Cash Withdrawal',
+            'Cash Deposit','UPI','Dividend','Refund','Government','Other'
+        ];
+
+        // ═══ HELPERS ═══
+        function formatINR(val) {
+            const n = Math.abs(Number(val) || 0);
+            return '₹ ' + n.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+        function showToast(msg, type = 'info') {
+            const tc = document.getElementById('toast-container');
+            const bg = type === 'success' ? '#059669' : type === 'error' ? '#dc2626' : '#1e3a8a';
+            const t = document.createElement('div');
+            t.style.cssText = `background:${bg};color:#fff;padding:.6rem 1.1rem;border-radius:8px;font-size:.82rem;font-weight:600;box-shadow:0 4px 14px rgba(0,0,0,.15);font-family:inherit`;
+            t.textContent = msg;
+            tc.appendChild(t);
+            setTimeout(() => { t.style.opacity = '0'; t.style.transition = 'opacity .3s'; setTimeout(() => t.remove(), 300); }, 3500);
+        }
+        function goBack() { window.location.href = backUrl; }
+
+        // ═══ LOAD STATEMENT ═══
+        async function loadStatement() {
+            if (!statementId) {
+                showToast('No statement ID provided', 'error');
+                return;
+            }
+
+            try {
+                // Load statement detail + transactions in parallel
+                const [stmtRes, txnRes] = await Promise.all([
+                    authFetch(`/bank-statements/${statementId}`),
+                    authFetch(`/bank-statements/${statementId}/transactions`),
+                ]);
+
+                if (!stmtRes.ok) throw new Error('Statement not found');
+                statementData = await stmtRes.json();
+                transactionsData = txnRes.ok ? await txnRes.json() : [];
+
+                populateForm(statementData);
+                populateTransactions(transactionsData);
+                loadPdf();
+            } catch (e) {
+                showToast('Failed to load statement: ' + e.message, 'error');
+            }
+        }
+
+        // ═══ POPULATE FORM ═══
+        function populateForm(s) {
+            document.getElementById('rv-bank-name').value = s.bank_name || '';
+            document.getElementById('rv-account-no').value = s.account_number || '';
+            document.getElementById('rv-filename').value = s.original_filename || '';
+            document.getElementById('rv-period-start').value = s.period_start || '';
+            document.getElementById('rv-period-end').value = s.period_end || '';
+            document.getElementById('rv-opening').value = s.opening_balance != null ? s.opening_balance : '';
+            document.getElementById('rv-closing').value = s.closing_balance != null ? s.closing_balance : '';
+
+            // Company name in topbar
+            document.getElementById('rv-company-name').textContent = s.bank_name || s.original_filename || 'Bank Statement';
+
+            // Status badge
+            const badge = document.getElementById('rv-status-badge');
+            if (s.status === 'completed') {
+                badge.textContent = 'COMPLETED';
+                badge.className = 'rv-topbar-badge completed';
+            } else {
+                badge.textContent = s.status?.toUpperCase() || 'PENDING';
+            }
+
+            // Bottom bar
+            document.getElementById('rv-bank-label').textContent = s.bank_name || '-';
+            document.getElementById('rv-acct-label').textContent = s.account_number || '-';
+            document.getElementById('rv-txn-label').textContent = s.transaction_count || 0;
+
+            // Summary bar
+            document.getElementById('rv-total-credits').textContent = s.total_credits ? formatINR(s.total_credits) : '₹ 0';
+            document.getElementById('rv-total-debits').textContent = s.total_debits ? formatINR(s.total_debits) : '₹ 0';
+            document.getElementById('rv-closing-final').textContent = s.closing_balance != null ? formatINR(s.closing_balance) : '₹ 0';
+        }
+
+        // ═══ POPULATE TRANSACTIONS ═══
+        function populateTransactions(txns) {
+            const tbody = document.getElementById('rv-txn-tbody');
+            document.getElementById('rv-txn-count').textContent = `${txns.length} rows`;
+
+            if (txns.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:2rem;color:#9ca3af">No transactions extracted</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = txns.map((t, i) => {
+                const catOptions = BANK_CATEGORIES.map(c =>
+                    `<option value="${c}" ${c === t.category ? 'selected' : ''}>${c}</option>`
+                ).join('');
+
+                return `<tr data-txn-id="${t.id}">
+                    <td class="item-sr">${i + 1}</td>
+                    <td><input type="date" class="rv-input-cell bs-edit" data-field="date" value="${t.date || ''}"></td>
+                    <td><input type="text" class="rv-input-cell bs-edit" data-field="description" value="${(t.description || '').replace(/"/g, '&quot;')}" title="${(t.description || '').replace(/"/g, '&quot;')}"></td>
+                    <td><input type="text" class="rv-input-cell bs-edit" data-field="reference_no" value="${(t.reference_no || '').replace(/"/g, '&quot;')}" style="font-size:.72rem;font-family:monospace"></td>
+                    <td><input type="number" class="rv-input-cell num-input debit-input bs-edit" data-field="debit" value="${t.debit || ''}" step="0.01"></td>
+                    <td><input type="number" class="rv-input-cell num-input credit-input bs-edit" data-field="credit" value="${t.credit || ''}" step="0.01"></td>
+                    <td><input type="number" class="rv-input-cell num-input bs-edit" data-field="balance" value="${t.balance != null ? t.balance : ''}" step="0.01" style="font-weight:700"></td>
+                    <td><select class="rv-select-cell bs-edit" data-field="category">${catOptions}</select></td>
+                    <td><input type="text" class="rv-input-cell bs-edit" data-field="party_name" value="${(t.party_name || '').replace(/"/g, '&quot;')}"></td>
+                </tr>`;
+            }).join('');
+        }
+
+        // ═══ PDF VIEWER ═══
+        async function loadPdf() {
+            try {
+                const res = await authFetch(`/bank-statements/${statementId}/pdf`);
+                if (!res.ok) {
+                    document.getElementById('rv-pdf-body').innerHTML = `
+                        <div class="rv-pdf-placeholder">
+                            <div class="rv-pdf-placeholder-icon">📄</div>
+                            <h3>PDF not available</h3>
+                            <p>The statement PDF was not stored. Upload again to see it here.</p>
+                        </div>`;
+                    return;
+                }
+                const data = await res.json();
+                pdfUrl = data.url;
+
+                pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+                pdfDoc = await pdfjsLib.getDocument(pdfUrl).promise;
+                totalPages = pdfDoc.numPages;
+                document.getElementById('rv-page-total').textContent = totalPages;
+                renderPage(1);
+            } catch (e) {
+                console.error('PDF load error:', e);
+                document.getElementById('rv-pdf-body').innerHTML = `
+                    <div class="rv-pdf-placeholder">
+                        <div class="rv-pdf-placeholder-icon">❌</div>
+                        <h3>Failed to load PDF</h3>
+                        <p>${e.message || 'Unknown error'}</p>
+                    </div>`;
+            }
+        }
+
+        async function renderPage(pageNum) {
+            if (!pdfDoc || pageNum < 1 || pageNum > totalPages) return;
+            currentPage = pageNum;
+            document.getElementById('rv-page-num').value = currentPage;
+
+            const page = await pdfDoc.getPage(pageNum);
+            const viewport = page.getViewport({ scale: pdfScale });
+
+            const body = document.getElementById('rv-pdf-body');
+            body.innerHTML = '';
+            const canvas = document.createElement('canvas');
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+            body.appendChild(canvas);
+
+            const ctx = canvas.getContext('2d');
+            await page.render({ canvasContext: ctx, viewport }).promise;
+        }
+
+        function changePage(delta) {
+            const newPage = currentPage + delta;
+            if (newPage >= 1 && newPage <= totalPages) renderPage(newPage);
+        }
+
+        function zoomPdf(delta) {
+            if (delta === 0) {
+                // fit to width
+                const panelWidth = document.querySelector('.rv-pdf-body').clientWidth - 20;
+                pdfScale = panelWidth / 612; // approx A4 width
+            } else {
+                pdfScale = Math.max(0.4, Math.min(3.0, pdfScale + delta));
+            }
+            renderPage(currentPage);
+        }
+
+        function openPdfNewTab() {
+            if (pdfUrl) window.open(pdfUrl, '_blank');
+        }
+
+        // ═══ SAVE ═══
+        async function handleSave() {
+            const btn = document.getElementById('btn-save');
+            btn.textContent = '⏳ Saving...';
+            btn.disabled = true;
+
+            try {
+                // Collect transaction edits
+                const rows = document.querySelectorAll('#rv-txn-tbody tr[data-txn-id]');
+                const transactions = [];
+                rows.forEach(row => {
+                    const txnId = row.dataset.txnId;
+                    const data = { id: txnId };
+                    row.querySelectorAll('.bs-edit').forEach(inp => {
+                        const field = inp.dataset.field;
+                        if (inp.type === 'number') {
+                            data[field] = inp.value ? parseFloat(inp.value) : null;
+                        } else if (inp.tagName === 'SELECT') {
+                            data[field] = inp.value;
+                        } else {
+                            data[field] = inp.value || null;
+                        }
+                    });
+                    transactions.push(data);
+                });
+
+                const res = await authFetch(`/bank-statements/${statementId}/transactions`, {
+                    method: 'PUT',
+                    body: JSON.stringify({ transactions }),
+                });
+
+                if (res && res.ok) {
+                    const result = await res.json();
+                    showToast(`✅ ${result.message}`, 'success');
+                } else {
+                    throw new Error('Save failed');
+                }
+            } catch (e) {
+                showToast('❌ Failed to save: ' + e.message, 'error');
+            } finally {
+                btn.textContent = '💾 Save';
+                btn.disabled = false;
+            }
+        }
+
+        // ═══ APPROVE ═══
+        async function handleApprove() {
+            const btn = document.getElementById('btn-approve');
+            btn.textContent = '⏳ Approving...';
+            btn.disabled = true;
+
+            try {
+                // Save first
+                await handleSave();
+                showToast('✅ Statement approved!', 'success');
+                // Update status badge
+                const badge = document.getElementById('rv-status-badge');
+                badge.textContent = 'APPROVED';
+                badge.className = 'rv-topbar-badge completed';
+            } catch (e) {
+                showToast('❌ Approve failed', 'error');
+            } finally {
+                btn.textContent = '✅ Approve';
+                btn.disabled = false;
+            }
+        }
+
+        // ═══ INIT ═══
+        loadStatement();
+    </script>
+</body>
+
+</html>

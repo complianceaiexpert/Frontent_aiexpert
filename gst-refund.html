@@ -475,7 +475,7 @@
                 </li>
                 <li class="sidebar-item">
                     <a class="sidebar-link"
-                        onclick="navigateToPage('service-gst-refund-webview.html', 'calculate-refund')">
+                        onclick="navigateToPage('refund-calculator.html')">
                         <span class="link-icon">🧮</span>
                         <span class="link-text">Calculate Refund</span>
                     </a>
@@ -872,9 +872,14 @@
                 let linksHtml = '';
                 if (s.links) {
                     linksHtml = s.links.map(l => {
-                        const url = l.isSection
-                            ? `service-gst-refund-webview.html?${new URLSearchParams(window.location.search).toString()}&section=${l.href}`
-                            : toolUrl(l.href);
+                        let url;
+                        if (l.isSection && l.href === 'calculate-refund') {
+                            url = `refund-calculator.html?${new URLSearchParams(window.location.search).toString()}`;
+                        } else if (l.isSection) {
+                            url = `service-gst-refund-webview.html?${new URLSearchParams(window.location.search).toString()}&section=${l.href}`;
+                        } else {
+                            url = toolUrl(l.href);
+                        }
                         return `<a class="tl-link ${l.cls || ''}" href="${url}">${l.text}</a>`;
                     }).join('');
                 }
