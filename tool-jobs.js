@@ -11,6 +11,15 @@
  *   filePrefix — download file prefix, e.g. 'IMS_vs_PR_Report'
  */
 
+// Auto-load SheetJS for client-side Excel export
+(function() {
+    if (!window.XLSX && !document.querySelector('script[src*="sheetjs"]') && !document.querySelector('script[src*="xlsx"]')) {
+        const s = document.createElement('script');
+        s.src = 'https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js';
+        document.head.appendChild(s);
+    }
+})();
+
 let _tjPollingInterval = null;
 let _tjConfig = {};
 
@@ -198,7 +207,7 @@ function _renderToolJobs(jobs) {
                     <span class="job-status ${statusClass}">${job.status}</span>
                     ${driveBtn}
                     ${job.status === 'COMPLETED'
-                ? `<button class="job-download" onclick="downloadJobFile('${job.id}')">⬇ Download</button>`
+                ? `<button class="job-download" onclick="downloadJobFile('${job.id}')" style="padding:0.4rem 1rem;font-size:0.78rem;gap:0.4rem">📥 Download Working Paper</button>`
                 : errorMsg}
                 </div>
             </div>
@@ -232,4 +241,51 @@ async function downloadJobFile(jobId) {
         console.error('Download error:', e);
         alert('Error downloading file');
     }
+}
+
+/**
+ * Universal client-side Excel export for on-screen tables.
+ * Call from any tool: exportTableToExcel(selector, filename)
+ * @param {string} selector - CSS selector for the table element(s) to export
+ * @param {string} filename - Output filename (without .xlsx)
+ */
+function exportTableToExcel(selector, filename) {
+    if (!window.XLSX) {
+        alert('Excel library is loading. Please try again in a moment.');
+        return;
+    }
+    const tables = document.querySelectorAll(selector);
+    if (!tables.length) {
+        alert('No data to export.');
+        return;
+    }
+    const wb = XLSX.utils.book_new();
+    tables.forEach((table, idx) => {
+        const sheetName = table.dataset.sheetName || `Sheet${idx + 1}`;
+        const ws = XLSX.utils.table_to_sheet(table);
+        XLSX.utils.book_append_sheet(wb, ws, sheetName.substring(0, 31));
+    });
+    XLSX.writeFile(wb, `${filename || 'Working_Paper'}.xlsx`);
+}
+
+/**
+ * Export any data array to Excel.
+ * Call: exportDataToExcel(data, sheetName, filename)
+ * @param {Array<Object>} data - Array of objects
+ * @param {string} sheetName - Sheet name
+ * @param {string} filename - Output filename (without .xlsx)
+ */
+function exportDataToExcel(data, sheetName, filename) {
+    if (!window.XLSX) {
+        alert('Excel library is loading. Please try again in a moment.');
+        return;
+    }
+    if (!data || !data.length) {
+        alert('No data to export.');
+        return;
+    }
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.json_to_sheet(data);
+    XLSX.utils.book_append_sheet(wb, ws, (sheetName || 'Data').substring(0, 31));
+    XLSX.writeFile(wb, `${filename || 'Working_Paper'}.xlsx`);
 }

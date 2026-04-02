@@ -190,6 +190,18 @@
             color: #a16207
         }
 
+        .rate-badge {
+            display: inline-flex;
+            padding: .2rem .5rem;
+            border-radius: 5px;
+            font-weight: 700;
+            font-size: .72rem;
+            background: #f0fdf4;
+            color: #15803d;
+            border: 1px solid #bbf7d0;
+            white-space: nowrap
+        }
+
         .score-bar-wrap {
             display: flex;
             align-items: center;
@@ -355,7 +367,7 @@
                         <div class="search-row">
                             <input class="search-input" id="search-input" type="text"
                                 placeholder="e.g. cotton fabric, accounting services, steel bars..."
-                                onkeydown="if(event.key==='Enter')doSearch()">
+                                oninput="debouncedSearch()" onkeydown="if(event.key==='Enter'){clearTimeout(_debounceTimer);doSearch()}">
                             <button class="btn btn-search" id="btn-search" onclick="doSearch()">
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                     stroke-width="2.5">
@@ -373,6 +385,7 @@
                                         <th>Code</th>
                                         <th>Type</th>
                                         <th>Description</th>
+                                        <th>GST Rate</th>
                                         <th>Match</th>
                                     </tr>
                                 </thead>
@@ -500,10 +513,10 @@
 
         function renderResults(data, query) {
             const wrap = document.getElementById('results-wrap'), body = document.getElementById('results-body'), count = document.getElementById('result-count');
-            if (!data.length) { wrap.classList.add('visible'); count.textContent = 'No matches found'; body.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#94a3b8;padding:1.5rem">No matching HSN/SAC codes found. Try a different description.</td></tr>'; return; }
+            if (!data.length) { wrap.classList.add('visible'); count.textContent = 'No matches found'; body.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#94a3b8;padding:1.5rem">No matching HSN/SAC codes found. Try a different description.</td></tr>'; return; }
             count.textContent = `${data.length} match${data.length > 1 ? 'es' : ''} for "${query}"`;
             const sc = s => s >= 80 ? '#16a34a' : s >= 60 ? '#ca8a04' : '#ef4444';
-            body.innerHTML = data.map(r => `<tr><td><span class="code-badge">${r.code}</span></td><td><span class="type-badge ${r.type.toLowerCase()}">${r.type}</span></td><td>${highlightMatch(r.description, query)}</td><td><div class="score-bar-wrap"><div class="score-bar"><div class="score-fill" style="width:${r.score}%;background:${sc(r.score)}"></div></div><span class="score-text" style="color:${sc(r.score)}">${r.score}%</span></div></td></tr>`).join('');
+            body.innerHTML = data.map(r => `<tr><td><span class="code-badge">${r.code}</span></td><td><span class="type-badge ${r.type.toLowerCase()}">${r.type}</span></td><td>${highlightMatch(r.description, query)}</td><td>${r.gst_rate ? `<span class="rate-badge">${r.gst_rate}</span>` : '—'}</td><td><div class="score-bar-wrap"><div class="score-bar"><div class="score-fill" style="width:${r.score}%;background:${sc(r.score)}"></div></div><span class="score-text" style="color:${sc(r.score)}">${r.score}%</span></div></td></tr>`).join('');
             wrap.classList.add('visible');
         }
 
@@ -560,6 +573,15 @@
         zone.addEventListener('drop', e => { e.preventDefault(); zone.style.borderColor = ''; if (e.dataTransfer.files.length > 0) { document.getElementById('bulk-file').files = e.dataTransfer.files; onFileSelected(document.getElementById('bulk-file')); } });
 
         document.getElementById('search-input').focus();
+
+        // Debounced live search — fires after 300ms of no typing, min 2 chars
+        let _debounceTimer = null;
+        function debouncedSearch() {
+            clearTimeout(_debounceTimer);
+            const q = document.getElementById('search-input').value.trim();
+            if (q.length < 2) return;
+            _debounceTimer = setTimeout(() => doSearch(), 350);
+        }
     </script>
 </body>
 

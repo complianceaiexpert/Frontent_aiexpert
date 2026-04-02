@@ -24,6 +24,7 @@ const GST_TOOLS = [
         section: 'Utilities', items: [
             { id: 'gstin-validator', icon: '🔍', name: 'GSTIN Validator', page: 'tool-gstin-validator.html' },
             { id: 'ai-block-credit', icon: '🚫', name: 'AI Block Credit', page: 'tool-ai-block-credit.html' },
+            { id: 'rule42-itc', icon: '⚖️', name: 'Rule 42 ITC', page: 'tool-rule42-itc.html', badge: 'NEW', badgeType: 'green' },
             { id: 'hsn-locator', icon: '🔎', name: 'HSN Locator', page: 'tool-hsn-locator.html' },
             { id: 'hsn-plotter', icon: '📈', name: 'HSN Plotter', page: 'tool-hsn-plotter.html' },
         ]

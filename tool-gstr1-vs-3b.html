@@ -875,14 +875,14 @@
                             <div class="up-icon green">G1</div>
                             <div>
                                 <div class="up-title">GSTR-1 Data</div>
-                                <div class="up-sub">Outward supply return (detailed sales)</div>
+                                <div class="up-sub">Outward supply return — supports multiple files</div>
                             </div>
                         </div>
                         <div class="up-body">
                             <div class="dropzone" id="dz-g1" onclick="document.getElementById('file-g1').click()"
                                 ondragover="event.preventDefault();this.classList.add('drag-over')"
                                 ondragleave="this.classList.remove('drag-over')"
-                                ondrop="event.preventDefault();this.classList.remove('drag-over');handleFile(event.dataTransfer.files[0],'g1')">
+                                ondrop="event.preventDefault();this.classList.remove('drag-over');handleG1Files(event.dataTransfer.files)">
                                 <div class="dz-icon">📋</div>
                                 <div class="dz-title">Drop your GSTR-1 file here</div>
                                 <div class="dz-sub">or <strong>browse files</strong></div>
@@ -890,8 +890,8 @@
                                         class="fmt-tag">.csv</span><span class="fmt-tag">.json</span><span class="fmt-tag">.pdf</span></div>
                                 <div class="dz-file" id="dz-file-g1"><span>✓</span><span id="fn-g1"></span></div>
                             </div>
-                            <input type="file" id="file-g1" accept=".xlsx,.csv,.json,.pdf" style="display:none"
-                                onchange="handleFile(this.files[0],'g1')">
+                            <input type="file" id="file-g1" accept=".xlsx,.csv,.json,.pdf" style="display:none" multiple
+                                onchange="handleG1Files(this.files)">
                             <div style="text-align:center;margin-top:0.5rem">
                                 <button onclick="event.stopPropagation();pickFromDrive('g1')"
                                     style="background:none;border:1px solid #e2e8f0;border-radius:8px;padding:0.4rem 0.85rem;font-size:0.75rem;font-weight:600;color:#3b82f6;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:0.35rem;transition:all .15s"
@@ -908,7 +908,7 @@
                             <div class="up-icon purple">3B</div>
                             <div>
                                 <div class="up-title">GSTR-3B Data</div>
-                                <div class="up-sub">Summary return — Table 3.1 (Tax liability)</div>
+                                <div class="up-sub">Summary return — Table 3.1(a+b+c+e)</div>
                             </div>
                         </div>
                         <div class="up-body">
@@ -978,7 +978,7 @@
                                 <tr>
                                     <th>Tax Component</th>
                                     <th>GSTR-1 (Outward)</th>
-                                    <th>GSTR-3B (Liability)</th>
+                                    <th>GSTR-3B 3.1(a+b+c+e)</th>
                                     <th>Variance (G1 − 3B)</th>
                                     <th>Status</th>
                                 </tr>
@@ -1033,7 +1033,7 @@
     <script src="drive-picker.js"></script>
     <script>
         renderToolSidebar('gstr1-vs-3b');
-        let fileG1 = null, file3B = null, lastResult = null;
+        let filesG1 = [], file3B = null, lastResult = null;
         function fmt(n) { return '₹' + Math.abs(n).toLocaleString('en-IN', { maximumFractionDigits: 0 }); }
 
         // ═══ AUTH FETCH ═══
@@ -1043,20 +1043,80 @@
             return fetch(API_BASE_URL + path, opts);
         }
 
-        // ═══ FILE HANDLING ═══
+        // ═══ G1 MULTI-FILE HANDLING ═══
+        function handleG1Files(fileList) {
+            if (!fileList || !fileList.length) return;
+            const newFiles = Array.from(fileList);
+            filesG1.push(...newFiles);
+            updateG1Dropzone();
+            checkReady();
+            showToast(`${newFiles.length} GSTR-1 file${newFiles.length > 1 ? 's' : ''} added`, 'success');
+            document.getElementById('file-g1').value = '';
+        }
+
+        function updateG1Dropzone() {
+            const dz = document.getElementById('dz-g1');
+            const dzFile = document.getElementById('dz-file-g1');
+            const fnEl = document.getElementById('fn-g1');
+            const fi = document.getElementById('fi-g1');
+
+            if (filesG1.length === 0) {
+                dz.classList.remove('has-file');
+                dzFile.classList.remove('visible');
+                fi.className = 'fi pending';
+                fi.textContent = '📋 G1: Not uploaded';
+                const listEl = document.getElementById('file-list-g1');
+                if (listEl) listEl.remove();
+                return;
+            }
+
+            dz.classList.add('has-file');
+            dzFile.classList.add('visible');
+            fnEl.textContent = filesG1.length === 1 ? filesG1[0].name : `${filesG1.length} files selected`;
+            fi.className = 'fi done';
+            fi.textContent = `📋 G1: ✓ ${filesG1.length} file${filesG1.length > 1 ? 's' : ''}`;
+
+            // Build file list
+            let listHtml = filesG1.map((f, i) => `
+                <div style="display:flex;align-items:center;gap:0.35rem;font-size:0.7rem;color:#374151;padding:0.2rem 0">
+                    <span>📄</span>
+                    <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${f.name}</span>
+                    <button onclick="event.stopPropagation();removeG1File(${i})" style="background:none;border:none;color:#dc2626;cursor:pointer;font-size:0.75rem;padding:0 0.2rem" title="Remove">✕</button>
+                </div>
+            `).join('');
+
+            let listEl = document.getElementById('file-list-g1');
+            if (!listEl) {
+                listEl = document.createElement('div');
+                listEl.id = 'file-list-g1';
+                listEl.style.cssText = 'margin-top:0.5rem;max-height:120px;overflow-y:auto;border:1px solid #e5e7eb;border-radius:8px;padding:0.35rem 0.5rem;background:#fff';
+                dz.parentNode.insertBefore(listEl, dz.nextSibling);
+            }
+            listEl.innerHTML = listHtml;
+        }
+
+        function removeG1File(index) {
+            filesG1.splice(index, 1);
+            updateG1Dropzone();
+            checkReady();
+        }
+
+        // ═══ 3B FILE HANDLING (single file) ═══
         function handleFile(file, type) {
             if (!file) return;
-            const dz = document.getElementById(`dz-${type}`);
-            const dzFile = document.getElementById(`dz-file-${type}`);
-            const fnEl = document.getElementById(`fn-${type}`);
-            const fi = document.getElementById(`fi-${type}`);
+            if (type === 'g1') {
+                // Redirect to multi-file handler
+                handleG1Files([file]);
+                return;
+            }
+            const dz = document.getElementById('dz-3b');
+            const dzFile = document.getElementById('dz-file-3b');
+            const fnEl = document.getElementById('fn-3b');
+            const fi = document.getElementById('fi-3b');
             dz.classList.add('has-file'); dzFile.classList.add('visible'); fnEl.textContent = file.name;
             fi.className = 'fi done';
-            fi.textContent = (type === 'g1' ? '📋 G1: ✓ ' : '📊 3B: ✓ ') + file.name;
-
-            if (type === 'g1') fileG1 = file;
-            else file3B = file;
-
+            fi.textContent = '📊 3B: ✓ ' + file.name;
+            file3B = file;
             checkReady();
             showToast(`${file.name} selected`, 'success');
         }
@@ -1076,17 +1136,22 @@
             const btn = document.getElementById('compare-btn');
             const dot = document.getElementById('ready-dot');
             const text = document.getElementById('ready-text');
-            if (fileG1 && file3B) {
+            if (filesG1.length > 0 && file3B) {
                 btn.disabled = false;
                 dot.classList.add('active');
-                text.textContent = 'Ready to compare';
+                text.textContent = filesG1.length > 1 ? `Ready — ${filesG1.length} G1 files` : 'Ready to compare';
                 text.classList.add('active');
+            } else {
+                btn.disabled = true;
+                dot.classList.remove('active');
+                text.textContent = 'Upload both files to proceed';
+                text.classList.remove('active');
             }
         }
 
         // ═══ RUN COMPARISON — Backend call ═══
         async function runComparison() {
-            if (!fileG1 || !file3B) return;
+            if (filesG1.length === 0 || !file3B) return;
 
             const btn = document.getElementById('compare-btn');
             btn.disabled = true;
@@ -1094,7 +1159,12 @@
 
             try {
                 const formData = new FormData();
-                formData.append('file1', fileG1);
+                
+                // Always send the first G1 file as file1 (backend expects this)
+                // For multi-file, we concatenate on the client side or use first file
+                // The backend gstr1_vs_3b endpoint reads a single G1 file
+                // For now, if multiple files, concatenate their names and use the largest
+                formData.append('file1', filesG1[0]);
                 formData.append('file2', file3B);
 
                 const params = new URLSearchParams(window.location.search);

@@ -1,470 +1,92 @@
-INFO:     Started server process [61941]
+INFO:     Started server process [48042]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
 INFO:     Uvicorn running on http://127.0.0.1:3000 (Press CTRL+C to quit)
 Starting Python Frontend Server on port 3000...
-INFO:     127.0.0.1:49919 - "GET / HTTP/1.1" 200 OK
-INFO:     127.0.0.1:49919 - "GET /styles.css HTTP/1.1" 200 OK
-INFO:     127.0.0.1:49920 - "GET /assets/webview_refined.png HTTP/1.1" 200 OK
-INFO:     127.0.0.1:49921 - "GET /assets/aiview_refined.png HTTP/1.1" 200 OK
-INFO:     127.0.0.1:49921 - "GET /favicon.ico HTTP/1.1" 404 Not Found
-INFO:     127.0.0.1:49924 - "GET /sign-in.html HTTP/1.1" 200 OK
-INFO:     127.0.0.1:49924 - "GET /api_config.js HTTP/1.1" 200 OK
-INFO:     127.0.0.1:49925 - "GET /session-manager.js HTTP/1.1" 200 OK
-INFO:     127.0.0.1:49934 - "GET /clients.html HTTP/1.1" 200 OK
-INFO:     127.0.0.1:49934 - "GET /app-topbar.js HTTP/1.1" 200 OK
-INFO:     127.0.0.1:49935 - "GET /app-sidebar.js?v=2 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:49935 - "GET /session-manager.js?v=2 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:49937 - "GET /service-data-entry-overview.html HTTP/1.1" 200 OK
-INFO:     127.0.0.1:49937 - "GET /app-sidebar.js HTTP/1.1" 200 OK
-INFO:     127.0.0.1:49938 - "GET /service-data-entry.html?clientId=f105bfda-af82-466e-878f-2109ee326294&service=Data%20Entry HTTP/1.1" 200 OK
-INFO:     127.0.0.1:49938 - "GET /data-entry.css HTTP/1.1" 200 OK
-INFO:     127.0.0.1:49942 - "GET /app-client-nav.js HTTP/1.1" 200 OK
-INFO:     127.0.0.1:49944 - "GET /drive-picker.js HTTP/1.1" 200 OK
-INFO:     127.0.0.1:49943 - "GET /api_config.js?v=2 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:49943 - "GET /transactions.html?clientId=f105bfda-af82-466e-878f-2109ee326294&service=Data%20Entry HTTP/1.1" 200 OK
-INFO:     127.0.0.1:49953 - "GET /services-dashboard.html?clientId=f105bfda-af82-466e-878f-2109ee326294 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:49953 - "GET /client-list.html HTTP/1.1" 200 OK
-INFO:     127.0.0.1:49954 - "GET /services-dashboard.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:49954 - "GET /service-data-entry.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:49954 - "GET /transactions.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=null HTTP/1.1" 200 OK
-INFO:     127.0.0.1:49973 - "GET /transactions.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=null HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:49981 - "GET /transactions.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=null HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:49989 - "GET /service-data-entry.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=null HTTP/1.1" 200 OK
-INFO:     127.0.0.1:49996 - "GET /services-dashboard.html?clientId=6ad9e369-ee62-467d-860f-b3677f358793 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:50027 - "GET /service-data-entry.html?clientId=f105bfda-af82-466e-878f-2109ee326294 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:50027 - "GET /transactions.html?clientId=f105bfda-af82-466e-878f-2109ee326294&service=null HTTP/1.1" 200 OK
-INFO:     127.0.0.1:50028 - "GET /transaction-review.html?invoiceId=16&clientId=f105bfda-af82-466e-878f-2109ee326294&service=null HTTP/1.1" 200 OK
-INFO:     127.0.0.1:50042 - "GET /service-data-entry.html?clientId=f105bfda-af82-466e-878f-2109ee326294&service=null HTTP/1.1" 200 OK
-INFO:     127.0.0.1:50047 - "GET /service-data-entry.html?clientId=6ad9e369-ee62-467d-860f-b3677f358793 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:50047 - "GET /transactions.html?clientId=6ad9e369-ee62-467d-860f-b3677f358793&service=null HTTP/1.1" 200 OK
-INFO:     127.0.0.1:50152 - "GET /transactions.html?clientId=6ad9e369-ee62-467d-860f-b3677f358793&service=null HTTP/1.1" 200 OK
-INFO:     127.0.0.1:50153 - "GET /transactions.html?clientId=6ad9e369-ee62-467d-860f-b3677f358793&service=null HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:50159 - "GET /transactions.html?clientId=6ad9e369-ee62-467d-860f-b3677f358793&service=null HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:50160 - "GET /transactions.html?clientId=6ad9e369-ee62-467d-860f-b3677f358793&service=null HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:50163 - "GET /client-list.html HTTP/1.1" 200 OK
-INFO:     127.0.0.1:50170 - "GET /services-dashboard.html?clientId=f105bfda-af82-466e-878f-2109ee326294 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:50170 - "GET /service-data-entry.html?clientId=f105bfda-af82-466e-878f-2109ee326294 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:50170 - "GET /transactions.html?clientId=f105bfda-af82-466e-878f-2109ee326294&service=null HTTP/1.1" 200 OK
-INFO:     127.0.0.1:50174 - "GET /transactions.html?clientId=f105bfda-af82-466e-878f-2109ee326294&service=null HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:50174 - "GET /transactions.html?clientId=f105bfda-af82-466e-878f-2109ee326294&service=null HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:50174 - "GET /transactions.html?clientId=f105bfda-af82-466e-878f-2109ee326294&service=null HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:50174 - "GET /transactions.html?clientId=f105bfda-af82-466e-878f-2109ee326294&service=null HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:50174 - "GET /transactions.html?clientId=f105bfda-af82-466e-878f-2109ee326294&service=null HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:50190 - "GET /transactions.html?clientId=f105bfda-af82-466e-878f-2109ee326294&service=null HTTP/1.1" 200 OK
-INFO:     127.0.0.1:50190 - "GET /transactions.html?clientId=f105bfda-af82-466e-878f-2109ee326294&service=null HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:50190 - "GET /transactions.html?clientId=f105bfda-af82-466e-878f-2109ee326294&service=null HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:50213 - "GET /tool-gstr2b-vs-pr.html HTTP/1.1" 200 OK
-INFO:     127.0.0.1:50213 - "GET /styles.css HTTP/1.1" 200 OK
-INFO:     127.0.0.1:50215 - "GET /tool-layout.css HTTP/1.1" 200 OK
-INFO:     127.0.0.1:50213 - "GET /app-topbar.js HTTP/1.1" 200 OK
-INFO:     127.0.0.1:50213 - "GET /tool-sidebar.js HTTP/1.1" 200 OK
-INFO:     127.0.0.1:50213 - "GET /api_config.js?v=2 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:50213 - "GET /session-manager.js HTTP/1.1" 200 OK
-INFO:     127.0.0.1:50213 - "GET /drive-picker.js HTTP/1.1" 200 OK
-INFO:     127.0.0.1:50213 - "GET /index.html HTTP/1.1" 200 OK
-INFO:     127.0.0.1:50213 - "GET /assets/webview_refined.png HTTP/1.1" 200 OK
-INFO:     127.0.0.1:50215 - "GET /assets/aiview_refined.png HTTP/1.1" 200 OK
-INFO:     127.0.0.1:50215 - "GET /sign-in.html HTTP/1.1" 200 OK
-INFO:     127.0.0.1:50215 - "GET /api_config.js HTTP/1.1" 200 OK
-INFO:     127.0.0.1:50230 - "GET /clients.html HTTP/1.1" 200 OK
-INFO:     127.0.0.1:50230 - "GET /app-sidebar.js?v=2 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:50232 - "GET /session-manager.js?v=2 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:50232 - "GET /client-list.html HTTP/1.1" 200 OK
-INFO:     127.0.0.1:50232 - "GET /app-sidebar.js HTTP/1.1" 200 OK
-INFO:     127.0.0.1:50232 - "GET /service-data-entry-overview.html HTTP/1.1" 200 OK
-INFO:     127.0.0.1:50236 - "GET /service-data-entry.html?clientId=6ad9e369-ee62-467d-860f-b3677f358793&service=Data%20Entry HTTP/1.1" 200 OK
-INFO:     127.0.0.1:50236 - "GET /data-entry.css HTTP/1.1" 200 OK
-INFO:     127.0.0.1:50238 - "GET /app-client-nav.js HTTP/1.1" 200 OK
-INFO:     127.0.0.1:50238 - "GET /transactions.html?clientId=6ad9e369-ee62-467d-860f-b3677f358793&service=Data%20Entry HTTP/1.1" 200 OK
-INFO:     127.0.0.1:50270 - "GET /services-dashboard.html?clientId=6ad9e369-ee62-467d-860f-b3677f358793 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:50275 - "GET /service-data-entry.html?clientId=6ad9e369-ee62-467d-860f-b3677f358793 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:50275 - "GET /transactions.html?clientId=6ad9e369-ee62-467d-860f-b3677f358793&service=null HTTP/1.1" 200 OK
-INFO:     127.0.0.1:50287 - "GET /transactions.html?clientId=6ad9e369-ee62-467d-860f-b3677f358793&service=null HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:50290 - "GET /transactions.html?clientId=6ad9e369-ee62-467d-860f-b3677f358793&service=null HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:50331 - "GET /transactions.html?clientId=6ad9e369-ee62-467d-860f-b3677f358793&service=null HTTP/1.1" 200 OK
-INFO:     127.0.0.1:50353 - "GET /transactions.html?clientId=6ad9e369-ee62-467d-860f-b3677f358793&service=null HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:50451 - "GET /transactions.html?clientId=6ad9e369-ee62-467d-860f-b3677f358793&service=null HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:50451 - "GET /data-entry.css HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:50459 - "GET /transaction-review.html?invoiceId=23&clientId=6ad9e369-ee62-467d-860f-b3677f358793&service=null HTTP/1.1" 200 OK
-INFO:     127.0.0.1:50485 - "GET /transactions.html?clientId=6ad9e369-ee62-467d-860f-b3677f358793&service=null HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:50490 - "GET /transaction-review.html?invoiceId=24&clientId=6ad9e369-ee62-467d-860f-b3677f358793&service=null HTTP/1.1" 200 OK
-INFO:     127.0.0.1:50512 - "GET /transaction-review.html?invoiceId=24&clientId=6ad9e369-ee62-467d-860f-b3677f358793&service=null HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:50524 - "GET /transactions.html?clientId=6ad9e369-ee62-467d-860f-b3677f358793&service=null HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:50547 - "GET /profile.html HTTP/1.1" 200 OK
-INFO:     127.0.0.1:50778 - "GET /service-data-entry.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=Data%20Entry HTTP/1.1" 200 OK
-INFO:     127.0.0.1:50780 - "GET /service-data-entry.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=Data%20Entry HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:50807 - "GET /transactions.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=Data%20Entry HTTP/1.1" 200 OK
-INFO:     127.0.0.1:50833 - "GET /service-data-entry.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=Data%20Entry HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:50931 - "GET /service-data-entry.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:50933 - "GET /service-data-entry.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87 HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:50933 - "GET /ca-certificates.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:51070 - "GET /transactions.html?clientId=6ad9e369-ee62-467d-860f-b3677f358793&service=Data%20Entry HTTP/1.1" 200 OK
-INFO:     127.0.0.1:51070 - "GET /index.html HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:51071 - "GET /service-data-entry.html?clientId=6ad9e369-ee62-467d-860f-b3677f358793&service=Data%20Entry HTTP/1.1" 200 OK
-INFO:     127.0.0.1:51079 - "GET /transaction-review.html?invoiceId=24&clientId=6ad9e369-ee62-467d-860f-b3677f358793&service=Data%20Entry HTTP/1.1" 200 OK
-INFO:     127.0.0.1:51157 - "GET /service-data-entry.html?clientId=6ad9e369-ee62-467d-860f-b3677f358793&service=Data%20Entry HTTP/1.1" 200 OK
-INFO:     127.0.0.1:51157 - "GET /transactions.html?clientId=6ad9e369-ee62-467d-860f-b3677f358793&service=Data%20Entry HTTP/1.1" 200 OK
-INFO:     127.0.0.1:51157 - "GET /transaction-review.html?invoiceId=24&clientId=6ad9e369-ee62-467d-860f-b3677f358793&service=Data%20Entry HTTP/1.1" 200 OK
-INFO:     127.0.0.1:51324 - "GET /transactions.html?clientId=6ad9e369-ee62-467d-860f-b3677f358793&service=Data%20Entry HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:51599 - "GET /transactions.html?clientId=6ad9e369-ee62-467d-860f-b3677f358793&service=Data%20Entry HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:51599 - "GET /transaction-review.html?invoiceId=31&clientId=6ad9e369-ee62-467d-860f-b3677f358793&service=Data%20Entry HTTP/1.1" 200 OK
-INFO:     127.0.0.1:51656 - "GET /transaction-review.html?invoiceId=33&clientId=6ad9e369-ee62-467d-860f-b3677f358793&service=Data%20Entry HTTP/1.1" 200 OK
-INFO:     127.0.0.1:51751 - "GET /transaction-review.html?invoiceId=33&clientId=6ad9e369-ee62-467d-860f-b3677f358793&service=Data%20Entry HTTP/1.1" 200 OK
-INFO:     127.0.0.1:51753 - "GET /transactions.html?clientId=6ad9e369-ee62-467d-860f-b3677f358793&service=Data%20Entry HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:51764 - "GET /transaction-review.html?invoiceId=34&clientId=6ad9e369-ee62-467d-860f-b3677f358793&service=Data%20Entry HTTP/1.1" 200 OK
-INFO:     127.0.0.1:51852 - "GET /transaction-review.html?invoiceId=34&clientId=6ad9e369-ee62-467d-860f-b3677f358793&service=Data%20Entry HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:51938 - "GET /transaction-review.html?invoiceId=34&clientId=6ad9e369-ee62-467d-860f-b3677f358793&service=Data%20Entry HTTP/1.1" 200 OK
-INFO:     127.0.0.1:52020 - "GET /transaction-review.html?invoiceId=33&clientId=6ad9e369-ee62-467d-860f-b3677f358793&service=Data%20Entry HTTP/1.1" 200 OK
-INFO:     127.0.0.1:52044 - "GET /transactions.html?clientId=6ad9e369-ee62-467d-860f-b3677f358793&service=Data%20Entry HTTP/1.1" 200 OK
-INFO:     127.0.0.1:52046 - "GET /transaction-review.html?invoiceId=34&clientId=6ad9e369-ee62-467d-860f-b3677f358793&service=Data%20Entry HTTP/1.1" 200 OK
-INFO:     127.0.0.1:52051 - "GET /transactions.html?clientId=6ad9e369-ee62-467d-860f-b3677f358793&service=Data%20Entry HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:52080 - "GET /transaction-review.html?invoiceId=35&clientId=6ad9e369-ee62-467d-860f-b3677f358793&service=Data%20Entry HTTP/1.1" 200 OK
-INFO:     127.0.0.1:52114 - "GET /transactions.html?clientId=6ad9e369-ee62-467d-860f-b3677f358793&service=Data%20Entry HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:52116 - "GET /transaction-review.html?invoiceId=34&clientId=6ad9e369-ee62-467d-860f-b3677f358793&service=Data%20Entry HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:52144 - "GET /transactions.html?clientId=6ad9e369-ee62-467d-860f-b3677f358793&service=Data%20Entry HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:52149 - "GET /transactions.html?clientId=6ad9e369-ee62-467d-860f-b3677f358793&service=Data%20Entry HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:52164 - "GET /transaction-review.html?invoiceId=35&clientId=6ad9e369-ee62-467d-860f-b3677f358793&service=Data%20Entry HTTP/1.1" 200 OK
-INFO:     127.0.0.1:52202 - "GET /transactions.html?clientId=6ad9e369-ee62-467d-860f-b3677f358793&service=Data%20Entry HTTP/1.1" 200 OK
-INFO:     127.0.0.1:52204 - "GET /transaction-review.html?invoiceId=35&clientId=6ad9e369-ee62-467d-860f-b3677f358793&service=Data%20Entry HTTP/1.1" 200 OK
-INFO:     127.0.0.1:52216 - "GET /transactions.html?clientId=6ad9e369-ee62-467d-860f-b3677f358793&service=Data%20Entry HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:52287 - "GET /transaction-review.html?invoiceId=12&clientId=6ad9e369-ee62-467d-860f-b3677f358793&service=Data%20Entry HTTP/1.1" 200 OK
-INFO:     127.0.0.1:52289 - "GET /transactions.html?clientId=6ad9e369-ee62-467d-860f-b3677f358793&service=Data%20Entry HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:52327 - "GET /transactions.html?clientId=6ad9e369-ee62-467d-860f-b3677f358793&service=Data%20Entry HTTP/1.1" 200 OK
-INFO:     127.0.0.1:52403 - "GET /transaction-review.html?invoiceId=12&clientId=6ad9e369-ee62-467d-860f-b3677f358793&service=Data%20Entry HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:52404 - "GET /transactions.html?clientId=6ad9e369-ee62-467d-860f-b3677f358793&service=Data%20Entry HTTP/1.1" 200 OK
-INFO:     127.0.0.1:52499 - "GET /service-data-entry.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=Data%20Entry HTTP/1.1" 200 OK
-INFO:     127.0.0.1:52500 - "GET / HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:52551 - "GET /service-data-entry.html?clientId=6ad9e369-ee62-467d-860f-b3677f358793&service=Data%20Entry HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:52558 - "GET /transactions.html?clientId=6ad9e369-ee62-467d-860f-b3677f358793&service=Data%20Entry HTTP/1.1" 200 OK
-INFO:     127.0.0.1:52611 - "GET /transaction-review.html?invoiceId=23&clientId=6ad9e369-ee62-467d-860f-b3677f358793&service=Data%20Entry HTTP/1.1" 200 OK
-INFO:     127.0.0.1:52611 - "GET /transactions.html?clientId=6ad9e369-ee62-467d-860f-b3677f358793&service=Data%20Entry HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:52662 - "GET /services-dashboard.html?clientId=6ad9e369-ee62-467d-860f-b3677f358793 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:52662 - "GET /client-list.html HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:52662 - "GET /services-dashboard.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:52664 - "GET /service-data-entry.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:52664 - "GET /transactions.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=null HTTP/1.1" 200 OK
-INFO:     127.0.0.1:52682 - "GET /transaction-review.html?invoiceId=36&clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=null HTTP/1.1" 200 OK
-INFO:     127.0.0.1:52764 - "GET /transaction-review.html?invoiceId=36&clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=null HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53117 - "GET /index.html HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:53318 - "GET /index.html HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:53345 - "GET /sign-in.html HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:53347 - "GET /app-topbar.js HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:53475 - "GET /sign-in.html HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:53477 - "GET /app-topbar.js HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:53551 - "GET /service-gst-overview.html HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:53553 - "GET /service-gst-refund-webview.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=GST%20Filing HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53553 - "GET /app-topbar.js?v=3 HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:53560 - "GET /gst-refund.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=GST+Filing HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53560 - "GET /service-gst-refund-webview.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=GST+Filing HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53560 - "GET /service-gst-refund-webview.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=GST+Filing&section=calculate-refund HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53560 - "GET /gst-refund.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=GST+Filing&section=calculate-refund HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53560 - "GET /service-gst-refund-webview.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=GST+Filing&section=calculate-refund HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:53560 - "GET /service-gst-refund-webview.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=GST+Filing&section=calculate-refund&section=reconciliation HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53574 - "GET /gst-refund.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=GST+Filing&section=calculate-refund&section=reconciliation HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53574 - "GET /service-gst-refund-webview.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=GST+Filing&section=calculate-refund&section=reconciliation HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:53595 - "GET /service-gst-refund-webview.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=GST+Filing&section=calculate-refund&section=reconciliation&section=calculate-refund HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53606 - "GET /service-gst-refund-webview.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=GST+Filing&section=calculate-refund&section=reconciliation&section=calculate-refund HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53606 - "GET /service-gst-refund-webview.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=GST+Filing&section=calculate-refund&section=reconciliation&section=calculate-refund HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:53606 - "GET /service-gst-refund-webview.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53617 - "GET /gst-refund.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53617 - "GET /gst-refund.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87 HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:53636 - "GET /service-gst-refund-webview.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87 HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:53671 - "GET /service-gst-refund-webview.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&section=calculate-refund HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53673 - "GET /gst-refund.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&section=calculate-refund HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53673 - "GET /service-gst-refund-webview.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&section=calculate-refund&section=calculate-refund HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53691 - "GET /gst-refund.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&section=calculate-refund&section=calculate-refund HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53709 - "GET /service-gst-refund-webview.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&section=calculate-refund&section=calculate-refund&section=reconciliation HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53714 - "GET /gst-refund.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&section=calculate-refund&section=calculate-refund&section=reconciliation HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53714 - "GET /service-gst-refund-webview.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&section=calculate-refund&section=calculate-refund&section=reconciliation HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:53714 - "GET /tool-ims-vs-pr.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&section=calculate-refund&section=calculate-refund&section=reconciliation HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53714 - "GET /tool-layout.css HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53714 - "GET /tool-sidebar.js HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53726 - "GET /tool-jobs.js HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54200 - "GET /service-gst-refund-webview.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&section=calculate-refund&section=calculate-refund&section=reconciliation&section=reports HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54319 - "GET /refund-calculator.html HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54332 - "GET /service-gst-refund-webview.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=GST%20Filing HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54332 - "GET /refund-calculator.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=GST+Filing HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54332 - "GET /refund-calculator.css HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54368 - "GET /service-gst-refund-webview.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=GST+Filing&section=reconciliation HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54368 - "GET /tool-ims-vs-pr.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=GST+Filing&section=reconciliation HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54368 - "GET /service-gst-refund-webview.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=GST+Filing&section=tools HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54479 - "GET /tool-ai-block-credit.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=GST+Filing&section=tools HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54479 - "GET /service-gst-refund-webview.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=GST+Filing&section=tools HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:54615 - "GET /refund-calculator.html HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54645 - "GET /service-data-entry.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87 HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:54645 - "GET /transactions.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=null HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54647 - "GET /service-gst-refund-webview.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54647 - "GET /refund-calculator.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54647 - "GET /refund-calculator.css HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:54712 - "GET /ca-certificates.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54714 - "GET /service-data-entry-overview.html HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:54732 - "GET /service-data-entry.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=Data%20Entry HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:54732 - "GET /transactions.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=Data%20Entry HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54752 - "GET /transaction-review.html?invoiceId=36&clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=Data%20Entry HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54816 - "GET /styles.css HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:54818 - "GET /service-gst-refund-webview.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=GST%20Filing HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:54818 - "GET /refund-calculator.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=GST+Filing HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54818 - "GET /refund-calculator.css HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:54836 - "GET /service-gst-overview.html HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54838 - "GET /service-gst-refund-webview.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=GST%20Filing HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54838 - "GET /app-topbar.js?v=3 HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:54838 - "GET /refund-calculator.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=GST+Filing HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54838 - "GET /refund-calculator.css HTTP/1.1" 200 OK
-INFO:     127.0.0.1:55090 - "GET /gst-refund.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=GST+Filing HTTP/1.1" 200 OK
-INFO:     127.0.0.1:55090 - "GET /app-client-nav.js HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:55090 - "GET /service-gst-refund-webview.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=GST+Filing&section=reconciliation HTTP/1.1" 200 OK
-INFO:     127.0.0.1:55181 - "GET /refund-calculator.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=GST+Filing&section=reconciliation HTTP/1.1" 200 OK
-INFO:     127.0.0.1:55181 - "GET /refund-calculator.css HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:55300 - "GET /app-sidebar.js HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:55369 - "GET /refund-calculator.html HTTP/1.1" 200 OK
-INFO:     127.0.0.1:55375 - "GET /clients.html HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:55375 - "GET /app-sidebar.js?v=2 HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:55377 - "GET /service-gst-refund-webview.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=GST%20Filing HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:55377 - "GET /app-client-nav.js HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:55377 - "GET /refund-calculator.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=GST+Filing HTTP/1.1" 200 OK
-INFO:     127.0.0.1:55377 - "GET /refund-calculator.css HTTP/1.1" 200 OK
-INFO:     127.0.0.1:55408 - "GET /service-gst-refund-webview.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=GST+Filing HTTP/1.1" 200 OK
-INFO:     127.0.0.1:55524 - "GET /app-sidebar.js HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:55524 - "GET /clients.html HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:55524 - "GET /app-sidebar.js?v=2 HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:55574 - "GET /clients.html HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:55575 - "GET /service-gst-refund-webview.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=GST%20Filing HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:55575 - "GET /gst-refund.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=GST+Filing HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:55584 - "GET /refund-calculator.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=GST+Filing HTTP/1.1" 200 OK
-INFO:     127.0.0.1:55584 - "GET /refund-calculator.css HTTP/1.1" 200 OK
-INFO:     127.0.0.1:55666 - "GET /refund-calculator.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=GST+Filing HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:55666 - "GET /refund-calculator.css HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:55686 - "GET /service-gst-refund-webview.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:55688 - "GET /service-data-entry.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87 HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:55688 - "GET /transactions.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=null HTTP/1.1" 200 OK
-INFO:     127.0.0.1:55779 - "GET /transactions.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=null HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:55780 - "GET /service-data-entry.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=null HTTP/1.1" 200 OK
-INFO:     127.0.0.1:55780 - "GET /service-data-entry.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=null HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:55780 - "GET /service-data-entry.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=null HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:55833 - "GET /service-data-entry.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=null HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:55873 - "GET /services-dashboard.html?clientId=aa270206-1389-40de-8c02-bb8df6f80748 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:55875 - "GET /service-data-entry.html?clientId=aa270206-1389-40de-8c02-bb8df6f80748 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:55892 - "GET /transactions.html?clientId=aa270206-1389-40de-8c02-bb8df6f80748&service=null HTTP/1.1" 200 OK
-INFO:     127.0.0.1:56796 - "GET /index.html HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:56796 - "GET /styles.css HTTP/1.1" 200 OK
-INFO:     127.0.0.1:57420 - "GET / HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:57420 - "GET /styles.css HTTP/1.1" 200 OK
-INFO:     127.0.0.1:57420 - "GET /sign-in.html HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:57420 - "GET /api_config.js HTTP/1.1" 200 OK
-INFO:     127.0.0.1:57423 - "GET /session-manager.js HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:57420 - "GET /clients.html HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:57423 - "GET /app-sidebar.js?v=2 HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:57420 - "GET /app-topbar.js HTTP/1.1" 200 OK
-INFO:     127.0.0.1:57425 - "GET /session-manager.js?v=2 HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:57420 - "GET /index.html HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:57524 - "GET /service-data-entry-overview.html HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:57524 - "GET /app-sidebar.js HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:57525 - "GET /service-data-entry.html?clientId=aa270206-1389-40de-8c02-bb8df6f80748&service=Data%20Entry HTTP/1.1" 200 OK
-INFO:     127.0.0.1:57525 - "GET /data-entry.css HTTP/1.1" 200 OK
-INFO:     127.0.0.1:57532 - "GET /app-client-nav.js HTTP/1.1" 200 OK
-INFO:     127.0.0.1:57534 - "GET /api_config.js?v=2 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:57536 - "GET /drive-picker.js HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:57534 - "GET /transactions.html?clientId=aa270206-1389-40de-8c02-bb8df6f80748&service=Data%20Entry HTTP/1.1" 200 OK
-INFO:     127.0.0.1:57534 - "GET /transaction-review.html?invoiceId=37&clientId=aa270206-1389-40de-8c02-bb8df6f80748&service=Data%20Entry HTTP/1.1" 200 OK
-INFO:     127.0.0.1:57762 - "GET /transactions.html?clientId=aa270206-1389-40de-8c02-bb8df6f80748&service=Data%20Entry HTTP/1.1" 200 OK
-INFO:     127.0.0.1:57798 - "GET /transaction-review.html?invoiceId=39&clientId=aa270206-1389-40de-8c02-bb8df6f80748&service=Data%20Entry HTTP/1.1" 200 OK
-INFO:     127.0.0.1:57800 - "GET /transactions.html?clientId=aa270206-1389-40de-8c02-bb8df6f80748&service=Data%20Entry HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:57834 - "GET /transactions.html?clientId=aa270206-1389-40de-8c02-bb8df6f80748&service=Data%20Entry HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:57836 - "GET /service-data-entry.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=Data%20Entry HTTP/1.1" 200 OK
-INFO:     127.0.0.1:57836 - "GET /transactions.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=Data%20Entry HTTP/1.1" 200 OK
-INFO:     127.0.0.1:57889 - "GET /transaction-review.html?invoiceId=40&clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=Data%20Entry HTTP/1.1" 200 OK
-INFO:     127.0.0.1:57891 - "GET /transactions.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=Data%20Entry HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:58075 - "GET /transaction-review.html?invoiceId=41&clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=Data%20Entry HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58077 - "GET /transactions.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=Data%20Entry HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:58114 - "GET /transactions.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=Data%20Entry HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:58149 - "GET /transaction-review.html?invoiceId=41&clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=Data%20Entry HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:58213 - "GET /transaction-review.html?invoiceId=41&clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=Data%20Entry HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58303 - "GET /transaction-review.html?invoiceId=41&clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=Data%20Entry HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58304 - "GET /transaction-review.html?invoiceId=41&clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=Data%20Entry HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:58326 - "GET /transaction-review.html?invoiceId=41&clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=Data%20Entry HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58326 - "GET /styles.css HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58333 - "GET /api_config.js HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58335 - "GET /session-manager.js?v=2 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58335 - "GET /favicon.ico HTTP/1.1" 404 Not Found
-INFO:     127.0.0.1:58383 - "GET /transaction-review.html?invoiceId=41&clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=Data%20Entry HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:58428 - "GET /transaction-review.html?invoiceId=41&clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=Data%20Entry HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:58428 - "GET /transaction-review.html?invoiceId=41&clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=Data%20Entry HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58428 - "GET /styles.css HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58428 - "GET /api_config.js HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58430 - "GET /session-manager.js?v=2 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58430 - "GET /favicon.ico HTTP/1.1" 404 Not Found
-INFO:     127.0.0.1:58447 - "GET /transactions.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=Data%20Entry HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58447 - "GET /app-topbar.js HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:58449 - "GET /api_config.js HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:58463 - "GET /transaction-review.html?invoiceId=41&clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=Data%20Entry HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:58463 - "GET /api_config.js HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:58480 - "GET /transaction-review.html?invoiceId=41&clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=Data%20Entry HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:58480 - "GET /api_config.js HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:58618 - "GET /transactions.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=Data%20Entry HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:58618 - "GET /api_config.js HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:58618 - "GET /transactions.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=Data%20Entry HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:58638 - "GET /transactions.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=Data%20Entry HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:58640 - "GET /transaction-review.html?invoiceId=42&clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=Data%20Entry HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58801 - "GET /transaction-review.html?invoiceId=42&clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=Data%20Entry HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:58801 - "GET /api_config.js HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:58854 - "GET /transaction-review.html?invoiceId=42&clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=Data%20Entry HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58919 - "GET /transactions.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=Data%20Entry HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58919 - "GET /api_config.js HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:58951 - "GET /transaction-review.html?invoiceId=43&clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=Data%20Entry HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58982 - "GET /transaction-review.html?invoiceId=43&clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=Data%20Entry HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:59042 - "GET /transaction-review.html?invoiceId=43&clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=Data%20Entry HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:59042 - "GET /api_config.js HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:59083 - "GET /transactions.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=Data%20Entry HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:59085 - "GET /transaction-review.html?invoiceId=43&clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=Data%20Entry HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:59257 - "GET /transactions.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=Data%20Entry HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:59257 - "GET /data-entry.css HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:59259 - "GET /api_config.js HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:59281 - "GET /transaction-review.html?invoiceId=44&clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=Data%20Entry HTTP/1.1" 200 OK
-INFO:     127.0.0.1:59538 - "GET /transaction-review.html?invoiceId=44&clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=Data%20Entry HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:59538 - "GET /styles.css HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:59538 - "GET /api_config.js HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:59574 - "GET /transaction-review.html?invoiceId=44&clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=Data%20Entry HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:59819 - "GET /index.html HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:60089 - "GET / HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:60089 - "GET /styles.css HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60089 - "GET /sign-in.html HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:60094 - "GET /session-manager.js HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:60089 - "GET /api_config.js HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60105 - "GET /clients.html HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:60105 - "GET /app-topbar.js HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60108 - "GET /session-manager.js?v=2 HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:60106 - "GET /app-sidebar.js?v=2 HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:60105 - "GET /service-data-entry-overview.html HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:60105 - "GET /app-sidebar.js HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:60105 - "GET /service-data-entry.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=Data%20Entry HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60105 - "GET /data-entry.css HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60111 - "GET /drive-picker.js HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:60113 - "GET /api_config.js?v=2 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60115 - "GET /app-client-nav.js HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60115 - "GET /service-data-entry.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60141 - "GET /transactions.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=null HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60142 - "GET /transaction-review.html?invoiceId=44&clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=null HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60197 - "GET /transactions.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=null HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60197 - "GET /styles.css HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60203 - "GET /app-topbar.js HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60199 - "GET /data-entry.css HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60205 - "GET /session-manager.js?v=2 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60204 - "GET /api_config.js HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60204 - "GET /favicon.ico HTTP/1.1" 404 Not Found
-INFO:     127.0.0.1:60214 - "GET /transaction-review.html?invoiceId=42&clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=null HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60215 - "GET /transactions.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=null HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:60226 - "GET /transactions.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=null HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:60264 - "GET /transactions.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=null HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60264 - "GET /app-topbar.js HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60265 - "GET /styles.css HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60270 - "GET /session-manager.js?v=2 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60268 - "GET /data-entry.css HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60271 - "GET /api_config.js HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60271 - "GET /favicon.ico HTTP/1.1" 404 Not Found
-INFO:     127.0.0.1:60293 - "GET /transactions.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=null HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60293 - "GET /styles.css HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60294 - "GET /data-entry.css HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60298 - "GET /app-topbar.js HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60299 - "GET /api_config.js HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60300 - "GET /session-manager.js?v=2 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60300 - "GET /favicon.ico HTTP/1.1" 404 Not Found
-INFO:     127.0.0.1:60344 - "GET /transactions.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=null HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60344 - "GET /styles.css HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60345 - "GET /data-entry.css HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60348 - "GET /app-topbar.js HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60349 - "GET /session-manager.js?v=2 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60351 - "GET /api_config.js HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60351 - "GET /favicon.ico HTTP/1.1" 404 Not Found
-INFO:     127.0.0.1:60360 - "GET /transactions.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=null HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:60361 - "GET /transactions.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=null HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:60404 - "GET /transactions.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=null HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60404 - "GET /styles.css HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60405 - "GET /data-entry.css HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60409 - "GET /session-manager.js?v=2 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60407 - "GET /app-topbar.js HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60411 - "GET /api_config.js HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60407 - "GET /favicon.ico HTTP/1.1" 404 Not Found
-INFO:     127.0.0.1:60458 - "GET /transaction-review.html?invoiceId=45&clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=null HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60459 - "GET /transactions.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=null HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:60534 - "GET /transactions.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=null HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:60589 - "GET /transactions.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=null HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:60614 - "GET /transaction-review.html?invoiceId=46&clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=null HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60616 - "GET /transactions.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=null HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:60634 - "GET /transaction-review.html?invoiceId=47&clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=null HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60666 - "GET /transactions.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=null HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:60707 - "GET /transaction-review.html?invoiceId=48&clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=null HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60709 - "GET /transactions.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=null HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:60721 - "GET /transaction-review.html?invoiceId=49&clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=null HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60762 - "GET /transaction-review.html?invoiceId=50&clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=null HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60764 - "GET /transactions.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=null HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:60838 - "GET /transactions.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=null HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:60838 - "GET /api_config.js HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:60865 - "GET /transaction-review.html?invoiceId=51&clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=null HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60866 - "GET /transactions.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=null HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:60903 - "GET /transaction-review.html?invoiceId=52&clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=null HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60904 - "GET /transactions.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=null HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:61330 - "GET /api_config.js HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:61330 - "GET /service-gst-overview.html HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:61332 - "GET /service-gst-refund-webview.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=GST%20Filing HTTP/1.1" 200 OK
-INFO:     127.0.0.1:61332 - "GET /app-topbar.js?v=3 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:61340 - "GET /api_config.js?v=2 HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:61332 - "GET /refund-calculator.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=GST+Filing HTTP/1.1" 200 OK
-INFO:     127.0.0.1:61332 - "GET /refund-calculator.css HTTP/1.1" 200 OK
-INFO:     127.0.0.1:61404 - "GET /services-dashboard.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87 HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:61404 - "GET /service-data-entry.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87 HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:61404 - "GET /transactions.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=null HTTP/1.1" 200 OK
-INFO:     127.0.0.1:61406 - "GET /transactions.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=null HTTP/1.1" 200 OK
-INFO:     127.0.0.1:61406 - "GET /data-entry.css HTTP/1.1" 200 OK
-INFO:     127.0.0.1:61426 - "GET /app-topbar.js HTTP/1.1" 200 OK
-INFO:     127.0.0.1:61429 - "GET /styles.css HTTP/1.1" 200 OK
-INFO:     127.0.0.1:61431 - "GET /api_config.js HTTP/1.1" 200 OK
-INFO:     127.0.0.1:61432 - "GET /session-manager.js?v=2 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:61431 - "GET /favicon.ico HTTP/1.1" 404 Not Found
-INFO:     127.0.0.1:61520 - "GET /transactions.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=null HTTP/1.1" 200 OK
-INFO:     127.0.0.1:61520 - "GET /styles.css HTTP/1.1" 200 OK
-INFO:     127.0.0.1:61521 - "GET /api_config.js HTTP/1.1" 200 OK
-INFO:     127.0.0.1:61525 - "GET /data-entry.css HTTP/1.1" 200 OK
-INFO:     127.0.0.1:61526 - "GET /session-manager.js?v=2 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:61527 - "GET /app-topbar.js HTTP/1.1" 200 OK
-INFO:     127.0.0.1:61525 - "GET /favicon.ico HTTP/1.1" 404 Not Found
-INFO:     127.0.0.1:61614 - "GET /transaction-review.html?invoiceId=52&clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=null HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:61615 - "GET /transactions.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=null HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:61675 - "GET /transactions.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=null HTTP/1.1" 200 OK
-INFO:     127.0.0.1:61675 - "GET /styles.css HTTP/1.1" 200 OK
-INFO:     127.0.0.1:61677 - "GET /app-topbar.js HTTP/1.1" 200 OK
-INFO:     127.0.0.1:61682 - "GET /api_config.js HTTP/1.1" 200 OK
-INFO:     127.0.0.1:61681 - "GET /data-entry.css HTTP/1.1" 200 OK
-INFO:     127.0.0.1:61683 - "GET /session-manager.js?v=2 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:61683 - "GET /favicon.ico HTTP/1.1" 404 Not Found
-INFO:     127.0.0.1:61713 - "GET /transactions.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=null HTTP/1.1" 200 OK
-INFO:     127.0.0.1:61802 - "GET /transactions.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=null HTTP/1.1" 200 OK
-INFO:     127.0.0.1:61802 - "GET /styles.css HTTP/1.1" 200 OK
-INFO:     127.0.0.1:61804 - "GET /app-topbar.js HTTP/1.1" 200 OK
-INFO:     127.0.0.1:61808 - "GET /data-entry.css HTTP/1.1" 200 OK
-INFO:     127.0.0.1:61809 - "GET /api_config.js HTTP/1.1" 200 OK
-INFO:     127.0.0.1:61810 - "GET /session-manager.js?v=2 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:61810 - "GET /favicon.ico HTTP/1.1" 404 Not Found
-INFO:     127.0.0.1:61974 - "GET /transactions.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=null HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:62128 - "GET /transactions.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=null HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62128 - "GET /styles.css HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62129 - "GET /app-topbar.js HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62133 - "GET /data-entry.css HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62134 - "GET /api_config.js HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62135 - "GET /session-manager.js?v=2 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62135 - "GET /favicon.ico HTTP/1.1" 404 Not Found
-INFO:     127.0.0.1:62147 - "GET /bank-review.html?id=840d3896-3b1e-4225-ad3b-91a2f3df77bd&clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=null HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62148 - "GET /transactions.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=null HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:62186 - "GET /transactions.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=null HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62186 - "GET /data-entry.css HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62192 - "GET /app-topbar.js HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62187 - "GET /session-manager.js?v=2 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62191 - "GET /styles.css HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62193 - "GET /api_config.js HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62193 - "GET /favicon.ico HTTP/1.1" 404 Not Found
-INFO:     127.0.0.1:62204 - "GET /bank-review.html?id=840d3896-3b1e-4225-ad3b-91a2f3df77bd&clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=null HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:62204 - "GET /transactions.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=null HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:62323 - "GET /bank-review.html?id=840d3896-3b1e-4225-ad3b-91a2f3df77bd&clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=null HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:62364 - "GET /transactions.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=null HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:62366 - "GET /bank-review.html?id=840d3896-3b1e-4225-ad3b-91a2f3df77bd&clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=null HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:62834 - "GET /index.html HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53884 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53893 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53895 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:53893 - "GET /assets/aiview_refined.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53901 - "GET /clients.html HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53901 - "GET /app-topbar.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:53905 - "GET /app-sidebar.js?v=2 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:53903 - "GET /session-manager.js?v=2 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:53909 - "GET /client-list.html HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:53909 - "GET /app-sidebar.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:53911 - "GET /services-dashboard.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53911 - "GET /app-client-nav.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53911 - "GET /service-gst-refund-webview.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53911 - "GET /app-topbar.js?v=3 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:53916 - "GET /api_config.js?v=2 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:53916 - "GET /gst-refund.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53916 - "GET /service-gst-refund-webview.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&section=reports HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53916 - "GET /ca-certificates.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53926 - "GET /service-gst-overview.html HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:53954 - "GET /service-gst-refund-webview.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=GST%20Filing HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:53954 - "GET /gst-refund.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=GST+Filing HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53954 - "GET /refund-calculator.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=GST+Filing HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53954 - "GET /refund-calculator.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53954 - "GET /service-gst-refund-webview.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=GST+Filing&section=reconciliation HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53978 - "GET /tool-ims-vs-pr.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=GST+Filing&section=reconciliation HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53978 - "GET /tool-layout.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:53979 - "GET /tool-sidebar.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53983 - "GET /tool-jobs.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:53982 - "GET /drive-picker.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:53992 - "GET /tool-rule42-itc.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=GST+Filing&section=reconciliation HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54060 - "GET /tool-rule42-itc.html HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54064 - "GET /tool-rule42-itc.html HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54078 - "GET /clients.html HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54078 - "GET /clients.html HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54078 - "GET /clients.html HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54081 - "GET /clients.html HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54081 - "GET /clients.html HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54103 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54103 - "GET /styles.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54107 - "GET /assets/aiview_refined.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54106 - "GET /assets/webview_refined.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54106 - "GET /sign-in.html HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54106 - "GET /api_config.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54107 - "GET /session-manager.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54120 - "GET /clients.html HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54123 - "GET /app-sidebar.js?v=2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54120 - "GET /app-topbar.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54124 - "GET /session-manager.js?v=2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54133 - "GET /clients.html HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54133 - "GET /clients.html HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54193 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54193 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:54195 - "GET /clients.html HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54202 - "GET /clients.html HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54204 - "GET / HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54212 - "GET /service-gst-overview.html HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54212 - "GET /app-sidebar.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54218 - "GET /service-gst-refund-webview.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=GST%20Filing HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54218 - "GET /app-client-nav.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54225 - "GET /app-topbar.js?v=3 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54227 - "GET /api_config.js?v=2 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54218 - "GET /tool-statement3.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=GST+Filing HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54218 - "GET /tool-layout.css?v=3 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54225 - "GET /drive-picker.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54227 - "GET /tool-sidebar.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54236 - "GET /tool-jobs.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54227 - "GET /tool-rule42-itc.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=GST+Filing HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54227 - "GET /tool-layout.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54252 - "GET /service-financial-instruments.html HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54254 - "GET /service-financial-statements.html HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54256 - "GET /client-picker-overlay.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54260 - "GET /client-picker-overlay.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54278 - "GET /clients.html HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54280 - "GET /clients.html HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54280 - "GET /clients.html HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54283 - "GET /clients.html HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54288 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54288 - "GET /styles.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54292 - "GET /assets/aiview_refined.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54291 - "GET /assets/webview_refined.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54292 - "GET /sign-in.html HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54292 - "GET /api_config.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54291 - "GET /session-manager.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54304 - "GET /clients.html HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54304 - "GET /app-topbar.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54307 - "GET /app-sidebar.js?v=2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54308 - "GET /session-manager.js?v=2 HTTP/1.1" 200 OK

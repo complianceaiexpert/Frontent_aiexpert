@@ -1,6 +1,11 @@
 /**
  * app-topbar.js — Shared App Navbar Component
  * 
+ * Features:
+ *  - Global client selector dropdown (persists across all modules)
+ *  - User profile menu with logout
+ *  - Navigation links
+ * 
  * Usage: Place <div id="app-topbar" data-active="dashboard|ai-gpt|settings"></div>
  *        at the top of <body>, then include this script.
  */
@@ -15,12 +20,15 @@
   const _clientId = _urlParams.get('clientId') || '';
   let _clientName = '';
   let _clientGstin = '';
+  let _isCorporate = false;
   try {
     const sc = JSON.parse(localStorage.getItem('selectedClient') || '{}');
     if (sc && sc.name) {
       _clientName = sc.name;
       _clientGstin = (sc.gstins && sc.gstins.length > 0) ? sc.gstins[0] : (sc.pan || '');
     }
+    const u = JSON.parse(localStorage.getItem('user') || '{}');
+    _isCorporate = u.account_type === 'corporate';
   } catch (_) { }
 
   function cls(id) {
@@ -45,7 +53,7 @@
 
       <!-- Center Nav -->
       <div class="app-nav-center">
-        <a href="clients.html" class="${cls('dashboard')}">
+        <a href="${_isCorporate ? 'services-dashboard.html' : 'clients.html'}" class="${cls('dashboard')}">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/>
             <rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>
@@ -73,19 +81,53 @@
       <!-- Right -->
       <div class="app-nav-right">
 
-        ${_clientId ? `
-        <!-- Client Context Badge -->
-        <a href="services-dashboard.html?clientId=${_clientId}" class="app-client-ctx" id="app-client-ctx" title="Currently working on: ${_clientName || 'Loading…'}">
-          <span class="app-client-ctx-dot"></span>
-          <svg class="app-client-ctx-svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        ${_isCorporate ? `
+        <!-- Corporate: show company name badge instead of client dropdown -->
+        <div class="app-corp-badge" title="Corporate Account">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
             <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/>
             <path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/>
             <path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/>
           </svg>
-          <span class="app-client-ctx-name" id="app-client-ctx-name">${_clientName || 'Loading…'}</span>
-        </a>
+          <span>${_clientName || 'Company'}</span>
+        </div>
+        ` : `
+        <!-- CA Firm: full client selector dropdown -->
+        <div class="app-client-selector" id="app-client-selector">
+          <button class="app-client-btn" id="app-client-btn" onclick="window.__toggleClientDD(event)" title="Select Client">
+            <span class="app-client-ctx-dot"></span>
+            <svg class="app-client-ctx-svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/>
+              <path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/>
+              <path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/>
+            </svg>
+            <span class="app-client-btn-name" id="app-client-btn-name">${_clientName || 'Select Client'}</span>
+            <svg class="app-client-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="m6 9 6 6 6-6"/>
+            </svg>
+          </button>
+          <div class="app-client-dropdown" id="app-client-dropdown">
+            <div class="app-client-dd-search">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="2">
+                <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+              </svg>
+              <input type="text" id="app-client-search" placeholder="Search clients..." autocomplete="off">
+            </div>
+            <div class="app-client-dd-list" id="app-client-dd-list">
+              <div class="app-client-dd-loading">Loading clients…</div>
+            </div>
+            <a href="clients.html" class="app-client-dd-footer">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/>
+                <rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>
+              </svg>
+              All Clients Dashboard
+            </a>
+          </div>
+        </div>
+        `}
+
         <div class="app-nav-divider"></div>
-        ` : ''}
 
         <a href="integrations.html" class="app-icon-btn ${active === 'settings' ? 'app-icon-active' : ''}" title="Integrations">
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -147,23 +189,297 @@
         </div>
       </div>
     </div>
-  </nav>`;
+  </nav>
+
+  <style>
+    /* ── Global Client Selector ── */
+    .app-client-selector { position: relative; }
+    .app-client-btn {
+      display: flex; align-items: center; gap: 6px;
+      padding: 6px 12px; border-radius: 10px;
+      background: linear-gradient(135deg, #1E293B, #0F172A);
+      border: 1.5px solid rgba(99,102,241,0.3);
+      color: #F1F5F9; font-size: 0.8rem; font-weight: 600;
+      font-family: inherit; cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap; max-width: 200px;
+    }
+    .app-client-btn:hover {
+      border-color: rgba(99,102,241,0.6);
+      box-shadow: 0 0 12px rgba(99,102,241,0.15);
+    }
+    .app-client-btn-name {
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      max-width: 120px; display: inline-block;
+    }
+    .app-client-chevron { flex-shrink: 0; opacity: 0.5; transition: transform 0.2s; }
+    .app-client-selector.open .app-client-chevron { transform: rotate(180deg); }
+
+    .app-client-dropdown {
+      display: none; position: absolute; top: calc(100% + 8px); right: 0;
+      width: 300px; max-height: 420px;
+      background: #fff; border-radius: 14px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.15), 0 0 0 1px rgba(0,0,0,0.05);
+      z-index: 9999; overflow: hidden;
+      animation: clientDDSlide 0.2s ease;
+    }
+    @keyframes clientDDSlide { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+    .app-client-selector.open .app-client-dropdown { display: block; }
+
+    .app-client-dd-search {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 14px; border-bottom: 1px solid #F1F5F9;
+    }
+    .app-client-dd-search input {
+      flex: 1; border: none; outline: none; font-size: 0.82rem;
+      font-family: inherit; color: #1E293B; background: transparent;
+    }
+    .app-client-dd-search input::placeholder { color: #CBD5E1; }
+
+    .app-client-dd-list {
+      max-height: 280px; overflow-y: auto; padding: 6px;
+    }
+    .app-client-dd-list::-webkit-scrollbar { width: 4px; }
+    .app-client-dd-list::-webkit-scrollbar-thumb { background: #E2E8F0; border-radius: 4px; }
+
+    .app-client-dd-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 10px; border-radius: 8px;
+      cursor: pointer; transition: all 0.15s;
+      border: 1.5px solid transparent;
+    }
+    .app-client-dd-item:hover { background: #F8FAFC; }
+    .app-client-dd-item.selected {
+      background: #EEF2FF; border-color: #818CF8;
+    }
+    .app-client-dd-item-avatar {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: linear-gradient(135deg, #6366F1, #818CF8);
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 0.75rem; font-weight: 700;
+      flex-shrink: 0;
+    }
+    .app-client-dd-item.selected .app-client-dd-item-avatar {
+      background: linear-gradient(135deg, #4338CA, #6366F1);
+    }
+    .app-client-dd-item-info { flex: 1; min-width: 0; }
+    .app-client-dd-item-name {
+      font-size: 0.82rem; font-weight: 600; color: #1E293B;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .app-client-dd-item-detail {
+      font-size: 0.72rem; color: #94A3B8;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .app-client-dd-check {
+      width: 18px; height: 18px; border-radius: 50%;
+      background: #6366F1; display: none;
+      align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .app-client-dd-item.selected .app-client-dd-check { display: flex; }
+
+    .app-client-dd-loading, .app-client-dd-empty {
+      padding: 20px; text-align: center; font-size: 0.8rem; color: #94A3B8;
+    }
+
+    .app-client-dd-footer {
+      display: flex; align-items: center; gap: 8px; justify-content: center;
+      padding: 10px 14px; border-top: 1px solid #F1F5F9;
+      font-size: 0.78rem; font-weight: 500; color: #6366F1;
+      text-decoration: none; transition: background 0.15s;
+    }
+    .app-client-dd-footer:hover { background: #F8FAFC; }
+
+    /* Corporate badge (replaces client selector) */
+    .app-corp-badge {
+      display: flex; align-items: center; gap: 6px;
+      padding: 6px 14px; border-radius: 10px;
+      background: linear-gradient(135deg, #1E293B, #0F172A);
+      border: 1.5px solid rgba(16,185,129,0.35);
+      color: #6EE7B7; font-size: 0.8rem; font-weight: 600;
+      white-space: nowrap; max-width: 220px;
+    }
+    .app-corp-badge span {
+      overflow: hidden; text-overflow: ellipsis;
+      max-width: 140px; display: inline-block;
+    }
+  </style>
+  `;
 
   // ── Dropdown Logic ──
   window.__toggleProfileDD = function (e) {
     e.stopPropagation();
     document.getElementById('profile-dropdown').classList.toggle('app-dd-open');
+    // Close client dropdown if open
+    document.getElementById('app-client-selector').classList.remove('open');
   };
   window.__appLogout = function () {
     localStorage.removeItem('access_token');
     localStorage.removeItem('user');
+    localStorage.removeItem('selectedClient');
     window.location.href = 'index.html';
   };
 
   document.addEventListener('click', function (e) {
     if (!e.target.closest('#profile-wrap'))
       document.getElementById('profile-dropdown').classList.remove('app-dd-open');
+    if (!e.target.closest('#app-client-selector'))
+      document.getElementById('app-client-selector').classList.remove('open');
   });
+
+  // ── Client Selector Toggle ──
+  window.__toggleClientDD = function (e) {
+    e.stopPropagation();
+    const sel = document.getElementById('app-client-selector');
+    const wasOpen = sel.classList.contains('open');
+    sel.classList.toggle('open');
+    // Close profile dropdown
+    document.getElementById('profile-dropdown').classList.remove('app-dd-open');
+    // Show cached clients instantly, refresh in background
+    if (!wasOpen) {
+      if (_cachedClients) {
+        window.__renderClientList(_cachedClients);
+      }
+      // Background refresh (non-blocking)
+      window.__loadClientsForDropdown(true);
+      setTimeout(() => {
+        const input = document.getElementById('app-client-search');
+        if (input) { input.value = ''; input.focus(); }
+      }, 50);
+    }
+  };
+
+  // ── Load Clients ──
+  let _cachedClients = null;
+
+  // Try to load from sessionStorage instantly
+  try {
+    const cached = sessionStorage.getItem('__topbar_clients');
+    if (cached) {
+      _cachedClients = JSON.parse(cached);
+    }
+  } catch (_) { }
+
+  window.__loadClientsForDropdown = function (silent = false) {
+    const listEl = document.getElementById('app-client-dd-list');
+    if (!listEl) return;
+
+    // Show cached immediately
+    if (_cachedClients && _cachedClients.length > 0) {
+      window.__renderClientList(_cachedClients);
+    } else if (!silent) {
+      listEl.innerHTML = '<div class="app-client-dd-loading">Loading clients…</div>';
+    }
+
+    // Fetch fresh data
+    const tryLoad = () => {
+      if (typeof authFetch !== 'function') {
+        setTimeout(tryLoad, 200);
+        return;
+      }
+      authFetch('/clients/').then(r => r.ok ? r.json() : []).then(clients => {
+        _cachedClients = clients || [];
+        // Cache to sessionStorage for instant load on next page
+        try { sessionStorage.setItem('__topbar_clients', JSON.stringify(_cachedClients)); } catch (_) { }
+        window.__renderClientList(_cachedClients);
+      }).catch(() => {
+        if (!_cachedClients || _cachedClients.length === 0) {
+          listEl.innerHTML = '<div class="app-client-dd-empty">Failed to load clients</div>';
+        }
+      });
+    };
+    tryLoad();
+  };
+
+  // ── Pre-fetch clients on page load (background, after 300ms) ──
+  setTimeout(() => {
+    window.__loadClientsForDropdown(true);
+  }, 300);
+
+  // ── Render Client List ──
+  window.__renderClientList = function (clients, filter = '') {
+    const listEl = document.getElementById('app-client-dd-list');
+    if (!listEl) return;
+
+    const currentClient = JSON.parse(localStorage.getItem('selectedClient') || '{}');
+    const currentId = currentClient.id || _clientId || '';
+    const query = filter.toLowerCase();
+
+    const filtered = clients.filter(c => {
+      if (!query) return true;
+      const name = (c.name || '').toLowerCase();
+      const pan = (c.pan || '').toLowerCase();
+      const gstin = ((c.gstins && c.gstins[0]) || '').toLowerCase();
+      return name.includes(query) || pan.includes(query) || gstin.includes(query);
+    });
+
+    if (filtered.length === 0) {
+      listEl.innerHTML = query
+        ? '<div class="app-client-dd-empty">No clients match your search</div>'
+        : '<div class="app-client-dd-empty">No clients yet. <a href="clients.html" style="color:#6366F1">Add one →</a></div>';
+      return;
+    }
+
+    listEl.innerHTML = filtered.map(c => {
+      const initial = (c.name || 'C').charAt(0).toUpperCase();
+      const detail = (c.gstins && c.gstins.length > 0) ? c.gstins[0] : (c.pan || '—');
+      const isSelected = c.id === currentId;
+      return `
+        <div class="app-client-dd-item ${isSelected ? 'selected' : ''}" 
+             data-id="${c.id}" onclick="window.__selectGlobalClient('${c.id}', this)">
+          <div class="app-client-dd-item-avatar">${initial}</div>
+          <div class="app-client-dd-item-info">
+            <div class="app-client-dd-item-name">${c.name || 'Unnamed'}</div>
+            <div class="app-client-dd-item-detail">${detail}</div>
+          </div>
+          <div class="app-client-dd-check">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </div>
+        </div>
+      `;
+    }).join('');
+  };
+
+  // ── Select Client Globally ──
+  window.__selectGlobalClient = function (clientId, el) {
+    if (!_cachedClients) return;
+    const client = _cachedClients.find(c => c.id === clientId);
+    if (!client) return;
+
+    // Save to localStorage
+    localStorage.setItem('selectedClient', JSON.stringify(client));
+
+    // Update the button text
+    const nameEl = document.getElementById('app-client-btn-name');
+    if (nameEl) nameEl.textContent = client.name || 'Client';
+
+    // Close dropdown
+    document.getElementById('app-client-selector').classList.remove('open');
+
+    // Update URL if we're on a client-specific page
+    const url = new URL(window.location.href);
+    if (url.searchParams.has('clientId') || _clientId) {
+      url.searchParams.set('clientId', clientId);
+      window.location.href = url.toString();
+    } else {
+      // Dispatch event so modules can react without page reload
+      window.dispatchEvent(new CustomEvent('clientChanged', { detail: client }));
+      // Re-render the dropdown to show new selection
+      window.__renderClientList(_cachedClients);
+    }
+  };
+
+  // ── Search Handler (only for CA firm) ──
+  const _searchEl = document.getElementById('app-client-search');
+  if (_searchEl) {
+    _searchEl.addEventListener('input', function () {
+      if (_cachedClients) {
+        window.__renderClientList(_cachedClients, this.value);
+      }
+    });
+  }
 
   // ── User Info Init ──
   try {
@@ -190,27 +506,10 @@
     if (de) de.textContent = email;
   } catch (_) { }
 
-  // ── Client Context: Fetch from API if not in localStorage ──
-  if (_clientId && !_clientName) {
-    const _tryLoadClientCtx = () => {
-      if (typeof authFetch === 'function') {
-        authFetch(`/clients/${_clientId}`).then(r => r.ok ? r.json() : null).then(client => {
-          if (!client) return;
-          const nameEl = document.getElementById('app-client-ctx-name');
-          const ctxEl = document.getElementById('app-client-ctx');
-          if (nameEl) nameEl.textContent = client.name || 'Client';
-          if (ctxEl) ctxEl.title = 'Currently working on: ' + (client.name || 'Client');
-        }).catch(() => {});
-      } else {
-        setTimeout(_tryLoadClientCtx, 200);
-      }
-    };
-    _tryLoadClientCtx();
-  }
-
-  // ── Expose helper so app-client-nav.js can also update topbar ──
+  // ── Expose helper so other modules can update topbar ──
   window.__updateTopbarClientCtx = function (name) {
-    const nameEl = document.getElementById('app-client-ctx-name');
+    const nameEl = document.getElementById('app-client-btn-name');
     if (nameEl && name) nameEl.textContent = name;
   };
 })();
+

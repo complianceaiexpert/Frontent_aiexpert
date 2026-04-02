@@ -808,7 +808,16 @@
         const existingUser = localStorage.getItem('user');
         const existingToken = localStorage.getItem('access_token');
         if (existingUser && existingToken) {
-            window.location.href = 'clients.html';
+            try {
+                const u = JSON.parse(existingUser);
+                if (u.account_type === 'corporate') {
+                    window.location.href = 'services-dashboard.html';
+                } else {
+                    window.location.href = 'clients.html';
+                }
+            } catch(e) {
+                window.location.href = 'clients.html';
+            }
         }
 
         /* ═══════════════════════════════════
@@ -887,7 +896,23 @@
                 } else {
                     localStorage.removeItem('trial_expired');
                     showToast('✅ Welcome back!', 'success');
-                    setTimeout(() => { window.location.href = 'clients.html'; }, 400);
+                    
+                    // Route based on account type
+                    if (userData.account_type === 'corporate') {
+                        // Auto-set the single client for corporate
+                        try {
+                            const clientsRes = await authFetch('/clients/');
+                            if (clientsRes.ok) {
+                                const clients = await clientsRes.json();
+                                if (clients.length > 0) {
+                                    localStorage.setItem('selectedClient', JSON.stringify(clients[0]));
+                                }
+                            }
+                        } catch(e) { /* ignore */ }
+                        setTimeout(() => { window.location.href = 'services-dashboard.html'; }, 400);
+                    } else {
+                        setTimeout(() => { window.location.href = 'clients.html'; }, 400);
+                    }
                 }
             }
         }

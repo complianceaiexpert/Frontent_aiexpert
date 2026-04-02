@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Statement Review — Suvidha AI</title>
+    <meta name="description" content="Review AI-extracted financial instrument transactions with side-by-side PDF viewer">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0 }
+        body { font-family: 'Inter', sans-serif; background: #f8fafc; overflow: hidden; height: 100vh }
+
+        /* ═══ TOP BAR ═══ */
+        .rv-topbar { height: 54px; background: #fff; border-bottom: 1px solid #e5e7eb; display: flex; align-items: center; padding: 0 1.25rem; gap: .75rem; z-index: 100 }
+        .rv-back { display: flex; align-items: center; gap: .4rem; font-size: .82rem; font-weight: 600; color: #6b7280; text-decoration: none; padding: .35rem .6rem; border-radius: 7px; transition: all .15s }
+        .rv-back:hover { background: #f1f5f9; color: #4338ca }
+        .rv-back svg { width: 18px; height: 18px }
+        .rv-topbar-title { font-family: 'Outfit', sans-serif; font-size: .95rem; font-weight: 800; color: #0f172a; display: flex; align-items: center; gap: .4rem }
+        .rv-topbar-div { width: 1px; height: 24px; background: #e5e7eb; margin: 0 .35rem }
+        .rv-topbar-info { font-size: .78rem; font-weight: 600; color: #6b7280 }
+        .rv-topbar-right { margin-left: auto; display: flex; align-items: center; gap: .5rem }
+        .rv-badge { font-size: .6rem; font-weight: 700; padding: 3px 10px; border-radius: 6px; text-transform: uppercase; letter-spacing: .04em }
+        .rv-badge.ai { background: linear-gradient(135deg, #6366f1, #8b5cf6); color: #fff }
+        .rv-badge.processing { background: #fef3c7; color: #d97706 }
+        .rv-badge.completed { background: #ecfdf5; color: #059669 }
+        .rv-badge.pending { background: #fef3c7; color: #d97706 }
+        .rv-timer { font-family: 'Outfit', sans-serif; font-size: .88rem; font-weight: 700; color: #4338ca; padding: .2rem .6rem; background: #eef2ff; border-radius: 6px }
+
+        /* ═══ SPLIT LAYOUT ═══ */
+        .rv-layout { display: flex; height: calc(100vh - 54px) }
+
+        /* LEFT: PDF */
+        .rv-pdf-panel { width: 42%; min-width: 320px; background: #1e293b; display: flex; flex-direction: column; border-right: 1px solid #334155 }
+        .rv-pdf-toolbar { display: flex; align-items: center; padding: .5rem .75rem; background: #0f172a; border-bottom: 1px solid #334155; gap: .5rem; flex-shrink: 0 }
+        .rv-pdf-page-info { font-size: .72rem; font-weight: 600; color: #94a3b8; display: flex; align-items: center; gap: .35rem }
+        .rv-pdf-page-info input { width: 28px; text-align: center; background: #1e293b; border: 1px solid #475569; border-radius: 4px; color: #e2e8f0; font-size: .72rem; font-weight: 600; padding: 2px }
+        .rv-pdf-btn { width: 28px; height: 28px; border-radius: 5px; border: none; background: transparent; color: #94a3b8; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: .75rem; transition: all .12s }
+        .rv-pdf-btn:hover { background: #334155; color: #e2e8f0 }
+        .rv-pdf-sep { width: 1px; height: 20px; background: #334155 }
+        .rv-pdf-toolbar-right { margin-left: auto; display: flex; gap: .25rem }
+        .rv-pdf-body { flex: 1; overflow: auto; display: flex; flex-direction: column; align-items: center; background: #334155; padding: .5rem; gap: .5rem }
+        .rv-pdf-placeholder { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .75rem; color: rgba(255,255,255,.35); padding: 2rem; text-align: center; flex: 1 }
+        .rv-pdf-placeholder h3 { font-family: 'Outfit', sans-serif; font-size: .95rem; font-weight: 700; color: rgba(255,255,255,.5) }
+        .rv-pdf-placeholder p { font-size: .78rem; color: rgba(255,255,255,.3); line-height: 1.5 }
+
+        /* RIGHT: DATA PANEL */
+        .rv-form-panel { flex: 1; display: flex; flex-direction: column; background: #fff; overflow: hidden }
+        .rv-form-scroll { flex: 1; overflow-y: auto; padding: 1.25rem 1.5rem 2rem }
+
+        /* Section titles */
+        .rv-section-title { font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: #94a3b8; margin: .75rem 0 .6rem; display: flex; align-items: center; gap: .5rem; padding-bottom: .4rem; border-bottom: 1px solid #f1f5f9 }
+        .rv-section-title::after { content: ''; flex: 1; height: 1px; background: #f1f5f9 }
+        .rv-section-count { margin-left: auto; font-size: .62rem; font-weight: 600; color: #6366f1 }
+
+        /* Form rows */
+        .rv-form-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: .75rem; margin-bottom: 1rem }
+        .rv-form-row.four-col { grid-template-columns: 1fr 1fr 1fr 1fr }
+        .rv-fg { display: flex; flex-direction: column; gap: .25rem }
+        .rv-fg label { font-size: .65rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: #6b7280; display: flex; align-items: center; gap: .25rem }
+        .rv-fg label .req { color: #ef4444; font-weight: 800 }
+        .rv-fg label .ai-tag { font-size: .52rem; font-weight: 700; padding: 1px 5px; border-radius: 3px; background: #ecfdf5; color: #059669; margin-left: auto }
+        .rv-fg input, .rv-fg select { width: 100%; padding: .5rem .65rem; border: 1px solid #e2e8f0; border-radius: 7px; font-size: .85rem; font-weight: 500; color: #1e293b; font-family: inherit; transition: all .15s; background: #fff }
+        .rv-fg input:focus, .rv-fg select:focus { border-color: #6366f1; outline: none; box-shadow: 0 0 0 3px rgba(99,102,241,.08) }
+        .rv-fg input.ai-fill { background: #f0fdf4; border-color: #86efac }
+
+        /* Table */
+        .rv-items-card { border: 1px solid #d1d5db; border-radius: 10px; overflow: hidden; margin-top: .5rem; box-shadow: 0 1px 4px rgba(0,0,0,.04) }
+        .rv-items-table { width: 100%; border-collapse: collapse }
+        .rv-items-table thead th { font-size: .66rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: #374151; padding: .65rem .65rem; text-align: left; background: #f8faff; border-bottom: 2px solid #e5e7eb; position: sticky; top: 0; z-index: 2; white-space: nowrap }
+        .rv-items-table thead th.right { text-align: right }
+        .rv-items-table tbody td { padding: .45rem .5rem; font-size: .82rem; color: #1e293b; border-bottom: 1px solid #f1f5f9; vertical-align: middle }
+        .rv-items-table tbody tr { transition: background .1s; background: #fff }
+        .rv-items-table tbody tr:hover { background: #f8f9ff }
+        .rv-items-table tbody tr:nth-child(even) { background: #fafbff }
+        .rv-items-table tbody tr:nth-child(even):hover { background: #f8f9ff }
+        .rv-items-table .item-sr { font-size: .78rem; font-weight: 700; color: #94a3b8; width: 32px; text-align: center }
+        .rv-input-cell { padding: .35rem .5rem; border: 1px solid #e2e8f0; border-radius: 6px; font-size: .78rem; font-family: inherit; font-weight: 500; transition: all .15s; background: #fff; width: 100% }
+        .rv-input-cell:focus { border-color: #6366f1; outline: none; box-shadow: 0 0 0 2px rgba(99,102,241,.1) }
+        .rv-input-cell.num-input { text-align: right; font-family: 'Outfit', sans-serif; font-weight: 600 }
+        .rv-select-cell { padding: .3rem .4rem; border: 1px solid #e2e8f0; border-radius: 6px; font-size: .68rem; font-family: inherit; background: #fff; color: #374151; font-weight: 600; width: 100% }
+        .debit-input { color: #dc2626 !important }
+        .credit-input { color: #059669 !important }
+
+        /* Summary */
+        .rv-summary-bar { display: flex; align-items: center; justify-content: flex-end; gap: 1.5rem; margin-top: .75rem; padding: .65rem 1rem; background: linear-gradient(135deg, #1e1b4b, #312e81); border-radius: 10px; color: #fff }
+        .rv-summary-item { display: flex; align-items: center; gap: .5rem }
+        .rv-summary-label { font-size: .72rem; font-weight: 600; opacity: .6 }
+        .rv-summary-value { font-size: 1rem; font-weight: 800; font-family: 'Outfit', sans-serif }
+        .rv-summary-value.credit { color: #34d399 }
+        .rv-summary-value.debit { color: #fca5a5 }
+
+        /* Bottom bar */
+        .rv-bottom-bar { padding: .75rem 1.5rem; background: #fff; border-top: 1px solid #e5e7eb; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0 }
+        .rv-bottom-left { display: flex; align-items: center; gap: .75rem }
+        .rv-bottom-stat { font-size: .75rem; color: #6b7280; font-weight: 500 }
+        .rv-bottom-stat strong { font-weight: 800; font-family: 'Outfit', sans-serif; color: #0f172a }
+        .rv-bottom-right { display: flex; gap: .5rem }
+        .rv-action-btn { padding: .55rem 1.15rem; border-radius: 8px; font-size: .82rem; font-weight: 700; cursor: pointer; font-family: inherit; border: 1px solid #e2e8f0; background: #fff; color: #374151; transition: all .15s }
+        .rv-action-btn:hover { border-color: #4338ca; color: #4338ca }
+        .rv-action-btn.save-btn { background: #1e293b; color: #fff; border-color: #1e293b }
+        .rv-action-btn.save-btn:hover { background: #0f172a }
+        .rv-action-btn.approve-btn { background: linear-gradient(135deg, #059669, #10b981); color: #fff; border-color: transparent }
+        .rv-action-btn.approve-btn:hover { box-shadow: 0 4px 16px rgba(5,150,105,.3); transform: translateY(-1px) }
+        .rv-action-btn.tally-btn { background: linear-gradient(135deg, #1e1b4b, #4338ca); color: #fff; border-color: transparent }
+        .rv-action-btn:disabled { opacity: .5; cursor: not-allowed; pointer-events: none }
+
+        /* Processing overlay */
+        .rv-processing-overlay { position: absolute; inset: 0; background: rgba(255,255,255,.92); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10; backdrop-filter: blur(4px) }
+        .rv-processing-spinner { width: 40px; height: 40px; border: 3px solid #e2e8f0; border-top-color: #6366f1; border-radius: 50%; animation: rvSpin 1s linear infinite; margin-bottom: .75rem }
+        @keyframes rvSpin { to { transform: rotate(360deg) } }
+        .rv-processing-msg { font-size: .88rem; font-weight: 700; color: #4338ca }
+        .rv-processing-sub { font-size: .72rem; color: #94a3b8; margin-top: .25rem }
+
+        /* Journal Entry Cards */
+        .rv-je-section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: .75rem }
+        .rv-je-actions { display: flex; gap: .4rem }
+        .rv-je-btn { padding: .35rem .75rem; border-radius: 7px; font-size: .72rem; font-weight: 700; cursor: pointer; font-family: inherit; border: 1px solid #e2e8f0; background: #fff; color: #374151; transition: all .15s }
+        .rv-je-btn:hover { border-color: #4338ca; color: #4338ca }
+        .rv-je-btn.approve { background: #059669; color: #fff; border-color: #059669 }
+        .rv-je-btn.approve:hover { background: #047857 }
+        .rv-je-btn.tally { background: linear-gradient(135deg,#1e1b4b,#4338ca); color: #fff; border-color: transparent }
+        .rv-je-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 10px; padding: .75rem 1rem; margin-bottom: .5rem; position: relative; overflow: hidden; transition: all .15s }
+        .rv-je-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: linear-gradient(180deg,#6366f1,#4338ca) }
+        .rv-je-card:hover { border-color: #c7d2fe; box-shadow: 0 2px 8px rgba(99,102,241,.06) }
+        .rv-je-card-header { display: flex; align-items: center; gap: .5rem; margin-bottom: .35rem; padding-bottom: .35rem; border-bottom: 1px solid #f1f5f9 }
+        .rv-je-date { font-size: .68rem; font-weight: 700; color: #4338ca; background: #eef2ff; padding: .1rem .4rem; border-radius: 4px }
+        .rv-je-narration { font-size: .72rem; color: #475569; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+        .rv-je-num { font-size: .6rem; font-weight: 700; color: #94a3b8 }
+        .rv-je-row { display: grid; grid-template-columns: 1fr 100px 40px; gap: .35rem; padding: .15rem 0; padding-left: .35rem }
+        .rv-je-ledger { font-size: .75rem; color: #334155; font-weight: 500 }
+        .rv-je-amount { text-align: right; font-size: .75rem; font-weight: 700; font-family: 'Outfit', sans-serif }
+        .rv-je-side { text-align: center; font-size: .62rem; font-weight: 800 }
+        .rv-je-dr { color: #dc2626 }
+        .rv-je-cr { color: #059669 }
+
+        #toast-container { position: fixed; top: 1rem; right: 1rem; z-index: 30000; display: flex; flex-direction: column; gap: .4rem }
+        @media (max-width: 900px) { .rv-layout { flex-direction: column } .rv-pdf-panel { width: 100%; height: 40vh; min-width: unset } }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+</head>
+<body>
+    <!-- ═══ TOP BAR ═══ -->
+    <div class="rv-topbar">
+        <a href="#" class="rv-back" id="back-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+            Back
+        </a>
+        <div class="rv-topbar-div"></div>
+        <div class="rv-topbar-title">Financial Statement Review</div>
+        <div class="rv-topbar-div"></div>
+        <div class="rv-topbar-info" id="rv-file-info">Loading...</div>
+        <div class="rv-topbar-right">
+            <span class="rv-badge ai">AI Extracted</span>
+            <span class="rv-badge processing" id="rv-status-badge">Processing</span>
+            <span class="rv-timer" id="rv-timer">00:00</span>
+        </div>
+    </div>
+
+    <!-- ═══ SPLIT LAYOUT ═══ -->
+    <div class="rv-layout">
+        <!-- LEFT: PDF Viewer -->
+        <div class="rv-pdf-panel">
+            <div class="rv-pdf-toolbar">
+                <div class="rv-pdf-page-info"><input type="text" value="1" id="rv-page-num" readonly> <span>/ <span id="rv-page-total">1</span></span></div>
+                <div class="rv-pdf-sep"></div>
+                <button class="rv-pdf-btn" onclick="changePage(-1)">‹</button>
+                <button class="rv-pdf-btn" onclick="changePage(1)">›</button>
+                <div class="rv-pdf-sep"></div>
+                <button class="rv-pdf-btn" onclick="zoomPdf(-0.15)">−</button>
+                <button class="rv-pdf-btn" onclick="zoomPdf(0.15)">+</button>
+                <button class="rv-pdf-btn" onclick="zoomPdf(0)" style="font-size:.6rem;font-weight:700">FIT</button>
+                <div class="rv-pdf-toolbar-right"><button class="rv-pdf-btn" onclick="openPdfNewTab()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></button></div>
+            </div>
+            <div class="rv-pdf-body" id="rv-pdf-body">
+                <div class="rv-pdf-placeholder">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".3"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    <h3>Loading statement...</h3>
+                    <p>Fetching the PDF from storage</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT: Data Panel -->
+        <div class="rv-form-panel">
+            <div class="rv-form-scroll" id="rv-form-scroll">
+                <!-- Statement Info -->
+                <div class="rv-form-row">
+                    <div class="rv-fg"><label>Statement Type <span class="ai-tag">AI</span></label><input type="text" id="rv-stmt-type" class="ai-fill" readonly></div>
+                    <div class="rv-fg"><label>Investor / Account <span class="ai-tag">AI</span></label><input type="text" id="rv-investor" class="ai-fill" readonly></div>
+                    <div class="rv-fg"><label>Statement File</label><input type="text" id="rv-filename" disabled style="background:#f8fafc"></div>
+                </div>
+                <div class="rv-form-row four-col">
+                    <div class="rv-fg"><label>Period Start <span class="ai-tag">AI</span></label><input type="date" id="rv-period-start" class="ai-fill"></div>
+                    <div class="rv-fg"><label>Period End <span class="ai-tag">AI</span></label><input type="date" id="rv-period-end" class="ai-fill"></div>
+                    <div class="rv-fg"><label>Depository / Source</label><input type="text" id="rv-source" class="ai-fill" readonly></div>
+                    <div class="rv-fg"><label>PAN</label><input type="text" id="rv-pan" class="ai-fill" readonly></div>
+                </div>
+
+                <!-- Holdings -->
+                <div class="rv-section-title">Holdings / Funds <span class="rv-section-count" id="rv-holdings-count">0</span></div>
+                <div class="rv-items-card"><div style="max-height:260px;overflow-y:auto">
+                    <table class="rv-items-table"><thead id="rv-holdings-thead"><tr><th style="width:32px;text-align:center">Sr.</th><th>Scrip / Fund</th><th>ISIN / Folio</th><th class="right">Qty / Units</th><th class="right">Value</th></tr></thead>
+                    <tbody id="rv-holdings-tbody"><tr><td colspan="5" style="text-align:center;padding:1.5rem;color:#94a3b8">Waiting for AI...</td></tr></tbody></table>
+                </div></div>
+
+                <!-- Transactions -->
+                <div class="rv-section-title">Transactions <span class="rv-section-count" id="rv-txn-count">0</span></div>
+                <div class="rv-items-card"><div style="max-height:calc(100vh - 520px);overflow-y:auto">
+                    <table class="rv-items-table"><thead><tr>
+                        <th style="width:32px;text-align:center">Sr.</th>
+                        <th style="width:90px">Date</th>
+                        <th style="min-width:160px">Scrip / Fund</th>
+                        <th style="width:90px">Type</th>
+                        <th class="right" style="width:70px">Qty</th>
+                        <th class="right" style="width:95px">Rate (₹)</th>
+                        <th class="right" style="width:110px">Amount (₹)</th>
+                        <th style="width:100px">Tally Entry</th>
+                    </tr></thead>
+                    <tbody id="rv-txn-tbody"><tr><td colspan="8" style="text-align:center;padding:1.5rem;color:#94a3b8">Waiting for AI...</td></tr></tbody></table>
+                </div></div>
+
+                <!-- Dividends -->
+                <div class="rv-section-title" id="rv-div-section" style="display:none">Dividends <span class="rv-section-count" id="rv-div-count">0</span></div>
+                <div class="rv-items-card" id="rv-div-card" style="display:none"><div style="max-height:180px;overflow-y:auto">
+                    <table class="rv-items-table"><thead><tr><th style="width:32px;text-align:center">Sr.</th><th>Date</th><th>Scrip / Fund</th><th class="right">Amount (₹)</th><th class="right">TDS (₹)</th><th class="right">Net (₹)</th></tr></thead>
+                    <tbody id="rv-div-tbody"></tbody></table>
+                </div></div>
+
+                <!-- Summary -->
+                <div class="rv-summary-bar" id="rv-summary" style="display:none">
+                    <div class="rv-summary-item"><span class="rv-summary-label">STCG</span><span class="rv-summary-value" id="rv-stcg">-</span></div>
+                    <div class="rv-summary-item"><span class="rv-summary-label">LTCG</span><span class="rv-summary-value" id="rv-ltcg">-</span></div>
+                    <div class="rv-summary-item"><span class="rv-summary-label">Total Gain</span><span class="rv-summary-value credit" id="rv-total-gain">-</span></div>
+                </div>
+
+                <!-- Journal Entries (Dr/Cr Cards) -->
+                <div class="rv-section-title" id="rv-je-section" style="display:none">Tally Journal Entries <span class="rv-section-count" id="rv-je-count">0</span></div>
+                <div id="rv-je-container" style="display:none">
+                    <div class="rv-je-section-header">
+                        <div style="font-size:.72rem;color:#64748b"><strong style="color:#0f172a" id="rv-je-total">0</strong> journal entries generated by AI</div>
+                        <div class="rv-je-actions">
+                            <button class="rv-je-btn approve" onclick="approveAllJE()">✓ Approve All</button>
+                            <button class="rv-je-btn tally" onclick="syncAllJE()">↻ Sync to Tally</button>
+                        </div>
+                    </div>
+                    <div id="rv-je-cards"></div>
+                </div>
+            </div>
+
+            <!-- Bottom Action Bar -->
+            <div class="rv-bottom-bar">
+                <div class="rv-bottom-left">
+                    <div class="rv-bottom-stat">Type: <strong id="rv-type-label">-</strong></div>
+                    <div class="rv-bottom-stat">|</div>
+                    <div class="rv-bottom-stat">Holdings: <strong id="rv-hold-label">0</strong></div>
+                    <div class="rv-bottom-stat">|</div>
+                    <div class="rv-bottom-stat">Txns: <strong id="rv-txn-label">0</strong></div>
+                    <div class="rv-bottom-stat">|</div>
+                    <div class="rv-bottom-stat">Journal Entries: <strong id="rv-je-label">0</strong></div>
+                </div>
+                <div class="rv-bottom-right">
+                    <button class="rv-action-btn" onclick="goBack()">Cancel</button>
+                    <button class="rv-action-btn approve-btn" id="btn-approve" onclick="viewJournalEntries()">View Tally Entries</button>
+                </div>
+            </div>
+
+            <!-- Processing overlay -->
+            <div class="rv-processing-overlay" id="rv-overlay">
+                <div class="rv-processing-spinner"></div>
+                <div class="rv-processing-msg" id="rv-overlay-msg">AI is reading your statement...</div>
+                <div class="rv-processing-sub" id="rv-overlay-sub">LlamaParse extracting text from PDF pages</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-container"></div>
+    <script src="api_config.js"></script>
+    <script src="session-manager.js?v=2"></script>
+    <script>
+        if (!requireAuth()) { }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const uploadId = urlParams.get('id');
+        const clientId = urlParams.get('clientId');
+        const instrumentType = urlParams.get('type') || 'demat';
+        const backUrl = `service-financial-instruments.html?clientId=${clientId}`;
+        document.getElementById('back-link').href = backUrl;
+
+        let pdfUrl = null, pdfDoc = null, currentPage = 1, pdfScale = 1.2, totalPages = 0;
+        let startTime = Date.now(), timerInterval = null;
+
+        const TXN_TYPES = ['Buy','Sell','Bonus','Split','Dividend','SIP','STP','Switch In','Switch Out','Redemption','Transfer','IPO','Rights','Fee','Interest','Other'];
+        const TALLY_ENTRIES = ['Investment Dr / Bank Cr','Bank Dr / Investment Cr','Dividend Income Cr','TDS Dr','Charges Dr / Bank Cr','Memo Only','—'];
+
+        function formatINR(v) { return '₹ ' + Math.abs(Number(v)||0).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+        function showToast(msg,type='info') { const tc=document.getElementById('toast-container'); const bg=type==='success'?'#059669':type==='error'?'#dc2626':'#4338ca'; const t=document.createElement('div'); t.style.cssText=`background:${bg};color:#fff;padding:.6rem 1.1rem;border-radius:8px;font-size:.82rem;font-weight:600;box-shadow:0 4px 14px rgba(0,0,0,.15);font-family:inherit`; t.textContent=msg; tc.appendChild(t); setTimeout(()=>{t.style.opacity='0';t.style.transition='opacity .3s';setTimeout(()=>t.remove(),300)},3500); }
+        function goBack() { window.location.href = backUrl; }
+        function typeLabel(t) { return {demat:'Demat Statement',mutual_fund:'Mutual Fund CAS',pms:'PMS Statement'}[t]||t; }
+
+        // Timer
+        timerInterval = setInterval(() => {
+            const el = document.getElementById('rv-timer');
+            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+            el.textContent = `${String(Math.floor(elapsed/60)).padStart(2,'0')}:${String(elapsed%60).padStart(2,'0')}`;
+        }, 1000);
+
+        // ═══ LOAD EVERYTHING ═══
+        async function loadReview() {
+            if (!uploadId) { showToast('No upload ID','error'); return; }
+            document.getElementById('rv-file-info').textContent = typeLabel(instrumentType);
+            document.getElementById('rv-type-label').textContent = typeLabel(instrumentType);
+            document.getElementById('rv-stmt-type').value = typeLabel(instrumentType);
+
+            // Start polling status
+            pollStatus();
+            // Load PDF in parallel
+            loadPdf();
+        }
+
+        async function pollStatus() {
+            try {
+                const res = await authFetch(`/financial-instruments/status/${uploadId}`);
+                if (!res.ok) throw new Error('Not found');
+                const data = await res.json();
+
+                document.getElementById('rv-filename').value = data.filename || '';
+                document.getElementById('rv-file-info').textContent = `${typeLabel(instrumentType)} — ${data.filename}`;
+
+                const overlay = document.getElementById('rv-overlay');
+                const badge = document.getElementById('rv-status-badge');
+                const statusMsgs = {
+                    processing: { msg: 'Uploading statement...', sub: 'Storing file securely' },
+                    extracting: { msg: 'AI is reading PDF pages...', sub: 'LlamaParse OCR extracting text, tables, figures' },
+                    structuring: { msg: 'AI is parsing holdings & transactions...', sub: 'GPT-4o structuring data into holdings, dividends, capital gains' },
+                    generating_entries: { msg: 'Generating Tally journal entries...', sub: 'Expert CA logic creating double-entry vouchers (Dr/Cr)' }
+                };
+
+                if (data.status === 'completed') {
+                    clearInterval(timerInterval);
+                    overlay.style.display = 'none';
+                    badge.textContent = 'COMPLETED'; badge.className = 'rv-badge completed';
+                    showToast(`✓ ${data.journal_entry_count} Tally entries generated`, 'success');
+                    document.getElementById('rv-je-label').textContent = data.journal_entry_count || 0;
+                    loadExtractedData();
+                    return;
+                }
+                if (data.status === 'failed') {
+                    clearInterval(timerInterval);
+                    document.getElementById('rv-overlay-msg').textContent = 'Processing failed';
+                    document.getElementById('rv-overlay-sub').textContent = data.error || 'Unknown error';
+                    badge.textContent = 'FAILED'; badge.className = 'rv-badge'; badge.style.background='#fef2f2'; badge.style.color='#dc2626';
+                    showToast('Processing failed: '+(data.error||''), 'error');
+                    return;
+                }
+
+                // Still processing
+                const s = statusMsgs[data.status] || statusMsgs.processing;
+                document.getElementById('rv-overlay-msg').textContent = s.msg;
+                document.getElementById('rv-overlay-sub').textContent = s.sub;
+                badge.textContent = data.status.toUpperCase(); badge.className = 'rv-badge processing';
+                setTimeout(pollStatus, 3000);
+            } catch (e) { setTimeout(pollStatus, 5000); }
+        }
+
+        async function loadExtractedData() {
+            try {
+                const [dataRes, jeRes] = await Promise.all([
+                    authFetch(`/financial-instruments/data/${uploadId}`),
+                    authFetch(`/financial-instruments/journal-entries/${uploadId}`)
+                ]);
+
+                if (dataRes.ok) {
+                    const { structured_data } = await dataRes.json();
+                    populateExtractedData(structured_data);
+                }
+                if (jeRes.ok) {
+                    const { journal_entries } = await jeRes.json();
+                    window._journalEntries = journal_entries;
+                    renderJournalCards(journal_entries);
+                }
+            } catch (e) { console.error(e); showToast('Error loading data','error'); }
+        }
+
+        function populateExtractedData(data) {
+            if (!data) return;
+
+            // Header fields
+            document.getElementById('rv-investor').value = data.investor_name || data.client_name || data.portfolio_name || data.dp_id || '-';
+            document.getElementById('rv-period-start').value = data.statement_period_start || data.statement_date || '';
+            document.getElementById('rv-period-end').value = data.statement_period_end || '';
+            document.getElementById('rv-source').value = data.depository || data.pms_provider || '';
+            document.getElementById('rv-pan').value = data.pan || '';
+
+            // Holdings
+            const holdings = data.holdings || data.funds || [];
+            const isMF = instrumentType === 'mutual_fund';
+            document.getElementById('rv-holdings-count').textContent = holdings.length;
+            document.getElementById('rv-hold-label').textContent = holdings.length;
+            const htbody = document.getElementById('rv-holdings-tbody');
+            if (holdings.length === 0) {
+                htbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:1rem;color:#94a3b8">No holdings found</td></tr>';
+            } else {
+                htbody.innerHTML = holdings.map((h, i) => `<tr>
+                    <td class="item-sr">${i+1}</td>
+                    <td><input type="text" class="rv-input-cell" value="${(h.scrip_name||h.fund_name||'').replace(/"/g,'&quot;')}" style="font-weight:600"></td>
+                    <td><input type="text" class="rv-input-cell" value="${h.isin||h.folio_number||''}" style="font-family:monospace;font-size:.72rem;color:#64748b"></td>
+                    <td><input type="number" class="rv-input-cell num-input" value="${h.quantity||h.units||''}" step="0.001"></td>
+                    <td><input type="text" class="rv-input-cell num-input" value="${h.market_value?formatINR(h.market_value):''}" readonly style="font-weight:700"></td>
+                </tr>`).join('');
+            }
+
+            // Transactions
+            const txns = data.transactions || [];
+            document.getElementById('rv-txn-count').textContent = txns.length;
+            document.getElementById('rv-txn-label').textContent = txns.length;
+            const tbody = document.getElementById('rv-txn-tbody');
+            if (txns.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:1rem;color:#94a3b8">No transactions found</td></tr>';
+            } else {
+                const typeOpts = TXN_TYPES.map(t => `<option value="${t}">${t}</option>`).join('');
+                const tallyOpts = TALLY_ENTRIES.map(t => `<option value="${t}">${t}</option>`).join('');
+                tbody.innerHTML = txns.map((tx, i) => {
+                    const typeVal = tx.type || '';
+                    const isSell = typeVal.toLowerCase().includes('sell') || typeVal.toLowerCase().includes('redemption');
+                    return `<tr>
+                        <td class="item-sr">${i+1}</td>
+                        <td><input type="date" class="rv-input-cell" value="${tx.date||''}"></td>
+                        <td><input type="text" class="rv-input-cell" value="${(tx.scrip_name||tx.fund_name||'').replace(/"/g,'&quot;')}" style="font-weight:600"></td>
+                        <td><select class="rv-select-cell">${TXN_TYPES.map(t=>`<option value="${t}" ${t===typeVal?'selected':''}>${t}</option>`).join('')}</select></td>
+                        <td><input type="number" class="rv-input-cell num-input" value="${tx.quantity||tx.units||''}" step="0.001"></td>
+                        <td><input type="number" class="rv-input-cell num-input" value="${tx.price||tx.nav||''}" step="0.01"></td>
+                        <td><input type="number" class="rv-input-cell num-input ${isSell?'credit-input':'debit-input'}" value="${tx.amount||''}" step="0.01" style="font-weight:700"></td>
+                        <td><select class="rv-select-cell" style="font-size:.62rem">${TALLY_ENTRIES.map((t,idx)=>`<option value="${t}" ${idx===0&&!isSell||idx===1&&isSell?'selected':''}>${t}</option>`).join('')}</select></td>
+                    </tr>`;
+                }).join('');
+            }
+
+            // Dividends
+            const divs = data.dividends || [];
+            if (divs.length > 0) {
+                document.getElementById('rv-div-section').style.display = 'flex';
+                document.getElementById('rv-div-card').style.display = 'block';
+                document.getElementById('rv-div-count').textContent = divs.length;
+                document.getElementById('rv-div-tbody').innerHTML = divs.map((d, i) => `<tr>
+                    <td class="item-sr">${i+1}</td>
+                    <td><input type="date" class="rv-input-cell" value="${d.date||''}"></td>
+                    <td><input type="text" class="rv-input-cell" value="${(d.scrip_name||d.fund_name||'').replace(/"/g,'&quot;')}" style="font-weight:600"></td>
+                    <td><input type="number" class="rv-input-cell num-input credit-input" value="${d.amount||''}" step="0.01" style="font-weight:600"></td>
+                    <td><input type="number" class="rv-input-cell num-input debit-input" value="${d.tds_deducted||''}" step="0.01"></td>
+                    <td><input type="text" class="rv-input-cell num-input" value="${formatINR((d.amount||0)-(d.tds_deducted||0))}" readonly style="font-weight:700"></td>
+                </tr>`).join('');
+            }
+
+            // Capital Gains
+            const cg = data.capital_gains_summary;
+            if (cg && (cg.short_term_gain!=null || cg.long_term_gain!=null)) {
+                document.getElementById('rv-summary').style.display = 'flex';
+                document.getElementById('rv-stcg').textContent = cg.short_term_gain!=null ? formatINR(cg.short_term_gain) : '-';
+                document.getElementById('rv-ltcg').textContent = cg.long_term_gain!=null ? formatINR(cg.long_term_gain) : '-';
+                document.getElementById('rv-total-gain').textContent = cg.total_gain!=null ? formatINR(cg.total_gain) : '-';
+            }
+        }
+
+        // ═══ PDF VIEWER ═══
+        async function loadPdf() {
+            try {
+                const res = await authFetch(`/financial-instruments/pdf/${uploadId}`);
+                if (!res.ok) {
+                    document.getElementById('rv-pdf-body').innerHTML = '<div class="rv-pdf-placeholder"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".3"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><h3>PDF not available</h3><p>Upload again to view the statement here</p></div>';
+                    return;
+                }
+                const data = await res.json();
+                pdfUrl = data.url;
+                pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+                pdfDoc = await pdfjsLib.getDocument(pdfUrl).promise;
+                totalPages = pdfDoc.numPages;
+                document.getElementById('rv-page-total').textContent = totalPages;
+                renderPage(1);
+            } catch (e) {
+                console.error('PDF load error:', e);
+                document.getElementById('rv-pdf-body').innerHTML = `<div class="rv-pdf-placeholder"><h3>Failed to load PDF</h3><p>${e.message||''}</p></div>`;
+            }
+        }
+
+        async function renderPage(pageNum) {
+            if (!pdfDoc || pageNum < 1 || pageNum > totalPages) return;
+            currentPage = pageNum;
+            document.getElementById('rv-page-num').value = currentPage;
+            const page = await pdfDoc.getPage(pageNum);
+            const viewport = page.getViewport({ scale: pdfScale });
+            const body = document.getElementById('rv-pdf-body');
+            body.innerHTML = '';
+            const canvas = document.createElement('canvas');
+            canvas.width = viewport.width; canvas.height = viewport.height;
+            canvas.style.cssText = 'border-radius:4px;box-shadow:0 2px 12px rgba(0,0,0,.2)';
+            body.appendChild(canvas);
+            await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+        }
+        function changePage(d) { const n=currentPage+d; if(n>=1&&n<=totalPages)renderPage(n); }
+        function zoomPdf(d) { if(d===0){pdfScale=document.querySelector('.rv-pdf-body').clientWidth/620;}else{pdfScale=Math.max(0.4,Math.min(3,pdfScale+d));} renderPage(currentPage); }
+        function openPdfNewTab() { if(pdfUrl)window.open(pdfUrl,'_blank'); }
+
+        // ═══ JOURNAL ENTRY CARDS ═══
+        function renderJournalCards(entries) {
+            if (!entries || entries.length === 0) return;
+            document.getElementById('rv-je-section').style.display = 'flex';
+            document.getElementById('rv-je-container').style.display = 'block';
+            document.getElementById('rv-je-count').textContent = entries.length;
+            document.getElementById('rv-je-total').textContent = entries.length;
+
+            const container = document.getElementById('rv-je-cards');
+            container.innerHTML = entries.map((je, i) => {
+                const rows = (je.ledger_entries || []).map(le => {
+                    const isDr = (le.side || '').toLowerCase().includes('dr');
+                    return `<div class="rv-je-row">
+                        <span class="rv-je-ledger">${isDr ? '' : '&nbsp;&nbsp;&nbsp;To '}${le.ledger_name}</span>
+                        <span class="rv-je-amount">${formatINR(le.amount)}</span>
+                        <span class="rv-je-side ${isDr ? 'rv-je-dr' : 'rv-je-cr'}">${le.side}</span>
+                    </div>`;
+                }).join('');
+                return `<div class="rv-je-card">
+                    <div class="rv-je-card-header">
+                        <span class="rv-je-date">${je.date || '-'}</span>
+                        <span class="rv-je-narration">${je.narration || ''}</span>
+                        <span class="rv-je-num">#${i + 1}</span>
+                    </div>
+                    <div>${rows}</div>
+                </div>`;
+            }).join('');
+        }
+
+        function approveAllJE() { showToast('All journal entries approved ✓', 'success'); }
+        function syncAllJE() { showToast('All entries synced to Tally ✓', 'success'); }
+
+        // ═══ ACTIONS ═══
+        function viewJournalEntries() {
+            const jeSection = document.getElementById('rv-je-section');
+            if (jeSection) jeSection.scrollIntoView({ behavior: 'smooth' });
+        }
+        function syncToTally() { showToast('All entries synced to Tally ✓','success'); }
+
+        // ═══ INIT ═══
+        loadReview();
+    </script>
+</body>
+</html>

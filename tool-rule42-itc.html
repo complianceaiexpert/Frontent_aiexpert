@@ -1,0 +1,1372 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rule 42 — ITC Reversal Calculator — Suvidha AI</title>
+    <meta name="description"
+        content="Interactive Rule 42 CGST ITC reversal calculator for mixed supply apportionment. Live calculations with GSTR-3B filing references.">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="tool-layout.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        /* ══════════════════════════════════════════════════
+           RULE 42 CALCULATOR — Module-scoped styles (r42-)
+           ══════════════════════════════════════════════════ */
+
+        /* ── Page Hero ── */
+        .r42-hero {
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #1e3a8a 100%);
+            border-radius: 16px;
+            padding: 1.75rem 2rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            overflow: hidden
+        }
+
+        .r42-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(59,130,246,.15) 0%, transparent 70%);
+            border-radius: 50%
+        }
+
+        .r42-hero::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: 10%;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(16,185,129,.1) 0%, transparent 70%);
+            border-radius: 50%
+        }
+
+        .r42-hero-content {
+            position: relative;
+            z-index: 1
+        }
+
+        .r42-hero-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 1rem;
+            flex-wrap: wrap
+        }
+
+        .r42-hero h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: #fff;
+            margin: 0 0 0.2rem;
+            letter-spacing: -0.01em
+        }
+
+        .r42-hero h1 span {
+            background: linear-gradient(135deg, #60a5fa, #34d399);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text
+        }
+
+        .r42-hero-sub {
+            font-size: 0.78rem;
+            color: rgba(255,255,255,.6);
+            line-height: 1.5;
+            max-width: 560px
+        }
+
+        .r42-badges {
+            display: flex;
+            gap: 0.4rem;
+            flex-wrap: wrap;
+            flex-shrink: 0
+        }
+
+        .r42-badge {
+            font-size: 0.62rem;
+            font-weight: 700;
+            padding: 0.25rem 0.65rem;
+            border-radius: 20px;
+            letter-spacing: 0.02em;
+            white-space: nowrap
+        }
+
+        .r42-badge-blue {
+            background: rgba(59,130,246,.15);
+            color: #93c5fd;
+            border: 1px solid rgba(59,130,246,.25)
+        }
+
+        .r42-badge-green {
+            background: rgba(16,185,129,.15);
+            color: #6ee7b7;
+            border: 1px solid rgba(16,185,129,.25)
+        }
+
+        .r42-badge-amber {
+            background: rgba(245,158,11,.15);
+            color: #fcd34d;
+            border: 1px solid rgba(245,158,11,.25)
+        }
+
+        .r42-features {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.85rem;
+            flex-wrap: wrap
+        }
+
+        .r42-feat {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.25rem 0.6rem;
+            background: rgba(255,255,255,.06);
+            border: 1px solid rgba(255,255,255,.1);
+            border-radius: 6px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: rgba(255,255,255,.75)
+        }
+
+        /* ── Step Sections ── */
+        .r42-section {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            padding: 1.25rem 1.5rem;
+            margin-bottom: 0.85rem;
+            transition: all .2s
+        }
+
+        .r42-section:hover {
+            box-shadow: 0 4px 16px rgba(0,0,0,.04)
+        }
+
+        .r42-section-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem
+        }
+
+        .r42-step-badge {
+            font-size: 0.6rem;
+            font-weight: 700;
+            padding: 0.2rem 0.55rem;
+            border-radius: 6px;
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: #fff;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+            flex-shrink: 0
+        }
+
+        .r42-section-title {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: #111827
+        }
+
+        /* ── Input Grid ── */
+        .r42-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.85rem
+        }
+
+        .r42-grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 0.85rem
+        }
+
+        @media (max-width: 700px) {
+            .r42-grid-2, .r42-grid-3 { grid-template-columns: 1fr }
+        }
+
+        .r42-field {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem
+        }
+
+        .r42-var {
+            font-size: 0.62rem;
+            font-family: 'JetBrains Mono', 'SF Mono', monospace;
+            font-weight: 600;
+            color: #1e3a8a;
+            background: #eff6ff;
+            display: inline-block;
+            padding: 0.1rem 0.4rem;
+            border-radius: 4px;
+            width: fit-content
+        }
+
+        .r42-field label {
+            font-size: 0.72rem;
+            color: #6b7280;
+            font-weight: 500
+        }
+
+        .r42-input {
+            width: 100%;
+            padding: 0.55rem 0.85rem;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 9px;
+            font-size: 0.88rem;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            color: #111827;
+            background: #f9fafb;
+            transition: all .2s
+        }
+
+        .r42-input:focus {
+            outline: none;
+            border-color: #1e3a8a;
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(30, 58, 138, .08)
+        }
+
+        .r42-input::placeholder {
+            color: #d1d5db;
+            font-weight: 400
+        }
+
+        /* ── Formula Strip ── */
+        .r42-formula {
+            margin-top: 0.85rem;
+            padding: 0.6rem 0.85rem;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 9px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap
+        }
+
+        .r42-formula-result {
+            font-weight: 700;
+            color: #111827;
+            font-size: 0.85rem
+        }
+
+        /* ── Computed Cards ── */
+        .r42-comp-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.65rem
+        }
+
+        @media (max-width: 700px) {
+            .r42-comp-grid { grid-template-columns: 1fr }
+        }
+
+        .r42-comp-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 0.85rem 1rem;
+            transition: all .2s
+        }
+
+        .r42-comp-card:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,.04)
+        }
+
+        .r42-comp-card.card-teal {
+            background: #ecfdf5;
+            border-color: #a7f3d0
+        }
+
+        .r42-comp-card.card-amber {
+            background: #fffbeb;
+            border-color: #fde68a
+        }
+
+        .r42-comp-card.card-red {
+            background: #fef2f2;
+            border-color: #fecaca
+        }
+
+        .r42-comp-var {
+            font-size: 0.6rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+            color: #94a3b8;
+            margin-bottom: 0.15rem
+        }
+
+        .r42-comp-label {
+            font-size: 0.7rem;
+            color: #64748b;
+            margin-bottom: 0.35rem;
+            font-weight: 500
+        }
+
+        .r42-comp-val {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #111827
+        }
+
+        .r42-comp-val.val-teal { color: #059669 }
+        .r42-comp-val.val-amber { color: #d97706 }
+        .r42-comp-val.val-red { color: #dc2626 }
+
+        /* ── Pipeline Visualization ── */
+        .r42-pipeline {
+            display: flex;
+            align-items: stretch;
+            gap: 0;
+            overflow-x: auto;
+            padding: 0.25rem 0
+        }
+
+        .r42-pipe-node {
+            flex: 1;
+            min-width: 100px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 0.75rem 0.65rem;
+            text-align: center;
+            position: relative;
+            transition: all .25s
+        }
+
+        .r42-pipe-node:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,.06)
+        }
+
+        .r42-pipe-node + .r42-pipe-node {
+            margin-left: 0.5rem
+        }
+
+        .r42-pipe-node + .r42-pipe-node::before {
+            content: '→';
+            position: absolute;
+            left: -0.85rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.85rem;
+            color: #d1d5db;
+            font-weight: 700
+        }
+
+        .r42-pipe-node.pipe-amber {
+            background: #fffbeb;
+            border-color: #f59e0b
+        }
+
+        .r42-pipe-node.pipe-teal {
+            background: #ecfdf5;
+            border-color: #10b981
+        }
+
+        .r42-pipe-node.pipe-red {
+            background: #fef2f2;
+            border-color: #ef4444
+        }
+
+        .r42-pipe-var {
+            font-size: 0.58rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+            color: #94a3b8
+        }
+
+        .r42-pipe-val {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #111827;
+            margin: 0.15rem 0
+        }
+
+        .r42-pipe-val.pv-amber { color: #d97706 }
+        .r42-pipe-val.pv-teal { color: #059669 }
+        .r42-pipe-val.pv-red { color: #dc2626 }
+
+        .r42-pipe-label {
+            font-size: 0.58rem;
+            color: #94a3b8;
+            font-weight: 500
+        }
+
+        /* ── Summary Section ── */
+        .r42-summary-section {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            padding: 1.25rem 1.5rem;
+            margin-bottom: 0.85rem
+        }
+
+        .r42-summary-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem
+        }
+
+        .r42-summary-title {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: #111827;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem
+        }
+
+        .r42-summary-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.6rem 0;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 0.82rem
+        }
+
+        .r42-summary-row:last-child {
+            border-bottom: none
+        }
+
+        .r42-s-label {
+            color: #6b7280;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem
+        }
+
+        .r42-s-right {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem
+        }
+
+        .r42-gstr-ref {
+            font-size: 0.58rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+            color: #64748b;
+            background: #f1f5f9;
+            padding: 0.15rem 0.45rem;
+            border-radius: 4px;
+            border: 1px solid #e2e8f0
+        }
+
+        .r42-s-val {
+            font-weight: 700;
+            color: #111827
+        }
+
+        .r42-s-val.sv-amber { color: #d97706 }
+        .r42-s-val.sv-red { color: #dc2626 }
+        .r42-s-val.sv-teal { color: #059669 }
+
+        .r42-divider {
+            height: 1px;
+            background: #e5e7eb;
+            margin: 0.25rem 0
+        }
+
+        .r42-total-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.85rem 0 0.5rem;
+            font-weight: 700
+        }
+
+        .r42-total-label {
+            font-size: 0.88rem;
+            color: #111827
+        }
+
+        .r42-total-val {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.25rem
+        }
+
+        .r42-ratio-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.35rem 0.75rem;
+            background: #f8fafc;
+            border-radius: 8px;
+            margin-top: 0.5rem;
+            font-size: 0.75rem
+        }
+
+        .r42-ratio-label {
+            color: #6b7280;
+            font-weight: 500
+        }
+
+        .r42-ratio-val {
+            font-weight: 700;
+            color: #1e3a8a;
+            font-family: 'JetBrains Mono', monospace
+        }
+
+        /* ── Annual Note ── */
+        .r42-annual-note {
+            font-size: 0.7rem;
+            color: #64748b;
+            margin-top: 0.65rem;
+            padding: 0.5rem 0.75rem;
+            border-left: 3px solid #e2e8f0;
+            background: #fafbfc;
+            border-radius: 0 6px 6px 0;
+            line-height: 1.5
+        }
+
+        .r42-annual-note strong {
+            color: #1e3a8a
+        }
+
+        /* ── Actions Row ── */
+        .r42-actions {
+            display: flex;
+            gap: 0.65rem;
+            margin-top: 1rem;
+            flex-wrap: wrap
+        }
+
+        /* ── Period selector ── */
+        .r42-period-row {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            margin-bottom: 1.25rem;
+            flex-wrap: wrap
+        }
+
+        .r42-period-label {
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: #6b7280
+        }
+
+        .r42-select {
+            padding: 0.45rem 0.75rem;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 9px;
+            font-size: 0.82rem;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            color: #111827;
+            background: #f9fafb;
+            cursor: pointer;
+            transition: all .2s;
+            min-width: 160px
+        }
+
+        .r42-select:focus {
+            outline: none;
+            border-color: #1e3a8a;
+            box-shadow: 0 0 0 3px rgba(30,58,138,.08)
+        }
+
+        /* ── Info tooltip style ── */
+        .r42-info-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #e2e8f0;
+            font-size: 9px;
+            font-weight: 700;
+            color: #64748b;
+            cursor: help;
+            flex-shrink: 0
+        }
+
+        /* ── Pulse animation for live values ── */
+        @keyframes r42Pulse {
+            0% { opacity: 1 }
+            50% { opacity: .5 }
+            100% { opacity: 1 }
+        }
+
+        .r42-updating {
+            animation: r42Pulse .3s ease-out
+        }
+
+        /* ── Print styles ── */
+        @media print {
+            .tool-sidebar, #app-topbar { display: none !important }
+            .tool-main { margin-left: 0 !important; padding: 0 !important }
+            .r42-hero { background: #1e3a8a !important; -webkit-print-color-adjust: exact; print-color-adjust: exact }
+            .r42-input { border: 1px solid #999 !important }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app-topbar" data-active="dashboard"></div>
+    <script src="app-topbar.js"></script>
+
+    <div class="tool-layout">
+        <aside class="tool-sidebar" id="tool-sidebar"></aside>
+        <main class="tool-main">
+            <div class="tool-main-inner">
+
+                <!-- ══ Breadcrumb ══ -->
+                <div class="tool-bc" id="r42-breadcrumb">
+                    <a href="clients.html">Firm</a><span style="color:#d1d5db">›</span>
+                    <span id="r42-bc-middle"></span>
+                    <span style="color:#374151;font-weight:600">Rule 42 ITC Calculator</span>
+                </div>
+
+                <!-- ══════════════════════════════════════════
+                     HERO HEADER
+                     ══════════════════════════════════════════ -->
+                <div class="r42-hero">
+                    <div class="r42-hero-content">
+                        <div class="r42-hero-top">
+                            <div>
+                                <h1>⚖️ Rule 42 — <span>ITC Reversal Calculator</span></h1>
+                                <p class="r42-hero-sub">
+                                    Compute ITC reversal for mixed taxable & exempt supplies under CGST Rules, 2017.
+                                    All fields are live — edit any value and results update instantly.
+                                </p>
+                            </div>
+                            <div class="r42-badges">
+                                <span class="r42-badge r42-badge-blue">GSTR-3B: Table 4(B)</span>
+                                <span class="r42-badge r42-badge-green">Provisional Monthly</span>
+                                <span class="r42-badge r42-badge-amber">Rule 42(2) Annual True-up</span>
+                            </div>
+                        </div>
+                        <div class="r42-features">
+                            <span class="r42-feat">✓ Auto-Save & Load</span>
+                            <span class="r42-feat">✓ Monthly History</span>
+                            <span class="r42-feat">✓ Annual True-up</span>
+                            <span class="r42-feat">✓ Excel Export</span>
+                            <span class="r42-feat">✓ GSTR-3B References</span>
+                            <span class="r42-feat">✓ Pipeline Visualization</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ══ Period Selector ══ -->
+                <div class="r42-period-row">
+                    <span class="r42-period-label">Tax Period:</span>
+                    <select class="r42-select" id="r42-month" onchange="r42PeriodChanged()"></select>
+                    <span class="r42-period-label" style="margin-left:0.5rem">Tax Head:</span>
+                    <select class="r42-select" id="r42-tax-head" onchange="r42PeriodChanged()">
+                        <option value="cgst">CGST</option>
+                        <option value="sgst">SGST / UTGST</option>
+                        <option value="igst">IGST</option>
+                    </select>
+                    <span class="r42-period-label" style="margin-left:0.5rem">FY:</span>
+                    <select class="r42-select" id="r42-fy" style="min-width:130px" onchange="r42PeriodChanged()"></select>
+                    <span id="r42-save-status" style="margin-left:auto;font-size:0.68rem;font-weight:600;padding:0.2rem 0.6rem;border-radius:6px;display:none"></span>
+                </div>
+
+                <!-- ══════════════════════════════════════════
+                     STEP 1 — Total ITC
+                     ══════════════════════════════════════════ -->
+                <div class="r42-section" id="r42-step1">
+                    <div class="r42-section-header">
+                        <span class="r42-step-badge">Step 1</span>
+                        <span class="r42-section-title">Total ITC availed this period (₹)</span>
+                    </div>
+                    <div class="r42-grid-2">
+                        <div class="r42-field">
+                            <span class="r42-var">T</span>
+                            <label>Total ITC on inputs / input services <span style="color:#94a3b8;font-weight:400">(GSTR-3B Table 4A)</span></label>
+                            <input type="number" class="r42-input" id="r42-T" min="0"
+                                placeholder="e.g. 12,50,000" oninput="r42Calc()">
+                        </div>
+                        <div class="r42-field">
+                            <span class="r42-var">T3</span>
+                            <label>Blocked credit — Sec 17(5) <span style="color:#94a3b8;font-weight:400">(Motor vehicles, food, gifts etc.)</span></label>
+                            <input type="number" class="r42-input" id="r42-T3" min="0"
+                                placeholder="e.g. 75,000" oninput="r42Calc()">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ══════════════════════════════════════════
+                     STEP 2 — Exclusive Attribution
+                     ══════════════════════════════════════════ -->
+                <div class="r42-section" id="r42-step2">
+                    <div class="r42-section-header">
+                        <span class="r42-step-badge">Step 2</span>
+                        <span class="r42-section-title">ITC exclusively attributable (₹)</span>
+                    </div>
+                    <div class="r42-grid-2">
+                        <div class="r42-field">
+                            <span class="r42-var">T1</span>
+                            <label>Exclusively for non-business / personal use <span style="color:#94a3b8;font-weight:400">(Director car, club, personal expenses)</span></label>
+                            <input type="number" class="r42-input" id="r42-T1" min="0"
+                                placeholder="e.g. 45,000" oninput="r42Calc()">
+                        </div>
+                        <div class="r42-field">
+                            <span class="r42-var">T2</span>
+                            <label>Exclusively for exempt supplies <span style="color:#94a3b8;font-weight:400">(Interest income, dividend, agri inputs)</span></label>
+                            <input type="number" class="r42-input" id="r42-T2" min="0"
+                                placeholder="e.g. 1,20,000" oninput="r42Calc()">
+                        </div>
+                    </div>
+                    <div class="r42-formula">
+                        <span>C1 = T − T1 − T2 − T3</span>
+                        <span style="color:#d1d5db">→</span>
+                        <span class="r42-formula-result" id="r42-c1-val">—</span>
+                    </div>
+                </div>
+
+                <!-- ══════════════════════════════════════════
+                     STEP 3 — Common Credit Pool
+                     ══════════════════════════════════════════ -->
+                <div class="r42-section" id="r42-step3">
+                    <div class="r42-section-header">
+                        <span class="r42-step-badge">Step 3</span>
+                        <span class="r42-section-title">Common credit pool (₹)</span>
+                    </div>
+                    <div class="r42-comp-grid">
+                        <div class="r42-comp-card card-amber">
+                            <div class="r42-comp-var">D1</div>
+                            <div class="r42-comp-label">Reversal — exempt exclusive (= T2)</div>
+                            <div class="r42-comp-val val-amber" id="r42-d1">—</div>
+                        </div>
+                        <div class="r42-comp-card card-amber">
+                            <div class="r42-comp-var">D2</div>
+                            <div class="r42-comp-label">Reversal — non-business use (= T1)</div>
+                            <div class="r42-comp-val val-amber" id="r42-d2">—</div>
+                        </div>
+                        <div class="r42-comp-card card-teal">
+                            <div class="r42-comp-var">C2</div>
+                            <div class="r42-comp-label">Common credit (C1 − D1 − D2)</div>
+                            <div class="r42-comp-val val-teal" id="r42-c2">—</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ══════════════════════════════════════════
+                     STEP 4 — Turnover Ratio
+                     ══════════════════════════════════════════ -->
+                <div class="r42-section" id="r42-step4">
+                    <div class="r42-section-header">
+                        <span class="r42-step-badge">Step 4</span>
+                        <span class="r42-section-title">Turnover ratio for proportionate reversal</span>
+                    </div>
+                    <div class="r42-grid-3">
+                        <div class="r42-field">
+                            <span class="r42-var">E</span>
+                            <label>Exempt turnover <span style="color:#94a3b8;font-weight:400">(Interest, rent from residential, agri — per GSTR-3B Table 3.1(c))</span></label>
+                            <input type="number" class="r42-input" id="r42-E" min="0"
+                                placeholder="e.g. 35,00,000" oninput="r42Calc()">
+                        </div>
+                        <div class="r42-field">
+                            <span class="r42-var">N</span>
+                            <label>Non-taxable (non-GST) turnover <span style="color:#94a3b8;font-weight:400">(Petroleum, alcohol, stamp duty)</span></label>
+                            <input type="number" class="r42-input" id="r42-N" min="0"
+                                placeholder="e.g. 5,00,000" oninput="r42Calc()">
+                        </div>
+                        <div class="r42-field">
+                            <span class="r42-var">F</span>
+                            <label>Total turnover (all supplies) <span style="color:#94a3b8;font-weight:400">(As per books / GSTR-3B Table 3.1 total)</span></label>
+                            <input type="number" class="r42-input" id="r42-F" min="0"
+                                placeholder="e.g. 2,50,00,000" oninput="r42Calc()">
+                        </div>
+                    </div>
+                    <div class="r42-formula">
+                        <span>C3 = C2 × (E + N) / F</span>
+                        <span style="color:#d1d5db">→</span>
+                        <span class="r42-formula-result" id="r42-c3-val">—</span>
+                    </div>
+                    <div class="r42-annual-note">
+                        <strong>⚠ Provisional monthly ratio</strong> — True-up mandatory at year-end using actual
+                        annual figures per Rule 42(2). Adjusted via GSTR-3B of April or annual return.
+                    </div>
+                </div>
+
+                <!-- ══════════════════════════════════════════
+                     STEP 5 — Pipeline Visualization
+                     ══════════════════════════════════════════ -->
+                <div class="r42-section" id="r42-step5">
+                    <div class="r42-section-header">
+                        <span class="r42-step-badge">Step 5</span>
+                        <span class="r42-section-title">Calculation pipeline</span>
+                    </div>
+                    <div class="r42-pipeline">
+                        <div class="r42-pipe-node">
+                            <div class="r42-pipe-var">T</div>
+                            <div class="r42-pipe-val" id="r42-p-T">—</div>
+                            <div class="r42-pipe-label">Total ITC</div>
+                        </div>
+                        <div class="r42-pipe-node pipe-amber">
+                            <div class="r42-pipe-var">− T1+T2+T3</div>
+                            <div class="r42-pipe-val pv-amber" id="r42-p-excl">—</div>
+                            <div class="r42-pipe-label">Exclusive deduct</div>
+                        </div>
+                        <div class="r42-pipe-node pipe-teal">
+                            <div class="r42-pipe-var">C2</div>
+                            <div class="r42-pipe-val pv-teal" id="r42-p-C2">—</div>
+                            <div class="r42-pipe-label">Common pool</div>
+                        </div>
+                        <div class="r42-pipe-node pipe-red">
+                            <div class="r42-pipe-var">C3 reversal</div>
+                            <div class="r42-pipe-val pv-red" id="r42-p-C3">—</div>
+                            <div class="r42-pipe-label">Proportionate</div>
+                        </div>
+                        <div class="r42-pipe-node pipe-teal">
+                            <div class="r42-pipe-var">C4</div>
+                            <div class="r42-pipe-val pv-teal" id="r42-p-C4">—</div>
+                            <div class="r42-pipe-label">Eligible common</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ══════════════════════════════════════════
+                     SUMMARY — GSTR-3B Filing Reference
+                     ══════════════════════════════════════════ -->
+                <div class="r42-summary-section">
+                    <div class="r42-summary-header">
+                        <span class="r42-summary-title">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <polyline points="14 2 14 8 20 8"/>
+                                <line x1="16" y1="13" x2="8" y2="13"/>
+                                <line x1="16" y1="17" x2="8" y2="17"/>
+                                <polyline points="10 9 9 9 8 9"/>
+                            </svg>
+                            Summary — GSTR-3B Filing Reference
+                        </span>
+                        <button class="tbtn tbtn-secondary" onclick="r42Print()" style="font-size:0.72rem;padding:0.35rem 0.75rem">
+                            🖨️ Print
+                        </button>
+                    </div>
+
+                    <div class="r42-summary-row">
+                        <span class="r42-s-label">D1 — Reversal (exempt exclusive)</span>
+                        <span class="r42-s-right">
+                            <span class="r42-gstr-ref">4(B)(1)</span>
+                            <span class="r42-s-val sv-amber" id="r42-s-d1">—</span>
+                        </span>
+                    </div>
+                    <div class="r42-summary-row">
+                        <span class="r42-s-label">D2 — Reversal (non-business use)</span>
+                        <span class="r42-s-right">
+                            <span class="r42-gstr-ref">4(B)(2)</span>
+                            <span class="r42-s-val sv-amber" id="r42-s-d2">—</span>
+                        </span>
+                    </div>
+                    <div class="r42-summary-row">
+                        <span class="r42-s-label">C3 — Reversal (proportionate exempt)</span>
+                        <span class="r42-s-right">
+                            <span class="r42-gstr-ref">4(B)(2)</span>
+                            <span class="r42-s-val sv-red" id="r42-s-c3">—</span>
+                        </span>
+                    </div>
+
+                    <div class="r42-divider"></div>
+
+                    <div class="r42-total-row">
+                        <span class="r42-total-label">⚠️ Total ITC reversal for the period</span>
+                        <span class="r42-total-val sv-red" id="r42-s-rev">—</span>
+                    </div>
+
+                    <div class="r42-total-row" style="padding-top:0.5rem">
+                        <span class="r42-total-label" style="font-size:0.92rem">✅ Net eligible ITC</span>
+                        <span class="r42-total-val sv-teal" style="font-size:1.35rem" id="r42-s-c4">—</span>
+                    </div>
+
+                    <div class="r42-ratio-row">
+                        <span class="r42-ratio-label">Exempt ratio applied</span>
+                        <span class="r42-ratio-val" id="r42-s-ratio">—</span>
+                    </div>
+                </div>
+
+                <!-- ══ Actions ══ -->
+                <div class="r42-actions">
+                    <button class="tbtn tbtn-primary" id="r42-save-btn" onclick="r42Save()">💾 Save Computation</button>
+                    <button class="tbtn tbtn-secondary" onclick="r42Finalize()" id="r42-finalize-btn" style="display:none">🔒 Finalize Period</button>
+                    <button class="tbtn tbtn-secondary" onclick="r42Reset()">🔄 Reset</button>
+                    <button class="tbtn tbtn-secondary" onclick="r42Print()">🖨️ Print</button>
+                    <button class="tbtn tbtn-secondary" onclick="r42ExportExcel()">📥 Export Excel (FY)</button>
+                </div>
+
+                <!-- ══════════════════════════════════════════
+                     HISTORY PANEL
+                     ══════════════════════════════════════════ -->
+                <div class="r42-section" id="r42-history-section" style="margin-top:0.85rem">
+                    <div class="r42-section-header" style="cursor:pointer" onclick="document.getElementById('r42-history-body').style.display=document.getElementById('r42-history-body').style.display==='none'?'block':'none'">
+                        <span class="r42-step-badge" style="background:linear-gradient(135deg,#059669,#10b981)">History</span>
+                        <span class="r42-section-title">Monthly Computations <span id="r42-hist-count" style="font-weight:400;color:#94a3b8;font-size:0.75rem"></span></span>
+                        <span style="margin-left:auto;color:#94a3b8;font-size:0.75rem">▼</span>
+                    </div>
+                    <div id="r42-history-body" style="display:none">
+                        <div id="r42-history-list" style="margin-top:0.65rem">
+                            <div style="text-align:center;padding:1.5rem;color:#94a3b8;font-size:0.78rem">No saved computations yet</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ══════════════════════════════════════════
+                     ANNUAL TRUE-UP — Rule 42(2)
+                     ══════════════════════════════════════════ -->
+                <div class="r42-section" id="r42-annual-section" style="margin-top:0.85rem">
+                    <div class="r42-section-header" style="cursor:pointer" onclick="document.getElementById('r42-annual-body').style.display=document.getElementById('r42-annual-body').style.display==='none'?'block':'none'">
+                        <span class="r42-step-badge" style="background:linear-gradient(135deg,#d97706,#f59e0b)">Annual</span>
+                        <span class="r42-section-title">Rule 42(2) Annual True-Up</span>
+                        <span style="margin-left:auto;color:#94a3b8;font-size:0.75rem">▼</span>
+                    </div>
+                    <div id="r42-annual-body" style="display:none;margin-top:0.85rem">
+                        <div style="font-size:0.72rem;color:#64748b;margin-bottom:0.75rem;line-height:1.5">
+                            Compare provisional monthly C3 reversals against actual annual turnover figures.
+                            The difference flows as adjustment in April GSTR-3B.
+                        </div>
+                        <div class="r42-grid-3" style="margin-bottom:0.85rem">
+                            <div class="r42-field">
+                                <label>Actual Annual Exempt TO (E)</label>
+                                <input type="number" class="r42-input" id="r42-ann-E" placeholder="Annual exempt turnover" oninput="r42AnnualCalc()">
+                            </div>
+                            <div class="r42-field">
+                                <label>Actual Annual Non-taxable TO (N)</label>
+                                <input type="number" class="r42-input" id="r42-ann-N" placeholder="Annual non-taxable TO" oninput="r42AnnualCalc()">
+                            </div>
+                            <div class="r42-field">
+                                <label>Actual Annual Total TO (F)</label>
+                                <input type="number" class="r42-input" id="r42-ann-F" placeholder="Annual total turnover" oninput="r42AnnualCalc()">
+                            </div>
+                        </div>
+                        <button class="tbtn tbtn-primary" onclick="r42AnnualCalc()" style="margin-bottom:0.85rem">📊 Compute Annual True-Up</button>
+                        <div id="r42-annual-result"></div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script src="tool-sidebar.js"></script>
+    <script src="api_config.js?v=2"></script>
+    <script src="session-manager.js"></script>
+    <script>
+        // ═══════════════════════════════════════════════════
+        //  INITIALIZE
+        // ═══════════════════════════════════════════════════
+        renderToolSidebar('rule42-itc');
+        const _params = new URLSearchParams(window.location.search);
+        const _clientId = _params.get('clientId');
+        let _r42SavedId = null; // ID of current saved computation
+        let _r42Status = 'unsaved';
+
+        // ═══════════════════════════════════════════════════
+        //  DYNAMIC PERIOD DROPDOWNS
+        // ═══════════════════════════════════════════════════
+        (function initPeriods() {
+            const monthNames = ['January','February','March','April','May','June',
+                                'July','August','September','October','November','December'];
+            const monthSel = document.getElementById('r42-month');
+            const fySel = document.getElementById('r42-fy');
+            const now = new Date();
+            for (let i = 0; i < 24; i++) {
+                const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+                const val = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+                const label = monthNames[d.getMonth()] + ' ' + d.getFullYear();
+                monthSel.add(new Option(label, val));
+            }
+            const curFYStart = now.getMonth() >= 3 ? now.getFullYear() : now.getFullYear() - 1;
+            for (let i = 0; i < 4; i++) {
+                const start = curFYStart - i;
+                fySel.add(new Option('FY ' + start + '-' + String(start + 1).slice(-2), start + '-' + (start + 1)));
+            }
+        })();
+
+        // ═══════════════════════════════════════════════════
+        //  FORMATTERS
+        // ═══════════════════════════════════════════════════
+        function r42Fmt(n) { return '₹' + Math.round(n).toLocaleString('en-IN'); }
+        function r42Pct(n) { return (n * 100).toFixed(2) + '%'; }
+
+        function r42HasInput() {
+            return ['r42-T','r42-T1','r42-T2','r42-T3','r42-E','r42-N','r42-F']
+                .some(id => document.getElementById(id).value.trim() !== '');
+        }
+
+        // ═══════════════════════════════════════════════════
+        //  CORE CALCULATION — Runs on every input change
+        // ═══════════════════════════════════════════════════
+        function r42Calc() {
+            const hasInput = r42HasInput();
+            const T  = +document.getElementById('r42-T').value  || 0;
+            const T1 = +document.getElementById('r42-T1').value || 0;
+            const T2 = +document.getElementById('r42-T2').value || 0;
+            const T3 = +document.getElementById('r42-T3').value || 0;
+            const E  = +document.getElementById('r42-E').value  || 0;
+            const N  = +document.getElementById('r42-N').value  || 0;
+            const rawF = document.getElementById('r42-F').value.trim();
+            const F  = rawF !== '' ? (+rawF || 0) : 0;
+
+            if (!hasInput) {
+                ['r42-c1-val','r42-d1','r42-d2','r42-c2','r42-c3-val',
+                 'r42-p-T','r42-p-excl','r42-p-C2','r42-p-C3','r42-p-C4',
+                 'r42-s-d1','r42-s-d2','r42-s-c3','r42-s-rev','r42-s-c4','r42-s-ratio'
+                ].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = '—'; });
+                window._r42Data = null;
+                return;
+            }
+
+            const C1 = Math.max(0, T - T1 - T2 - T3);
+            const D1 = T2, D2 = T1;
+            const C2 = Math.max(0, C1 - D1 - D2);
+            const ratio = F > 0 ? (E + N) / F : 0;
+            const C3 = C2 * ratio;
+            const C4 = C2 - C3;
+            const totalRev = D1 + D2 + C3;
+
+            if (T1 + T2 + T3 > T && T > 0) document.getElementById('r42-c1-val').style.color = '#dc2626';
+            else document.getElementById('r42-c1-val').style.color = '';
+            if (F > 0 && (E + N) > F) document.getElementById('r42-c3-val').style.color = '#dc2626';
+            else document.getElementById('r42-c3-val').style.color = '';
+
+            r42Set('r42-c1-val', r42Fmt(C1));
+            r42Set('r42-d1', r42Fmt(D1)); r42Set('r42-d2', r42Fmt(D2)); r42Set('r42-c2', r42Fmt(C2));
+            const ratioText = F > 0 ? r42Pct(ratio) : 'N/A (enter total turnover)';
+            r42Set('r42-c3-val', r42Fmt(C3) + '  (' + ratioText + ')');
+            r42Set('r42-p-T', r42Fmt(T)); r42Set('r42-p-excl', r42Fmt(T1+T2+T3));
+            r42Set('r42-p-C2', r42Fmt(C2)); r42Set('r42-p-C3', r42Fmt(C3)); r42Set('r42-p-C4', r42Fmt(C4));
+            r42Set('r42-s-d1', r42Fmt(D1)); r42Set('r42-s-d2', r42Fmt(D2)); r42Set('r42-s-c3', r42Fmt(C3));
+            r42Set('r42-s-rev', r42Fmt(totalRev)); r42Set('r42-s-c4', r42Fmt(C4));
+            r42Set('r42-s-ratio', F > 0 ? r42Pct(ratio)+' of common ITC reversed' : 'Enter total turnover (F) to compute ratio');
+            window._r42Data = { T, T1, T2, T3, E, N, F, C1, D1, D2, C2, C3, C4, ratio, totalRev };
+        }
+
+        function r42Set(id, text) {
+            const el = document.getElementById(id); if (!el) return;
+            el.textContent = text;
+            el.classList.remove('r42-updating'); void el.offsetWidth; el.classList.add('r42-updating');
+        }
+
+        // ═══════════════════════════════════════════════════
+        //  SAVE STATUS BADGE
+        // ═══════════════════════════════════════════════════
+        function r42ShowStatus(text, color, bg) {
+            const el = document.getElementById('r42-save-status');
+            el.textContent = text; el.style.color = color; el.style.background = bg;
+            el.style.display = 'inline-block';
+        }
+
+        // ═══════════════════════════════════════════════════
+        //  SAVE — Upsert to backend
+        // ═══════════════════════════════════════════════════
+        async function r42Save() {
+            if (!_clientId) { alert('No client selected.'); return; }
+            if (!r42HasInput()) { alert('Enter at least one value before saving.'); return; }
+
+            const btn = document.getElementById('r42-save-btn');
+            btn.disabled = true; btn.innerHTML = '<span class="tool-spinner"></span> Saving...';
+
+            try {
+                const body = {
+                    client_id: _clientId,
+                    period: document.getElementById('r42-month').value,
+                    financial_year: document.getElementById('r42-fy').value,
+                    tax_head: document.getElementById('r42-tax-head').value,
+                    inputs: {
+                        T: +document.getElementById('r42-T').value || 0,
+                        T1: +document.getElementById('r42-T1').value || 0,
+                        T2: +document.getElementById('r42-T2').value || 0,
+                        T3: +document.getElementById('r42-T3').value || 0,
+                        E: +document.getElementById('r42-E').value || 0,
+                        N: +document.getElementById('r42-N').value || 0,
+                        F: +document.getElementById('r42-F').value || 0,
+                    },
+                    status: _r42Status === 'final' ? 'final' : 'draft',
+                };
+
+                const res = await authFetch('/rule42/save', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) });
+                if (!res || !res.ok) throw new Error('Save failed');
+                const data = await res.json();
+                _r42SavedId = data.id;
+                _r42Status = data.status;
+                r42ShowStatus(data.status === 'final' ? '🔒 Final' : '✅ Saved', data.status === 'final' ? '#d97706' : '#059669', data.status === 'final' ? '#fffbeb' : '#ecfdf5');
+                document.getElementById('r42-finalize-btn').style.display = data.status === 'draft' ? '' : 'none';
+                r42LoadHistory();
+            } catch (e) {
+                console.error(e);
+                r42ShowStatus('❌ Save failed', '#dc2626', '#fef2f2');
+            } finally {
+                btn.disabled = false; btn.textContent = '💾 Save Computation';
+            }
+        }
+
+        // ═══════════════════════════════════════════════════
+        //  LOAD — Fetch saved data for current period
+        // ═══════════════════════════════════════════════════
+        async function r42Load() {
+            if (!_clientId) return;
+            const period = document.getElementById('r42-month').value;
+            const taxHead = document.getElementById('r42-tax-head').value;
+            try {
+                const res = await authFetch(`/rule42/load?client_id=${_clientId}&period=${period}&tax_head=${taxHead}`);
+                if (!res || !res.ok) return;
+                const data = await res.json();
+                if (!data.found) {
+                    _r42SavedId = null; _r42Status = 'unsaved';
+                    r42ShowStatus('New', '#6b7280', '#f1f5f9');
+                    document.getElementById('r42-finalize-btn').style.display = 'none';
+                    return;
+                }
+                // Populate inputs
+                const inp = data.inputs || {};
+                ['T','T1','T2','T3','E','N','F'].forEach(k => {
+                    const el = document.getElementById('r42-' + k);
+                    if (el) el.value = inp[k] || '';
+                });
+                _r42SavedId = data.id;
+                _r42Status = data.status;
+                r42Calc();
+                r42ShowStatus(data.status === 'final' ? '🔒 Final' : '💾 Saved', data.status === 'final' ? '#d97706' : '#059669', data.status === 'final' ? '#fffbeb' : '#ecfdf5');
+                document.getElementById('r42-finalize-btn').style.display = data.status === 'draft' ? '' : 'none';
+            } catch (e) { console.error('Load error:', e); }
+        }
+
+        // ═══════════════════════════════════════════════════
+        //  PERIOD CHANGED — Auto-load
+        // ═══════════════════════════════════════════════════
+        function r42PeriodChanged() {
+            r42Reset(true); // reset without clearing status
+            r42Load();
+        }
+
+        // ═══════════════════════════════════════════════════
+        //  HISTORY — Show all saved computations
+        // ═══════════════════════════════════════════════════
+        async function r42LoadHistory() {
+            if (!_clientId) return;
+            const fy = document.getElementById('r42-fy').value;
+            const taxHead = document.getElementById('r42-tax-head').value;
+            try {
+                const res = await authFetch(`/rule42/history?client_id=${_clientId}&financial_year=${fy}&tax_head=${taxHead}`);
+                if (!res || !res.ok) return;
+                const items = await res.json();
+                const list = document.getElementById('r42-history-list');
+                const countEl = document.getElementById('r42-hist-count');
+                countEl.textContent = items.length > 0 ? `(${items.length} periods)` : '';
+
+                if (items.length === 0) {
+                    list.innerHTML = '<div style="text-align:center;padding:1.5rem;color:#94a3b8;font-size:0.78rem">No saved computations for this FY</div>';
+                    return;
+                }
+
+                const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+                list.innerHTML = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:0.5rem">' +
+                    items.map(item => {
+                        const [y, m] = item.period.split('-');
+                        const label = monthNames[parseInt(m)-1] + ' ' + y;
+                        const r = item.results || {};
+                        const statusBadge = item.status === 'final'
+                            ? '<span style="font-size:0.55rem;background:#fffbeb;color:#d97706;padding:1px 5px;border-radius:4px;font-weight:700">🔒 FINAL</span>'
+                            : '<span style="font-size:0.55rem;background:#f1f5f9;color:#64748b;padding:1px 5px;border-radius:4px;font-weight:700">DRAFT</span>';
+                        return `<div onclick="r42LoadPeriod('${item.period}')" style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:0.65rem 0.85rem;cursor:pointer;transition:all .15s" onmouseover="this.style.borderColor='#3b82f6';this.style.transform='translateY(-1px)'" onmouseout="this.style.borderColor='#e2e8f0';this.style.transform=''">
+                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.3rem">
+                                <span style="font-weight:700;font-size:0.78rem;color:#111827">${label}</span>
+                                ${statusBadge}
+                            </div>
+                            <div style="font-size:0.68rem;color:#64748b">Reversal: <span style="color:#dc2626;font-weight:600">${r42Fmt(r.total_reversal||0)}</span></div>
+                            <div style="font-size:0.68rem;color:#64748b">Eligible: <span style="color:#059669;font-weight:600">${r42Fmt(r.net_eligible_itc||0)}</span></div>
+                        </div>`;
+                    }).join('') + '</div>';
+            } catch (e) { console.error('History error:', e); }
+        }
+
+        function r42LoadPeriod(period) {
+            document.getElementById('r42-month').value = period;
+            r42PeriodChanged();
+        }
+
+        // ═══════════════════════════════════════════════════
+        //  FINALIZE
+        // ═══════════════════════════════════════════════════
+        async function r42Finalize() {
+            if (!_r42SavedId) { alert('Save first before finalizing.'); return; }
+            if (!confirm('Finalize this period? It will be locked from edits.')) return;
+            try {
+                const res = await authFetch(`/rule42/${_r42SavedId}/finalize`, { method: 'POST' });
+                if (res && res.ok) {
+                    _r42Status = 'final';
+                    r42ShowStatus('🔒 Final', '#d97706', '#fffbeb');
+                    document.getElementById('r42-finalize-btn').style.display = 'none';
+                    r42LoadHistory();
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        // ═══════════════════════════════════════════════════
+        //  ANNUAL TRUE-UP — Rule 42(2)
+        // ═══════════════════════════════════════════════════
+        async function r42AnnualCalc() {
+            if (!_clientId) return;
+            const fy = document.getElementById('r42-fy').value;
+            const taxHead = document.getElementById('r42-tax-head').value;
+            const annE = document.getElementById('r42-ann-E').value;
+            const annN = document.getElementById('r42-ann-N').value;
+            const annF = document.getElementById('r42-ann-F').value;
+
+            let url = `/rule42/annual-trueup?client_id=${_clientId}&financial_year=${fy}&tax_head=${taxHead}`;
+            if (annE) url += `&annual_E=${annE}`;
+            if (annN) url += `&annual_N=${annN}`;
+            if (annF) url += `&annual_F=${annF}`;
+
+            try {
+                const res = await authFetch(url);
+                if (!res || !res.ok) return;
+                const data = await res.json();
+                const container = document.getElementById('r42-annual-result');
+
+                if (!data.found) {
+                    container.innerHTML = '<div style="text-align:center;padding:1rem;color:#94a3b8;font-size:0.78rem">No computations found for this FY. Save monthly computations first.</div>';
+                    return;
+                }
+
+                const t = data.totals;
+                const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+                let html = `<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:0.75rem">
+                    <thead><tr style="background:#1e3a8a;color:#fff">
+                        <th style="padding:0.5rem;text-align:left;border-radius:8px 0 0 0">Month</th>
+                        <th style="padding:0.5rem;text-align:right">T (ITC)</th>
+                        <th style="padding:0.5rem;text-align:right">E (Exempt)</th>
+                        <th style="padding:0.5rem;text-align:right">F (Total)</th>
+                        <th style="padding:0.5rem;text-align:right">C2 (Common)</th>
+                        <th style="padding:0.5rem;text-align:right">Ratio %</th>
+                        <th style="padding:0.5rem;text-align:right">C3 (Rev)</th>
+                        <th style="padding:0.5rem;text-align:center;border-radius:0 8px 0 0">Status</th>
+                    </tr></thead><tbody>`;
+
+                data.monthly_data.forEach(m => {
+                    const [y, mo] = m.period.split('-');
+                    html += `<tr style="border-bottom:1px solid #f1f5f9">
+                        <td style="padding:0.45rem 0.5rem;font-weight:600">${monthNames[parseInt(mo)-1]} ${y}</td>
+                        <td style="padding:0.45rem 0.5rem;text-align:right">${r42Fmt(m.T)}</td>
+                        <td style="padding:0.45rem 0.5rem;text-align:right">${r42Fmt(m.E)}</td>
+                        <td style="padding:0.45rem 0.5rem;text-align:right">${r42Fmt(m.F)}</td>
+                        <td style="padding:0.45rem 0.5rem;text-align:right">${r42Fmt(m.C2)}</td>
+                        <td style="padding:0.45rem 0.5rem;text-align:right">${r42Pct(m.exempt_ratio)}</td>
+                        <td style="padding:0.45rem 0.5rem;text-align:right;color:#dc2626;font-weight:600">${r42Fmt(m.C3)}</td>
+                        <td style="padding:0.45rem 0.5rem;text-align:center">${m.status === 'final' ? '🔒' : '✏️'}</td>
+                    </tr>`;
+                });
+
+                html += `<tr style="background:#eff6ff;font-weight:700">
+                    <td style="padding:0.55rem 0.5rem">TOTAL (${data.months_computed} months)</td>
+                    <td style="padding:0.55rem 0.5rem;text-align:right">${r42Fmt(t.T)}</td>
+                    <td style="padding:0.55rem 0.5rem;text-align:right">${r42Fmt(t.E)}</td>
+                    <td style="padding:0.55rem 0.5rem;text-align:right">${r42Fmt(t.F)}</td>
+                    <td style="padding:0.55rem 0.5rem;text-align:right">${r42Fmt(t.C2)}</td>
+                    <td style="padding:0.55rem 0.5rem;text-align:right">${t.F > 0 ? r42Pct((t.E+t.N)/t.F) : '—'}</td>
+                    <td style="padding:0.55rem 0.5rem;text-align:right;color:#dc2626">${r42Fmt(t.C3)}</td>
+                    <td></td>
+                </tr></tbody></table></div>`;
+
+                // True-up result
+                if (data.trueup) {
+                    const tu = data.trueup;
+                    const isCredit = tu.direction === 'credit_reclaim';
+                    html += `<div style="margin-top:1rem;padding:1rem;border-radius:12px;border:2px solid ${isCredit ? '#10b981' : '#ef4444'};background:${isCredit ? '#ecfdf5' : '#fef2f2'}">
+                        <div style="font-size:0.82rem;font-weight:700;margin-bottom:0.5rem">${isCredit ? '✅' : '⚠️'} Annual True-Up Result</div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.65rem;font-size:0.75rem">
+                            <div><span style="color:#64748b">Annual C3 should be:</span><br><strong>${r42Fmt(tu.annual_C3_should_be)}</strong></div>
+                            <div><span style="color:#64748b">Sum of monthly C3:</span><br><strong>${r42Fmt(tu.sum_monthly_C3)}</strong></div>
+                            <div><span style="color:#64748b">Adjustment:</span><br><strong style="color:${isCredit ? '#059669' : '#dc2626'};font-size:1rem">${r42Fmt(Math.abs(tu.adjustment))}</strong>
+                                <span style="font-size:0.65rem;display:block;color:#64748b">${isCredit ? '↑ Credit to reclaim' : '↓ Additional reversal'}</span></div>
+                        </div>
+                        <div style="margin-top:0.5rem;font-size:0.68rem;color:#64748b">File in: ${tu.file_in} | Annual ratio: ${r42Pct(tu.annual_ratio)}</div>
+                    </div>`;
+                }
+
+                container.innerHTML = html;
+            } catch (e) { console.error('Annual calc error:', e); }
+        }
+
+        // ═══════════════════════════════════════════════════
+        //  EXCEL EXPORT — Full FY workpaper
+        // ═══════════════════════════════════════════════════
+        async function r42ExportExcel() {
+            if (!_clientId) { alert('No client selected.'); return; }
+            const fy = document.getElementById('r42-fy').value;
+            const taxHead = document.getElementById('r42-tax-head').value;
+            try {
+                const res = await authFetch(`/rule42/export-excel?client_id=${_clientId}&financial_year=${fy}&tax_head=${taxHead}`);
+                if (!res || !res.ok) { alert('No data to export for this FY. Save at least one period first.'); return; }
+                const blob = await res.blob();
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url; a.download = `Rule42_ITC_${fy}_${taxHead}.xlsx`;
+                document.body.appendChild(a); a.click(); document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            } catch (e) { console.error(e); alert('Export failed: ' + e.message); }
+        }
+
+        // ═══════════════════════════════════════════════════
+        //  RESET & PRINT
+        // ═══════════════════════════════════════════════════
+        function r42Reset(keepStatus) {
+            ['r42-T','r42-T1','r42-T2','r42-T3','r42-E','r42-N','r42-F'].forEach(id => {
+                document.getElementById(id).value = '';
+            });
+            _r42SavedId = null; _r42Status = 'unsaved';
+            if (!keepStatus) {
+                document.getElementById('r42-save-status').style.display = 'none';
+                document.getElementById('r42-finalize-btn').style.display = 'none';
+            }
+            r42Calc();
+        }
+
+        function r42Print() { window.print(); }
+
+        // ═══════════════════════════════════════════════════
+        //  INIT — Load saved data + history on page load
+        // ═══════════════════════════════════════════════════
+        r42Calc();
+
+        // Set up breadcrumb based on context
+        const bcMiddle = document.getElementById('r42-bc-middle');
+        if (_clientId) {
+            bcMiddle.innerHTML = '<a href="javascript:goBackToWebView()">GST Workspace</a><span style="color:#d1d5db">›</span>';
+            setTimeout(() => { r42Load(); r42LoadHistory(); }, 300);
+        } else {
+            bcMiddle.innerHTML = '<span style="color:#94a3b8">Quick Tools</span><span style="color:#d1d5db">›</span>';
+            // Hide backend-dependent buttons in standalone mode
+            document.getElementById('r42-save-btn').style.display = 'none';
+            document.getElementById('r42-finalize-btn').style.display = 'none';
+            document.getElementById('r42-history-section').style.display = 'none';
+            document.getElementById('r42-annual-section').style.display = 'none';
+            // Show export only for standalone print
+            document.querySelectorAll('.r42-actions .tbtn').forEach(btn => {
+                if (btn.textContent.includes('Export Excel')) btn.style.display = 'none';
+            });
+        }
+    </script>
+</body>
+
+</html>

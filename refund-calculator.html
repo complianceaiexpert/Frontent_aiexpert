@@ -202,11 +202,14 @@
                             <div class="rc-up-icon">📁</div>
                             <div class="rc-up-title">Drop files here or click to browse</div>
                             <div class="rc-up-sub">Supports <strong>Excel (.xlsx, .xls)</strong>, <strong>CSV</strong>,
-                                <strong>JSON</strong>, and <strong>PDF</strong> formats
+                                <strong>JSON</strong>, and <strong>PDF</strong> formats &nbsp;|&nbsp; Max 10 MB per file &nbsp;|&nbsp; Up to 5 files
                             </div>
                         </div>
                         <input type="file" id="rc-file-input" multiple accept=".xlsx,.xls,.csv,.json,.pdf"
                             style="display:none" onchange="handleFileUpload(event)">
+
+                        <!-- Upload validation errors -->
+                        <div id="rc-upload-errors" class="rc-upload-errors" style="display:none;"></div>
 
                         <!-- Uploaded Files List -->
                         <div class="rc-file-list" id="rc-file-list"></div>
@@ -266,24 +269,31 @@
                 <div id="rc-results" style="display:none;">
                     <div class="rc-divider" style="margin-top:1.5rem;"></div>
 
-                    <div class="rc-result-hero">
-                        <div class="rc-result-label">Maximum Admissible Refund</div>
-                        <div class="rc-result-amount" id="rc-result-amount">₹ 0.00</div>
-                        <div class="rc-result-rule" id="rc-result-rule"></div>
+                    <!-- 1️⃣ Completeness & extraction info (shown FIRST) -->
+                    <div id="rc-result-completeness"></div>
+
+                    <!-- 2️⃣ Warnings from calculator -->
+                    <div id="rc-result-warnings"></div>
+
+                    <!-- 3️⃣ Refund Amount + Formula — compact row -->
+                    <div class="rc-result-summary-row">
+                        <div class="rc-result-amount-card">
+                            <div class="rc-result-label">Maximum Admissible Refund</div>
+                            <div class="rc-result-amount" id="rc-result-amount">₹ 0.00</div>
+                            <div class="rc-result-rule" id="rc-result-rule"></div>
+                        </div>
+                        <div class="rc-result-formula-box">
+                            <div class="rc-result-formula-label">Formula Applied</div>
+                            <div class="rc-result-formula-display" id="rc-result-formula-display"></div>
+                            <div class="rc-result-formula-values" id="rc-result-formula-values"></div>
+                        </div>
                     </div>
 
-                    <!-- Formula Applied -->
-                    <div class="rc-result-formula-box">
-                        <div class="rc-result-formula-label">Formula Applied</div>
-                        <div class="rc-result-formula-display" id="rc-result-formula-display"></div>
-                        <div class="rc-result-formula-values" id="rc-result-formula-values"></div>
-                    </div>
-
-                    <!-- Breakdown Table -->
+                    <!-- 4️⃣ Breakdown Table -->
                     <div id="rc-result-breakdown"></div>
 
-                    <!-- Warnings -->
-                    <div id="rc-result-warnings"></div>
+                    <!-- 5️⃣ Extraction detail (files processed, auto-extracted values) -->
+                    <div id="rc-result-extraction-detail"></div>
 
                     <div class="rc-btn-row" style="margin-top:1rem;">
                         <button class="rc-btn rc-btn-primary" onclick="resetCalculator()">
@@ -581,19 +591,78 @@
         // ═══════════════════════════════════════════════════════
         //  UPLOAD MODE
         // ═══════════════════════════════════════════════════════
+        const ALLOWED_EXTENSIONS = ['xlsx', 'xls', 'csv', 'json', 'pdf'];
+        const MAX_FILE_SIZE_MB = 10;
+        const MAX_FILES = 5;
+
         function renderRequiredFiles(cfg) {
             const list = document.getElementById('rc-required-list');
             list.innerHTML = (cfg.requiredFiles || []).map(f => `<li>${f}</li>`).join('');
         }
 
-        function handleFileUpload(event) {
-            const files = Array.from(event.target.files);
-            files.forEach(file => {
-                if (!uploadedFiles.find(f => f.name === file.name)) {
-                    uploadedFiles.push(file);
+        /** Show upload validation errors inline */
+        function showUploadErrors(errors) {
+            const el = document.getElementById('rc-upload-errors');
+            if (!errors || errors.length === 0) {
+                el.style.display = 'none';
+                el.innerHTML = '';
+                return;
+            }
+            el.style.display = 'block';
+            el.innerHTML =
+                '<div style="font-weight:600;margin-bottom:0.35rem;">⚠️ Upload Issues</div>' +
+                errors.map(e => `<div style="padding:0.15rem 0;">&bull; ${e}</div>`).join('');
+        }
+
+        /** Client-side file validation */
+        function validateAndAddFiles(incomingFiles) {
+            const errors = [];
+
+            for (const file of incomingFiles) {
+                const name = file.name || '';
+                const ext = name.split('.').pop().toLowerCase();
+
+                // Extension check
+                if (!ALLOWED_EXTENSIONS.includes(ext)) {
+                    errors.push(`'${name}': Unsupported format .${ext}. Allowed: ${ALLOWED_EXTENSIONS.join(', ')}`);
+                    continue;
                 }
-            });
+
+                // Size check
+                if (file.size === 0) {
+                    errors.push(`'${name}': File is empty (0 bytes).`);
+                    continue;
+                }
+                if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
+                    errors.push(`'${name}': Exceeds ${MAX_FILE_SIZE_MB} MB limit (${(file.size / (1024*1024)).toFixed(1)} MB).`);
+                    continue;
+                }
+
+                // Duplicate check
+                if (uploadedFiles.find(f => f.name.toLowerCase() === name.toLowerCase())) {
+                    errors.push(`'${name}': Already added — skipping duplicate.`);
+                    continue;
+                }
+
+                // Max files check
+                if (uploadedFiles.length >= MAX_FILES) {
+                    errors.push(`'${name}': Maximum ${MAX_FILES} files allowed — skipping.`);
+                    continue;
+                }
+
+                uploadedFiles.push(file);
+            }
+
+            showUploadErrors(errors);
+
+            // Clear previous calculation results whenever files change
+            document.getElementById('rc-results').style.display = 'none';
+
             renderFileList();
+        }
+
+        function handleFileUpload(event) {
+            validateAndAddFiles(Array.from(event.target.files));
             event.target.value = '';
         }
 
@@ -620,7 +689,11 @@
             container.innerHTML = uploadedFiles.map((file, idx) => {
                 const ext = file.name.split('.').pop().toLowerCase();
                 const icon = extIcons[ext] || '📎';
-                const size = (file.size / 1024).toFixed(1) + ' KB';
+                const size = file.size < 1024
+                    ? file.size + ' B'
+                    : file.size < 1024 * 1024
+                        ? (file.size / 1024).toFixed(1) + ' KB'
+                        : (file.size / (1024 * 1024)).toFixed(1) + ' MB';
                 return `
                     <div class="rc-file-item">
                         <div class="rc-file-name">
@@ -635,11 +708,17 @@
 
         function removeFile(idx) {
             uploadedFiles.splice(idx, 1);
+            // Clear previous results when files change
+            document.getElementById('rc-results').style.display = 'none';
+            showUploadErrors([]);
             renderFileList();
         }
 
         function clearUploadedFiles() {
             uploadedFiles = [];
+            // Clear previous results and errors
+            document.getElementById('rc-results').style.display = 'none';
+            showUploadErrors([]);
             renderFileList();
         }
 
@@ -663,25 +742,23 @@
                 });
             });
             dropZone.addEventListener('drop', (e) => {
-                const files = Array.from(e.dataTransfer.files);
-                files.forEach(file => {
-                    if (!uploadedFiles.find(f => f.name === file.name)) {
-                        uploadedFiles.push(file);
-                    }
-                });
-                renderFileList();
+                validateAndAddFiles(Array.from(e.dataTransfer.files));
             });
         }
 
         async function runUploadCalc() {
             if (!currentGstType) {
-                alert('Please select a refund type first.');
+                showUploadErrors(['Please select a refund type before calculating.']);
                 return;
             }
             if (uploadedFiles.length === 0) {
-                alert('Please upload at least one file.');
+                showUploadErrors(['Please upload at least one file.']);
                 return;
             }
+
+            // Clear previous results
+            document.getElementById('rc-results').style.display = 'none';
+            showUploadErrors([]);
 
             const btn = document.getElementById('rc-upload-calc-btn');
             btn.disabled = true;
@@ -713,8 +790,16 @@
                 }
 
                 if (!response.ok) {
-                    const err = await response.json();
-                    alert('Calculation error: ' + (err.detail || 'Unknown error'));
+                    let detail = 'Unknown error';
+                    try {
+                        const err = await response.json();
+                        detail = err.detail || detail;
+                    } catch (_) {
+                        detail = `Server error (${response.status})`;
+                    }
+                    // Show error inline instead of alert
+                    const lines = detail.split('\n').filter(l => l.trim());
+                    showUploadErrors(lines);
                     return;
                 }
 
@@ -723,7 +808,7 @@
 
             } catch (e) {
                 console.error('Upload calc error:', e);
-                alert('Error: ' + e.message);
+                showUploadErrors([`Network error: ${e.message}. Please check your connection and try again.`]);
             } finally {
                 btn.disabled = false;
                 btn.innerHTML = '📤 Upload & Calculate';
@@ -744,19 +829,7 @@
             // Smooth scroll to results
             setTimeout(() => resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
 
-            // Amount
-            const formatted = new Intl.NumberFormat('en-IN', {
-                style: 'currency', currency: 'INR', maximumFractionDigits: 2
-            }).format(result.max_refund || 0);
-            document.getElementById('rc-result-amount').textContent = formatted;
-            document.getElementById('rc-result-rule').textContent = result.rule || '';
-
-            // Formula
-            document.getElementById('rc-result-formula-display').textContent = result.formula_display || '';
-            document.getElementById('rc-result-formula-values').textContent = result.formula || '';
-
-            // Breakdown Table
-            const bd = result.breakdown || {};
+            // Label map (shared)
             const labelMap = {
                 turnover_zero_rated_goods: 'Zero-Rated Goods Turnover',
                 turnover_zero_rated_services: 'Zero-Rated Services Turnover',
@@ -785,6 +858,69 @@
                 claim_amount: 'Claim Amount',
             };
 
+            // ── 1. COMPLETENESS BANNER (shown at the top) ──
+            let compHtml = '';
+            if (result.extraction) {
+                const comp = result.extraction.completeness || {};
+
+                if (comp.status) {
+                    const icons = { complete: '✅', partial: '⚠️', insufficient: '❗' };
+                    const titles = {
+                        complete: 'All Required Documents Provided',
+                        partial: 'Partial Data — Some Documents Missing',
+                        insufficient: 'Insufficient Data — Key Documents Missing',
+                    };
+
+                    compHtml += `<div class="rc-completeness-banner ${comp.status}">`;
+                    compHtml += `<div class="rc-completeness-title">${icons[comp.status] || '📋'} ${titles[comp.status] || 'Data Check'}</div>`;
+
+                    // Missing files
+                    const missing = comp.missing_files || [];
+                    if (missing.length > 0) {
+                        missing.forEach(mf => {
+                            const badgeClass = mf.required ? 'rc-badge-required' : 'rc-badge-optional';
+                            const badgeText = mf.required ? 'Required' : 'Optional';
+                            compHtml += `<div class="rc-missing-file-item">`;
+                            compHtml += `📄 <strong>${mf.label}</strong> <span class="${badgeClass}">${badgeText}</span>`;
+                            compHtml += `<span class="rc-missing-file-impact">→ ${mf.impact}</span>`;
+                            compHtml += `</div>`;
+                        });
+                    }
+
+                    // Critical field warnings (only when files were found but values are zero)
+                    const critFields = comp.missing_critical_fields || [];
+                    if (critFields.length > 0 && missing.length === 0) {
+                        critFields.forEach(cf => {
+                            compHtml += `<div style="padding:0.1rem 0;">⚠️ <strong>${cf.label}</strong> is ₹0 — expected from ${cf.source}</div>`;
+                        });
+                    }
+
+                    compHtml += `</div>`;
+                }
+            }
+            document.getElementById('rc-result-completeness').innerHTML = compHtml;
+
+            // ── 2. CALCULATOR WARNINGS ──
+            let warnHtml = '';
+            (result.warnings || []).forEach(w => {
+                warnHtml += `<div class="rc-warning">${w}</div>`;
+            });
+            if (result.note) {
+                warnHtml += `<div class="rc-note">${result.note}</div>`;
+            }
+            document.getElementById('rc-result-warnings').innerHTML = warnHtml;
+
+            // ── 3. AMOUNT + FORMULA ──
+            const formatted = new Intl.NumberFormat('en-IN', {
+                style: 'currency', currency: 'INR', maximumFractionDigits: 2
+            }).format(result.max_refund || 0);
+            document.getElementById('rc-result-amount').textContent = formatted;
+            document.getElementById('rc-result-rule').textContent = result.rule || '';
+            document.getElementById('rc-result-formula-display').textContent = result.formula_display || '';
+            document.getElementById('rc-result-formula-values').textContent = result.formula || '';
+
+            // ── 4. BREAKDOWN TABLE ──
+            const bd = result.breakdown || {};
             let tableHtml = '<table class="rc-breakdown-table"><thead><tr><th>Component</th><th style="text-align:right;">Amount</th></tr></thead><tbody>';
             const skipKeys = ['net_itc_note'];
             Object.entries(bd).forEach(([key, val]) => {
@@ -800,35 +936,25 @@
             tableHtml += '</tbody></table>';
             document.getElementById('rc-result-breakdown').innerHTML = tableHtml;
 
-            // Warnings
-            let warnHtml = (result.warnings || []).map(w => `<div class="rc-warning">${w}</div>`).join('');
-            if (result.note) {
-                warnHtml += `<div class="rc-note">${result.note}</div>`;
-            }
-
-            // Extraction info (file upload mode)
+            // ── 5. EXTRACTION DETAIL (bottom) ──
+            let extHtml = '';
             if (result.extraction) {
                 const ext = result.extraction;
-                let extractHtml = '<div class="rc-note" style="margin-top:0.65rem;">';
-                extractHtml += '<strong>📁 Files Processed:</strong> ' + (ext.files_processed || []).join(', ');
+                extHtml += '<div class="rc-extraction-card">';
+                extHtml += '<strong>📁 Files Processed:</strong> ' + (ext.files_processed || []).join(', ');
                 if (ext.file_types_detected && ext.file_types_detected.length) {
-                    extractHtml += '<br><strong>Detected as:</strong> ' + ext.file_types_detected.join(', ');
+                    extHtml += ' &nbsp;·&nbsp; <strong>Detected:</strong> ' + ext.file_types_detected.join(', ');
                 }
                 if (ext.extracted_values && Object.keys(ext.extracted_values).length) {
-                    extractHtml += '<br><strong>Auto-extracted values:</strong><br>';
+                    extHtml += '<br><strong>Auto-extracted values:</strong><br>';
                     Object.entries(ext.extracted_values).forEach(([k, v]) => {
                         const label = labelMap[k] || k.replace(/_/g, ' ');
-                        extractHtml += `&nbsp;&nbsp;• ${label}: ₹${Number(v).toLocaleString('en-IN', {minimumFractionDigits: 2})}<br>`;
+                        extHtml += `&nbsp;&nbsp;• ${label}: ₹${Number(v).toLocaleString('en-IN', {minimumFractionDigits: 2})}<br>`;
                     });
                 }
-                if (ext.notes && ext.notes.length) {
-                    extractHtml += '<br><em>' + ext.notes.join('<br>') + '</em>';
-                }
-                extractHtml += '</div>';
-                warnHtml += extractHtml;
+                extHtml += '</div>';
             }
-
-            document.getElementById('rc-result-warnings').innerHTML = warnHtml;
+            document.getElementById('rc-result-extraction-detail').innerHTML = extHtml;
         }
 
         function resetCalculator() {

@@ -1268,9 +1268,8 @@
         }
 
         // ═══ UPLOAD HANDLER ═══
-        const N8N_WEBHOOK_URL = 'https://rahul250192.app.n8n.cloud/webhook/4e082356-d55f-4174-a1eb-7bb275db59c5';
         const AI_PROCESSING_TIME = 50; // seconds
-        const MAX_FILE_SIZE_MB = 10;
+        const MAX_FILE_SIZE_MB = 20;
         const MAX_RETRIES = 2;
         const RETRY_INTERVAL = 15; // seconds between retries
         let processingFiles = []; // track files being processed
@@ -1310,12 +1309,14 @@
                     // Tell AI to prefer "Ship To" / "Bill To" party as vendor name
                     formData.append('vendor_name_preference', 'ship_to_party');
 
-                    // 60s timeout for upload
+                    // 90s timeout for upload + AI processing
                     const controller = new AbortController();
-                    const uploadTimeout = setTimeout(() => controller.abort(), 60000);
+                    const uploadTimeout = setTimeout(() => controller.abort(), 90000);
 
-                    const resp = await fetch(N8N_WEBHOOK_URL, {
+                    const token = localStorage.getItem('access_token');
+                    const resp = await fetch(`${API_BASE_URL}/invoices/upload`, {
                         method: 'POST',
+                        headers: token ? { 'Authorization': `Bearer ${token}` } : {},
                         body: formData,
                         signal: controller.signal
                     });
@@ -1325,10 +1326,12 @@
                         showToast(`✅ ${f.name} (${sizeMB}MB) uploaded — AI processing started`, 'success');
                         addProcessingRow(f.name, sizeMB);
                     } else {
+                        const errData = await resp.json().catch(() => ({}));
                         const reason = resp.status === 413 ? 'File too large for server'
                             : resp.status === 504 ? 'Server timed out'
-                                : resp.status >= 500 ? 'Server error (' + resp.status + ')'
-                                    : 'Upload rejected (' + resp.status + ')';
+                                : resp.status === 401 ? 'Session expired — please login again'
+                                    : resp.status >= 500 ? 'Server error (' + resp.status + ')'
+                                        : errData.detail || 'Upload rejected (' + resp.status + ')';
                         showToast(`⚠️ ${f.name} — ${reason}`, 'error');
                         addErrorRow(f.name, sizeMB, reason);
                     }

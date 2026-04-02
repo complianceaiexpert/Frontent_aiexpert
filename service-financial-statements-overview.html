@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GST Filing & Reconciliation — Suvidha AI</title>
-    <meta name="description" content="GST Filing service overview — GSTR reconciliation, ITC analysis, E-Invoice matching, and refund tracking for all your clients.">
+    <title>Financial Statements — Suvidha AI</title>
+    <meta name="description" content="Financial Statements service overview — AI-powered Balance Sheet, P&L, and Schedules generation from Trial Balance for all your clients.">
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -54,7 +54,7 @@
             text-decoration: none; transition: all .15s; cursor: pointer; position: relative
         }
         .sb-item:hover { background: #f1f5f9; color: #1e293b }
-        .sb-item.active { background: #eff6ff; color: #1e3a8a; font-weight: 600 }
+        .sb-item.active { background: #ecfdf5; color: #059669; font-weight: 600 }
         .sb-item svg { width: 16px; height: 16px; flex-shrink: 0 }
         .sb-badge {
             font-size: 0.58rem; font-weight: 700; padding: 1px 7px; border-radius: 10px; margin-left: auto
@@ -65,7 +65,7 @@
         .sdo-header { margin-bottom: 1.5rem }
         .sdo-header-row { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.25rem }
         .sdo-icon {
-            width: 40px; height: 40px; border-radius: 10px; background: #eff6ff;
+            width: 40px; height: 40px; border-radius: 10px; background: #ecfdf5;
             display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0
         }
         .sdo-title {
@@ -82,7 +82,7 @@
             padding: 0.3rem 0.65rem; background: #fff; border: 1px solid #e8ecf1;
             border-radius: 6px; font-size: 0.68rem; font-weight: 600; color: #475569
         }
-        .sdo-feat svg { width: 11px; height: 11px; color: #3b82f6 }
+        .sdo-feat svg { width: 11px; height: 11px; color: #059669 }
 
         /* ── Toolbar ── */
         .sdo-toolbar { display: flex; align-items: center; gap: 0.65rem; margin-bottom: 0.85rem; flex-wrap: wrap }
@@ -94,7 +94,7 @@
         }
         .sdo-search input::placeholder { color: #94a3b8 }
         .sdo-search input:focus {
-            outline: none; border-color: #1e3a8a; box-shadow: 0 0 0 3px rgba(30,58,138,.06)
+            outline: none; border-color: #059669; box-shadow: 0 0 0 3px rgba(5,150,105,.06)
         }
         .sdo-search .s-icon {
             position: absolute; left: 0.65rem; top: 50%; transform: translateY(-50%);
@@ -103,11 +103,11 @@
         .sdo-count { font-size: 0.75rem; color: #64748b; font-weight: 600 }
         .sdo-btn-add {
             display: flex; align-items: center; gap: 0.35rem; padding: 0.45rem 0.9rem;
-            background: #1e3a8a; color: #fff; border: none; border-radius: 8px;
+            background: #059669; color: #fff; border: none; border-radius: 8px;
             font-weight: 600; font-size: 0.78rem; cursor: pointer; transition: all .2s;
             font-family: inherit; margin-left: auto
         }
-        .sdo-btn-add:hover { background: #1e40af; box-shadow: 0 2px 8px rgba(30,58,138,.15) }
+        .sdo-btn-add:hover { background: #047857; box-shadow: 0 2px 8px rgba(5,150,105,.15) }
 
         /* ── Client list ── */
         .sdo-list { display: flex; flex-direction: column; gap: 0.4rem }
@@ -117,20 +117,20 @@
             cursor: pointer; transition: all .2s cubic-bezier(.4,0,.2,1)
         }
         .sdo-row:hover {
-            border-color: #c7d2fe; box-shadow: 0 4px 16px -4px rgba(30,58,138,.06); background: #fafbff
+            border-color: #a7f3d0; box-shadow: 0 4px 16px -4px rgba(5,150,105,.06); background: #f0fdf4
         }
         .sdo-av {
             width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center;
             justify-content: center; font-size: 0.85rem; font-weight: 700;
             font-family: 'Outfit', sans-serif; color: #fff; flex-shrink: 0;
-            background: linear-gradient(135deg, #1e3a8a, #3b82f6)
+            background: linear-gradient(135deg, #059669, #10b981)
         }
-        .sdo-av.av-1 { background: linear-gradient(135deg, #1e3a8a, #2563eb) }
-        .sdo-av.av-2 { background: linear-gradient(135deg, #1e40af, #3b82f6) }
-        .sdo-av.av-3 { background: linear-gradient(135deg, #1e3a5c, #475985) }
-        .sdo-av.av-4 { background: linear-gradient(135deg, #1a2e6e, #3a5fc7) }
-        .sdo-av.av-5 { background: linear-gradient(135deg, #172554, #1e40af) }
-        .sdo-av.av-6 { background: linear-gradient(135deg, #1e3a8a, #4f6ec4) }
+        .sdo-av.av-1 { background: linear-gradient(135deg, #059669, #10b981) }
+        .sdo-av.av-2 { background: linear-gradient(135deg, #047857, #059669) }
+        .sdo-av.av-3 { background: linear-gradient(135deg, #065f46, #059669) }
+        .sdo-av.av-4 { background: linear-gradient(135deg, #064e3b, #047857) }
+        .sdo-av.av-5 { background: linear-gradient(135deg, #059669, #34d399) }
+        .sdo-av.av-6 { background: linear-gradient(135deg, #047857, #10b981) }
 
         .sdo-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.1rem }
         .sdo-name {
@@ -151,11 +151,11 @@
         }
         .sdo-open-btn {
             display: flex; align-items: center; gap: 0.3rem; padding: 0.35rem 0.75rem;
-            background: #1e3a8a; color: #fff; border: none; border-radius: 7px;
+            background: #059669; color: #fff; border: none; border-radius: 7px;
             font-size: 0.72rem; font-weight: 600; cursor: pointer; transition: all .15s;
             font-family: inherit; flex-shrink: 0
         }
-        .sdo-open-btn:hover { background: #1e40af }
+        .sdo-open-btn:hover { background: #047857 }
         .sdo-open-btn svg { width: 12px; height: 12px }
 
         /* ── Empty state ── */
@@ -174,10 +174,10 @@
         }
         .sdo-empty-btn {
             display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.5rem 1.1rem;
-            background: #1e3a8a; color: #fff; border: none; border-radius: 8px;
+            background: #059669; color: #fff; border: none; border-radius: 8px;
             font-weight: 600; font-size: 0.8rem; cursor: pointer; transition: all .15s; font-family: inherit
         }
-        .sdo-empty-btn:hover { background: #1e40af }
+        .sdo-empty-btn:hover { background: #047857 }
 
         /* ── Add Client Modal ── */
         .sdo-modal-overlay {
@@ -208,7 +208,7 @@
             font-size: 0.82rem; font-family: inherit; color: #1e293b; transition: border-color .15s
         }
         .sdo-field input:focus {
-            outline: none; border-color: #1e3a8a; box-shadow: 0 0 0 3px rgba(30,58,138,.06)
+            outline: none; border-color: #059669; box-shadow: 0 0 0 3px rgba(5,150,105,.06)
         }
         .sdo-modal-foot {
             padding: 0.85rem 1.35rem; border-top: 1px solid #f1f5f9;
@@ -220,11 +220,11 @@
             font-family: inherit; color: #475569
         }
         .sdo-btn-save {
-            padding: 0.45rem 1rem; background: #1e3a8a; color: #fff; border: none;
+            padding: 0.45rem 1rem; background: #059669; color: #fff; border: none;
             border-radius: 8px; font-size: 0.78rem; font-weight: 600; cursor: pointer;
             font-family: inherit; transition: all .15s
         }
-        .sdo-btn-save:hover { background: #1e40af }
+        .sdo-btn-save:hover { background: #047857 }
 
         /* GSTIN verify */
         .sdo-gstin-row { display: flex; gap: 0.4rem; align-items: center }
@@ -242,7 +242,7 @@
             font-size: 0.72rem; font-weight: 600; color: #64748b;
             text-decoration: none; margin-bottom: 1rem; transition: color .15s
         }
-        .sdo-back:hover { color: #1e3a8a }
+        .sdo-back:hover { color: #059669 }
         .sdo-back svg { width: 14px; height: 14px }
 
         @media(max-width:900px) {
@@ -265,13 +265,12 @@
 
             <div class="sb-section">
                 <div class="sb-section-label">Services</div>
-                <a href="service-gst-overview.html" class="sb-item active">
+                <a href="service-gst-overview.html" class="sb-item">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <line x1="12" y1="1" x2="12" y2="23"/>
                         <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
                     </svg>
                     GST Filing
-                    <span class="sb-badge" style="background:#eff6ff;color:#1e3a8a">Live</span>
                 </a>
                 <a href="service-data-entry-overview.html" class="sb-item">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -286,6 +285,21 @@
                         <path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/>
                     </svg>
                     CA Certificates
+                </a>
+                <a href="service-financial-statements-overview.html" class="sb-item active">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="18" height="18" rx="2"/>
+                        <path d="M3 12h18"/><path d="M12 3v18"/>
+                    </svg>
+                    Financial Stmt.
+                    <span class="sb-badge" style="background:#ecfdf5;color:#059669">New</span>
+                </a>
+                <a href="service-financial-instruments-overview.html" class="sb-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/>
+                    </svg>
+                    Financial Instr.
+                    <span class="sb-badge" style="background:#f0fdfa;color:#0d9488">New</span>
                 </a>
             </div>
             <div class="sb-divider"></div>
@@ -315,32 +329,32 @@
             <!-- Header -->
             <div class="sdo-header">
                 <div class="sdo-header-row">
-                    <div class="sdo-icon">🧾</div>
+                    <div class="sdo-icon">📊</div>
                     <div>
-                        <h1 class="sdo-title">GST Filing & Reconciliation</h1>
-                        <p class="sdo-subtitle">Complete GST compliance suite — automated reconciliation, ITC optimization, E-Invoice matching, and AI-powered error detection for all your clients.</p>
+                        <h1 class="sdo-title">Financial Statements</h1>
+                        <p class="sdo-subtitle">AI-powered Schedule III Balance Sheet, Profit & Loss, and Schedules generation from Trial Balance or Tally ledgers for all your clients.</p>
                     </div>
                 </div>
                 <div class="sdo-features">
                     <span class="sdo-feat">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                        GSTR-1 vs 3B Reconciliation
+                        Auto-pull TB from Tally
                     </span>
                     <span class="sdo-feat">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                        GSTR-2B vs 3B Matching
+                        AI Account Grouping
                     </span>
                     <span class="sdo-feat">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                        ITC Analysis
+                        Schedule III Format
                     </span>
                     <span class="sdo-feat">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                        E-Invoice vs Sales
+                        Comparative Statements
                     </span>
                     <span class="sdo-feat">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                        Refund Tracking
+                        Upload PDF / Excel
                     </span>
                 </div>
             </div>
@@ -441,9 +455,9 @@
             if (!clients.length) {
                 list.innerHTML = `
                     <div class="sdo-empty">
-                        <div class="sdo-empty-icon">🧾</div>
+                        <div class="sdo-empty-icon">📊</div>
                         <h3>No clients yet</h3>
-                        <p>Add your first client to start using GST Filing — reconciliation, ITC analysis, E-Invoice matching, and refund tracking.</p>
+                        <p>Add your first client to start generating Financial Statements — AI-powered Balance Sheet, P&L, and Schedules per Schedule III.</p>
                         <button class="sdo-empty-btn" onclick="openAddModal()">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                                 <path d="M12 5v14"/><path d="M5 12h14"/>
@@ -463,7 +477,7 @@
                 const gstinCount = (client.gstins && client.gstins.length) || 0;
 
                 return `
-                <div class="sdo-row" onclick="openGST('${client.id}')">
+                <div class="sdo-row" onclick="openFS('${client.id}')">
                     <div class="sdo-av ${avClass}">${initial}</div>
                     <div class="sdo-info">
                         <div class="sdo-name">${client.name}</div>
@@ -473,7 +487,7 @@
                         ${gstinCount ? `<span class="sdo-chip">${gstinCount} GSTIN${gstinCount > 1 ? 's' : ''}</span>` : ''}
                         ${pan ? `<span class="sdo-chip">${pan}</span>` : ''}
                     </div>
-                    <button class="sdo-open-btn" onclick="event.stopPropagation();openGST('${client.id}')">
+                    <button class="sdo-open-btn" onclick="event.stopPropagation();openFS('${client.id}')">
                         Open
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg>
                     </button>
@@ -481,8 +495,8 @@
             }).join('');
         }
 
-        function openGST(clientId) {
-            window.location.href = `service-gst-refund-webview.html?clientId=${clientId}&service=GST Filing`;
+        function openFS(clientId) {
+            window.location.href = `service-financial-statements.html?clientId=${clientId}`;
         }
 
         // Search
@@ -511,7 +525,7 @@
             document.getElementById('add-email').value = '';
         }
         // GSTIN verification
-        let gstinVerified = null; // null=not checked, true=valid, false=invalid
+        let gstinVerified = null;
         function isValidGSTINFmt(g) { return /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[0-9A-Z]{1}Z[0-9A-Z]{1}$/.test(g); }
         async function verifyGSTIN() {
             const gstin = document.getElementById('add-gstin').value.trim().toUpperCase();
@@ -531,11 +545,8 @@
                 } else {
                     el.className = 'sdo-gstin-result invalid'; el.textContent = `❌ ${data.detail || data.status || 'Not found on GST Portal'}`; gstinVerified = false;
                 }
-            } catch (e) {
-                el.className = 'sdo-gstin-result invalid'; el.textContent = '⚠️ Could not verify (network error)'; gstinVerified = false;
-            }
+            } catch (e) { el.className = 'sdo-gstin-result invalid'; el.textContent = '⚠️ Network error'; gstinVerified = false; }
         }
-
         async function saveClient() {
             const name = document.getElementById('add-name').value.trim();
             if (!name) { alert('Client name is required'); return; }
@@ -543,7 +554,6 @@
             const gstin = document.getElementById('add-gstin').value.trim().toUpperCase();
             const email = document.getElementById('add-email').value.trim();
 
-            // Block if GSTIN entered but not verified or invalid
             if (gstin && gstinVerified === null) { await verifyGSTIN(); }
             if (gstin && gstinVerified === false) { alert('GSTIN verification failed. Please correct or remove the GSTIN.'); return; }
 

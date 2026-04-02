@@ -1393,107 +1393,178 @@
             const VALID_MONTHS = ['JANUARY','FEBRUARY','MARCH','APRIL','MAY','JUNE',
                                   'JULY','AUGUST','SEPTEMBER','OCTOBER','NOVEMBER','DECEMBER'];
             
-            // Try B2B sheet first, then any sheet
-            const sheetOrder = [...wb.SheetNames];
-            const b2bIdx = sheetOrder.findIndex(n => n.toLowerCase().includes('b2b'));
-            if (b2bIdx > 0) { sheetOrder.unshift(sheetOrder.splice(b2bIdx, 1)[0]); }
+            const sheetDetails = [];
             
-            for (const name of sheetOrder) {
+            // Process ALL sheets (not just the first one)
+            for (const name of wb.SheetNames) {
+                const sl = name.toLowerCase().trim();
+                
+                // Skip non-data sheets
+                if (['summary','help','readme','overview','info'].some(skip => sl.includes(skip))) continue;
+                // Skip rejected sheets
+                if (sl.includes('rejected')) continue;
+                
                 const sheet = wb.Sheets[name];
-                const json = XLSX.utils.sheet_to_json(sheet, { defval: '' });
+                let json = XLSX.utils.sheet_to_json(sheet, { defval: '' });
                 if (!json.length) continue;
                 
-                // ── Step 1: Identify columns by scanning data, not just headers ──
+                // ── Handle header rows: some 2B files have info rows before the data ──
+                json = _detectAndFixHeaders(json);
+                if (!json.length) continue;
+                
+                // ── Find tax columns ──
                 const allKeys = Object.keys(json[0]);
                 let igstCol = null, cgstCol = null, sgstCol = null, cessCol = null;
-                let monthCol = null, eligCol = null, supplierCol = null;
+                let monthCol = null, eligCol = null, supplierCol = null, noteTypeCol = null;
                 
-                // Scan headers first
                 for (const k of allKeys) {
                     const kl = k.toLowerCase();
-                    if (kl.includes('igst') || kl.includes('integrated')) igstCol = k;
-                    if (kl.includes('cgst') || kl.includes('central')) cgstCol = k;
-                    if ((kl.includes('sgst') || kl.includes('state') || kl.includes('utgst')) && !kl.includes('igst')) sgstCol = k;
-                    if (kl.includes('cess')) cessCol = k;
-                    if (kl.includes('trade') || kl.includes('supplier') || kl.includes('legal name')) supplierCol = k;
-                    // Try header match for month/period column
-                    if (kl.includes('filing period') || kl.includes('return period') || kl === 'month' || kl === 'period') monthCol = k;
+                    // Tax columns — expanded matching for GST portal format
+                    if (!igstCol && (kl.includes('igst') || kl === 'integrated tax' || kl.includes('integrated tax') || kl === 'iamt')) igstCol = k;
+                    if (!cgstCol && (kl.includes('cgst') || kl === 'central tax' || kl.includes('central tax') || kl === 'camt')) cgstCol = k;
+                    if (!sgstCol && (kl.includes('sgst') || kl.includes('state') || kl.includes('utgst') || kl === 'samt' || kl.includes('state/ut tax')) && !kl.includes('igst')) sgstCol = k;
+                    if (!cessCol && (kl.includes('cess') || kl === 'csamt')) cessCol = k;
+                    // Supplier
+                    if (!supplierCol && (kl.includes('trade') || kl.includes('supplier') || kl.includes('legal name'))) supplierCol = k;
+                    // Month/Period
+                    if (!monthCol && (kl.includes('filing period') || kl.includes('return period') || kl === 'month' || kl === 'period')) monthCol = k;
                     // ITC eligibility
-                    if (kl.includes('itc') && kl.includes('elig')) eligCol = k;
-                    if (kl.includes('eligibility') || kl.includes('eligible')) eligCol = k;
+                    if (!eligCol && ((kl.includes('itc') && kl.includes('elig')) || kl.includes('eligibility') || kl.includes('eligible'))) eligCol = k;
+                    // Note Type (for CDNR sheets)
+                    if (!noteTypeCol && (kl.includes('note type') || kl.includes('document type'))) noteTypeCol = k;
                 }
                 
-                if (!igstCol && !cgstCol) continue; // No tax columns in this sheet
+                if (!igstCol && !cgstCol && !sgstCol) {
+                    console.warn(`2B Sheet "${name}": No tax columns found, cols=${allKeys.slice(0,8).join(', ')}`);
+                    continue;
+                }
                 
-                // ── Step 2: If month column not found by header, scan data values ──
+                // Track month/eligibility columns
+                if (monthCol) result.hasMonthCol = true;
+                if (eligCol) result.hasEligCol = true;
+                
+                // ── Month column detection via data values (fallback) ──
                 if (!monthCol) {
                     for (const k of allKeys) {
-                        // Check if any value in this column is a month name
                         const sampleVals = json.slice(0, 20).map(r => String(r[k]).toUpperCase().trim());
                         if (sampleVals.some(v => VALID_MONTHS.includes(v))) {
                             monthCol = k;
+                            result.hasMonthCol = true;
                             break;
                         }
                     }
                 }
                 
-                // ── Step 3: If eligibility column not found, scan for Yes/No column ──
+                // ── Eligibility column detection via data values (fallback) ──
                 if (!eligCol) {
                     for (const k of allKeys) {
                         const kl = k.toLowerCase();
                         if (kl.includes('tax') || kl.includes('inv') || kl.includes('gstin') || kl.includes('value')) continue;
                         const sampleVals = json.slice(0, 30).map(r => String(r[k]).toLowerCase().trim());
                         const yesNoCount = sampleVals.filter(v => v === 'yes' || v === 'no' || v === 'y' || v === 'n').length;
-                        if (yesNoCount > 5) {
-                            eligCol = k;
-                            break;
-                        }
+                        if (yesNoCount > 5) { eligCol = k; result.hasEligCol = true; break; }
                     }
                 }
+
+                console.log(`2B Sheet "${name}": igst=${igstCol}, cgst=${cgstCol}, sgst=${sgstCol}, cess=${cessCol}, noteType=${noteTypeCol}`);
                 
-                console.log(`2B Sheet "${name}": igst=${igstCol}, cgst=${cgstCol}, sgst=${sgstCol}, month=${monthCol}, elig=${eligCol}`);
-                result.hasMonthCol = !!monthCol;
-                result.hasEligCol = !!eligCol;
+                // ── Determine sheet type ──
+                const isCDNR = ['cdnr', 'cdn', 'credit', 'debit'].some(kw => sl.includes(kw));
+                const isIMPG = ['impg', 'import'].some(kw => sl.includes(kw));
                 
-                // ── Step 4: Extract all rows ──
+                // ── Sum ITC from all rows (skip total/summary rows) ──
+                let sheetITC = { igst: 0, cgst: 0, sgst: 0, cess: 0 };
+                let creditITC = { igst: 0, cgst: 0, sgst: 0, cess: 0 };
+                let debitITC = { igst: 0, cgst: 0, sgst: 0, cess: 0 };
+                let rowCount = 0;
+                
                 for (const row of json) {
+                    // Skip total/summary rows
+                    const allVals = Object.values(row).map(v => String(v).toLowerCase().trim());
+                    if (allVals.some(v => v === 'total' || v === 'grand total' || v === 'sub total')) continue;
+                    
                     const igst = parseFloat(row[igstCol]) || 0;
                     const cgst = cgstCol ? (parseFloat(row[cgstCol]) || 0) : 0;
                     const sgst = sgstCol ? (parseFloat(row[sgstCol]) || 0) : 0;
                     const cess = cessCol ? (parseFloat(row[cessCol]) || 0) : 0;
                     
-                    if (igst || cgst || sgst || cess) {
-                        const label = supplierCol ? String(row[supplierCol] || '') : `Row ${result.rows.length + 1}`;
-                        const rowData = { label, igst, cgst, sgst, cess };
-                        
-                        // Capture month value
-                        if (monthCol) {
-                            const monthVal = String(row[monthCol]).trim().toUpperCase();
-                            rowData.month = monthVal;
-                            if (!result.periods.includes(monthVal) && VALID_MONTHS.includes(monthVal)) {
-                                result.periods.push(monthVal);
-                            }
-                        }
-                        
-                        // Capture ITC eligibility
-                        if (eligCol) {
-                            const eligVal = String(row[eligCol]).trim().toLowerCase();
-                            rowData.itcEligible = (eligVal === 'yes' || eligVal === 'y');
-                        }
-                        
-                        result.rows.push(rowData);
-                        result.igst += igst; result.cgst += cgst; result.sgst += sgst; result.cess += cess;
+                    if (!igst && !cgst && !sgst && !cess) continue;
+                    rowCount++;
+                    
+                    if (isCDNR && noteTypeCol) {
+                        // Split by note type: Credit reduces, Debit adds
+                        const noteType = String(row[noteTypeCol] || '').toLowerCase().trim();
+                        const isDebit = noteType.startsWith('debit') || noteType === 'd' || noteType === 'dr' || noteType === 'dn';
+                        const target = isDebit ? debitITC : creditITC;
+                        target.igst += Math.abs(igst);
+                        target.cgst += Math.abs(cgst);
+                        target.sgst += Math.abs(sgst);
+                        target.cess += Math.abs(cess);
+                    } else {
+                        sheetITC.igst += igst;
+                        sheetITC.cgst += cgst;
+                        sheetITC.sgst += sgst;
+                        sheetITC.cess += cess;
                     }
+                    
+                    // Add to rows for detailed view
+                    const label = supplierCol ? String(row[supplierCol] || '') : `Row ${result.rows.length + 1}`;
+                    const rowData = { label, igst, cgst, sgst, cess, sheet: name };
+                    
+                    if (monthCol) {
+                        const monthVal = String(row[monthCol]).trim().toUpperCase();
+                        rowData.month = monthVal;
+                        if (!result.periods.includes(monthVal) && VALID_MONTHS.includes(monthVal)) {
+                            result.periods.push(monthVal);
+                        }
+                    }
+                    if (eligCol) {
+                        const eligVal = String(row[eligCol]).trim().toLowerCase();
+                        rowData.itcEligible = (eligVal === 'yes' || eligVal === 'y');
+                    }
+                    
+                    result.rows.push(rowData);
                 }
                 
-                if (result.rows.length > 0) {
-                    console.log(`2B parsed: ${result.rows.length} rows, months: [${result.periods.join(', ')}], hasMonth=${result.hasMonthCol}, hasElig=${result.hasEligCol}`);
-                    break;
+                // ── Apply sheet contribution to grand total ──
+                if (isCDNR && noteTypeCol) {
+                    // Credit notes reduce ITC, Debit notes add
+                    result.igst += debitITC.igst - creditITC.igst;
+                    result.cgst += debitITC.cgst - creditITC.cgst;
+                    result.sgst += debitITC.sgst - creditITC.sgst;
+                    result.cess += debitITC.cess - creditITC.cess;
+                    const creditTotal = creditITC.igst + creditITC.cgst + creditITC.sgst + creditITC.cess;
+                    const debitTotal = debitITC.igst + debitITC.cgst + debitITC.sgst + debitITC.cess;
+                    console.log(`  ✅ "${name}" (CDNR): ${rowCount} rows, CN=-₹${creditTotal.toLocaleString()}, DN=+₹${debitTotal.toLocaleString()}`);
+                    sheetDetails.push(`${name}: CN=-${Math.round(creditTotal)}, DN=+${Math.round(debitTotal)}`);
+                } else if (isCDNR) {
+                    // No note type column — assume all are credit notes
+                    result.igst -= sheetITC.igst;
+                    result.cgst -= sheetITC.cgst;
+                    result.sgst -= sheetITC.sgst;
+                    result.cess -= sheetITC.cess;
+                    const total = sheetITC.igst + sheetITC.cgst + sheetITC.sgst + sheetITC.cess;
+                    console.log(`  ✅ "${name}" (CDNR, no type): ${rowCount} rows, ITC deducted=-₹${total.toLocaleString()}`);
+                    sheetDetails.push(`${name}: -${Math.round(total)}`);
+                } else {
+                    // B2B, B2BA, IMPG, ISD — add to total
+                    result.igst += sheetITC.igst;
+                    result.cgst += sheetITC.cgst;
+                    result.sgst += sheetITC.sgst;
+                    result.cess += sheetITC.cess;
+                    const total = sheetITC.igst + sheetITC.cgst + sheetITC.sgst + sheetITC.cess;
+                    console.log(`  ✅ "${name}": ${rowCount} rows, ITC=+₹${total.toLocaleString()}`);
+                    sheetDetails.push(`${name}: +${Math.round(total)}`);
                 }
             }
             
-            // Fallback
+            const netTotal = result.igst + result.cgst + result.sgst + result.cess;
+            console.log(`📊 Net 2B ITC: ₹${netTotal.toLocaleString()} from ${result.rows.length} rows across ${sheetDetails.length} sheets`);
+            sheetDetails.forEach(d => console.log(`  → ${d}`));
+            
+            // Fallback: if no rows found, try generic first-sheet parse
             if (result.rows.length === 0) {
+                console.warn('No 2B data found from sheet-aware parsing, falling back...');
                 const sheet = wb.Sheets[wb.SheetNames[0]];
                 const json = XLSX.utils.sheet_to_json(sheet, { defval: 0 });
                 json.forEach((row, i) => {
@@ -1506,6 +1577,37 @@
                 });
             }
             return result;
+        }
+        
+        // Helper: detect if the first few rows are info/header rows and fix
+        function _detectAndFixHeaders(json) {
+            if (!json.length) return json;
+            const taxKeywords = ['igst', 'cgst', 'sgst', 'integrated', 'central', 'state',
+                                 'tax amount', 'taxable', 'invoice', 'gstin', 'rate'];
+            
+            // Check if current headers look like tax columns
+            const currentKeys = Object.keys(json[0]).map(k => k.toLowerCase());
+            const currentMatch = currentKeys.filter(k => taxKeywords.some(tw => k.includes(tw))).length;
+            if (currentMatch >= 2) return json; // Headers look fine
+            
+            // Scan first 10 rows for a row that looks like a header
+            for (let i = 0; i < Math.min(10, json.length); i++) {
+                const rowVals = Object.values(json[i]).map(v => String(v).toLowerCase().trim()).filter(v => v);
+                const matches = rowVals.filter(v => taxKeywords.some(tw => v.includes(tw))).length;
+                if (matches >= 2) {
+                    // This row is the real header — re-parse from here
+                    const newHeaders = Object.values(json[i]).map(v => String(v).trim());
+                    const newData = json.slice(i + 1).map(row => {
+                        const newRow = {};
+                        const vals = Object.values(row);
+                        newHeaders.forEach((h, idx) => { newRow[h] = vals[idx]; });
+                        return newRow;
+                    });
+                    console.log(`  Header fix: row ${i} used as header, ${newData.length} data rows`);
+                    return newData;
+                }
+            }
+            return json;
         }
 
         function extractFromExcel_3B(wb) {

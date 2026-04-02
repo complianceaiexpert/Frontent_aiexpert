@@ -205,8 +205,13 @@
             margin-top: .5rem;
             box-shadow: 0 1px 4px rgba(0,0,0,.04);
         }
+        .rv-items-table-wrap {
+            overflow-x: auto;
+            max-height: calc(100vh - 420px);
+        }
         .rv-items-table {
-            width: 100%;
+            width: max-content;
+            min-width: 100%;
             border-collapse: collapse;
         }
         .rv-items-table thead th {
@@ -215,6 +220,7 @@
             text-align: left; background: #f8faff;
             border-bottom: 2px solid #e5e7eb;
             position: sticky; top: 0; z-index: 2;
+            white-space: nowrap;
         }
         .rv-items-table thead th.right { text-align: right }
         .rv-items-table tbody td {
@@ -222,6 +228,7 @@
             font-size: .85rem; color: #1e293b;
             border-bottom: 1px solid #f1f5f9;
             vertical-align: middle;
+            white-space: nowrap;
         }
         .rv-items-table tbody tr { transition: background .1s; background: #fff }
         .rv-items-table tbody tr:hover { background: #f0f9ff }
@@ -234,21 +241,33 @@
             padding: .4rem .5rem; border: 1px solid #e2e8f0; border-radius: 6px;
             font-size: .82rem; font-family: inherit; font-weight: 500;
             transition: all .15s; background: #fff; width: 100%;
+            min-width: 80px;
         }
         .rv-input-cell:focus { border-color: #3b82f6; outline: none; box-shadow: 0 0 0 2px rgba(59,130,246,.1) }
         .rv-input-cell.num-input {
             text-align: right; font-family: 'Outfit', sans-serif; font-weight: 600;
+            min-width: 130px;
         }
         .rv-select-cell {
             padding: .35rem .4rem; border: 1px solid #e2e8f0; border-radius: 6px;
             font-size: .72rem; font-family: inherit; background: #fff;
-            color: #374151; font-weight: 600; width: 100%;
+            color: #374151; font-weight: 600; width: 100%; min-width: 110px;
         }
         .rv-select-cell:focus { border-color: #3b82f6; outline: none }
 
         /* Debit/Credit colors */
         .debit-input { color: #dc2626 !important }
         .credit-input { color: #059669 !important }
+
+        /* Ledger mapping */
+        .rv-ledger-input {
+            padding: .35rem .5rem; border: 1px solid #e2e8f0; border-radius: 6px;
+            font-size: .75rem; font-family: inherit; font-weight: 500;
+            background: #fff; width: 100%; min-width: 140px;
+            transition: all .15s;
+        }
+        .rv-ledger-input:focus { border-color: #6366f1; outline: none; box-shadow: 0 0 0 2px rgba(99,102,241,.1); }
+        .rv-ledger-input::placeholder { color: #cbd5e1; font-style: italic; }
 
         /* ═══ SUMMARY BAR ═══ */
         .rv-summary-bar {
@@ -419,23 +438,24 @@
                 <!-- Transactions -->
                 <div class="rv-section-title">Transactions <span style="margin-left:auto;font-size:.62rem;font-weight:600;color:#3b82f6" id="rv-txn-count">0 rows</span></div>
                 <div class="rv-items-card">
-                    <div style="max-height:calc(100vh - 420px);overflow-y:auto">
+                    <div class="rv-items-table-wrap">
                     <table class="rv-items-table">
                         <thead>
                             <tr>
                                 <th style="width:40px;text-align:center">Sr.</th>
-                                <th style="width:100px">Date</th>
-                                <th style="min-width:200px">Narration / Description</th>
-                                <th style="width:100px">Reference</th>
-                                <th class="right" style="width:110px">Debit (₹)</th>
-                                <th class="right" style="width:110px">Credit (₹)</th>
-                                <th class="right" style="width:110px">Balance (₹)</th>
-                                <th style="width:110px">Category</th>
-                                <th style="width:130px">Party Name</th>
+                                <th style="min-width:100px">Date</th>
+                                <th style="min-width:220px">Narration / Description</th>
+                                <th style="min-width:100px">Reference</th>
+                                <th class="right" style="min-width:140px">Debit (₹)</th>
+                                <th class="right" style="min-width:140px">Credit (₹)</th>
+                                <th class="right" style="min-width:140px">Balance (₹)</th>
+                                <th style="min-width:120px">Category</th>
+                                <th style="min-width:150px">Party Name</th>
+                                <th style="min-width:150px">Ledger</th>
                             </tr>
                         </thead>
                         <tbody id="rv-txn-tbody">
-                            <tr><td colspan="9" style="text-align:center;padding:2rem;color:#9ca3af">Loading transactions...</td></tr>
+                            <tr><td colspan="10" style="text-align:center;padding:2rem;color:#9ca3af">Loading transactions...</td></tr>
                         </tbody>
                     </table>
                     </div>
@@ -468,6 +488,7 @@
                     <div class="rv-bottom-stat">Txns: <strong id="rv-txn-label">0</strong></div>
                 </div>
                 <div class="rv-bottom-right">
+                    <button class="rv-action-btn" onclick="exportBankExcel()" style="color:#059669;border-color:#059669">📥 Download Excel</button>
                     <button class="rv-action-btn" onclick="goBack()">Cancel</button>
                     <button class="rv-action-btn save-btn" id="btn-save" onclick="handleSave()">💾 Save</button>
                     <button class="rv-action-btn approve-btn" id="btn-approve" onclick="handleApprove()">✅ Approve</button>
@@ -582,13 +603,39 @@
             document.getElementById('rv-closing-final').textContent = s.closing_balance != null ? formatINR(s.closing_balance) : '₹ 0';
         }
 
+        // ═══ LEDGER SUGGESTIONS ═══
+        const COMMON_LEDGERS = [
+            'Bank Charges A/c','Cash A/c','Electricity Expenses','Fuel Expenses',
+            'GST Input CGST','GST Input SGST','GST Input IGST','GST Output',
+            'Insurance Premium','Interest on Loan','Interest Received',
+            'Loan EMI A/c','Office Expenses','Professional Fees',
+            'Purchase A/c','Rent A/c','Repair & Maintenance',
+            'Revenue / Sales A/c','Salary A/c','Sundry Creditors',
+            'Sundry Debtors','TDS Payable','TDS Receivable',
+            'Telephone Expenses','Travelling Expenses','Vehicle Expenses'
+        ];
+
+        // Auto-suggest ledger based on category
+        function suggestLedger(category) {
+            const map = {
+                'Salary': 'Salary A/c', 'Rent': 'Rent A/c',
+                'Utilities': 'Electricity Expenses', 'GST Payment': 'GST Output',
+                'TDS': 'TDS Payable', 'Bank Charges': 'Bank Charges A/c',
+                'Interest Income': 'Interest Received', 'Interest Paid': 'Interest on Loan',
+                'Loan EMI': 'Loan EMI A/c', 'Insurance': 'Insurance Premium',
+                'Vendor Payment': 'Sundry Creditors', 'Client Receipt': 'Sundry Debtors',
+                'Cash Withdrawal': 'Cash A/c', 'Cash Deposit': 'Cash A/c',
+            };
+            return map[category] || '';
+        }
+
         // ═══ POPULATE TRANSACTIONS ═══
         function populateTransactions(txns) {
             const tbody = document.getElementById('rv-txn-tbody');
             document.getElementById('rv-txn-count').textContent = `${txns.length} rows`;
 
             if (txns.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:2rem;color:#9ca3af">No transactions extracted</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:2rem;color:#9ca3af">No transactions extracted</td></tr>';
                 return;
             }
 
@@ -597,21 +644,40 @@
                     `<option value="${c}" ${c === t.category ? 'selected' : ''}>${c}</option>`
                 ).join('');
 
+                const ledgerSuggestion = suggestLedger(t.category);
+                const ledgerVal = t.ledger_name || ledgerSuggestion;
+
+                // Build ledger datalist ID
+                const dlId = `dl-ledger-${i}`;
+
                 return `<tr data-txn-id="${t.id}">
                     <td class="item-sr">${i + 1}</td>
                     <td><input type="date" class="rv-input-cell bs-edit" data-field="date" value="${t.date || ''}"></td>
                     <td><input type="text" class="rv-input-cell bs-edit" data-field="description" value="${(t.description || '').replace(/"/g, '&quot;')}" title="${(t.description || '').replace(/"/g, '&quot;')}"></td>
                     <td><input type="text" class="rv-input-cell bs-edit" data-field="reference_no" value="${(t.reference_no || '').replace(/"/g, '&quot;')}" style="font-size:.72rem;font-family:monospace"></td>
-                    <td><input type="number" class="rv-input-cell num-input debit-input bs-edit" data-field="debit" value="${t.debit || ''}" step="0.01"></td>
-                    <td><input type="number" class="rv-input-cell num-input credit-input bs-edit" data-field="credit" value="${t.credit || ''}" step="0.01"></td>
-                    <td><input type="number" class="rv-input-cell num-input bs-edit" data-field="balance" value="${t.balance != null ? t.balance : ''}" step="0.01" style="font-weight:700"></td>
-                    <td><select class="rv-select-cell bs-edit" data-field="category">${catOptions}</select></td>
-                    <td><input type="text" class="rv-input-cell bs-edit" data-field="party_name" value="${(t.party_name || '').replace(/"/g, '&quot;')}"></td>
+                    <td><input type="number" class="rv-input-cell num-input debit-input bs-edit" data-field="debit" value="${t.debit || ''}" step="0.01" placeholder="0.00"></td>
+                    <td><input type="number" class="rv-input-cell num-input credit-input bs-edit" data-field="credit" value="${t.credit || ''}" step="0.01" placeholder="0.00"></td>
+                    <td><input type="number" class="rv-input-cell num-input bs-edit" data-field="balance" value="${t.balance != null ? t.balance : ''}" step="0.01" style="font-weight:700" placeholder="0.00"></td>
+                    <td><select class="rv-select-cell bs-edit" data-field="category" onchange="autoFillLedger(this)">${catOptions}</select></td>
+                    <td><input type="text" class="rv-input-cell bs-edit" data-field="party_name" value="${(t.party_name || '').replace(/"/g, '&quot;')}" placeholder="Party name"></td>
+                    <td>
+                        <input type="text" class="rv-ledger-input bs-edit" data-field="ledger_name" value="${(ledgerVal || '').replace(/"/g, '&quot;')}" placeholder="Map to ledger…" list="${dlId}">
+                        <datalist id="${dlId}">${COMMON_LEDGERS.map(l => `<option value="${l}">`).join('')}</datalist>
+                    </td>
                 </tr>`;
             }).join('');
         }
 
-        // ═══ PDF VIEWER ═══
+        // Auto-fill ledger when category changes
+        function autoFillLedger(selectEl) {
+            const row = selectEl.closest('tr');
+            const ledgerInput = row.querySelector('[data-field="ledger_name"]');
+            if (ledgerInput && !ledgerInput.value) {
+                ledgerInput.value = suggestLedger(selectEl.value);
+            }
+        }
+
+        // ═══ PDF VIEWER — RENDER ALL PAGES ═══
         async function loadPdf() {
             try {
                 const res = await authFetch(`/bank-statements/${statementId}/pdf`);
@@ -631,7 +697,8 @@
                 pdfDoc = await pdfjsLib.getDocument(pdfUrl).promise;
                 totalPages = pdfDoc.numPages;
                 document.getElementById('rv-page-total').textContent = totalPages;
-                renderPage(1);
+                // Render ALL pages (scrollable)
+                await renderAllPages();
             } catch (e) {
                 console.error('PDF load error:', e);
                 document.getElementById('rv-pdf-body').innerHTML = `
@@ -643,23 +710,53 @@
             }
         }
 
-        async function renderPage(pageNum) {
-            if (!pdfDoc || pageNum < 1 || pageNum > totalPages) return;
-            currentPage = pageNum;
-            document.getElementById('rv-page-num').value = currentPage;
-
-            const page = await pdfDoc.getPage(pageNum);
-            const viewport = page.getViewport({ scale: pdfScale });
-
+        async function renderAllPages() {
+            if (!pdfDoc) return;
             const body = document.getElementById('rv-pdf-body');
             body.innerHTML = '';
-            const canvas = document.createElement('canvas');
-            canvas.width = viewport.width;
-            canvas.height = viewport.height;
-            body.appendChild(canvas);
 
-            const ctx = canvas.getContext('2d');
-            await page.render({ canvasContext: ctx, viewport }).promise;
+            for (let i = 1; i <= totalPages; i++) {
+                const page = await pdfDoc.getPage(i);
+                const viewport = page.getViewport({ scale: pdfScale });
+                const canvas = document.createElement('canvas');
+                canvas.width = viewport.width;
+                canvas.height = viewport.height;
+                canvas.style.borderRadius = '4px';
+                canvas.style.boxShadow = '0 2px 8px rgba(0,0,0,0.3)';
+                canvas.dataset.pageNum = i;
+                body.appendChild(canvas);
+
+                const ctx = canvas.getContext('2d');
+                await page.render({ canvasContext: ctx, viewport }).promise;
+            }
+            currentPage = 1;
+            document.getElementById('rv-page-num').value = 1;
+
+            // Track which page is visible during scroll
+            body.addEventListener('scroll', () => {
+                const canvases = body.querySelectorAll('canvas');
+                for (const c of canvases) {
+                    const rect = c.getBoundingClientRect();
+                    const bodyRect = body.getBoundingClientRect();
+                    if (rect.top >= bodyRect.top - 50 && rect.top < bodyRect.bottom) {
+                        currentPage = parseInt(c.dataset.pageNum);
+                        document.getElementById('rv-page-num').value = currentPage;
+                        break;
+                    }
+                }
+            });
+        }
+
+        async function renderPage(pageNum) {
+            // Re-render all pages at new scale
+            if (!pdfDoc) return;
+            currentPage = pageNum;
+            document.getElementById('rv-page-num').value = currentPage;
+            await renderAllPages();
+            // Scroll to the target page
+            const body = document.getElementById('rv-pdf-body');
+            const target = body.querySelector(`canvas[data-page-num="${pageNum}"]`);
+            if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
         function changePage(delta) {
@@ -716,8 +813,17 @@
                 if (res && res.ok) {
                     const result = await res.json();
                     showToast(`✅ ${result.message}`, 'success');
+
+                    // Re-load data to confirm persistence
+                    const txnRes = await authFetch(`/bank-statements/${statementId}/transactions`);
+                    if (txnRes.ok) {
+                        transactionsData = await txnRes.json();
+                        populateTransactions(transactionsData);
+                        showToast(`✅ ${transactionsData.length} transactions confirmed saved`, 'success');
+                    }
                 } else {
-                    throw new Error('Save failed');
+                    const errData = await res.json().catch(() => ({}));
+                    throw new Error(errData.detail || 'Save failed');
                 }
             } catch (e) {
                 showToast('❌ Failed to save: ' + e.message, 'error');
@@ -749,9 +855,70 @@
             }
         }
 
+        // ═══ EXPORT EXCEL ═══
+        function exportBankExcel() {
+            if (!window.XLSX) { alert('Excel library loading... try again'); return; }
+            if (!transactionsData.length) { showToast('No transactions to export', 'error'); return; }
+
+            const wb = XLSX.utils.book_new();
+
+            // Sheet 1: Summary
+            const summary = [
+                ['Bank Statement Working Paper'],
+                [''],
+                ['Bank Name', document.getElementById('rv-bank-name').value || ''],
+                ['Account Number', document.getElementById('rv-account-no').value || ''],
+                ['Period Start', document.getElementById('rv-period-start').value || ''],
+                ['Period End', document.getElementById('rv-period-end').value || ''],
+                ['Opening Balance', document.getElementById('rv-opening').value || ''],
+                ['Closing Balance', document.getElementById('rv-closing').value || ''],
+                ['Total Credits', document.getElementById('rv-total-credits').textContent || ''],
+                ['Total Debits', document.getElementById('rv-total-debits').textContent || ''],
+                ['Transaction Count', transactionsData.length],
+                [''],
+                ['Generated by', 'Suvidha AI — ComplianceAI Platform'],
+                ['Generated on', new Date().toLocaleString('en-IN')],
+            ];
+            const wsSummary = XLSX.utils.aoa_to_sheet(summary);
+            XLSX.utils.book_append_sheet(wb, wsSummary, 'Summary');
+
+            // Sheet 2: Transactions
+            const rows = document.querySelectorAll('#rv-txn-tbody tr[data-txn-id]');
+            const txnData = [];
+            rows.forEach((row, i) => {
+                const get = (field) => {
+                    const el = row.querySelector(`[data-field="${field}"]`);
+                    return el ? el.value : '';
+                };
+                txnData.push({
+                    'Sr.': i + 1,
+                    'Date': get('date'),
+                    'Description': get('description'),
+                    'Reference': get('reference_no'),
+                    'Debit (₹)': get('debit') ? parseFloat(get('debit')) : '',
+                    'Credit (₹)': get('credit') ? parseFloat(get('credit')) : '',
+                    'Balance (₹)': get('balance') ? parseFloat(get('balance')) : '',
+                    'Category': get('category'),
+                    'Party Name': get('party_name'),
+                    'Ledger': get('ledger_name'),
+                });
+            });
+            const wsTxns = XLSX.utils.json_to_sheet(txnData);
+            // Set column widths
+            wsTxns['!cols'] = [
+                {wch:5}, {wch:12}, {wch:40}, {wch:18}, {wch:15}, {wch:15}, {wch:15}, {wch:18}, {wch:25}, {wch:25}
+            ];
+            XLSX.utils.book_append_sheet(wb, wsTxns, 'Transactions');
+
+            const bankName = (document.getElementById('rv-bank-name').value || 'Bank').replace(/[^a-zA-Z0-9]/g, '_');
+            XLSX.writeFile(wb, `${bankName}_Statement_WorkingPaper.xlsx`);
+            showToast('📥 Excel downloaded!', 'success');
+        }
+
         // ═══ INIT ═══
         loadStatement();
     </script>
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
 </body>
 
 </html>

@@ -1070,7 +1070,7 @@
                                 <span id="file-label-2b"></span>
                             </div>
                         </div>
-                        <input type="file" id="gstr2b-file" accept=".xlsx,.csv,.json" style="display:none"
+                        <input type="file" id="gstr2b-file" accept=".xlsx,.csv,.json" style="display:none" multiple
                             onchange="handleFileSelect(this, '2b')">
                         <div style="text-align:center;margin-top:0.5rem">
                             <button onclick="event.stopPropagation();pickFromDrive('2b')"
@@ -1087,7 +1087,7 @@
                             <div class="upload-card-icon uci-green">📥</div>
                             <div>
                                 <div class="upload-card-title">Purchase Register</div>
-                                <div class="upload-card-subtitle">Your internal purchase/expense book</div>
+                                <div class="upload-card-subtitle">Tally, Busy, or any accounting software export</div>
                             </div>
                         </div>
                         <div class="upload-dropzone" id="dropzone-pr"
@@ -1105,7 +1105,7 @@
                                 <span id="file-label-pr"></span>
                             </div>
                         </div>
-                        <input type="file" id="pr-file" accept=".xlsx,.csv" style="display:none"
+                        <input type="file" id="pr-file" accept=".xlsx,.csv" style="display:none" multiple
                             onchange="handleFileSelect(this, 'pr')">
                         <div style="text-align:center;margin-top:0.5rem">
                             <button onclick="event.stopPropagation();pickFromDrive('pr')"
@@ -1328,7 +1328,7 @@
         // ═══ INIT ═══
         renderToolSidebar('gstr2b-vs-pr');
 
-        let file2b = null, filePR = null;
+        let files2b = [], filesPR = [];
 
         function pickFromDrive(type) {
             const params = new URLSearchParams(window.location.search);
@@ -1339,9 +1339,8 @@
                 clientId: cid,
                 accept,
                 onSelect: (file) => {
-                    // Simulate setting the file via the picker
-                    if (type === '2b') { file2b = file; updateDropzone('2b', file); }
-                    else { filePR = file; updateDropzone('pr', file); }
+                    if (type === '2b') { files2b.push(file); updateDropzone('2b'); }
+                    else { filesPR.push(file); updateDropzone('pr'); }
                     checkReady();
                 }
             });
@@ -1360,15 +1359,10 @@
         function handleDrop(e, type) {
             e.preventDefault();
             e.currentTarget.classList.remove('drag-over');
-            const files = e.dataTransfer.files;
-            if (files.length > 0) {
-                if (type === '2b') {
-                    file2b = files[0];
-                    updateDropzone('2b', file2b);
-                } else {
-                    filePR = files[0];
-                    updateDropzone('pr', filePR);
-                }
+            const dropped = Array.from(e.dataTransfer.files);
+            if (dropped.length > 0) {
+                if (type === '2b') { files2b.push(...dropped); updateDropzone('2b'); }
+                else { filesPR.push(...dropped); updateDropzone('pr'); }
                 checkReady();
             }
         }
@@ -1376,33 +1370,70 @@
         // ═══ FILE SELECT ═══
         function handleFileSelect(input, type) {
             if (!input.files.length) return;
-            if (type === '2b') {
-                file2b = input.files[0];
-                updateDropzone('2b', file2b);
-            } else {
-                filePR = input.files[0];
-                updateDropzone('pr', filePR);
-            }
+            const selected = Array.from(input.files);
+            if (type === '2b') { files2b.push(...selected); updateDropzone('2b'); }
+            else { filesPR.push(...selected); updateDropzone('pr'); }
             checkReady();
+            input.value = ''; // allow re-selecting same files
         }
 
-        function updateDropzone(type, file) {
+        function updateDropzone(type) {
+            const arr = type === '2b' ? files2b : filesPR;
             const dropzone = document.getElementById(`dropzone-${type}`);
             const fileNameEl = document.getElementById(`file-name-${type}`);
             const fileLabelEl = document.getElementById(`file-label-${type}`);
             const indicator = document.getElementById(`fi-${type}`);
 
+            if (arr.length === 0) {
+                dropzone.classList.remove('has-file');
+                fileNameEl.classList.remove('visible');
+                indicator.className = 'file-indicator pending';
+                indicator.textContent = type === '2b' ? '📊 GSTR-2B: Not uploaded' : '📥 PR: Not uploaded';
+                return;
+            }
+
             dropzone.classList.add('has-file');
             fileNameEl.classList.add('visible');
-            fileLabelEl.textContent = file.name;
+
+            if (arr.length === 1) {
+                fileLabelEl.textContent = arr[0].name;
+            } else {
+                fileLabelEl.textContent = `${arr.length} files selected (multi-month)`;
+            }
+
+            // Build a compact file list below the dropzone
+            let listHtml = arr.map((f, i) => `
+                <div style="display:flex;align-items:center;gap:0.35rem;font-size:0.7rem;color:#374151;padding:0.2rem 0">
+                    <span>📄</span>
+                    <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${f.name}</span>
+                    <button onclick="event.stopPropagation();removeFile('${type}',${i})" style="background:none;border:none;color:#dc2626;cursor:pointer;font-size:0.75rem;padding:0 0.2rem" title="Remove">✕</button>
+                </div>
+            `).join('');
+
+            // Find or create the file-list div
+            let listEl = document.getElementById(`file-list-${type}`);
+            if (!listEl) {
+                listEl = document.createElement('div');
+                listEl.id = `file-list-${type}`;
+                listEl.style.cssText = 'margin-top:0.5rem;max-height:120px;overflow-y:auto;border:1px solid #e5e7eb;border-radius:8px;padding:0.35rem 0.5rem;background:#fff';
+                dropzone.parentNode.insertBefore(listEl, dropzone.nextSibling);
+            }
+            listEl.innerHTML = listHtml;
 
             if (type === '2b') {
                 indicator.className = 'file-indicator uploaded';
-                indicator.textContent = '📊 GSTR-2B: ✓ ' + file.name;
+                indicator.textContent = `📊 GSTR-2B: ✓ ${arr.length} file${arr.length > 1 ? 's' : ''}`;
             } else {
                 indicator.className = 'file-indicator uploaded';
-                indicator.textContent = '📥 PR: ✓ ' + file.name;
+                indicator.textContent = `📥 PR: ✓ ${arr.length} file${arr.length > 1 ? 's' : ''}`;
             }
+        }
+
+        function removeFile(type, index) {
+            if (type === '2b') files2b.splice(index, 1);
+            else filesPR.splice(index, 1);
+            updateDropzone(type);
+            checkReady();
         }
 
         function checkReady() {
@@ -1410,10 +1441,11 @@
             const dot = document.getElementById('ready-dot');
             const text = document.getElementById('ready-text');
 
-            if (file2b && filePR) {
+            if (files2b.length > 0 && filesPR.length > 0) {
                 btn.disabled = false;
                 dot.classList.add('active');
-                text.textContent = 'Ready to reconcile';
+                const isMulti = files2b.length > 1 || filesPR.length > 1;
+                text.textContent = isMulti ? `Ready — multi-month (${files2b.length} + ${filesPR.length} files)` : 'Ready to reconcile';
                 text.classList.add('active');
             } else {
                 btn.disabled = true;
@@ -1436,31 +1468,57 @@
                 const params = new URLSearchParams(window.location.search);
                 const clientId = params.get('clientId');
 
-                // Send files directly to the sync reconciliation endpoint
+                const isMulti = files2b.length > 1 || filesPR.length > 1;
                 const fd = new FormData();
-                fd.append('file1', file2b);
-                fd.append('file2', filePR);
-                fd.append('job_type', 'gstr2b_vs_pr');
-                if (clientId) fd.append('client_id', clientId);
 
-                const res = await fetch(`${API_BASE_URL}/reconciliation/run`, {
-                    method: 'POST',
-                    headers: { 'Authorization': `Bearer ${token}` },
-                    body: fd
-                });
+                if (isMulti) {
+                    // Multi-month endpoint — uses arrays
+                    files2b.forEach(f => fd.append('source1_files', f));
+                    filesPR.forEach(f => fd.append('source2_files', f));
+                    fd.append('job_type', 'gstr2b_vs_pr');
+                    if (clientId) fd.append('client_id', clientId);
 
-                if (!res.ok) {
-                    const err = await res.json();
-                    throw new Error(err.detail || 'Reconciliation failed');
+                    const res = await fetch(`${API_BASE_URL}/reconciliation/run-multi`, {
+                        method: 'POST',
+                        headers: { 'Authorization': `Bearer ${token}` },
+                        body: fd
+                    });
+
+                    if (!res.ok) {
+                        const err = await res.json();
+                        throw new Error(err.detail || 'Multi-month reconciliation failed');
+                    }
+
+                    const data = await res.json();
+                    lastReconResult = data;
+                    displayResults(data);
+                    showDriveSaveBanner(data);
+                    showToast(`Multi-month reconciliation complete! ${files2b.length + filesPR.length} files processed.`, 'success');
+                } else {
+                    // Single-month endpoint
+                    fd.append('file1', files2b[0]);
+                    fd.append('file2', filesPR[0]);
+                    fd.append('job_type', 'gstr2b_vs_pr');
+                    if (clientId) fd.append('client_id', clientId);
+
+                    const res = await fetch(`${API_BASE_URL}/reconciliation/run`, {
+                        method: 'POST',
+                        headers: { 'Authorization': `Bearer ${token}` },
+                        body: fd
+                    });
+
+                    if (!res.ok) {
+                        const err = await res.json();
+                        throw new Error(err.detail || 'Reconciliation failed');
+                    }
+
+                    const data = await res.json();
+                    lastReconResult = data;
+                    displayResults(data);
+                    showDriveSaveBanner(data);
+                    showToast('Reconciliation complete! Report saved to Drive.', 'success');
                 }
 
-                const data = await res.json();
-                lastReconResult = data;
-                displayResults(data);
-
-                // Show drive save notification
-                showDriveSaveBanner(data);
-                showToast('Reconciliation complete! Report saved to Drive.', 'success');
                 loadJobs();
 
             } catch (err) {
