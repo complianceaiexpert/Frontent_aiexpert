@@ -4,9 +4,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Suvidha AI — AI-Powered Practice Management for CAs & Tax Professionals</title>
+  <title>Suvidha AI — AI for Chartered Accountants | GST, Tally, Compliance & Financial Reporting</title>
   <meta name="description"
-    content="The intelligent compliance platform for CAs, tax consultants, and legal professionals. Automate GST, certificates, data entry, and filings with AI.">
+    content="The AI platform built for India's CAs. Automate GST reconciliation, Tally data entry, CA certificates, financial statements, PMS accounting & capital gains — so you can focus on advisory, not paperwork.">
+  <meta name="keywords"
+    content="AI for Chartered Accountants, AI accounting software India, GST reconciliation AI, CA practice management software, Tally integration AI, Tally Prime automation, ICAI AI Innovation Summit, AI-driven finance, CA compliance automation, AI bookkeeping India, intelligent compliance platform, AI financial statements, PMS accounting automation, capital gains FIFO, GSTR-1 3B reconciliation, GSTR-2B matching, certificate generation CA, ITC reversal Rule 42, financial instruments accounting, Demat MF PMS statement processing, Schedule III balance sheet, net worth certificate, FEMA certificate CA">
   <link rel="stylesheet" href="styles.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -31,193 +33,471 @@
 
     /* Animated gradient mesh */
     .hero-bg {
-      position: absolute; inset: 0; z-index: 0;
+      position: absolute;
+      inset: 0;
+      z-index: 0;
       background:
-        radial-gradient(ellipse 70% 50% at 25% 45%, rgba(30,58,138,.35) 0%, transparent 70%),
-        radial-gradient(ellipse 60% 40% at 75% 55%, rgba(235,103,17,.18) 0%, transparent 70%),
-        radial-gradient(ellipse 50% 60% at 50% 90%, rgba(139,92,246,.12) 0%, transparent 60%);
+        radial-gradient(ellipse 70% 50% at 25% 45%, rgba(30, 58, 138, .35) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 40% at 75% 55%, rgba(235, 103, 17, .18) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 60% at 50% 90%, rgba(139, 92, 246, .12) 0%, transparent 60%);
     }
+
     .hero-grid-bg {
-      position: absolute; inset: 0; z-index: 0;
+      position: absolute;
+      inset: 0;
+      z-index: 0;
       background-image:
-        linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+        linear-gradient(rgba(255, 255, 255, .03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, .03) 1px, transparent 1px);
       background-size: 48px 48px;
     }
 
     /* Floating particles */
     .particle {
-      position: absolute; border-radius: 50%; z-index: 0;
+      position: absolute;
+      border-radius: 50%;
+      z-index: 0;
       animation: particleFloat 12s ease-in-out infinite;
     }
-    .particle:nth-child(1) { width: 8px; height: 8px; background: rgba(59,130,246,.4); top: 20%; left: 15%; animation-delay: 0s }
-    .particle:nth-child(2) { width: 6px; height: 6px; background: rgba(235,103,17,.35); top: 60%; left: 80%; animation-delay: -3s }
-    .particle:nth-child(3) { width: 10px; height: 10px; background: rgba(139,92,246,.3); top: 75%; left: 30%; animation-delay: -6s }
-    .particle:nth-child(4) { width: 5px; height: 5px; background: rgba(16,185,129,.35); top: 35%; left: 65%; animation-delay: -2s }
-    .particle:nth-child(5) { width: 7px; height: 7px; background: rgba(59,130,246,.25); top: 85%; left: 55%; animation-delay: -8s }
+
+    .particle:nth-child(1) {
+      width: 8px;
+      height: 8px;
+      background: rgba(59, 130, 246, .4);
+      top: 20%;
+      left: 15%;
+      animation-delay: 0s
+    }
+
+    .particle:nth-child(2) {
+      width: 6px;
+      height: 6px;
+      background: rgba(235, 103, 17, .35);
+      top: 60%;
+      left: 80%;
+      animation-delay: -3s
+    }
+
+    .particle:nth-child(3) {
+      width: 10px;
+      height: 10px;
+      background: rgba(139, 92, 246, .3);
+      top: 75%;
+      left: 30%;
+      animation-delay: -6s
+    }
+
+    .particle:nth-child(4) {
+      width: 5px;
+      height: 5px;
+      background: rgba(16, 185, 129, .35);
+      top: 35%;
+      left: 65%;
+      animation-delay: -2s
+    }
+
+    .particle:nth-child(5) {
+      width: 7px;
+      height: 7px;
+      background: rgba(59, 130, 246, .25);
+      top: 85%;
+      left: 55%;
+      animation-delay: -8s
+    }
+
     @keyframes particleFloat {
-      0%, 100% { transform: translate(0,0) scale(1); opacity: .6 }
-      25% { transform: translate(30px,-40px) scale(1.2); opacity: 1 }
-      50% { transform: translate(-20px, 20px) scale(.8); opacity: .4 }
-      75% { transform: translate(15px, -15px) scale(1.1); opacity: .8 }
+
+      0%,
+      100% {
+        transform: translate(0, 0) scale(1);
+        opacity: .6
+      }
+
+      25% {
+        transform: translate(30px, -40px) scale(1.2);
+        opacity: 1
+      }
+
+      50% {
+        transform: translate(-20px, 20px) scale(.8);
+        opacity: .4
+      }
+
+      75% {
+        transform: translate(15px, -15px) scale(1.1);
+        opacity: .8
+      }
     }
 
     .hero-inner {
-      max-width: 1200px; margin: 0 auto; width: 100%;
-      display: grid; grid-template-columns: 1.15fr .85fr;
-      gap: 4rem; align-items: center;
-      position: relative; z-index: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap: 4rem;
+      align-items: center;
+      position: relative;
+      z-index: 1;
     }
 
-    .hero-left { animation: fadeInUp 0.8s ease-out }
+    .hero-left {
+      animation: fadeInUp 0.8s ease-out
+    }
 
     .hero-tag {
-      display: inline-flex; align-items: center; gap: .5rem;
-      padding: .4rem 1rem; background: rgba(59,130,246,.12);
-      border: 1px solid rgba(59,130,246,.25);
-      border-radius: 999px; font-size: .82rem; font-weight: 600;
-      color: #93c5fd; margin-bottom: 1.75rem; letter-spacing: .02em;
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      padding: .4rem 1rem;
+      background: rgba(59, 130, 246, .12);
+      border: 1px solid rgba(59, 130, 246, .25);
+      border-radius: 999px;
+      font-size: .82rem;
+      font-weight: 600;
+      color: #93c5fd;
+      margin-bottom: 1.75rem;
+      letter-spacing: .02em;
     }
 
     .hero-h1 {
       font-family: 'Outfit', sans-serif;
-      font-size: 3.8rem; font-weight: 900; line-height: 1.06;
-      margin-bottom: 1.5rem; color: #fff;
+      font-size: 3.8rem;
+      font-weight: 900;
+      line-height: 1.06;
+      margin-bottom: 1.5rem;
+      color: #fff;
     }
+
     .hero-h1 .gradient-text {
       background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 40%, #f59e0b 100%);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
       background-clip: text;
     }
 
     .hero-desc {
-      font-size: 1.15rem; line-height: 1.7; color: rgba(255,255,255,.6);
-      margin-bottom: 2.5rem; max-width: 520px;
+      font-size: 1.15rem;
+      line-height: 1.7;
+      color: rgba(255, 255, 255, .6);
+      margin-bottom: 2.5rem;
+      max-width: 520px;
     }
 
-    .hero-actions { display: flex; gap: 1rem; align-items: center; margin-bottom: 2.5rem }
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      margin-bottom: 2.5rem
+    }
+
     .btn-hero-primary {
-      display: inline-flex; align-items: center; gap: .5rem;
-      padding: .85rem 2rem; border-radius: 12px; font-weight: 700;
-      font-size: 1rem; text-decoration: none; color: #fff;
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      padding: .85rem 2rem;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1rem;
+      text-decoration: none;
+      color: #fff;
       background: linear-gradient(135deg, #EB6711, #f5841a);
-      box-shadow: 0 4px 20px rgba(235,103,17,.3);
+      box-shadow: 0 4px 20px rgba(235, 103, 17, .3);
       transition: all .25s;
     }
-    .btn-hero-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(235,103,17,.35) }
+
+    .btn-hero-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(235, 103, 17, .35)
+    }
+
     .btn-hero-secondary {
-      display: inline-flex; align-items: center; gap: .5rem;
-      padding: .85rem 2rem; border-radius: 12px; font-weight: 600;
-      font-size: .95rem; text-decoration: none; color: rgba(255,255,255,.8);
-      background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12);
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      padding: .85rem 2rem;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: .95rem;
+      text-decoration: none;
+      color: rgba(255, 255, 255, .8);
+      background: rgba(255, 255, 255, .06);
+      border: 1px solid rgba(255, 255, 255, .12);
       transition: all .25s;
     }
-    .btn-hero-secondary:hover { background: rgba(255,255,255,.1); color: #fff }
+
+    .btn-hero-secondary:hover {
+      background: rgba(255, 255, 255, .1);
+      color: #fff
+    }
 
     .hero-trust {
-      display: flex; align-items: center; gap: 1.75rem;
-      font-size: .82rem; color: rgba(255,255,255,.35);
+      display: flex;
+      align-items: center;
+      gap: 1.75rem;
+      font-size: .82rem;
+      color: rgba(255, 255, 255, .35);
     }
-    .hero-trust-item { display: flex; align-items: center; gap: .4rem }
-    .hero-trust-item svg { color: rgba(255,255,255,.4) }
+
+    .hero-trust-item {
+      display: flex;
+      align-items: center;
+      gap: .4rem
+    }
+
+    .hero-trust-item svg {
+      color: rgba(255, 255, 255, .4)
+    }
 
     /* ── Bento Cards ── */
-    .hero-right { animation: fadeInUp 0.8s ease-out .3s backwards }
-    .bento-preview { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem }
+    .hero-right {
+      animation: fadeInUp 0.8s ease-out .3s backwards
+    }
+
+    .bento-preview {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .75rem
+    }
+
     .bento-card {
-      background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08);
-      border-radius: 14px; padding: 1.25rem; transition: all .3s;
+      background: rgba(255, 255, 255, .04);
+      border: 1px solid rgba(255, 255, 255, .08);
+      border-radius: 14px;
+      padding: 1.25rem;
+      transition: all .3s;
       backdrop-filter: blur(8px);
     }
+
     .bento-card:hover {
       transform: translateY(-3px);
-      background: rgba(255,255,255,.07); border-color: rgba(255,255,255,.15);
-      box-shadow: 0 12px 32px rgba(0,0,0,.2);
+      background: rgba(255, 255, 255, .07);
+      border-color: rgba(255, 255, 255, .15);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, .2);
     }
-    .bento-card.wide { grid-column: 1 / -1 }
+
+    .bento-card.wide {
+      grid-column: 1 / -1
+    }
+
     .bento-icon {
-      width: 36px; height: 36px; border-radius: 9px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.1rem; margin-bottom: .6rem;
+      width: 36px;
+      height: 36px;
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      margin-bottom: .6rem;
     }
-    .bento-icon.orange { background: rgba(235,103,17,.15) }
-    .bento-icon.blue { background: rgba(59,130,246,.15) }
-    .bento-icon.purple { background: rgba(139,92,246,.15) }
-    .bento-icon.green { background: rgba(16,185,129,.15) }
-    .bento-title { font-weight: 700; font-size: .88rem; color: #fff; margin-bottom: .25rem }
-    .bento-desc { font-size: .72rem; color: rgba(255,255,255,.45); line-height: 1.5 }
-    .bento-bar { height: 4px; border-radius: 2px; background: rgba(255,255,255,.08); margin-top: .6rem; overflow: hidden }
-    .bento-bar-fill { height: 100%; border-radius: 2px; background: linear-gradient(90deg, #EB6711, #3b82f6); animation: barGrow 2s ease-out forwards }
-    @keyframes barGrow { from { width: 0 } }
+
+    .bento-icon.orange {
+      background: rgba(235, 103, 17, .15)
+    }
+
+    .bento-icon.blue {
+      background: rgba(59, 130, 246, .15)
+    }
+
+    .bento-icon.purple {
+      background: rgba(139, 92, 246, .15)
+    }
+
+    .bento-icon.green {
+      background: rgba(16, 185, 129, .15)
+    }
+
+    .bento-title {
+      font-weight: 700;
+      font-size: .88rem;
+      color: #fff;
+      margin-bottom: .25rem
+    }
+
+    .bento-desc {
+      font-size: .72rem;
+      color: rgba(255, 255, 255, .45);
+      line-height: 1.5
+    }
+
+    .bento-bar {
+      height: 4px;
+      border-radius: 2px;
+      background: rgba(255, 255, 255, .08);
+      margin-top: .6rem;
+      overflow: hidden
+    }
+
+    .bento-bar-fill {
+      height: 100%;
+      border-radius: 2px;
+      background: linear-gradient(90deg, #EB6711, #3b82f6);
+      animation: barGrow 2s ease-out forwards
+    }
+
+    @keyframes barGrow {
+      from {
+        width: 0
+      }
+    }
 
     /* ── Stats Counter ── */
     .stats-section {
-      background: #fff; border-bottom: 1px solid #e5e7eb;
+      background: #fff;
+      border-bottom: 1px solid #e5e7eb;
       padding: 3rem 2rem;
     }
+
     .stats-grid {
-      max-width: 1100px; margin: 0 auto;
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem;
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2rem;
       text-align: center;
     }
+
     .stat-item {}
+
     .stat-number {
-      font-family: 'Outfit', sans-serif; font-size: 2.5rem;
-      font-weight: 800; color: #1e3a8a;
+      font-family: 'Outfit', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: #1e3a8a;
       background: linear-gradient(135deg, #1e3a8a, #3b82f6);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
-    .stat-label { font-size: .82rem; color: #6b7280; font-weight: 500; margin-top: .2rem }
+
+    .stat-label {
+      font-size: .82rem;
+      color: #6b7280;
+      font-weight: 500;
+      margin-top: .2rem
+    }
 
     /* ── Social Proof ── */
     .social-proof {
-      padding: 2.5rem 2rem; text-align: center; background: #f8fafc;
+      padding: 2.5rem 2rem;
+      text-align: center;
+      background: #f8fafc;
       border-bottom: 1px solid #e5e7eb;
     }
+
     .social-proof p {
-      font-size: .72rem; color: #9ca3af; margin-bottom: 1.25rem;
-      text-transform: uppercase; letter-spacing: .12em; font-weight: 600;
+      font-size: .72rem;
+      color: #9ca3af;
+      margin-bottom: 1.25rem;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      font-weight: 600;
     }
+
     .proof-logos {
-      display: flex; justify-content: center; align-items: center;
-      gap: 3rem; flex-wrap: wrap; opacity: .4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 3rem;
+      flex-wrap: wrap;
+      opacity: .4;
     }
-    .proof-logo { font-size: 1rem; font-weight: 700; color: #374151; letter-spacing: .04em }
+
+    .proof-logo {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #374151;
+      letter-spacing: .04em
+    }
 
     /* ── Feature Panels ── */
-    .feature-section { padding: 5rem 2rem }
-    .feature-section:nth-child(odd) { background: #f8fafc }
-    .feature-section:nth-child(even) { background: #fff }
+    .feature-section {
+      padding: 5rem 2rem
+    }
+
+    .feature-section:nth-child(odd) {
+      background: #f8fafc
+    }
+
+    .feature-section:nth-child(even) {
+      background: #fff
+    }
+
     .feature-row {
-      max-width: 1100px; margin: 0 auto;
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 4rem; align-items: center;
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
     }
-    .feature-row.reverse .feature-visual { order: -1 }
+
+    .feature-row.reverse .feature-visual {
+      order: -1
+    }
+
     .feature-label {
-      display: inline-flex; align-items: center; gap: .4rem;
-      font-size: .75rem; font-weight: 700; text-transform: uppercase;
-      letter-spacing: .08em; color: #EB6711; margin-bottom: .75rem;
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      font-size: .75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: #EB6711;
+      margin-bottom: .75rem;
     }
+
     .feature-heading {
       font-family: 'Outfit', sans-serif;
-      font-size: 2.2rem; font-weight: 800; line-height: 1.15;
-      color: #111827; margin-bottom: .75rem;
+      font-size: 2.2rem;
+      font-weight: 800;
+      line-height: 1.15;
+      color: #111827;
+      margin-bottom: .75rem;
     }
-    .feature-body { font-size: 1rem; line-height: 1.7; color: #6b7280; margin-bottom: 1.25rem }
-    .feature-checklist { list-style: none; padding: 0 }
-    .feature-checklist li {
-      display: flex; align-items: center; gap: .6rem;
-      font-size: .9rem; color: #475569; margin-bottom: .5rem;
-    }
-    .feature-checklist li .check { color: #059669; font-weight: 700; font-size: 1rem }
 
-    .feature-visual { position: relative }
-    .feature-visual img {
-      width: 100%; border-radius: 14px; border: 1px solid #e5e7eb;
-      box-shadow: 0 16px 40px rgba(0,0,0,.06); transition: transform .3s;
+    .feature-body {
+      font-size: 1rem;
+      line-height: 1.7;
+      color: #6b7280;
+      margin-bottom: 1.25rem
     }
-    .feature-visual:hover img { transform: scale(1.01) }
+
+    .feature-checklist {
+      list-style: none;
+      padding: 0
+    }
+
+    .feature-checklist li {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      font-size: .9rem;
+      color: #475569;
+      margin-bottom: .5rem;
+    }
+
+    .feature-checklist li .check {
+      color: #059669;
+      font-weight: 700;
+      font-size: 1rem
+    }
+
+    .feature-visual {
+      position: relative
+    }
+
+    .feature-visual img {
+      width: 100%;
+      border-radius: 14px;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, .06);
+      transition: transform .3s;
+    }
+
+    .feature-visual:hover img {
+      transform: scale(1.01)
+    }
 
     /* ── How It Works ── */
     .steps-section {
@@ -225,34 +505,84 @@
       background: linear-gradient(135deg, #07080d 0%, #0f172a 100%);
       color: #fff;
     }
-    .steps-header { text-align: center; max-width: 600px; margin: 0 auto 3rem }
+
+    .steps-header {
+      text-align: center;
+      max-width: 600px;
+      margin: 0 auto 3rem
+    }
+
     .steps-header h2 {
-      font-family: 'Outfit', sans-serif; font-size: 2.4rem;
-      font-weight: 800; margin-bottom: .65rem;
+      font-family: 'Outfit', sans-serif;
+      font-size: 2.4rem;
+      font-weight: 800;
+      margin-bottom: .65rem;
     }
-    .steps-header p { font-size: 1rem; color: rgba(255,255,255,.5) }
+
+    .steps-header p {
+      font-size: 1rem;
+      color: rgba(255, 255, 255, .5)
+    }
+
     .steps-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr);
-      gap: 1.5rem; max-width: 1000px; margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      max-width: 1000px;
+      margin: 0 auto;
     }
+
     .step-card {
-      background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08);
-      border-radius: 16px; padding: 1.75rem; transition: all .3s;
+      background: rgba(255, 255, 255, .04);
+      border: 1px solid rgba(255, 255, 255, .08);
+      border-radius: 16px;
+      padding: 1.75rem;
+      transition: all .3s;
     }
+
     .step-card:hover {
       transform: translateY(-4px);
-      background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.15);
+      background: rgba(255, 255, 255, .06);
+      border-color: rgba(255, 255, 255, .15);
     }
+
     .step-number {
-      width: 44px; height: 44px; border-radius: 12px;
-      display: flex; align-items: center; justify-content: center;
-      font-weight: 800; font-size: 1.15rem; margin-bottom: 1rem; color: #fff;
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1.15rem;
+      margin-bottom: 1rem;
+      color: #fff;
     }
-    .step-card:nth-child(1) .step-number { background: linear-gradient(135deg, #EB6711, #f5841a) }
-    .step-card:nth-child(2) .step-number { background: linear-gradient(135deg, #1e3a8a, #3b82f6) }
-    .step-card:nth-child(3) .step-number { background: linear-gradient(135deg, #7c3aed, #a78bfa) }
-    .step-card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: .4rem; color: #fff }
-    .step-card p { font-size: .85rem; color: rgba(255,255,255,.45); line-height: 1.6 }
+
+    .step-card:nth-child(1) .step-number {
+      background: linear-gradient(135deg, #EB6711, #f5841a)
+    }
+
+    .step-card:nth-child(2) .step-number {
+      background: linear-gradient(135deg, #1e3a8a, #3b82f6)
+    }
+
+    .step-card:nth-child(3) .step-number {
+      background: linear-gradient(135deg, #7c3aed, #a78bfa)
+    }
+
+    .step-card h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: .4rem;
+      color: #fff
+    }
+
+    .step-card p {
+      font-size: .85rem;
+      color: rgba(255, 255, 255, .45);
+      line-height: 1.6
+    }
 
     /* ── Security ── */
     .security-banner {
@@ -260,132 +590,348 @@
       background: linear-gradient(135deg, #1e3a8a, #1e40af);
       color: #fff;
     }
+
     .security-inner {
-      max-width: 1000px; margin: 0 auto;
-      display: flex; align-items: center; gap: 2.5rem;
+      max-width: 1000px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 2.5rem;
     }
+
     .security-icon-wrap {
-      width: 70px; height: 70px; border-radius: 18px;
-      background: rgba(255,255,255,.12); display: flex;
-      align-items: center; justify-content: center;
-      font-size: 2rem; flex-shrink: 0;
+      width: 70px;
+      height: 70px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, .12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      flex-shrink: 0;
     }
-    .security-text h3 { font-size: 1.3rem; font-weight: 700; margin-bottom: .35rem; color: #fff }
-    .security-text p { font-size: .92rem; color: rgba(255,255,255,.75); line-height: 1.6 }
-    .security-badges { display: flex; gap: .75rem; margin-top: .75rem; flex-wrap: wrap }
+
+    .security-text h3 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: .35rem;
+      color: #fff
+    }
+
+    .security-text p {
+      font-size: .92rem;
+      color: rgba(255, 255, 255, .75);
+      line-height: 1.6
+    }
+
+    .security-badges {
+      display: flex;
+      gap: .75rem;
+      margin-top: .75rem;
+      flex-wrap: wrap
+    }
+
     .sec-badge {
-      display: inline-flex; align-items: center; gap: .35rem;
-      padding: .3rem .7rem; background: rgba(255,255,255,.12);
-      border: 1px solid rgba(255,255,255,.2); border-radius: 999px;
-      font-size: .72rem; font-weight: 600; color: #fff;
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem;
+      padding: .3rem .7rem;
+      background: rgba(255, 255, 255, .12);
+      border: 1px solid rgba(255, 255, 255, .2);
+      border-radius: 999px;
+      font-size: .72rem;
+      font-weight: 600;
+      color: #fff;
     }
 
     /* ── FAQ ── */
-    .faq-section { padding: 5rem 2rem; background: #f8fafc }
-    .faq-header { text-align: center; margin-bottom: 2.5rem }
-    .faq-header h2 { font-family: 'Outfit', sans-serif; font-size: 2rem; font-weight: 800; margin-bottom: .5rem }
-    .faq-header p { color: #6b7280; font-size: 1rem }
-    .faq-list { max-width: 720px; margin: 0 auto }
+    .faq-section {
+      padding: 5rem 2rem;
+      background: #f8fafc
+    }
+
+    .faq-header {
+      text-align: center;
+      margin-bottom: 2.5rem
+    }
+
+    .faq-header h2 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: .5rem
+    }
+
+    .faq-header p {
+      color: #6b7280;
+      font-size: 1rem
+    }
+
+    .faq-list {
+      max-width: 720px;
+      margin: 0 auto
+    }
+
     .faq-item {
-      background: #fff; border: 1px solid #e5e7eb; border-radius: 12px;
-      margin-bottom: .6rem; overflow: hidden;
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      margin-bottom: .6rem;
+      overflow: hidden;
     }
+
     .faq-q {
-      padding: 1rem 1.25rem; cursor: pointer; display: flex;
-      justify-content: space-between; align-items: center;
-      font-weight: 600; font-size: .92rem; color: #1e293b; transition: background .15s;
+      padding: 1rem 1.25rem;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 600;
+      font-size: .92rem;
+      color: #1e293b;
+      transition: background .15s;
     }
-    .faq-q:hover { background: #f8fafc }
-    .faq-q .arrow { color: #1e3a8a; font-size: 1rem; transition: transform .2s }
-    .faq-item.open .faq-q .arrow { transform: rotate(180deg) }
-    .faq-a { max-height: 0; overflow: hidden; transition: max-height .25s ease }
-    .faq-item.open .faq-a { max-height: 300px }
-    .faq-a-inner { padding: 0 1.25rem 1rem; color: #6b7280; line-height: 1.7; font-size: .88rem }
+
+    .faq-q:hover {
+      background: #f8fafc
+    }
+
+    .faq-q .arrow {
+      color: #1e3a8a;
+      font-size: 1rem;
+      transition: transform .2s
+    }
+
+    .faq-item.open .faq-q .arrow {
+      transform: rotate(180deg)
+    }
+
+    .faq-a {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .25s ease
+    }
+
+    .faq-item.open .faq-a {
+      max-height: 300px
+    }
+
+    .faq-a-inner {
+      padding: 0 1.25rem 1rem;
+      color: #6b7280;
+      line-height: 1.7;
+      font-size: .88rem
+    }
 
     /* ── CTA ── */
     .cta-section {
-      padding: 5rem 2rem; text-align: center;
+      padding: 5rem 2rem;
+      text-align: center;
       background: linear-gradient(135deg, #07080d, #0f172a);
-      position: relative; overflow: hidden; color: #fff;
+      position: relative;
+      overflow: hidden;
+      color: #fff;
     }
+
     .cta-section::before {
-      content: ''; position: absolute; inset: 0;
-      background: radial-gradient(ellipse 50% 50% at 50% 50%, rgba(59,130,246,.12) 0%, transparent 70%);
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 50% 50% at 50% 50%, rgba(59, 130, 246, .12) 0%, transparent 70%);
     }
+
     .cta-section h2 {
-      font-family: 'Outfit', sans-serif; font-size: 2.5rem;
-      font-weight: 800; margin-bottom: .75rem; position: relative; z-index: 1;
+      font-family: 'Outfit', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: .75rem;
+      position: relative;
+      z-index: 1;
     }
-    .cta-section p { font-size: 1.05rem; color: rgba(255,255,255,.55); margin-bottom: 2rem; position: relative; z-index: 1 }
-    .cta-btn-wrap { position: relative; z-index: 1 }
+
+    .cta-section p {
+      font-size: 1.05rem;
+      color: rgba(255, 255, 255, .55);
+      margin-bottom: 2rem;
+      position: relative;
+      z-index: 1
+    }
+
+    .cta-btn-wrap {
+      position: relative;
+      z-index: 1
+    }
+
     .cta-btn-wrap a {
-      display: inline-flex; align-items: center; gap: .5rem;
-      padding: .85rem 2.5rem; border-radius: 12px; font-weight: 700;
-      font-size: 1rem; text-decoration: none; color: #fff;
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      padding: .85rem 2.5rem;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1rem;
+      text-decoration: none;
+      color: #fff;
       background: linear-gradient(135deg, #EB6711, #f5841a);
-      box-shadow: 0 4px 20px rgba(235,103,17,.3); transition: all .25s;
+      box-shadow: 0 4px 20px rgba(235, 103, 17, .3);
+      transition: all .25s;
     }
-    .cta-btn-wrap a:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(235,103,17,.4) }
+
+    .cta-btn-wrap a:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(235, 103, 17, .4)
+    }
 
     /* ── Footer ── */
-    .site-footer { background: #07080d; padding: 3rem 2rem 1.5rem; color: #fff }
+    .site-footer {
+      background: #07080d;
+      padding: 3rem 2rem 1.5rem;
+      color: #fff
+    }
+
     .footer-grid {
-      max-width: 1100px; margin: 0 auto;
-      display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
-      gap: 3rem; margin-bottom: 2rem;
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 3rem;
+      margin-bottom: 2rem;
     }
-    .footer-brand p { color: rgba(255,255,255,.35); line-height: 1.7; margin-top: .75rem; font-size: .82rem }
+
+    .footer-brand p {
+      color: rgba(255, 255, 255, .35);
+      line-height: 1.7;
+      margin-top: .75rem;
+      font-size: .82rem
+    }
+
     .footer-col h4 {
-      color: rgba(255,255,255,.6); margin-bottom: .75rem; font-size: .72rem;
-      text-transform: uppercase; letter-spacing: .1em;
+      color: rgba(255, 255, 255, .6);
+      margin-bottom: .75rem;
+      font-size: .72rem;
+      text-transform: uppercase;
+      letter-spacing: .1em;
     }
+
     .footer-col a {
-      display: block; color: rgba(255,255,255,.4); margin-bottom: .5rem;
-      font-size: .82rem; transition: color .2s; text-decoration: none;
+      display: block;
+      color: rgba(255, 255, 255, .4);
+      margin-bottom: .5rem;
+      font-size: .82rem;
+      transition: color .2s;
+      text-decoration: none;
     }
-    .footer-col a:hover { color: #EB6711 }
+
+    .footer-col a:hover {
+      color: #EB6711
+    }
+
     .footer-bottom {
-      max-width: 1100px; margin: 0 auto; padding-top: 1.5rem;
-      border-top: 1px solid rgba(255,255,255,.06);
-      text-align: center; color: rgba(255,255,255,.25); font-size: .75rem;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(255, 255, 255, .06);
+      text-align: center;
+      color: rgba(255, 255, 255, .25);
+      font-size: .75rem;
     }
 
     /* ── Reveal ── */
-    .reveal { opacity: 0; transform: translateY(30px); transition: opacity .7s, transform .7s }
-    .reveal.visible { opacity: 1; transform: translateY(0) }
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity .7s, transform .7s
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0)
+    }
 
     /* ── Responsive ── */
     @media (max-width: 900px) {
-      .hero-inner { grid-template-columns: 1fr; text-align: center }
-      .hero-desc { margin-left: auto; margin-right: auto }
-      .hero-actions { justify-content: center }
-      .hero-trust { justify-content: center }
-      .hero-right { display: none }
-      .hero-h1 { font-size: 2.75rem }
-      .feature-row, .feature-row.reverse { grid-template-columns: 1fr }
-      .feature-row.reverse .feature-visual { order: 0 }
-      .steps-grid { grid-template-columns: 1fr }
-      .stats-grid { grid-template-columns: 1fr 1fr }
-      .footer-grid { grid-template-columns: 1fr 1fr }
-      .security-inner { flex-direction: column; text-align: center }
+      .hero-inner {
+        grid-template-columns: 1fr;
+        text-align: center
+      }
+
+      .hero-desc {
+        margin-left: auto;
+        margin-right: auto
+      }
+
+      .hero-actions {
+        justify-content: center
+      }
+
+      .hero-trust {
+        justify-content: center
+      }
+
+      .hero-right {
+        display: none
+      }
+
+      .hero-h1 {
+        font-size: 2.75rem
+      }
+
+      .feature-row,
+      .feature-row.reverse {
+        grid-template-columns: 1fr
+      }
+
+      .feature-row.reverse .feature-visual {
+        order: 0
+      }
+
+      .steps-grid {
+        grid-template-columns: 1fr
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr 1fr
+      }
+
+      .footer-grid {
+        grid-template-columns: 1fr 1fr
+      }
+
+      .security-inner {
+        flex-direction: column;
+        text-align: center
+      }
     }
+
     @media (max-width: 480px) {
-      .hero-h1 { font-size: 2rem }
-      .feature-heading { font-size: 1.6rem }
-      .footer-grid { grid-template-columns: 1fr }
-      .stats-grid { grid-template-columns: 1fr 1fr }
+      .hero-h1 {
+        font-size: 2rem
+      }
+
+      .feature-heading {
+        font-size: 1.6rem
+      }
+
+      .footer-grid {
+        grid-template-columns: 1fr
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr 1fr
+      }
     }
   </style>
 </head>
 
 <body>
   <!-- ═══════ NAVBAR ═══════ -->
-  <nav class="navbar" style="background: rgba(7,8,13,.85); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,.06)">
+  <nav class="navbar"
+    style="background: rgba(7,8,13,.85); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,.06)">
     <div class="navbar-container">
       <a href="index.html" class="logo" style="text-decoration: none;">
         <div class="logo-icon" style="background: linear-gradient(135deg, #EB6711, #f5841a)">SA</div>
-        <span style="font-weight: 800; font-size: 1.2rem; color: #fff;">Suvidha<span
-            style="color: #f5841a;"> AI</span></span>
+        <span style="font-weight: 800; font-size: 1.2rem; color: #fff;">Suvidha<span style="color: #f5841a;">
+            AI</span></span>
       </a>
       <ul class="nav-links">
         <li><a href="index.html" style="color: rgba(255,255,255,.7)">Home</a></li>
@@ -396,7 +942,8 @@
         <li><a href="about-us.html" style="color: rgba(255,255,255,.7)">About Us</a></li>
         <li><a href="pricing.html" style="color: rgba(255,255,255,.7)">Pricing</a></li>
         <li><a href="sign-in.html" class="btn btn-primary btn-small"
-            style="background: linear-gradient(135deg,#EB6711,#f5841a); border: none; box-shadow: 0 2px 10px rgba(235,103,17,.3)">Sign In</a></li>
+            style="background: linear-gradient(135deg,#EB6711,#f5841a); border: none; box-shadow: 0 2px 10px rgba(235,103,17,.3)">Sign
+            In</a></li>
       </ul>
     </div>
   </nav>
@@ -405,24 +952,30 @@
   <section class="landing-hero">
     <div class="hero-bg"></div>
     <div class="hero-grid-bg"></div>
-    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
-    <div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
 
     <div class="hero-inner">
       <div class="hero-left">
-        <div class="hero-tag">⚡ AI-Powered Compliance for CAs Across India</div>
+        <div class="hero-tag">⚡ Built for CAs. Powered by AI. Ready Today.</div>
         <h1 class="hero-h1">
-          Your CA Practice,<br>
-          <span class="gradient-text">Powered by AI.</span>
+          Stop Punching Data.<br>
+          <span class="gradient-text">Start Advising Clients.</span>
         </h1>
         <p class="hero-desc">
-          India's CAs spend countless hours on GST reconciliation, data entry, and certificate generation.
-          Suvidha AI automates the heavy lifting — so you can focus on advisory, not paperwork.
+          GST recon that takes minutes, not days. Invoices that read themselves into Tally. Certificates that auto-fill
+          from your data. PMS statements that generate journal entries on upload. This isn't a demo — it's what CAs are
+          using right now.
         </p>
         <div class="hero-actions">
           <a href="sign-in.html" class="btn-hero-primary">Start Free Trial →</a>
           <a href="how-it-works.html" class="btn-hero-secondary">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="5 3 19 12 5 21 5 3" />
+            </svg>
             See How It Works
           </a>
         </div>
@@ -436,13 +989,15 @@
           <div class="hero-trust-item">
             <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
               <circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5" />
-              <path d="M5 8L7 10L11 6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M5 8L7 10L11 6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                stroke-linejoin="round" />
             </svg>
             <span>Tally Prime Integrated</span>
           </div>
           <div class="hero-trust-item">
             <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
-              <path d="M8 1L14 4V7.5C14 11 11.5 13.5 8 15C4.5 13.5 2 11 2 7.5V4L8 1Z" fill="none" stroke="currentColor" stroke-width="1.5" />
+              <path d="M8 1L14 4V7.5C14 11 11.5 13.5 8 15C4.5 13.5 2 11 2 7.5V4L8 1Z" fill="none" stroke="currentColor"
+                stroke-width="1.5" />
             </svg>
             <span>Secure & Encrypted</span>
           </div>
@@ -453,37 +1008,48 @@
         <div class="bento-preview">
           <div class="bento-card">
             <div class="bento-icon orange">🧾</div>
-            <div class="bento-title">GST Filing & Recon</div>
-            <div class="bento-desc">GSTR-1 vs 3B, 2B vs 3B, ITC analysis — fully automated</div>
-            <div class="bento-bar"><div class="bento-bar-fill" style="width: 92%"></div></div>
+            <div class="bento-title">GST Reconciliation</div>
+            <div class="bento-desc">1 vs 3B, 2B vs 3B, ITC mismatch — upload returns, get full recon in 2 minutes</div>
+            <div class="bento-bar">
+              <div class="bento-bar-fill" style="width: 92%"></div>
+            </div>
           </div>
           <div class="bento-card">
             <div class="bento-icon blue">⌨️</div>
-            <div class="bento-title">Data Entry & Tally</div>
-            <div class="bento-desc">Vouchers, ledgers, bank entries — synced to Tally in one click</div>
-            <div class="bento-bar"><div class="bento-bar-fill" style="width: 85%"></div></div>
+            <div class="bento-title">Tally Sync Engine</div>
+            <div class="bento-desc">Bank PDFs, invoices → AI reads → one-click push to Tally Prime. No manual punching.
+            </div>
+            <div class="bento-bar">
+              <div class="bento-bar-fill" style="width: 85%"></div>
+            </div>
           </div>
           <div class="bento-card wide">
             <div class="bento-icon green">📃</div>
-            <div class="bento-title">CA Certificate Generation</div>
-            <div class="bento-desc">GST, Net Worth, FEMA, Bank certs — auto-filled, instant Word/PDF download.</div>
+            <div class="bento-title">CA Certificates — 50+ Templates</div>
+            <div class="bento-desc">Net Worth, FEMA, GST, Bank — pick a template, AI fills the numbers, download
+              Word/PDF instantly.</div>
           </div>
           <div class="bento-card">
             <div class="bento-icon purple">📊</div>
             <div class="bento-title">Financial Statements</div>
-            <div class="bento-desc">Schedule III BS, P&L from Tally or uploaded Trial Balance with AI grouping</div>
-            <div class="bento-bar"><div class="bento-bar-fill" style="width: 78%"></div></div>
+            <div class="bento-desc">Schedule III BS & P&L — auto-grouped from Tally or uploaded Trial Balance</div>
+            <div class="bento-bar">
+              <div class="bento-bar-fill" style="width: 78%"></div>
+            </div>
           </div>
           <div class="bento-card">
             <div class="bento-icon orange">📈</div>
-            <div class="bento-title">Financial Instruments</div>
-            <div class="bento-desc">Demat, MF, PMS statement processing with auto journal entries</div>
-            <div class="bento-bar"><div class="bento-bar-fill" style="width: 72%"></div></div>
+            <div class="bento-title">PMS & Capital Gains</div>
+            <div class="bento-desc">Upload Demat/MF/PMS PDFs → FIFO stock register, STCG/LTCG report, auto JEs</div>
+            <div class="bento-bar">
+              <div class="bento-bar-fill" style="width: 72%"></div>
+            </div>
           </div>
           <div class="bento-card wide">
             <div class="bento-icon orange">⚖️</div>
-            <div class="bento-title">Rule 42 ITC Reversal Calculator</div>
-            <div class="bento-desc">Automated ITC apportionment for mixed taxable & exempt supplies — GSTR-3B Table 4(B) ready, with proportionate reversal pipeline & annual true-up.</div>
+            <div class="bento-title">Rule 42 ITC Reversal</div>
+            <div class="bento-desc">Mixed supply ITC apportionment — upload GSTR-3B, get Table 4(B) reversal with
+              proportionate pipeline & annual true-up. The calculator every CA wishes they had.</div>
           </div>
         </div>
       </div>
@@ -514,57 +1080,87 @@
 
   <!-- ═══════ SOCIAL PROOF ═══════ -->
   <section class="social-proof">
-    <p>Designed around the workflows Indian CAs use every day</p>
+    <p>Every service a CA firm needs — powered by AI, not manual effort</p>
     <div class="proof-logos">
-      <span class="proof-logo">GST Filing</span>
-      <span class="proof-logo">Tally Integration</span>
-      <span class="proof-logo">Certificate Generation</span>
+      <span class="proof-logo">GST Reconciliation</span>
+      <span class="proof-logo">Tally Sync</span>
+      <span class="proof-logo">CA Certificates</span>
       <span class="proof-logo">Financial Statements</span>
-      <span class="proof-logo">Financial Instruments</span>
+      <span class="proof-logo">PMS Accounting</span>
+      <span class="proof-logo">Capital Gains</span>
       <span class="proof-logo">Rule 42 ITC</span>
-      <span class="proof-logo">AI Bookkeeping</span>
+      <span class="proof-logo">Invoice OCR</span>
     </div>
   </section>
 
-  <!-- ═══════ FEATURE 1: GST Filing ═══════ -->
+  <!-- ═══════ FEATURE 1: GST Reconciliation ═══════ -->
   <section class="feature-section">
     <div class="feature-row reveal">
       <div class="feature-info">
-        <div class="feature-label">🧾 Core Service — GST Filing</div>
-        <h2 class="feature-heading">GST Reconciliation in Minutes, Not Days</h2>
-        <p class="feature-body">Upload your GSTR returns and let AI reconcile everything automatically. Mismatches flagged, ITC optimized, refund tracking on autopilot.</p>
+        <div class="feature-label">🧾 GST Compliance — The Work That Eats Your Evenings</div>
+        <h2 class="feature-heading">Upload Returns. Get Full Recon. 2 Minutes.</h2>
+        <p class="feature-body">No more Excel gymnastics at midnight before filing deadlines. Upload your GSTR JSONs and
+          get instant reconciliation — mismatches flagged in red, ITC at risk highlighted, refund tracking on autopilot.
+          Your articles will wonder what happened to the late nights.</p>
         <ul class="feature-checklist">
-          <li><span class="check">✓</span> GSTR-1 vs 3B automated reconciliation</li>
-          <li><span class="check">✓</span> GSTR-2B vs 3B matching with AI analysis</li>
-          <li><span class="check">✓</span> ITC status summary & block credit detection</li>
+          <li><span class="check">✓</span> GSTR-1 vs 3B — every invoice matched automatically</li>
+          <li><span class="check">✓</span> GSTR-2B vs 3B — supplier ITC mismatch detection</li>
+          <li><span class="check">✓</span> ITC at risk — block credit flagged before you file</li>
           <li><span class="check">✓</span> E-Invoice vs Sales Register cross-check</li>
-          <li><span class="check">✓</span> Rule 42 ITC reversal — mixed supply apportionment</li>
-          <li><span class="check">✓</span> Refund tracking with ARN status</li>
+          <li><span class="check">✓</span> Rule 42 ITC reversal — mixed supply apportionment done</li>
+          <li><span class="check">✓</span> Refund tracking — ARN status in one dashboard</li>
         </ul>
       </div>
       <div class="feature-visual">
-        <img src="assets/webview_refined.png" alt="GST Filing Dashboard">
+        <img src="assets/webview_refined.png" alt="GST Reconciliation Dashboard">
       </div>
     </div>
   </section>
 
-  <!-- ═══════ FEATURE 2: Data Entry ═══════ -->
+  <!-- ═══════ FEATURE 2: Data Entry & Tally ═══════ -->
   <section class="feature-section">
     <div class="feature-row reverse reveal">
       <div class="feature-info">
-        <div class="feature-label">⌨️ Core Service — Data Entry & Accounting</div>
-        <h2 class="feature-heading">Enter Data Once. Sync to Tally Instantly.</h2>
-        <p class="feature-body">No more double entry. Record vouchers in our workspace and sync everything to Tally Prime with a single click. OCR auto-extracts data from invoices.</p>
+        <div class="feature-label">⌨️ Data Entry — The 70% of Your Day You Want Back</div>
+        <h2 class="feature-heading">Bank PDF Goes In. Tally Entries Come Out.</h2>
+        <p class="feature-body">Your staff spends hours punching bank statements and invoices into Tally. What if AI
+          read the PDF, matched the ledgers, and you just hit "Sync"? That's not future talk — it's what this does
+          today.</p>
         <ul class="feature-checklist">
-          <li><span class="check">✓</span> Bank, Sales, Purchase, Journal voucher entry</li>
-          <li><span class="check">✓</span> Ledger master creation & management</li>
-          <li><span class="check">✓</span> One-click Tally Prime sync via Connector</li>
-          <li><span class="check">✓</span> OCR document scanning — invoices to entries</li>
-          <li><span class="check">✓</span> AI-powered reports & analysis</li>
+          <li><span class="check">✓</span> Bank statement PDFs → AI-extracted entries</li>
+          <li><span class="check">✓</span> Invoice OCR — scans, reads, matches ledgers</li>
+          <li><span class="check">✓</span> One-click sync to Tally Prime via desktop connector</li>
+          <li><span class="check">✓</span> PMS / Demat / MF statements → auto journal entries</li>
+          <li><span class="check">✓</span> FIFO stock register & capital gains — computed, not guessed</li>
+          <li><span class="check">✓</span> Works with your existing Tally data — no migration needed</li>
         </ul>
       </div>
       <div class="feature-visual">
-        <img src="assets/aiview_refined.png" alt="Data Entry Workspace">
+        <img src="assets/aiview_refined.png" alt="AI Data Entry to Tally Workspace">
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════ FEATURE 3: Certificates & Financials ═══════ -->
+  <section class="feature-section">
+    <div class="feature-row reveal">
+      <div class="feature-info">
+        <div class="feature-label">📃 Certificates & Financial Statements — Done in Seconds</div>
+        <h2 class="feature-heading">50+ CA Certificates. Schedule III Financials. Zero Typing.</h2>
+        <p class="feature-body">Net Worth certificate for a bank loan? FEMA declaration? GST annual return data? Pick a
+          template, AI fills in the numbers from your client's data, and you download a ready Word/PDF. Same for
+          Schedule III — BS and P&L auto-grouped from Trial Balance.</p>
+        <ul class="feature-checklist">
+          <li><span class="check">✓</span> Net Worth, FEMA, Turnover, GST certificates — auto-filled</li>
+          <li><span class="check">✓</span> 50+ templates covering every common CA certificate</li>
+          <li><span class="check">✓</span> Schedule III Balance Sheet & P&L — AI line-item grouping</li>
+          <li><span class="check">✓</span> Import from Tally or upload Trial Balance manually</li>
+          <li><span class="check">✓</span> Capital gains report — STCG/LTCG with Sec 112A grandfathering</li>
+          <li><span class="check">✓</span> Download as Word, PDF — print-ready, client-ready</li>
+        </ul>
+      </div>
+      <div class="feature-visual">
+        <img src="assets/webview_refined.png" alt="CA Certificate Generation Platform">
       </div>
     </div>
   </section>
@@ -572,24 +1168,26 @@
   <!-- ═══════ HOW IT WORKS ═══════ -->
   <section class="steps-section">
     <div class="steps-header reveal">
-      <h2>Start Saving Time in 3 Steps</h2>
-      <p>No complex setup. Your team can start within minutes.</p>
+      <h2>Try It Tonight After the Summit</h2>
+      <p>Sign up in 30 seconds. No installation. No credit card. Just results.</p>
     </div>
     <div class="steps-grid">
       <div class="step-card reveal">
         <div class="step-number">1</div>
-        <h3>Sign Up & Add Clients</h3>
-        <p>Create your firm account for free. Add clients with GSTIN, PAN, and basic details — takes 30 seconds each.</p>
+        <h3>Add Your First Client</h3>
+        <p>Enter GSTIN and PAN — we auto-fetch the rest. Your client is set up before your chai gets cold.</p>
       </div>
       <div class="step-card reveal">
         <div class="step-number">2</div>
-        <h3>Pick a Service & Upload</h3>
-        <p>Choose GST Filing, Data Entry, or Certificates. Upload returns, connect Tally, or select a template — AI takes it from there.</p>
+        <h3>Upload Something Real</h3>
+        <p>Drop a GSTR-1 JSON, a bank statement PDF, or a PMS report. Pick a certificate template. Connect Tally. AI
+          starts working immediately.</p>
       </div>
       <div class="step-card reveal">
         <div class="step-number">3</div>
-        <h3>AI Does the Work</h3>
-        <p>Reconciliation, voucher matching, certificate generation — all in seconds. Review, download, and move on.</p>
+        <h3>See the Output — Then Decide</h3>
+        <p>Full GST recon report. Tally-ready vouchers. Completed certificate. Capital gains computed. Review it, test
+          it, trust it — then scale it across your firm.</p>
       </div>
     </div>
   </section>
@@ -600,7 +1198,8 @@
       <div class="security-icon-wrap">🛡️</div>
       <div class="security-text">
         <h3>Your Client Data Never Leaves Your Control</h3>
-        <p>We process data in memory and never store client files on our servers. All communications encrypted end-to-end.</p>
+        <p>We process data in memory and never store client files on our servers. All communications encrypted
+          end-to-end.</p>
         <div class="security-badges">
           <span class="sec-badge">🔐 AES-256 Encryption</span>
           <span class="sec-badge">🚫 Zero Data Retention</span>
@@ -663,10 +1262,11 @@
 
   <!-- ═══════ FINAL CTA ═══════ -->
   <section class="cta-section reveal">
-    <h2>Let AI Handle the Routine.<br>You Handle the Strategy.</h2>
-    <p>CAs across India are saving hours every week on GST filing, data entry, and compliance. Start free — no credit card needed.</p>
+    <h2>The keynotes talk about AI transforming the profession.<br>This is the tool that actually does it.</h2>
+    <p>GST reconciliation. Tally data entry. Certificates. Financial statements. PMS capital gains. Every service your
+      firm delivers — faster, with AI. No credit card. No risk. Just try it.</p>
     <div class="cta-btn-wrap">
-      <a href="sign-up.html">Start Free Trial — It Takes 30 Seconds →</a>
+      <a href="sign-up.html">Start Free — See Results in 2 Minutes →</a>
     </div>
   </section>
 
@@ -676,8 +1276,8 @@
       <div class="footer-brand">
         <a href="index.html" class="logo" style="text-decoration: none;">
           <div class="logo-icon" style="background: linear-gradient(135deg, #EB6711, #f5841a)">SA</div>
-          <span style="font-weight: 800; font-size: 1.15rem; color: #fff;">Suvidha<span
-              style="color: #f5841a;"> AI</span></span>
+          <span style="font-weight: 800; font-size: 1.15rem; color: #fff;">Suvidha<span style="color: #f5841a;">
+              AI</span></span>
         </a>
         <p>AI-powered practice management, built for the modern Indian professional. Secure, fast, always accurate.</p>
       </div>
@@ -723,4 +1323,5 @@
   </script>
 
 </body>
+
 </html>

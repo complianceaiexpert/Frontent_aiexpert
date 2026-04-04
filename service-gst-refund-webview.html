@@ -1172,45 +1172,34 @@
             </div>
 
 
-            <!-- ========== REPORTS ========== -->
+            <!-- ========== REPORTS (ISS-030 Enhanced) ========== -->
             <div class="content-section" id="sec-reports">
-                <div class="section-header">
-                    <h1>📄 Reports</h1>
-                    <p class="section-subtitle">Generate and download compliance reports</p>
+                <div class="section-header" style="display:flex;align-items:flex-start;justify-content:space-between">
+                    <div>
+                        <h1>Reports</h1>
+                        <p class="section-subtitle">Generated compliance reports for this client</p>
+                    </div>
+                    <div style="position:relative;margin-top:.25rem">
+                        <input type="text" id="reports-search" placeholder="Search reports..." oninput="filterReports(this.value)"
+                            style="padding:.55rem 1rem .55rem 2.2rem;border:1.5px solid #e5e7eb;border-radius:8px;font-size:.82rem;width:220px;font-family:inherit">
+                        <span style="position:absolute;left:.75rem;top:50%;transform:translateY(-50%);color:#9ca3af;font-size:.82rem">🔍</span>
+                    </div>
                 </div>
-                <div class="report-list">
-                    <div class="report-item" onclick="triggerJob('statement3')">
-                        <span class="report-icon">📋</span>
-                        <div class="report-info">
-                            <div class="report-name">Statement 3 Report</div>
-                            <div class="report-desc">Shipping bill reconciliation for export refund</div>
-                        </div>
-                        <span class="report-arrow">→</span>
-                    </div>
-                    <div class="report-item" onclick="triggerJob('annexure_b')">
-                        <span class="report-icon">📑</span>
-                        <div class="report-info">
-                            <div class="report-name">Annexure B Report</div>
-                            <div class="report-desc">ITC details from GSTR-2B for refund application</div>
-                        </div>
-                        <span class="report-arrow">→</span>
-                    </div>
-                    <div class="report-item" onclick="triggerJob('gst_recon')">
-                        <span class="report-icon">⚖️</span>
-                        <div class="report-info">
-                            <div class="report-name">Reconciliation Summary</div>
-                            <div class="report-desc">Purchase and sales reconciliation report</div>
-                        </div>
-                        <span class="report-arrow">→</span>
-                    </div>
-                    <div class="report-item" onclick="triggerJob('gst_verify')">
-                        <span class="report-icon">✅</span>
-                        <div class="report-info">
-                            <div class="report-name">GSTIN Verification Report</div>
-                            <div class="report-desc">Verification status of all vendor GSTINs</div>
-                        </div>
-                        <span class="report-arrow">→</span>
-                    </div>
+                <div id="reports-table-wrap" style="border:1px solid #e5e7eb;border-radius:10px;overflow:hidden">
+                    <table style="width:100%;border-collapse:collapse;font-size:.82rem" id="reports-table">
+                        <thead>
+                            <tr style="background:#f8fafc;border-bottom:2px solid #e5e7eb">
+                                <th style="padding:.65rem .85rem;text-align:left;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#374151;cursor:pointer;white-space:nowrap" onclick="sortReports('type')">Type ↕</th>
+                                <th style="padding:.65rem .85rem;text-align:left;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#374151;cursor:pointer;white-space:nowrap" onclick="sortReports('client')">Client ↕</th>
+                                <th style="padding:.65rem .85rem;text-align:left;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#374151;cursor:pointer;white-space:nowrap" onclick="sortReports('date')">Date ↕</th>
+                                <th style="padding:.65rem .85rem;text-align:left;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#374151;cursor:pointer;white-space:nowrap" onclick="sortReports('status')">Status ↕</th>
+                                <th style="padding:.65rem .85rem;text-align:center;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#374151;width:80px">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reports-tbody">
+                            <tr><td colspan="5" style="text-align:center;padding:2rem;color:#9ca3af">Loading reports...</td></tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
@@ -1545,31 +1534,83 @@
             } catch (e) { console.error("Sync error", e); }
         }
 
+        // ISS-030: Enhanced report rendering with client name, timestamp, sort, search, delete
+        let _reportJobs = [];
+        let _reportSortKey = 'date';
+        let _reportSortAsc = false;
+
         function renderReportList(jobs) {
-            const list = document.querySelector('.report-list');
-            if (!list) return;
+            _reportJobs = jobs;
+            const tbody = document.getElementById('reports-tbody');
+            if (!tbody) return;
+
+            // Get client name from topbar or localStorage
+            let clientName = 'Client';
+            try {
+                const sc = JSON.parse(localStorage.getItem('selectedClient') || '{}');
+                clientName = sc.name || 'Client';
+            } catch(_) {}
 
             if (jobs.length === 0) {
-                list.innerHTML = '<div class="notice-empty"><p>No reports generated yet.</p></div>';
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:2.5rem;color:#9ca3af"><div style="font-size:1.5rem;margin-bottom:.4rem">📄</div>No reports generated yet. Use the Tools section to create your first report.</td></tr>';
                 return;
             }
 
-            list.innerHTML = jobs.map(job => {
-                const date = new Date(job.created_at).toLocaleDateString();
-                const jobName = job.job_type.toUpperCase().replace('_', ' ');
-                const isCompleted = job.status === 'COMPLETED';
+            const query = (document.getElementById('reports-search')?.value || '').toLowerCase();
+            let filtered = jobs.filter(j => {
+                if (!query) return true;
+                const type = (j.job_type || '').toLowerCase().replace('_',' ');
+                const status = (j.status || '').toLowerCase();
+                return type.includes(query) || status.includes(query) || clientName.toLowerCase().includes(query);
+            });
 
-                return `
-                    <div class="report-item" onclick="${isCompleted ? `downloadFile('${job.id}')` : `alert('Job is still ${job.status}')`}">
-                        <span class="report-icon">${isCompleted ? '📄' : '⏳'}</span>
-                        <div class="report-info">
-                            <div class="report-name">${jobName} (${job.status})</div>
-                            <div class="report-desc">Generated on ${date}</div>
-                        </div>
-                        <span class="report-arrow">${isCompleted ? '↓' : ''}</span>
-                    </div>
-                `;
+            // Sort
+            filtered.sort((a, b) => {
+                let va, vb;
+                if (_reportSortKey === 'type') { va = a.job_type; vb = b.job_type; }
+                else if (_reportSortKey === 'status') { va = a.status; vb = b.status; }
+                else if (_reportSortKey === 'client') { va = clientName; vb = clientName; }
+                else { va = a.created_at; vb = b.created_at; }
+                if (va < vb) return _reportSortAsc ? -1 : 1;
+                if (va > vb) return _reportSortAsc ? 1 : -1;
+                return 0;
+            });
+
+            tbody.innerHTML = filtered.map(job => {
+                const dt = new Date(job.created_at);
+                const dateStr = dt.toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' });
+                const timeStr = dt.toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit' });
+                const jobName = (job.job_type || '').toUpperCase().replace(/_/g, ' ');
+                const isCompleted = job.status === 'COMPLETED';
+                const statusBg = isCompleted ? '#ecfdf5' : job.status === 'FAILED' ? '#fef2f2' : '#fef3c7';
+                const statusColor = isCompleted ? '#059669' : job.status === 'FAILED' ? '#dc2626' : '#d97706';
+
+                return `<tr style="border-bottom:1px solid #f1f5f9;transition:background .1s" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='#fff'">
+                    <td style="padding:.65rem .85rem;font-weight:600;color:#1e293b">${jobName}</td>
+                    <td style="padding:.65rem .85rem;color:#6b7280">${clientName}</td>
+                    <td style="padding:.65rem .85rem;color:#6b7280;white-space:nowrap">${dateStr} <span style="color:#cbd5e1;font-size:.72rem">${timeStr}</span></td>
+                    <td style="padding:.65rem .85rem"><span style="background:${statusBg};color:${statusColor};padding:2px 8px;border-radius:12px;font-size:.68rem;font-weight:700;text-transform:uppercase">${job.status}</span></td>
+                    <td style="padding:.65rem .85rem;text-align:center;display:flex;gap:.25rem;justify-content:center">
+                        ${isCompleted ? `<button onclick="downloadFile('${job.id}')" style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:6px;padding:.3rem .5rem;cursor:pointer;font-size:.72rem;font-weight:600;color:#1e3a8a" title="Download">↓</button>` : ''}
+                        <button onclick="deleteReport('${job.id}')" style="background:#fef2f2;border:1px solid #fecaca;border-radius:6px;padding:.3rem .5rem;cursor:pointer;font-size:.72rem;font-weight:600;color:#dc2626" title="Delete">✕</button>
+                    </td>
+                </tr>`;
             }).join('');
+        }
+
+        function filterReports(query) { renderReportList(_reportJobs); }
+        function sortReports(key) {
+            if (_reportSortKey === key) _reportSortAsc = !_reportSortAsc;
+            else { _reportSortKey = key; _reportSortAsc = true; }
+            renderReportList(_reportJobs);
+        }
+        async function deleteReport(jobId) {
+            if (!confirm('Delete this report? This cannot be undone.')) return;
+            try {
+                const r = await authFetch(`/jobs/${jobId}`, { method: 'DELETE' });
+                if (r.ok) loadFiles();
+                else alert('Failed to delete report');
+            } catch(e) { alert('Error: ' + e.message); }
         }
 
         async function triggerJob(jobType) {

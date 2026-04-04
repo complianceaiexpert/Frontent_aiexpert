@@ -65,12 +65,14 @@
         'invoice':         { id: 'invoice',         label: 'Invoice',         href: buildHref('service-invoice.html'),              icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>' },
         'financial instruments': { id: 'financial-instruments', label: 'Financial Instruments', href: buildHref('service-financial-instruments.html'), icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>' },
         'financial statements': { id: 'financial-statements', label: 'Financial Statements', href: buildHref('service-financial-statements.html'), icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 12h18"/><path d="M12 3v18"/></svg>' },
+        'statutory reporting': { id: 'statutory-reporting', label: 'Statutory Reporting', href: buildHref('service-statutory-reporting.html'), icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>' },
     };
 
     // ═══ Build Client Header (mini card) ═══
     let html = '';
 
-    // Client card placeholder — will be populated by page JS if needed
+    // ISS-040: Client name removed from sidebar — shown in topbar breadcrumb only
+    // Client card hidden to reduce sidebar clutter
     html += '<div class="cn-client-card" id="cn-client-card" style="display:none">';
     html += '  <div class="cn-avatar" id="cn-avatar">C</div>';
     html += '  <div class="cn-client-info">';
@@ -103,7 +105,8 @@
         { key: 'ca certificates', id: 'ca-certificates' },
         { key: 'data entry', id: 'data-entry' },
         { key: 'financial instruments', id: 'financial-instruments' },
-        { key: 'financial statements', id: 'financial-statements' }
+        { key: 'financial statements', id: 'financial-statements' },
+        { key: 'statutory reporting', id: 'statutory-reporting' }
     ];
 
     html += '<div id="cn-services-section">';
@@ -146,7 +149,8 @@
                     const avatar = document.getElementById('cn-avatar');
                     const name = document.getElementById('cn-client-name');
                     const type = document.getElementById('cn-client-type');
-                    if (card) card.style.display = 'flex';
+                    // ISS-040: Client card stays hidden in sidebar (shown in topbar instead)
+                    // if (card) card.style.display = 'flex';
                     if (avatar) avatar.textContent = (client.name || 'C').charAt(0).toUpperCase();
                     if (name) name.textContent = client.name || 'Client';
                     const gstin = client.gstins && client.gstins.length > 0 ? client.gstins[0] : (client.pan || '');

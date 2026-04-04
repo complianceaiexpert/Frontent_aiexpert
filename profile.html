@@ -888,6 +888,11 @@
                     <div class="pf-hero-name" id="profile-name">Loading…</div>
                     <div class="pf-hero-role" id="profile-role">Chartered Accountant</div>
                     <div class="pf-hero-meta">
+                        <!-- ISS-024 TC-056: Account type badge -->
+                        <span class="pf-meta-tag" id="hero-account-type-badge" style="background:rgba(139,92,246,.15);color:#a78bfa;border-color:rgba(139,92,246,.2)">
+                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                            —
+                        </span>
                         <span class="pf-meta-tag green" id="hero-plan-badge">
                             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="3">
@@ -1001,7 +1006,17 @@
                         </div>
                         <div class="info-row">
                             <span class="info-label">Account Since</span>
-                            <span class="info-value muted">Member</span>
+                            <span class="info-value muted" id="detail-since">Member</span>
+                        </div>
+                        <!-- ISS-024 TC-056: Account Type -->
+                        <div class="info-row">
+                            <span class="info-label">Account Type</span>
+                            <span class="info-value" id="detail-account-type">—</span>
+                        </div>
+                        <!-- ISS-024 TC-057: Plan & Expiry -->
+                        <div class="info-row">
+                            <span class="info-label">Plan & Expiry</span>
+                            <span class="info-value" id="detail-plan-expiry">—</span>
                         </div>
                     </div>
                 </div>
@@ -1304,6 +1319,7 @@
         </div>
     </div>
 
+    <script src="app-toast.js"></script>
     <script src="api_config.js?v=2"></script>
     <script src="session-manager.js?v=2"></script>
     <script>
@@ -1322,12 +1338,25 @@
         const plan = user.subscription_plan || 'Free';
         document.getElementById('hero-plan-badge').innerHTML = `<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>${plan}`;
 
+        // ISS-024 TC-056: Account type badge
+        const acctType = user.account_type || 'ca_firm';
+        const acctLabel = acctType === 'corporate' ? '🏢 Corporate' : '🏛️ CA Firm';
+        const atBadge = document.getElementById('hero-account-type-badge');
+        if (atBadge) atBadge.innerHTML = `<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>${acctLabel}`;
+
         // ── Populate Personal Tab ──
         document.getElementById('detail-name').textContent = name;
         document.getElementById('detail-email').textContent = user.email || user.username || '—';
         document.getElementById('detail-phone').textContent = user.phone_number || '—';
         document.getElementById('detail-jobtitle').textContent = user.job_title || '—';
         document.getElementById('detail-role').textContent = user.role || '—';
+
+        // ISS-024 TC-056: Account type in personal details
+        document.getElementById('detail-account-type').textContent = acctType === 'corporate' ? 'Corporate' : 'CA Firm';
+        // ISS-024 TC-057: Account since
+        if (user.created_at) {
+            document.getElementById('detail-since').textContent = new Date(user.created_at).toLocaleDateString('en-IN', { year:'numeric', month:'short', day:'numeric' });
+        }
 
         // ── Populate Firm Tab ──
         document.getElementById('detail-firm').textContent = user.firm_name || '—';
@@ -1383,6 +1412,19 @@
                 document.getElementById('trial-status-label').textContent = expired
                     ? '⚠️ Trial expired — please upgrade to continue'
                     : `${daysRemaining} day${daysRemaining !== 1 ? 's' : ''} left in free trial`;
+
+                // ISS-024 TC-057: Populate plan & expiry in personal details
+                const planExpiryEl = document.getElementById('detail-plan-expiry');
+                if (planExpiryEl) {
+                    if (expired) {
+                        planExpiryEl.textContent = `${isFreeTrial ? 'Free Trial' : planName} — Expired`;
+                        planExpiryEl.style.color = '#dc2626';
+                    } else if (isFreeTrial) {
+                        planExpiryEl.textContent = `Free Trial — ${daysRemaining} days remaining`;
+                    } else {
+                        planExpiryEl.textContent = planName + ' — Active';
+                    }
+                }
 
                 // Expired banner
                 if (expired) {

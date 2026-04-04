@@ -36,6 +36,8 @@ function fiNav(sectionId, el) {
     if (sectionId === 'statements') loadStatements();
     if (sectionId === 'journal-entries') loadAllJournalEntries();
     if (sectionId === 'pending') loadPendingEntries();
+    if (sectionId === 'stock-register' && typeof loadStockRegister === 'function') loadStockRegister();
+    if (sectionId === 'capital-gains' && typeof loadCapitalGains === 'function') loadCapitalGains();
 }
 
 
@@ -562,6 +564,11 @@ async function loadDashboardStats() {
         setEl('fi-tds-112a', formatINR(Math.max(0, ltcgTax)));
         setEl('fi-tds-111a', formatINR(stcgTax));
 
+        // ══════════════════════════════════════════════
+        // ── PORTFOLIO ANALYSIS: Sector + Market Cap ──
+        // ══════════════════════════════════════════════
+        populatePortfolioAnalysis(allData, completed);
+
         // ── Render recent statements ──
         const r = document.getElementById('fi-recent-vouchers');
         r.innerHTML = uploads.slice(0, 5).map(u => `<div class="fi-fq-item" style="cursor:pointer" onclick="openReview('${u.id}','${u.instrument_type}')">
@@ -572,6 +579,175 @@ async function loadDashboardStats() {
         if(uploads.length === 0) r.innerHTML = '<div class="fi-empty-mini"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><p>Upload Demat, MF, or PMS statements to get started</p></div>';
         setEl('fi-dash-status', '● Live');
     } catch(e) { console.error('Dashboard load error:', e); }
+}
+
+// ══════════════════════════════════════════════════════
+// PORTFOLIO ANALYSIS — Sector-wise & Market Cap
+// ══════════════════════════════════════════════════════
+
+// Sector inference from security name / sector field
+const SECTOR_KEYWORDS = {
+    'Banking': ['hdfc bank','icici bank','sbi','kotak','axis bank','indusind','bandhan','idfc','federal bank','rbl bank','bank of baroda','pnb','canara bank','bank','banking'],
+    'IT / Technology': ['tcs','infosys','wipro','hcl tech','tech mahindra','ltimindtree','persistent','coforge','mphasis','sonata','zensar','cyient','mastek','happiest','firstsource','eclerx','birlasoft','tata elxsi','l&t technology','kpit','software','technology','infotech','it '],
+    'Financial Services': ['bajaj finance','bajaj finserv','hdfc amc','muthoot','manappuram','shriram','chola','sundaram','lic','sbi life','hdfc life','icici lombard','icici pru','max financial','star health','piramal','aditya birla capital','jio financial','insurance','finance','nbfc','nse:bse'],
+    'Pharma & Healthcare': ['sun pharma','dr reddy','cipla','lupin','divi','aurobindo','biocon','alkem','torrent pharma','glenmark','laurus','natco','ipca','abbott','pfizer','sanofi','zydus','eris','jb pharma','pharma','healthcare','hospital','apollo hospital','fortis','max health','diagnostic','metropolis','thyrocare'],
+    'FMCG': ['hindustan unilever','itc','nestle','britannia','dabur','marico','godrej consumer','colgate','emami','tata consumer','hul','pidilite','asian paints','berger','fmcg','consumer'],
+    'Automobile': ['maruti','tata motors','mahindra','bajaj auto','hero moto','eicher motors','tvs motor','ashok leyland','auto','automobile','motor'],
+    'Energy & Power': ['reliance','ntpc','power grid','adani green','adani power','tata power','nhpc','sjvn','powergrid','bpcl','hpcl','ioc','ongc','oil india','gail','coal india','petronet','energy','power','oil','gas','petroleum'],
+    'Metals & Mining': ['tata steel','jsw steel','hindalco','vedanta','nalco','nmdc','jindal steel','sail','hindustan zinc','metal','steel','mining','aluminium'],
+    'Cement & Construction': ['ultratech','ambuja','acc','shree cement','dalmia','ramco','jk cement','jk lakshmi','cement','construction'],
+    'Telecom': ['bharti airtel','jio','vodafone','idea','telecom','airtel','indus towers'],
+    'Real Estate': ['dlf','godrej properties','brigade','oberoi realty','prestige','phoenix','sobha','real estate','realty','housing'],
+    'Infrastructure': ['larsen','l&t','adani ports','adani enterprises','gmr','irb infrastructure','nh','infrastructure','infra'],
+    'Capital Goods': ['siemens','abb','bhel','cummins','thermax','honeywell','heg','graphite','capital goods','engineering'],
+    'Chemicals': ['pidilite','srf','aarti','atul','vinati','navin fluorine','deepak nitrite','clean science','upl','chemical','fertilizer'],
+    'Consumer Durables': ['titan','havells','voltas','crompton','whirlpool','blue star','dixon','amber','kajaria','somany','consumer durable','electronics','appliance'],
+    'Media & Entertainment': ['zee','sun tv','pvr','inox','saregama','media','entertainment'],
+    'Textiles': ['page industries','raymond','arvind','welspun','textile','garment'],
+    'Mutual Fund': ['mutual fund','nifty','sensex','index fund','etf','fund','equity fund','debt fund','liquid fund','balanced','hybrid'],
+};
+
+const SECTOR_COLORS = [
+    '#4338ca', '#059669', '#d97706', '#dc2626', '#7c3aed',
+    '#0891b2', '#be185d', '#4f46e5', '#15803d', '#c2410c',
+    '#6d28d9', '#0d9488', '#b45309', '#9333ea', '#0369a1',
+    '#a21caf', '#065f46'
+];
+
+function inferSector(holding) {
+    // Use explicit sector if available
+    const existingSector = (holding.sector || holding.industry || holding.category || '').toLowerCase().trim();
+    if (existingSector && existingSector !== 'equity' && existingSector !== 'shares' && existingSector.length > 2) {
+        // Map known sector strings
+        for (const [sector, keywords] of Object.entries(SECTOR_KEYWORDS)) {
+            if (keywords.some(kw => existingSector.includes(kw))) return sector;
+        }
+        // Return capitalized if unmatched but valid
+        return existingSector.charAt(0).toUpperCase() + existingSector.slice(1);
+    }
+    // Infer from security name
+    const name = (holding.security_name || holding.name || holding.scheme_name || holding.scrip || '').toLowerCase();
+    for (const [sector, keywords] of Object.entries(SECTOR_KEYWORDS)) {
+        if (keywords.some(kw => name.includes(kw))) return sector;
+    }
+    return 'Others';
+}
+
+function inferMarketCap(holding) {
+    // Use explicit market_cap field
+    const cap = (holding.market_cap || holding.cap || holding.cap_type || holding.category || '').toLowerCase();
+    if (cap.includes('large')) return 'large';
+    if (cap.includes('mid')) return 'mid';
+    if (cap.includes('small') && !cap.includes('mid')) return 'small';
+    if (cap.includes('micro') || cap.includes('penny')) return 'micro';
+
+    // Infer from market_value (approximate Indian market cap classification)
+    const mv = Number(holding.market_value || holding.current_value || holding.value || 0);
+    // These are portfolio-level thresholds (not actual market cap) — rough heuristic
+    if (mv >= 1000000) return 'large';  // ₹10L+ position likely large cap
+    if (mv >= 300000) return 'mid';      // ₹3L-10L position likely mid cap
+    if (mv >= 50000) return 'small';     // ₹50K-3L position likely small cap
+    return 'micro';
+}
+
+function populatePortfolioAnalysis(allData, completed) {
+    const sectorMap = {};  // sector → { value, count }
+    const capMap = { large: 0, mid: 0, small: 0, micro: 0 };
+    let totalHoldings = 0;
+
+    allData.forEach((resp, idx) => {
+        if (!resp || !resp.structured_data) return;
+        const d = resp.structured_data;
+        const holdings = d.holdings || d.funds || d.portfolio || [];
+
+        holdings.forEach(h => {
+            const val = Number(h.market_value || h.current_value || h.value || h.amount || 0);
+            if (val <= 0) return;
+
+            totalHoldings++;
+
+            // Sector
+            const sector = inferSector(h);
+            if (!sectorMap[sector]) sectorMap[sector] = { value: 0, count: 0 };
+            sectorMap[sector].value += val;
+            sectorMap[sector].count++;
+
+            // Market Cap
+            const cap = inferMarketCap(h);
+            capMap[cap] += val;
+        });
+    });
+
+    // ── Build Sector Donut & List ──
+    const donutEl = document.getElementById('fi-pa-donut');
+    const listEl = document.getElementById('fi-pa-sector-list');
+
+    if (totalHoldings === 0) {
+        donutEl.style.background = 'conic-gradient(#e8eaf0 0deg, #e8eaf0 360deg)';
+        setEl('fi-pa-donut-total', '0');
+        setEl('fi-pa-sector-count', '0 Sectors');
+        listEl.innerHTML = '<div class="fi-pa-empty-hint">Upload statements to view sector breakdown</div>';
+    } else {
+        const sortedSectors = Object.entries(sectorMap).sort((a, b) => b[1].value - a[1].value);
+        const totalVal = sortedSectors.reduce((s, [, d]) => s + d.value, 0) || 1;
+
+        // Build conic-gradient
+        let gradientParts = [];
+        let cumDeg = 0;
+        sortedSectors.forEach(([sector, data], i) => {
+            const deg = (data.value / totalVal) * 360;
+            const color = SECTOR_COLORS[i % SECTOR_COLORS.length];
+            gradientParts.push(`${color} ${cumDeg}deg ${cumDeg + deg}deg`);
+            cumDeg += deg;
+        });
+        donutEl.style.background = `conic-gradient(${gradientParts.join(', ')})`;
+
+        setEl('fi-pa-donut-total', totalHoldings);
+        setEl('fi-pa-sector-count', sortedSectors.length + ' Sector' + (sortedSectors.length !== 1 ? 's' : ''));
+
+        // Build sector list
+        listEl.innerHTML = sortedSectors.map(([sector, data], i) => {
+            const pct = Math.round((data.value / totalVal) * 100);
+            const color = SECTOR_COLORS[i % SECTOR_COLORS.length];
+            return `<div class="fi-pa-sector-item">
+                <div class="fi-pa-sector-dot" style="background:${color}"></div>
+                <div class="fi-pa-sector-name" title="${sector}">${sector}</div>
+                <div class="fi-pa-sector-bar-wrap"><div class="fi-pa-sector-bar-fill" style="width:${pct}%;background:${color}"></div></div>
+                <div class="fi-pa-sector-pct">${pct}%</div>
+                <div class="fi-pa-sector-val">${formatINR(data.value)}</div>
+            </div>`;
+        }).join('');
+    }
+
+    // ── Build Market Cap ──
+    const capTotal = (capMap.large + capMap.mid + capMap.small + capMap.micro) || 1;
+    const capPcts = {
+        large: Math.round((capMap.large / capTotal) * 100),
+        mid: Math.round((capMap.mid / capTotal) * 100),
+        small: Math.round((capMap.small / capTotal) * 100),
+        micro: Math.round((capMap.micro / capTotal) * 100),
+    };
+
+    // Stacked bar
+    document.getElementById('fi-pa-seg-large').style.width = capPcts.large + '%';
+    document.getElementById('fi-pa-seg-mid').style.width = capPcts.mid + '%';
+    document.getElementById('fi-pa-seg-small').style.width = capPcts.small + '%';
+    document.getElementById('fi-pa-seg-micro').style.width = capPcts.micro + '%';
+
+    // Cards
+    setEl('fi-cap-large-pct', capPcts.large + '%');
+    setEl('fi-cap-large-val', formatINR(capMap.large));
+    setEl('fi-cap-mid-pct', capPcts.mid + '%');
+    setEl('fi-cap-mid-val', formatINR(capMap.mid));
+    setEl('fi-cap-small-pct', capPcts.small + '%');
+    setEl('fi-cap-small-val', formatINR(capMap.small));
+    setEl('fi-cap-micro-pct', capPcts.micro + '%');
+    setEl('fi-cap-micro-val', formatINR(capMap.micro));
+
+    // Update label
+    if (totalHoldings > 0) {
+        setEl('fi-pa-cap-label', totalHoldings + ' Holdings');
+    }
 }
 
 function openReview(id, type) {

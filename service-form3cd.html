@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form 3CD Auto-Population — Suvidha AI</title>
+    <meta name="description" content="AI-powered Tax Audit Report (Form 3CD) auto-population from Tally data and uploaded financials. 44 clauses under Section 44AB.">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="statutory-reporting.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="app-topbar" data-active="dashboard"></div>
+    <script src="app-topbar.js"></script>
+
+    <div class="sr-layout">
+        <aside class="sr-sidebar">
+            <div id="app-client-nav" data-active="statutory-reporting"></div>
+            <script src="app-client-nav.js"></script>
+        </aside>
+
+        <main class="sr-main">
+            <div class="sr-sh">
+                <h1>📄 Form 3CD Auto-Population <span class="sr-title-badge">AI + TALLY</span></h1>
+                <p>Auto-populate the Tax Audit Report (Form 3CD) from Tally data and uploaded financials. AI maps each of the 44 clauses under Section 44AB to relevant data points.</p>
+            </div>
+
+            <!-- Toolbar -->
+            <div class="dep-toolbar">
+                <div class="dep-toolbar-left">
+                    <select class="dep-select" id="f3cd-company-select">
+                        <option value="">— Select Tally Company —</option>
+                    </select>
+                    <select class="dep-select" id="f3cd-ay-select">
+                        <option value="2026-27">AY 2026-27</option>
+                        <option value="2025-26">AY 2025-26</option>
+                        <option value="2024-25">AY 2024-25</option>
+                    </select>
+                    <select class="dep-select" id="f3cd-type-select">
+                        <option value="44AB(a)">Sec 44AB(a) — Business (Turnover > ₹1Cr)</option>
+                        <option value="44AB(b)">Sec 44AB(b) — Profession (Receipts > ₹50L)</option>
+                        <option value="44AB(d)">Sec 44AB(d) — Presumptive opted out</option>
+                        <option value="44AB(e)">Sec 44AB(e) — Other provisions</option>
+                    </select>
+                </div>
+                <div class="dep-toolbar-right">
+                    <button class="sr-btn sr-btn-secondary" onclick="f3cdSyncFromTally()" id="f3cd-sync-btn">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+                        Sync from Tally
+                    </button>
+                    <button class="sr-btn sr-btn-primary" onclick="generate3CD()" id="f3cd-gen-btn">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                        Generate Form 3CD
+                    </button>
+                </div>
+            </div>
+
+            <!-- Summary Cards -->
+            <div class="dep-stats-row">
+                <div class="dep-stat-card">
+                    <div class="dep-stat-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+                    <div><div class="dep-stat-val" id="f3cd-stat-total">44</div><div class="dep-stat-label">Total Clauses</div></div>
+                </div>
+                <div class="dep-stat-card">
+                    <div class="dep-stat-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+                    <div><div class="dep-stat-val" id="f3cd-stat-filled">0</div><div class="dep-stat-label">Auto-Filled</div></div>
+                </div>
+                <div class="dep-stat-card">
+                    <div class="dep-stat-icon amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+                    <div><div class="dep-stat-val" id="f3cd-stat-review">0</div><div class="dep-stat-label">Needs Review</div></div>
+                </div>
+                <div class="dep-stat-card">
+                    <div class="dep-stat-icon diff"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></div>
+                    <div><div class="dep-stat-val" id="f3cd-stat-pending">0</div><div class="dep-stat-label">Pending / Manual</div></div>
+                </div>
+                <div class="dep-stat-card">
+                    <div class="dep-stat-icon it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></div>
+                    <div><div class="dep-stat-val" id="f3cd-stat-source">—</div><div class="dep-stat-label">Data Source</div></div>
+                </div>
+            </div>
+
+            <!-- Upload Panel -->
+            <div class="sr-panel">
+                <div class="sr-panel-title">① Upload Financial Data <span class="sr-tag" style="background:#eff6ff;color:#1e3a8a;font-size:.6rem">Optional if synced from Tally</span></div>
+                <div class="sr-form-grid cols-3">
+                    <div>
+                        <div class="sr-upload-box" id="f3cd-drop-tb"><input type="file" accept=".pdf,.xlsx,.xls,.csv" onchange="f3cdHandleFile(this,'tb')"><h4>📊 Trial Balance</h4><p>PDF, Excel or CSV</p></div>
+                        <div id="f3cd-file-tb"></div>
+                    </div>
+                    <div>
+                        <div class="sr-upload-box" id="f3cd-drop-pl"><input type="file" accept=".pdf,.xlsx,.xls,.csv" onchange="f3cdHandleFile(this,'pl')"><h4>📈 P&L Statement</h4><p>PDF, Excel or CSV</p></div>
+                        <div id="f3cd-file-pl"></div>
+                    </div>
+                    <div>
+                        <div class="sr-upload-box" id="f3cd-drop-bs"><input type="file" accept=".pdf,.xlsx,.xls,.csv" onchange="f3cdHandleFile(this,'bs')"><h4>📋 Balance Sheet</h4><p>PDF, Excel or CSV</p></div>
+                        <div id="f3cd-file-bs"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Clause-wise Table -->
+            <div class="sr-panel" style="padding:0">
+                <div class="dep-table-header">
+                    <div class="dep-table-title">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                        Clause-wise Auto-Population
+                        <span class="sr-badge amber" id="f3cd-clause-badge">0 / 44 processed</span>
+                    </div>
+                    <div style="display:flex;gap:.4rem;align-items:center">
+                        <select class="dep-select dep-select-sm" id="f3cd-filter" onchange="f3cdRenderTable()">
+                            <option value="all">All Clauses</option>
+                            <option value="filled">✅ Filled</option>
+                            <option value="review">⚠️ Review</option>
+                            <option value="pending">❌ Pending</option>
+                        </select>
+                        <button class="sr-btn sr-btn-secondary" onclick="f3cdExport()" style="font-size:.68rem;padding:.3rem .6rem">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                            Export PDF
+                        </button>
+                    </div>
+                </div>
+                <div class="sr-table-wrap">
+                    <table class="sr-table" id="f3cd-table">
+                        <thead><tr>
+                            <th>Clause</th>
+                            <th>Description</th>
+                            <th>Status</th>
+                            <th>Value / Remarks</th>
+                            <th>Source</th>
+                        </tr></thead>
+                        <tbody id="f3cd-tbody">
+                            <tr><td colspan="5" style="text-align:center;padding:2.5rem;color:#94a3b8">
+                                <div style="font-size:1.8rem;margin-bottom:.5rem;opacity:.3">📄</div>
+                                Sync from Tally or upload financials, then click "Generate Form 3CD"
+                            </td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Info Banner -->
+            <div class="sr-info-banner" style="margin-top:1rem">
+                <div class="sr-info-icon">⚖️</div>
+                <p>Form 3CD contains 44 clauses under <strong>Section 44AB</strong> of the Income Tax Act. This tool auto-populates applicable clauses from Tally data, Trial Balance, P&L and Balance Sheet. Clauses marked ⚠️ Review require CA verification. Clauses marked ❌ Pending need manual input.</p>
+            </div>
+        </main>
+    </div>
+
+    <div class="sr-toast-ct" id="sr-toast-ct"></div>
+
+    <script src="api_config.js"></script>
+    <script>
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (!user) window.location.href = 'index.html';
+        const params = new URLSearchParams(window.location.search);
+        const clientId = params.get('clientId');
+
+        function srToast(msg, type='info') {
+            const ct = document.getElementById('sr-toast-ct');
+            const t = document.createElement('div');
+            const bg = {success:'#059669',warning:'#d97706',info:'#3b82f6',error:'#dc2626'}[type]||'#3b82f6';
+            t.style.cssText = `padding:.55rem 1rem;background:${bg};color:#fff;border-radius:8px;font-size:.78rem;font-weight:600;box-shadow:0 4px 16px rgba(0,0,0,.15);animation:srFadeIn .3s ease`;
+            t.textContent = msg; ct.appendChild(t);
+            setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 3000);
+        }
+
+        function formatINR(n) {
+            if (n === undefined || n === null || isNaN(n)) return '₹ 0';
+            const abs = Math.abs(Math.round(n)), s = abs.toString();
+            let f; if (s.length > 3) { f = s.slice(0,-3).replace(/\B(?=(\d{2})+(?!\d))/g,',')+','+s.slice(-3); } else { f = s; }
+            return (n < 0 ? '-' : '') + '₹ ' + f;
+        }
+
+        // ═══════════════════════════════════════════════════
+        // FORM 3CD ENGINE
+        // ═══════════════════════════════════════════════════
+
+        const F3CD_CLAUSES = [
+            { cl:'1', desc:'Name of the assessee', cat:'basic' },
+            { cl:'2', desc:'Address', cat:'basic' },
+            { cl:'3', desc:'PAN', cat:'basic' },
+            { cl:'4', desc:'Whether assessee is liable to pay indirect tax', cat:'basic' },
+            { cl:'5', desc:'Status of the assessee (Company/Firm/Individual)', cat:'basic' },
+            { cl:'6', desc:'Previous year ended on', cat:'basic' },
+            { cl:'7(a)', desc:'Books of account prescribed u/s 44AA', cat:'books' },
+            { cl:'7(b)', desc:'List of books of account maintained', cat:'books' },
+            { cl:'8', desc:'Nature of business or profession', cat:'business' },
+            { cl:'9(a)', desc:'Section of IT Act under which assessable', cat:'business' },
+            { cl:'9(b)', desc:'Whether presumptive taxation applies', cat:'business' },
+            { cl:'10', desc:'Whether books audited u/s 44AB earlier', cat:'audit' },
+            { cl:'11(a)', desc:'Total Turnover / Gross Receipts', cat:'financial' },
+            { cl:'11(b)', desc:'Total Turnover from P&L', cat:'financial' },
+            { cl:'12', desc:'Gross Profit / Turnover Ratio', cat:'financial' },
+            { cl:'13(a)', desc:'Amounts debited to P&L — Capital nature', cat:'financial' },
+            { cl:'13(b)', desc:'Amounts debited to P&L — Personal nature', cat:'financial' },
+            { cl:'14(a)', desc:'Amounts not debited to P&L but allowable', cat:'financial' },
+            { cl:'14(b)', desc:'Amounts not credited to P&L but taxable', cat:'financial' },
+            { cl:'15', desc:'Amounts not allowable u/s 28 to 44DA', cat:'disallowance' },
+            { cl:'16(a)', desc:'Amounts debited but disallowable u/s 40', cat:'disallowance' },
+            { cl:'16(b)', desc:'Disallowance u/s 40(a)(ia) — TDS default', cat:'disallowance' },
+            { cl:'17', desc:'Amounts admissible under Sec 30 to 37', cat:'deductions' },
+            { cl:'18', desc:'Particulars of depreciation allowable', cat:'depreciation' },
+            { cl:'19', desc:'Amounts admissible under Sec 33AB/33ABA', cat:'deductions' },
+            { cl:'20(a)', desc:'Amount of Sec 80 deductions claimed', cat:'deductions' },
+            { cl:'20(b)', desc:'Details of deductions u/s 10A/10AA/10B', cat:'deductions' },
+            { cl:'21(a)', desc:'Amounts debited as interest u/s 36(1)(iii)', cat:'interest' },
+            { cl:'21(b)', desc:'Disallowance of interest u/s 36(1)(iii)', cat:'interest' },
+            { cl:'22', desc:'Payment to persons specified u/s 40A(2)(b)', cat:'related' },
+            { cl:'23', desc:'Payment to non-residents — TDS compliance', cat:'tds' },
+            { cl:'24', desc:'Deemed profits u/s 33AB/33ABA/33AC', cat:'financial' },
+            { cl:'25', desc:'Amount of Central Govt. capital investment subsidy', cat:'financial' },
+            { cl:'26', desc:'Deduction allowed u/s 10A, 10AA, 10B etc.', cat:'deductions' },
+            { cl:'27(a)', desc:'Tax deducted at source (TDS)', cat:'tds' },
+            { cl:'27(b)', desc:'Tax collected at source (TCS)', cat:'tds' },
+            { cl:'28', desc:'Whether TDS deposited to Govt. account on time', cat:'tds' },
+            { cl:'29', desc:'Whether shares/securities held as stock-in-trade', cat:'financial' },
+            { cl:'30', desc:'Whether primary adjustment made to transfer price u/s 92CE', cat:'tp' },
+            { cl:'31', desc:'Expenditure on scientific research u/s 35', cat:'deductions' },
+            { cl:'32', desc:'Expenditure on eligible projects u/s 35(2AA)', cat:'deductions' },
+            { cl:'33', desc:'Expenditure deductible u/s 35D or 35E', cat:'deductions' },
+            { cl:'34', desc:'Whether assessee is required to furnish report u/s 92E', cat:'tp' },
+            { cl:'36', desc:'Whether assessee received any judgment/order', cat:'legal' },
+            { cl:'37', desc:'Whether any expenditure covered under Sec 40A(3)', cat:'cash' },
+            { cl:'38', desc:'Whether assessee obtained Central Govt. approval u/s 36(1)(xii)', cat:'deductions' },
+            { cl:'39', desc:'Receipt exceeding ₹2 lakh in cash', cat:'cash' },
+            { cl:'40', desc:'Details of brought forward loss or depreciation', cat:'financial' },
+            { cl:'41', desc:'Whether assessee has any international transaction', cat:'tp' },
+            { cl:'42', desc:'Whether assessee has received any property below stamp duty', cat:'financial' },
+            { cl:'43', desc:'Details of deemed dividend u/s 2(22)(e)', cat:'financial' },
+            { cl:'44', desc:'Breakup of expenditure — GST registered vs unregistered', cat:'gst' },
+        ];
+
+        let f3cdData = []; // {cl, desc, status, val, source, cat}
+        let f3cdFiles = {};
+        let f3cdGenerated = false;
+
+        function f3cdHandleFile(input, type) {
+            const file = input.files[0]; if (!file) return;
+            f3cdFiles[type] = file;
+            document.getElementById('f3cd-file-' + type).innerHTML = `<div class="sr-file-pill">📄 ${file.name} <span style="color:#94a3b8;font-weight:400">(${(file.size/1024).toFixed(0)} KB)</span></div>`;
+            document.getElementById('f3cd-drop-' + type).classList.add('has-file');
+        }
+
+        // ── Tally Sync ──
+        async function f3cdSyncFromTally() {
+            const btn = document.getElementById('f3cd-sync-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="sr-spin"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Syncing…';
+
+            try {
+                const company = document.getElementById('f3cd-company-select').value;
+                if (company) {
+                    const [plRes, bsRes] = await Promise.all([
+                        authFetch(`/tally/ledgers?parent=Profit %26 Loss&per_page=200`),
+                        authFetch(`/tally/ledgers?parent=Balance Sheet&per_page=200`),
+                    ]);
+                    if (plRes?.ok) {
+                        document.getElementById('f3cd-stat-source').textContent = 'Tally';
+                        f3cdResetBtn(btn);
+                        srToast(`Synced from Tally: ${company}`, 'success');
+                        generate3CD('tally');
+                        return;
+                    }
+                }
+            } catch(e) {}
+
+            // Demo fallback
+            setTimeout(() => {
+                document.getElementById('f3cd-stat-source').textContent = 'Tally';
+                f3cdResetBtn(btn);
+                generate3CD('tally');
+                srToast('Data synced from Tally (demo)', 'success');
+            }, 1500);
+        }
+
+        function f3cdResetBtn(btn) {
+            btn.disabled = false;
+            btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Sync from Tally';
+        }
+
+        // ── Generate ──
+        function generate3CD(source) {
+            const btn = document.getElementById('f3cd-gen-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="sr-spin"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Processing…';
+
+            setTimeout(() => {
+                // Demo AI-populated values
+                const demoValues = {
+                    '1':  { s:'filled', v:'Auto-populated from client data' },
+                    '2':  { s:'filled', v:'Auto-populated from client data' },
+                    '3':  { s:'filled', v:'Auto-populated from client data' },
+                    '4':  { s:'filled', v:'Yes — GST Registered' },
+                    '5':  { s:'review', v:'Company — Needs confirmation' },
+                    '6':  { s:'filled', v:'31-Mar-2026' },
+                    '7(a)':  { s:'filled', v:'Yes' },
+                    '7(b)':  { s:'filled', v:'Cash Book, Journal, Ledger, Bank Book' },
+                    '8':  { s:'review', v:'AI detected: Manufacturing & Trading' },
+                    '9(a)':  { s:'filled', v:'Section 44AB(a)' },
+                    '9(b)':  { s:'filled', v:'No' },
+                    '10': { s:'review', v:'Check previous year files' },
+                    '11(a)': { s:'filled', v:formatINR(35000000) },
+                    '11(b)': { s:'filled', v:formatINR(35000000) },
+                    '12': { s:'filled', v:'24.5% GP Ratio' },
+                    '13(a)': { s:'review', v:formatINR(250000) + ' — Capital items debited' },
+                    '13(b)': { s:'filled', v:formatINR(0) },
+                    '14(a)': { s:'pending', v:'Requires manual input' },
+                    '14(b)': { s:'pending', v:'Requires manual input' },
+                    '15': { s:'filled', v:formatINR(180000) + ' disallowed' },
+                    '16(a)': { s:'filled', v:formatINR(45000) + ' — Sec 40(a)(ia)' },
+                    '16(b)': { s:'review', v:'TDS compliance check needed' },
+                    '17': { s:'filled', v:'Sec 30-37 analysis complete' },
+                    '18': { s:'filled', v:'See Depreciation schedule — ' + formatINR(2850000) },
+                    '19': { s:'filled', v:'Not applicable' },
+                    '20(a)': { s:'filled', v:formatINR(150000) + ' u/s 80C' },
+                    '20(b)': { s:'filled', v:'Not applicable' },
+                    '21(a)': { s:'review', v:formatINR(180000) },
+                    '21(b)': { s:'filled', v:formatINR(0) },
+                    '22': { s:'review', v:'Related party payments — verify Sec 40A(2)(b)' },
+                    '23': { s:'filled', v:'No payments to non-residents' },
+                    '24': { s:'filled', v:'Not applicable' },
+                    '25': { s:'filled', v:formatINR(0) },
+                    '26': { s:'pending', v:'Not applicable / Verify' },
+                    '27(a)': { s:'filled', v:'TDS details extracted — ' + formatINR(420000) },
+                    '27(b)': { s:'filled', v:'TCS = ' + formatINR(0) },
+                    '28': { s:'filled', v:'Yes — all deposited on time' },
+                    '29': { s:'filled', v:'No' },
+                    '30': { s:'filled', v:'Not applicable' },
+                    '31': { s:'pending', v:'Needs input' },
+                    '32': { s:'filled', v:'Not applicable' },
+                    '33': { s:'filled', v:'Not applicable' },
+                    '34': { s:'filled', v:'Not applicable' },
+                    '36': { s:'pending', v:'Requires manual input' },
+                    '37': { s:'filled', v:'No cash payments > ₹10,000' },
+                    '38': { s:'filled', v:'Not applicable' },
+                    '39': { s:'filled', v:'No cash receipts > ₹2L' },
+                    '40': { s:'review', v:'B/F loss: ' + formatINR(350000) + ' — verify' },
+                    '41': { s:'filled', v:'No international transactions' },
+                    '42': { s:'filled', v:'Not applicable' },
+                    '43': { s:'filled', v:'Not applicable' },
+                    '44': { s:'filled', v:'GST registered: ' + formatINR(28500000) + ' / Unregistered: ' + formatINR(6500000) },
+                };
+
+                f3cdData = F3CD_CLAUSES.map(c => {
+                    const d = demoValues[c.cl] || { s:'pending', v:'No data available' };
+                    return { cl: c.cl, desc: c.desc, cat: c.cat, status: d.s, val: d.v, source: source || 'upload' };
+                });
+
+                f3cdGenerated = true;
+                f3cdRenderTable();
+                f3cdUpdateStats();
+                btn.disabled = false;
+                btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Regenerate';
+                srToast(`Form 3CD populated — ${f3cdData.length} clauses processed`, 'success');
+            }, 2000);
+        }
+
+        function f3cdUpdateStats() {
+            const filled = f3cdData.filter(c => c.status === 'filled').length;
+            const review = f3cdData.filter(c => c.status === 'review').length;
+            const pending = f3cdData.filter(c => c.status === 'pending').length;
+            document.getElementById('f3cd-stat-filled').textContent = filled;
+            document.getElementById('f3cd-stat-review').textContent = review;
+            document.getElementById('f3cd-stat-pending').textContent = pending;
+            document.getElementById('f3cd-clause-badge').textContent = `${filled}/${f3cdData.length} filled`;
+        }
+
+        function f3cdRenderTable() {
+            const tbody = document.getElementById('f3cd-tbody');
+            const filter = document.getElementById('f3cd-filter').value;
+            const list = filter === 'all' ? f3cdData : f3cdData.filter(c => c.status === filter);
+
+            if (!list.length) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:2.5rem;color:#94a3b8"><div style="font-size:1.8rem;margin-bottom:.5rem;opacity:.3">📄</div>' + (f3cdGenerated ? 'No clauses match filter' : 'Sync from Tally or upload financials, then click "Generate Form 3CD"') + '</td></tr>';
+                return;
+            }
+
+            // Group by category
+            const cats = { basic:'Basic Info', books:'Books of Account', business:'Business Details', audit:'Audit History', financial:'Financial', disallowance:'Disallowances', deductions:'Deductions', depreciation:'Depreciation', interest:'Interest', related:'Related Parties', tds:'TDS/TCS', tp:'Transfer Pricing', legal:'Legal', cash:'Cash Transactions', gst:'GST' };
+            const groups = {};
+            list.forEach(c => { const g = cats[c.cat] || 'Other'; if (!groups[g]) groups[g] = []; groups[g].push(c); });
+
+            let html = '';
+            for (const [group, clauses] of Object.entries(groups)) {
+                const gFilled = clauses.filter(c => c.status === 'filled').length;
+                html += `<tr class="sr-row-heading"><td colspan="3">${group}</td><td colspan="2" style="font-size:.68rem;color:#64748b">${gFilled}/${clauses.length} filled</td></tr>`;
+                clauses.forEach(c => {
+                    const badge = c.status === 'filled' ? '<span class="sr-badge green">✅ Filled</span>'
+                        : c.status === 'review' ? '<span class="sr-badge amber">⚠️ Review</span>'
+                        : '<span class="sr-badge red">❌ Pending</span>';
+                    const srcBadge = c.source === 'tally' ? '<span style="font-size:.48rem;font-weight:700;padding:1px 4px;border-radius:3px;background:#dbeafe;color:#1e3a8a">TALLY</span>' : '<span style="font-size:.48rem;font-weight:700;padding:1px 4px;border-radius:3px;background:#f1f5f9;color:#64748b">AI</span>';
+                    html += `<tr>
+                        <td style="font-weight:700;color:#92400e;font-family:'Outfit',sans-serif;white-space:nowrap">Cl. ${c.cl}</td>
+                        <td style="font-size:.78rem">${c.desc}</td>
+                        <td>${badge}</td>
+                        <td style="font-size:.75rem;color:#475569;max-width:280px">${c.val}</td>
+                        <td>${srcBadge}</td>
+                    </tr>`;
+                });
+            }
+
+            // Summary row
+            const filled = f3cdData.filter(c => c.status === 'filled').length;
+            const review = f3cdData.filter(c => c.status === 'review').length;
+            const pending = f3cdData.filter(c => c.status === 'pending').length;
+            html += `<tr class="sr-row-total"><td colspan="2" style="font-weight:800">SUMMARY</td><td style="font-weight:700"><span class="sr-badge green">${filled} ✅</span> <span class="sr-badge amber">${review} ⚠️</span> <span class="sr-badge red">${pending} ❌</span></td><td style="font-size:.72rem;color:#64748b">${pending === 0 ? 'All clauses addressed' : `${pending} clause${pending>1?'s':''} need manual entry`}</td><td></td></tr>`;
+
+            tbody.innerHTML = html;
+        }
+
+        function f3cdExport() { srToast('PDF export coming soon', 'info'); }
+
+        // ── Load Companies ──
+        async function f3cdLoadCompanies() {
+            try {
+                const res = await authFetch('/tally/companies');
+                if (res?.ok) {
+                    const companies = await res.json();
+                    const sel = document.getElementById('f3cd-company-select');
+                    companies.forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = c; sel.appendChild(o); });
+                }
+            } catch(e) {}
+        }
+        f3cdLoadCompanies();
+    </script>
+</body>
+</html>

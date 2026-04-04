@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Depreciation: IT Act vs Companies Act — Suvidha AI</title>
+    <meta name="description" content="Side-by-side depreciation comparison under Income Tax Act (Sec 32) and Companies Act 2013 (Schedule II). Sync from Tally.">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="statutory-reporting.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="app-topbar" data-active="dashboard"></div>
+    <script src="app-topbar.js"></script>
+
+    <div class="sr-layout">
+        <!-- ══════ SIDEBAR ══════ -->
+        <aside class="sr-sidebar">
+            <div id="app-client-nav" data-active="statutory-reporting"></div>
+            <script src="app-client-nav.js"></script>
+        </aside>
+
+        <!-- ══════ MAIN ══════ -->
+        <main class="sr-main">
+            <div class="sr-sh">
+                <h1>📊 Depreciation: IT Act vs Companies Act <span class="sr-title-badge">TALLY SYNC</span></h1>
+                <p>Side-by-side depreciation as per Income Tax Act (Sec 32, WDV) and Companies Act, 2013 (Schedule II). Sync fixed assets from Tally or add manually.</p>
+            </div>
+
+            <!-- Toolbar -->
+            <div class="dep-toolbar">
+                <div class="dep-toolbar-left">
+                    <select class="dep-select" id="dep-company-select" onchange="depLoadAssets()">
+                        <option value="">— Select Tally Company —</option>
+                    </select>
+                    <select class="dep-select" id="dep-fy-select">
+                        <option value="2025-26">FY 2025-26</option>
+                        <option value="2024-25">FY 2024-25</option>
+                        <option value="2023-24">FY 2023-24</option>
+                    </select>
+                </div>
+                <div class="dep-toolbar-right">
+                    <button class="sr-btn sr-btn-secondary" onclick="depSyncFromTally()" id="dep-sync-btn">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+                        Sync from Tally
+                    </button>
+                    <button class="sr-btn sr-btn-primary" onclick="depShowAddModal()">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                        Add Asset
+                    </button>
+                </div>
+            </div>
+
+            <!-- Summary Cards -->
+            <div class="dep-stats-row" id="dep-stats-row">
+                <div class="dep-stat-card">
+                    <div class="dep-stat-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></div>
+                    <div><div class="dep-stat-val" id="dep-stat-assets">0</div><div class="dep-stat-label">Fixed Assets</div></div>
+                </div>
+                <div class="dep-stat-card">
+                    <div class="dep-stat-icon amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+                    <div><div class="dep-stat-val" id="dep-stat-cost">₹ 0</div><div class="dep-stat-label">Total Cost</div></div>
+                </div>
+                <div class="dep-stat-card">
+                    <div class="dep-stat-icon it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg></div>
+                    <div><div class="dep-stat-val" id="dep-stat-it">₹ 0</div><div class="dep-stat-label">IT Act Dep. (FY)</div></div>
+                </div>
+                <div class="dep-stat-card">
+                    <div class="dep-stat-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg></div>
+                    <div><div class="dep-stat-val" id="dep-stat-co">₹ 0</div><div class="dep-stat-label">Co. Act Dep. (FY)</div></div>
+                </div>
+                <div class="dep-stat-card">
+                    <div class="dep-stat-icon diff"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+                    <div><div class="dep-stat-val" id="dep-stat-diff">₹ 0</div><div class="dep-stat-label">Deferred Tax Impact</div></div>
+                </div>
+            </div>
+
+            <!-- ═══ SECTION: Asset Register ═══ -->
+            <div class="dep-page-section" id="sec-register">
+                <div class="sr-panel" style="padding:0">
+                    <div class="dep-table-header">
+                        <div class="dep-table-title">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h18v18H3z"/><path d="M3 9h18"/><path d="M9 3v18"/></svg>
+                            Asset Register
+                            <span class="sr-badge amber" id="dep-asset-count-badge">0 assets</span>
+                        </div>
+                        <div style="display:flex;gap:.4rem;align-items:center">
+                            <select class="dep-select dep-select-sm" id="dep-group-filter" onchange="depRenderTable()">
+                                <option value="all">All Groups</option>
+                                <option value="Plant & Machinery">Plant & Machinery</option>
+                                <option value="Furniture & Fixtures">Furniture & Fixtures</option>
+                                <option value="Motor Vehicles">Motor Vehicles</option>
+                                <option value="Office Equipment">Office Equipment</option>
+                                <option value="Computers">Computers</option>
+                                <option value="Buildings">Buildings</option>
+                                <option value="Intangible Assets">Intangible Assets</option>
+                            </select>
+                            <button class="sr-btn sr-btn-primary" onclick="depComputeAll()" style="font-size:.72rem;padding:.35rem .75rem">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+                                Compute All
+                            </button>
+                        </div>
+                    </div>
+                    <div class="sr-table-wrap">
+                        <table class="sr-table" id="dep-asset-table">
+                            <thead><tr>
+                                <th>Asset / Group</th>
+                                <th>Acquisition</th>
+                                <th style="text-align:right">Cost (₹)</th>
+                                <th>IT Rate</th>
+                                <th>Co. Life</th>
+                                <th style="text-align:right">IT Dep (₹)</th>
+                                <th style="text-align:right">Co. Dep (₹)</th>
+                                <th style="text-align:right">Difference</th>
+                                <th>Actions</th>
+                            </tr></thead>
+                            <tbody id="dep-asset-tbody">
+                                <tr><td colspan="9" style="text-align:center;padding:2.5rem;color:#94a3b8">
+                                    <div style="font-size:1.8rem;margin-bottom:.5rem;opacity:.3">📊</div>
+                                    Sync from Tally or add assets manually to begin
+                                </td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══ SECTION: Comparison Detail ═══ -->
+            <div class="dep-page-section" id="sec-comparison">
+                <div class="sr-info-banner">
+                    <div class="sr-info-icon">💡</div>
+                    <p>Click the <strong>📊</strong> button on any asset in the register to view its year-wise IT Act vs Companies Act depreciation comparison.</p>
+                </div>
+                <div id="dep-detail-panel" style="display:none">
+                    <div class="sr-panel" id="dep-detail-summary"></div>
+                    <div class="sr-comparison-grid" id="dep-detail-tables" style="margin-top:1rem"></div>
+                </div>
+            </div>
+
+            <!-- ═══ SECTION: Deferred Tax Summary ═══ -->
+            <div class="dep-page-section" id="sec-summary">
+                <div class="sr-panel" id="dep-deferred-tax-panel">
+                    <div class="sr-panel-title">Deferred Tax Impact — Group Summary</div>
+                    <div id="dep-deferred-content">
+                        <div style="text-align:center;padding:2rem;color:#94a3b8;font-size:.8rem">
+                            <div style="font-size:1.5rem;margin-bottom:.5rem;opacity:.3">📋</div>
+                            Add and compute assets first to see deferred tax summary.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add Asset Modal -->
+            <div class="dep-modal-overlay" id="dep-add-modal" style="display:none">
+                <div class="dep-modal">
+                    <div class="dep-modal-header">
+                        <span>Add Fixed Asset</span>
+                        <button onclick="depHideAddModal()" style="background:none;border:none;font-size:1.1rem;cursor:pointer;color:#94a3b8">✕</button>
+                    </div>
+                    <div class="dep-modal-body">
+                        <div class="sr-form-grid cols-3">
+                            <div class="sr-field"><label>Asset Name</label><input type="text" id="dep-add-name" placeholder="e.g. CNC Machine"></div>
+                            <div class="sr-field"><label>Asset Group</label>
+                                <select id="dep-add-group" onchange="depAutoFillRates()">
+                                    <option value="Plant & Machinery">Plant & Machinery</option>
+                                    <option value="Furniture & Fixtures">Furniture & Fixtures</option>
+                                    <option value="Motor Vehicles">Motor Vehicles</option>
+                                    <option value="Office Equipment">Office Equipment</option>
+                                    <option value="Computers">Computers</option>
+                                    <option value="Buildings">Buildings</option>
+                                    <option value="Intangible Assets">Intangible Assets</option>
+                                </select>
+                            </div>
+                            <div class="sr-field"><label>Date of Acquisition</label><input type="date" id="dep-add-date"></div>
+                        </div>
+                        <div class="sr-form-grid cols-3" style="margin-top:.65rem">
+                            <div class="sr-field"><label>Cost of Acquisition (₹)</label><input type="number" id="dep-add-cost" placeholder="e.g. 500000"></div>
+                            <div class="sr-field"><label>IT Act Rate (%)</label><input type="number" id="dep-add-it-rate" value="15" step="0.01"></div>
+                            <div class="sr-field"><label>IT Method</label>
+                                <select id="dep-add-it-method"><option value="WDV">WDV</option><option value="SLM">SLM</option></select>
+                            </div>
+                        </div>
+                        <div class="sr-form-grid cols-3" style="margin-top:.65rem">
+                            <div class="sr-field"><label>Useful Life (Co. Act) Yrs</label><input type="number" id="dep-add-co-life" value="15"></div>
+                            <div class="sr-field"><label>Co. Act Method</label>
+                                <select id="dep-add-co-method"><option value="SLM">SLM</option><option value="WDV">WDV</option></select>
+                            </div>
+                            <div class="sr-field"><label>Residual Value (₹)</label><input type="number" id="dep-add-residual" placeholder="Auto: 5% of cost"></div>
+                        </div>
+                    </div>
+                    <div class="dep-modal-footer">
+                        <button class="sr-btn sr-btn-secondary" onclick="depHideAddModal()">Cancel</button>
+                        <button class="sr-btn sr-btn-primary" onclick="depAddAsset()">Add Asset</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast container -->
+    <div class="sr-toast-ct" id="sr-toast-ct"></div>
+
+    <script src="api_config.js"></script>
+    <script>
+        // ── Auth check ──
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (!user) window.location.href = 'index.html';
+        const params = new URLSearchParams(window.location.search);
+        const clientId = params.get('clientId');
+
+
+        // ── Toast ──
+        function srToast(msg, type='info') {
+            const ct = document.getElementById('sr-toast-ct');
+            const t = document.createElement('div');
+            const bg = {success:'#059669',warning:'#d97706',info:'#3b82f6',error:'#dc2626'}[type]||'#3b82f6';
+            t.style.cssText = `padding:.55rem 1rem;background:${bg};color:#fff;border-radius:8px;font-size:.78rem;font-weight:600;box-shadow:0 4px 16px rgba(0,0,0,.15);animation:srFadeIn .3s ease`;
+            t.textContent = msg;
+            ct.appendChild(t);
+            setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 3000);
+        }
+
+        // ── INR Formatter ──
+        function formatINR(n) {
+            if (n === undefined || n === null || isNaN(n)) return '₹ 0';
+            const abs = Math.abs(Math.round(n));
+            const s = abs.toString();
+            let formatted;
+            if (s.length > 3) {
+                const last3 = s.slice(-3);
+                const rest = s.slice(0, -3);
+                formatted = rest.replace(/\B(?=(\d{2})+(?!\d))/g, ',') + ',' + last3;
+            } else {
+                formatted = s;
+            }
+            return (n < 0 ? '-' : '') + '₹ ' + formatted;
+        }
+
+        // ═══════════════════════════════════════════════════
+        // DEPRECIATION ENGINE
+        // ═══════════════════════════════════════════════════
+
+        const DEP_RATE_MAP = {
+            'Plant & Machinery':    { itRate: 15, itMethod: 'WDV', coLife: 15, coMethod: 'SLM' },
+            'Furniture & Fixtures': { itRate: 10, itMethod: 'WDV', coLife: 10, coMethod: 'SLM' },
+            'Motor Vehicles':       { itRate: 15, itMethod: 'WDV', coLife: 8,  coMethod: 'SLM' },
+            'Office Equipment':     { itRate: 15, itMethod: 'WDV', coLife: 5,  coMethod: 'SLM' },
+            'Computers':            { itRate: 40, itMethod: 'WDV', coLife: 3,  coMethod: 'SLM' },
+            'Buildings':            { itRate: 10, itMethod: 'WDV', coLife: 30, coMethod: 'SLM' },
+            'Intangible Assets':    { itRate: 25, itMethod: 'WDV', coLife: 10, coMethod: 'SLM' },
+        };
+
+        let depAssets = [];
+        let depIdCounter = 0;
+
+        // ── Modal ──
+        function depShowAddModal() {
+            document.getElementById('dep-add-modal').style.display = 'flex';
+            depAutoFillRates();
+        }
+        function depHideAddModal() { document.getElementById('dep-add-modal').style.display = 'none'; }
+
+        function depAutoFillRates() {
+            const group = document.getElementById('dep-add-group').value;
+            const r = DEP_RATE_MAP[group] || DEP_RATE_MAP['Plant & Machinery'];
+            document.getElementById('dep-add-it-rate').value = r.itRate;
+            document.getElementById('dep-add-it-method').value = r.itMethod;
+            document.getElementById('dep-add-co-life').value = r.coLife;
+            document.getElementById('dep-add-co-method').value = r.coMethod;
+        }
+
+        function depAddAsset() {
+            const name = document.getElementById('dep-add-name').value.trim();
+            const cost = parseFloat(document.getElementById('dep-add-cost').value) || 0;
+            if (!name || !cost) { srToast('Enter asset name and cost', 'warning'); return; }
+            const residualInput = parseFloat(document.getElementById('dep-add-residual').value);
+            depAssets.push({
+                id: ++depIdCounter, name, group: document.getElementById('dep-add-group').value,
+                date: document.getElementById('dep-add-date').value || '2025-04-01', cost,
+                itRate: parseFloat(document.getElementById('dep-add-it-rate').value) || 15,
+                itMethod: document.getElementById('dep-add-it-method').value,
+                coLife: parseInt(document.getElementById('dep-add-co-life').value) || 15,
+                coMethod: document.getElementById('dep-add-co-method').value,
+                residual: isNaN(residualInput) ? Math.round(cost * 0.05) : residualInput,
+                itDep: 0, coDep: 0, source: 'manual'
+            });
+            depHideAddModal();
+            ['dep-add-name','dep-add-cost','dep-add-residual'].forEach(id => document.getElementById(id).value = '');
+            depComputeAll();
+            srToast(`"${name}" added`, 'success');
+        }
+
+        function depDeleteAsset(id) { depAssets = depAssets.filter(a => a.id !== id); depComputeAll(); }
+
+        // ── Compute ──
+        function depComputeOne(a) {
+            a.itDep = Math.round(a.cost * (a.itRate / 100));
+            const acqMonth = new Date(a.date).getMonth();
+            if (acqMonth >= 9) a.itDep = Math.round(a.itDep / 2);
+
+            const depBase = a.cost - a.residual;
+            if (a.coMethod === 'SLM') {
+                a.coDep = Math.round(depBase / a.coLife);
+            } else {
+                const coRate = (1 - Math.pow(a.residual / a.cost, 1 / a.coLife)) * 100;
+                a.coDep = Math.round(a.cost * (coRate / 100));
+            }
+            if (acqMonth >= 9) a.coDep = Math.round(a.coDep / 2);
+        }
+
+        function depComputeAll() {
+            depAssets.forEach(a => depComputeOne(a));
+            depRenderTable();
+            depUpdateStats();
+            depUpdateDeferredTax();
+        }
+
+        function depUpdateStats() {
+            const totalCost = depAssets.reduce((s, a) => s + a.cost, 0);
+            const totalIT = depAssets.reduce((s, a) => s + a.itDep, 0);
+            const totalCo = depAssets.reduce((s, a) => s + a.coDep, 0);
+            const diff = totalIT - totalCo;
+            const deferredTax = Math.round(Math.abs(diff) * 0.252);
+
+            document.getElementById('dep-stat-assets').textContent = depAssets.length;
+            document.getElementById('dep-stat-cost').textContent = formatINR(totalCost);
+            document.getElementById('dep-stat-it').textContent = formatINR(totalIT);
+            document.getElementById('dep-stat-co').textContent = formatINR(totalCo);
+            document.getElementById('dep-stat-diff').textContent = formatINR(deferredTax);
+            document.getElementById('dep-asset-count-badge').textContent = depAssets.length + ' asset' + (depAssets.length !== 1 ? 's' : '');
+        }
+
+        // ── Render Table ──
+        function depRenderTable() {
+            const tbody = document.getElementById('dep-asset-tbody');
+            const filter = document.getElementById('dep-group-filter').value;
+            const list = filter === 'all' ? depAssets : depAssets.filter(a => a.group === filter);
+
+            if (list.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:2.5rem;color:#94a3b8"><div style="font-size:1.8rem;margin-bottom:.5rem;opacity:.3">📊</div>Sync from Tally or add assets manually to begin</td></tr>';
+                return;
+            }
+
+            const groups = {};
+            list.forEach(a => { if (!groups[a.group]) groups[a.group] = []; groups[a.group].push(a); });
+
+            let html = '';
+            for (const [group, assets] of Object.entries(groups)) {
+                const gIT = assets.reduce((s, a) => s + a.itDep, 0);
+                const gCo = assets.reduce((s, a) => s + a.coDep, 0);
+                const gCost = assets.reduce((s, a) => s + a.cost, 0);
+                html += `<tr class="sr-row-heading"><td colspan="2">${group}</td><td style="text-align:right">${formatINR(gCost)}</td><td></td><td></td><td style="text-align:right">${formatINR(gIT)}</td><td style="text-align:right">${formatINR(gCo)}</td><td style="text-align:right;color:${gIT-gCo>=0?'#059669':'#dc2626'}">${formatINR(Math.abs(gIT-gCo))}</td><td></td></tr>`;
+                assets.forEach(a => {
+                    const diff = a.itDep - a.coDep;
+                    const srcBadge = a.source === 'tally' ? '<span style="font-size:.5rem;font-weight:700;padding:1px 5px;border-radius:3px;background:#dbeafe;color:#1e3a8a;margin-left:.35rem">TALLY</span>' : '';
+                    html += `<tr>
+                        <td><div class="dep-asset-name">${a.name}${srcBadge}</div></td>
+                        <td style="font-size:.75rem;color:#64748b">${a.date ? new Date(a.date+'T00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}) : '—'}</td>
+                        <td style="text-align:right;font-weight:600;font-family:'Outfit',sans-serif">${formatINR(a.cost)}</td>
+                        <td><span class="dep-rate-pill it">${a.itRate}% ${a.itMethod}</span></td>
+                        <td><span class="dep-rate-pill co">${a.coLife} yrs ${a.coMethod}</span></td>
+                        <td style="text-align:right;font-weight:700;color:#5b21b6;font-family:'Outfit',sans-serif">${formatINR(a.itDep)}</td>
+                        <td style="text-align:right;font-weight:700;color:#065f46;font-family:'Outfit',sans-serif">${formatINR(a.coDep)}</td>
+                        <td style="text-align:right" class="${diff>=0?'dep-diff-positive':'dep-diff-negative'}">${diff>=0?'+':''}${formatINR(diff)}</td>
+                        <td style="white-space:nowrap">
+                            <button class="sr-btn sr-btn-secondary" style="font-size:.62rem;padding:.2rem .45rem" onclick="depShowDetail(${a.id})" title="Year-wise comparison">📊</button>
+                            <button class="sr-btn sr-btn-secondary" style="font-size:.62rem;padding:.2rem .45rem;color:#dc2626;border-color:#fecaca" onclick="depDeleteAsset(${a.id})" title="Delete">✕</button>
+                        </td>
+                    </tr>`;
+                });
+            }
+
+            const totCost = list.reduce((s,a) => s+a.cost, 0);
+            const totIT = list.reduce((s,a) => s+a.itDep, 0);
+            const totCo = list.reduce((s,a) => s+a.coDep, 0);
+            const totDiff = totIT - totCo;
+            html += `<tr class="sr-row-total"><td colspan="2" style="font-weight:800">GRAND TOTAL</td><td style="text-align:right;font-weight:800;font-family:'Outfit',sans-serif">${formatINR(totCost)}</td><td></td><td></td><td style="text-align:right;font-weight:800;color:#5b21b6;font-family:'Outfit',sans-serif">${formatINR(totIT)}</td><td style="text-align:right;font-weight:800;color:#065f46;font-family:'Outfit',sans-serif">${formatINR(totCo)}</td><td style="text-align:right;font-weight:800;color:${totDiff>=0?'#059669':'#dc2626'};font-family:'Outfit',sans-serif">${totDiff>=0?'+':''}${formatINR(totDiff)}</td><td></td></tr>`;
+
+            tbody.innerHTML = html;
+        }
+
+        // ── Detail View ──
+        function depShowDetail(assetId) {
+            const a = depAssets.find(x => x.id === assetId);
+            if (!a) return;
+
+
+            const years = Math.min(a.coLife, 20);
+            let itRows = [], coRows = [];
+            let itWDV = a.cost, coWDV = a.cost;
+            const coDepAmt = a.coMethod === 'SLM' ? (a.cost - a.residual) / a.coLife : 0;
+
+            for (let y = 1; y <= years; y++) {
+                let itDep = a.itMethod === 'WDV' ? itWDV * (a.itRate / 100) : a.cost * (a.itRate / 100);
+                itDep = Math.min(itDep, itWDV); itWDV -= itDep;
+                itRows.push({ year: y, dep: itDep, closing: itWDV });
+
+                let coDep;
+                if (a.coMethod === 'SLM') { coDep = coDepAmt; }
+                else { const coRate = (1 - Math.pow(a.residual / a.cost, 1 / a.coLife)) * 100; coDep = coWDV * (coRate / 100); }
+                coDep = Math.min(coDep, Math.max(0, coWDV - a.residual));
+                if (coDep < 0) coDep = 0;
+                coWDV -= coDep;
+                coRows.push({ year: y, dep: coDep, closing: coWDV });
+            }
+
+            const totalIT = itRows.reduce((s, r) => s + r.dep, 0);
+            const totalCo = coRows.reduce((s, r) => s + r.dep, 0);
+            const diff = totalIT - totalCo;
+
+            document.getElementById('dep-detail-summary').innerHTML = `
+                <div class="sr-panel-title">📊 ${a.name} — Year-wise Comparison <span class="dep-group-badge">${a.group}</span></div>
+                <div class="sr-form-grid cols-3" style="margin-top:.75rem">
+                    <div style="text-align:center"><div style="font-size:1.3rem;font-weight:800;color:#5b21b6">${formatINR(totalIT)}</div><div style="font-size:.68rem;color:#64748b;font-weight:600;margin-top:.15rem">IT Act Total (${years} yrs)</div></div>
+                    <div style="text-align:center"><div style="font-size:1.3rem;font-weight:800;color:#059669">${formatINR(totalCo)}</div><div style="font-size:.68rem;color:#64748b;font-weight:600;margin-top:.15rem">Co. Act Total (${years} yrs)</div></div>
+                    <div style="text-align:center"><div style="font-size:1.3rem;font-weight:800;color:${diff>0?'#d97706':'#dc2626'}">${formatINR(Math.abs(diff))}</div><div style="font-size:.68rem;color:#64748b;font-weight:600;margin-top:.15rem">${diff>0?'IT Act Higher':'Co. Act Higher'}</div></div>
+                </div>`;
+
+            const makeTable = (rows, title, hdr) => {
+                let t = `<div class="sr-comparison-panel"><div class="sr-comparison-header ${hdr}">${title}</div><div class="sr-comparison-body"><div class="sr-table-wrap"><table class="sr-table"><thead><tr><th>Year</th><th style="text-align:right">Depreciation</th><th style="text-align:right">Closing WDV</th></tr></thead><tbody>`;
+                rows.forEach(r => { t += `<tr><td>Year ${r.year}</td><td style="text-align:right;font-weight:600;font-family:'Outfit',sans-serif">${formatINR(r.dep)}</td><td style="text-align:right;font-family:'Outfit',sans-serif">${formatINR(r.closing)}</td></tr>`; });
+                t += '</tbody></table></div></div></div>';
+                return t;
+            };
+
+            document.getElementById('dep-detail-tables').innerHTML =
+                makeTable(itRows, `Income Tax Act — ${a.itMethod} @ ${a.itRate}%`, 'it-act') +
+                makeTable(coRows, `Companies Act — ${a.coMethod} (${a.coLife} yrs)`, 'co-act');
+
+            document.getElementById('dep-detail-panel').style.display = 'block';
+        }
+
+        // ── Deferred Tax Summary ──
+        function depUpdateDeferredTax() {
+            if (depAssets.length === 0) return;
+            const groups = {};
+            depAssets.forEach(a => {
+                if (!groups[a.group]) groups[a.group] = { cost: 0, it: 0, co: 0, count: 0 };
+                groups[a.group].cost += a.cost;
+                groups[a.group].it += a.itDep;
+                groups[a.group].co += a.coDep;
+                groups[a.group].count++;
+            });
+
+            let html = '<div class="sr-table-wrap"><table class="sr-table"><thead><tr><th>Asset Group</th><th style="text-align:center">Assets</th><th style="text-align:right">IT Act Dep</th><th style="text-align:right">Co. Act Dep</th><th style="text-align:right">Difference</th><th style="text-align:right">Deferred Tax @ 25.17%</th><th>Type</th></tr></thead><tbody>';
+
+            let totalIT = 0, totalCo = 0;
+            for (const [group, g] of Object.entries(groups)) {
+                const diff = g.it - g.co;
+                const dt = Math.round(Math.abs(diff) * 0.252);
+                totalIT += g.it; totalCo += g.co;
+                html += `<tr>
+                    <td style="font-weight:600">${group}</td>
+                    <td style="text-align:center">${g.count}</td>
+                    <td style="text-align:right;font-weight:600;color:#5b21b6;font-family:'Outfit',sans-serif">${formatINR(g.it)}</td>
+                    <td style="text-align:right;font-weight:600;color:#065f46;font-family:'Outfit',sans-serif">${formatINR(g.co)}</td>
+                    <td style="text-align:right;font-weight:700;color:${diff>=0?'#059669':'#dc2626'}">${diff>=0?'+':''}${formatINR(diff)}</td>
+                    <td style="text-align:right;font-weight:700;font-family:'Outfit',sans-serif">${formatINR(dt)}</td>
+                    <td><span class="sr-badge ${diff>=0?'blue':'red'}">${diff>=0?'DTL':'DTA'}</span></td>
+                </tr>`;
+            }
+
+            const totDiff = totalIT - totalCo;
+            const totDT = Math.round(Math.abs(totDiff) * 0.252);
+            html += `<tr class="sr-row-total"><td style="font-weight:800">TOTAL</td><td></td><td style="text-align:right;font-weight:800;color:#5b21b6;font-family:'Outfit',sans-serif">${formatINR(totalIT)}</td><td style="text-align:right;font-weight:800;color:#065f46;font-family:'Outfit',sans-serif">${formatINR(totalCo)}</td><td style="text-align:right;font-weight:800;color:${totDiff>=0?'#059669':'#dc2626'}">${totDiff>=0?'+':''}${formatINR(totDiff)}</td><td style="text-align:right;font-weight:800;font-family:'Outfit',sans-serif">${formatINR(totDT)}</td><td><span class="sr-badge ${totDiff>=0?'blue':'red'}" style="font-size:.7rem">${totDiff>=0?'Net DTL':'Net DTA'}</span></td></tr>`;
+            html += '</tbody></table></div>';
+
+            html += `<div class="sr-info-banner" style="margin-top:1rem"><div class="sr-info-icon">📋</div><p><strong>${totDiff >= 0 ? 'Deferred Tax Liability (DTL)' : 'Deferred Tax Asset (DTA)'}:</strong> IT Act depreciation is ${totDiff >= 0 ? 'higher' : 'lower'} by ${formatINR(Math.abs(totDiff))}, creating a ${totDiff >= 0 ? 'DTL' : 'DTA'} of ${formatINR(totDT)} at the effective corporate tax rate of 25.17%.</p></div>`;
+
+            document.getElementById('dep-deferred-content').innerHTML = html;
+        }
+
+        // ── Tally Sync ──
+        async function depSyncFromTally() {
+            const btn = document.getElementById('dep-sync-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="sr-spin"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Syncing…';
+
+            try {
+                const res = await authFetch('/tally/ledgers?parent=Fixed Assets&per_page=200');
+                if (res && res.ok) {
+                    const data = await res.json();
+                    if (data.data && data.data.length > 0) {
+                        data.data.forEach(l => {
+                            const group = mapTallyGroup(l.parent);
+                            const r = DEP_RATE_MAP[group] || DEP_RATE_MAP['Plant & Machinery'];
+                            const bal = Math.abs(l.opening_balance || l.closing_balance || 0);
+                            if (bal > 0 && !depAssets.find(a => a.name === l.name)) {
+                                depAssets.push({
+                                    id: ++depIdCounter, name: l.name, group, date: '2025-04-01', cost: bal,
+                                    itRate: r.itRate, itMethod: r.itMethod, coLife: r.coLife, coMethod: r.coMethod,
+                                    residual: Math.round(bal * 0.05), itDep: 0, coDep: 0, source: 'tally'
+                                });
+                            }
+                        });
+                        depComputeAll();
+                        depResetBtn(btn);
+                        srToast(`Synced ${data.data.length} ledgers from Tally`, 'success');
+                        return;
+                    }
+                }
+            } catch(e) { console.log('Tally API not available, loading demo data'); }
+
+            // Demo data fallback
+            setTimeout(() => {
+                const demo = [
+                    { name:'CNC Milling Machine', group:'Plant & Machinery', date:'2023-07-15', cost:2500000 },
+                    { name:'Office Furniture Set', group:'Furniture & Fixtures', date:'2024-01-10', cost:350000 },
+                    { name:'Toyota Fortuner (Office)', group:'Motor Vehicles', date:'2023-04-01', cost:3200000 },
+                    { name:'Dell Servers (Rack)', group:'Computers', date:'2024-06-01', cost:800000 },
+                    { name:'HP Laptops (5 units)', group:'Computers', date:'2025-01-15', cost:500000 },
+                    { name:'Factory Building', group:'Buildings', date:'2020-04-01', cost:15000000 },
+                    { name:'Lathe Machine', group:'Plant & Machinery', date:'2024-09-20', cost:1800000 },
+                    { name:'Canon Printers (3)', group:'Office Equipment', date:'2025-02-01', cost:180000 },
+                ];
+                demo.forEach(d => {
+                    const r = DEP_RATE_MAP[d.group];
+                    depAssets.push({ id: ++depIdCounter, ...d, itRate: r.itRate, itMethod: r.itMethod, coLife: r.coLife, coMethod: r.coMethod, residual: Math.round(d.cost * 0.05), itDep: 0, coDep: 0, source: 'tally' });
+                });
+                depComputeAll();
+                depResetBtn(btn);
+                srToast('8 assets synced from Tally (demo)', 'success');
+            }, 1500);
+        }
+
+        function depResetBtn(btn) {
+            btn.disabled = false;
+            btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Sync from Tally';
+        }
+
+        function mapTallyGroup(parent) {
+            const p = (parent || '').toLowerCase();
+            if (p.includes('plant') || p.includes('machinery')) return 'Plant & Machinery';
+            if (p.includes('furniture') || p.includes('fixture')) return 'Furniture & Fixtures';
+            if (p.includes('vehicle') || p.includes('motor')) return 'Motor Vehicles';
+            if (p.includes('computer')) return 'Computers';
+            if (p.includes('building')) return 'Buildings';
+            if (p.includes('intangible')) return 'Intangible Assets';
+            if (p.includes('office') || p.includes('equipment')) return 'Office Equipment';
+            return 'Plant & Machinery';
+        }
+
+        // ── Load Tally companies ──
+        async function depLoadCompanies() {
+            try {
+                const res = await authFetch('/tally/companies');
+                if (res && res.ok) {
+                    const companies = await res.json();
+                    const sel = document.getElementById('dep-company-select');
+                    companies.forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = c; sel.appendChild(o); });
+                }
+            } catch(e) {}
+        }
+        function depLoadAssets() { /* Will call backend when ready */ }
+        depLoadCompanies();
+    </script>
+
+</body>
+</html>

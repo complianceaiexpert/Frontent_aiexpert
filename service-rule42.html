@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rule 42 ITC Reversal — Suvidha AI</title>
+    <meta name="description" content="Calculate proportionate ITC reversal under Rule 42 of CGST Rules. Sync monthly data from Tally.">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="statutory-reporting.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="app-topbar" data-active="dashboard"></div>
+    <script src="app-topbar.js"></script>
+
+    <div class="sr-layout">
+        <aside class="sr-sidebar">
+            <div id="app-client-nav" data-active="statutory-reporting"></div>
+            <script src="app-client-nav.js"></script>
+        </aside>
+
+        <main class="sr-main">
+            <div class="sr-sh">
+                <h1>🧮 Rule 42 ITC Reversal Workings <span class="sr-title-badge">TALLY SYNC</span></h1>
+                <p>Calculate proportionate ITC reversal for inputs/input services used for exempt &amp; taxable supplies under Rule 42 of CGST Rules.</p>
+            </div>
+
+            <!-- Toolbar -->
+            <div class="dep-toolbar">
+                <div class="dep-toolbar-left">
+                    <select class="dep-select" id="r42-company-select">
+                        <option value="">— Select Tally Company —</option>
+                    </select>
+                    <select class="dep-select" id="r42-fy-select">
+                        <option value="2025-26">FY 2025-26</option>
+                        <option value="2024-25">FY 2024-25</option>
+                        <option value="2023-24">FY 2023-24</option>
+                    </select>
+                </div>
+                <div class="dep-toolbar-right">
+                    <button class="sr-btn sr-btn-secondary" onclick="r42SyncFromTally()" id="r42-sync-btn">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+                        Sync from Tally
+                    </button>
+                    <button class="sr-btn sr-btn-primary" onclick="r42ComputeAll()">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                        Compute Reversal
+                    </button>
+                </div>
+            </div>
+
+            <!-- Summary Cards -->
+            <div class="dep-stats-row">
+                <div class="dep-stat-card">
+                    <div class="dep-stat-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+                    <div><div class="dep-stat-val" id="r42-stat-total">₹ 0</div><div class="dep-stat-label">Total ITC Availed</div></div>
+                </div>
+                <div class="dep-stat-card">
+                    <div class="dep-stat-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+                    <div><div class="dep-stat-val" id="r42-stat-eligible">₹ 0</div><div class="dep-stat-label">Eligible ITC</div></div>
+                </div>
+                <div class="dep-stat-card">
+                    <div class="dep-stat-icon diff"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+                    <div><div class="dep-stat-val" id="r42-stat-reversal">₹ 0</div><div class="dep-stat-label">Total Reversal</div></div>
+                </div>
+                <div class="dep-stat-card">
+                    <div class="dep-stat-icon amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg></div>
+                    <div><div class="dep-stat-val" id="r42-stat-taxable">₹ 0</div><div class="dep-stat-label">Taxable Turnover</div></div>
+                </div>
+                <div class="dep-stat-card">
+                    <div class="dep-stat-icon it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
+                    <div><div class="dep-stat-val" id="r42-stat-exempt">₹ 0</div><div class="dep-stat-label">Exempt Turnover</div></div>
+                </div>
+            </div>
+
+            <!-- ═══ Monthly Register ═══ -->
+            <div class="r42-page-section" id="sec-register">
+                <div class="sr-panel" style="padding:0">
+                    <div class="dep-table-header">
+                        <div class="dep-table-title">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                            Monthly ITC Register
+                            <span class="sr-badge amber" id="r42-month-badge">0 months</span>
+                        </div>
+                        <button class="sr-btn sr-btn-secondary" style="font-size:.68rem;padding:.3rem .6rem" onclick="r42AddMonth()">+ Add Month</button>
+                    </div>
+                    <div class="sr-table-wrap">
+                        <table class="sr-table" id="r42-table">
+                            <thead><tr>
+                                <th>Month</th>
+                                <th style="text-align:right">Total ITC (T)</th>
+                                <th style="text-align:right">Exempt ITC (T1)</th>
+                                <th style="text-align:right">Non-Biz (T2)</th>
+                                <th style="text-align:right">Cap Goods</th>
+                                <th style="text-align:right">Taxable TO</th>
+                                <th style="text-align:right">Exempt TO</th>
+                                <th style="text-align:right">Total TO</th>
+                                <th style="text-align:right;color:#dc2626">Reversal</th>
+                                <th style="text-align:right;color:#059669">Eligible</th>
+                                <th></th>
+                            </tr></thead>
+                            <tbody id="r42-tbody">
+                                <tr><td colspan="11" style="text-align:center;padding:2.5rem;color:#94a3b8">
+                                    <div style="font-size:1.8rem;margin-bottom:.5rem;opacity:.3">🧮</div>
+                                    Sync from Tally or add months manually
+                                </td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══ Working Detail ═══ -->
+            <div class="r42-page-section" id="sec-working">
+                <div class="sr-info-banner">
+                    <div class="sr-info-icon">💡</div>
+                    <p>Click the <strong>📋</strong> button on any month in the register to view the detailed Rule 42 working for that period.</p>
+                </div>
+                <div class="sr-panel" id="r42-detail-panel" style="display:none">
+                    <div class="sr-panel-title" id="r42-detail-title">② Rule 42 Working</div>
+                    <div id="r42-detail-content"></div>
+                </div>
+            </div>
+
+            <!-- ═══ Annual Summary ═══ -->
+            <div class="r42-page-section" id="sec-annual">
+                <div class="sr-panel" id="r42-annual-panel">
+                    <div class="sr-panel-title">Annual Rule 42 Summary — FY 2025-26</div>
+                    <div id="r42-annual-content">
+                        <div style="text-align:center;padding:2rem;color:#94a3b8;font-size:.8rem">
+                            <div style="font-size:1.5rem;margin-bottom:.5rem;opacity:.3">📋</div>
+                            Add monthly data to see annual summary.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div class="sr-toast-ct" id="sr-toast-ct"></div>
+
+    <script src="api_config.js"></script>
+    <script>
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (!user) window.location.href = 'index.html';
+        const params = new URLSearchParams(window.location.search);
+        const clientId = params.get('clientId');
+
+
+        function srToast(msg, type='info') {
+            const ct = document.getElementById('sr-toast-ct');
+            const t = document.createElement('div');
+            const bg = {success:'#059669',warning:'#d97706',info:'#3b82f6',error:'#dc2626'}[type]||'#3b82f6';
+            t.style.cssText = `padding:.55rem 1rem;background:${bg};color:#fff;border-radius:8px;font-size:.78rem;font-weight:600;box-shadow:0 4px 16px rgba(0,0,0,.15);animation:srFadeIn .3s ease`;
+            t.textContent = msg;
+            ct.appendChild(t);
+            setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 3000);
+        }
+
+        function formatINR(n) {
+            if (n === undefined || n === null || isNaN(n)) return '₹ 0';
+            const abs = Math.abs(Math.round(n));
+            const s = abs.toString();
+            let formatted;
+            if (s.length > 3) { formatted = s.slice(0,-3).replace(/\B(?=(\d{2})+(?!\d))/g,',')+','+s.slice(-3); }
+            else { formatted = s; }
+            return (n < 0 ? '-' : '') + '₹ ' + formatted;
+        }
+
+        // ═══════════════════════════════════════════════════
+        // RULE 42 ENGINE
+        // ═══════════════════════════════════════════════════
+
+        const R42_MONTHS = ['April 2025','May 2025','June 2025','July 2025','August 2025','September 2025','October 2025','November 2025','December 2025','January 2026','February 2026','March 2026'];
+        let r42Data = [];
+        let r42IdCounter = 0;
+
+        function r42Compute(row) {
+            const T = row.totalITC, T1 = row.exemptITC, T2 = row.nonBizITC, CG = row.capGoods;
+            const C1 = T - T1 - T2, cc = C1 - CG;
+            const D1 = row.totalTO > 0 ? (cc * row.exemptTO / row.totalTO) : 0;
+            const D2 = cc * 0.05;
+            row.reversal = Math.round(T1 + T2 + D1 + D2);
+            row.eligible = Math.round(T - row.reversal);
+        }
+
+        function r42ComputeAll() {
+            r42Data.forEach(r => r42Compute(r));
+            r42RenderTable();
+            r42UpdateStats();
+            r42UpdateAnnual();
+            if (r42Data.length > 0) srToast('Reversal computed for all months', 'success');
+        }
+
+        function r42UpdateStats() {
+            document.getElementById('r42-stat-total').textContent = formatINR(r42Data.reduce((s,r) => s+r.totalITC, 0));
+            document.getElementById('r42-stat-eligible').textContent = formatINR(r42Data.reduce((s,r) => s+r.eligible, 0));
+            document.getElementById('r42-stat-reversal').textContent = formatINR(r42Data.reduce((s,r) => s+r.reversal, 0));
+            document.getElementById('r42-stat-taxable').textContent = formatINR(r42Data.reduce((s,r) => s+r.taxableTO, 0));
+            document.getElementById('r42-stat-exempt').textContent = formatINR(r42Data.reduce((s,r) => s+r.exemptTO, 0));
+            document.getElementById('r42-month-badge').textContent = r42Data.length + ' month' + (r42Data.length !== 1 ? 's' : '');
+        }
+
+        function r42AddMonth() {
+            const used = r42Data.map(r => r.month);
+            const next = R42_MONTHS.find(m => !used.includes(m)) || `Month ${r42Data.length+1}`;
+            r42Data.push({ id: ++r42IdCounter, month: next, totalITC:0, exemptITC:0, nonBizITC:0, capGoods:0, taxableTO:0, exemptTO:0, totalTO:0, reversal:0, eligible:0, source:'manual' });
+            r42RenderTable(); r42UpdateStats();
+        }
+
+        function r42DeleteMonth(id) { r42Data = r42Data.filter(r => r.id !== id); r42ComputeAll(); }
+
+        // ── Tally Sync ──
+        async function r42SyncFromTally() {
+            const btn = document.getElementById('r42-sync-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="sr-spin"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Syncing…';
+
+            try {
+                const company = document.getElementById('r42-company-select').value;
+                if (company) {
+                    const [purchRes, salesRes] = await Promise.all([
+                        authFetch(`/tally/vouchers?company_name=${encodeURIComponent(company)}&voucher_type=Purchase&per_page=200`),
+                        authFetch(`/tally/vouchers?company_name=${encodeURIComponent(company)}&voucher_type=Sales&per_page=200`),
+                    ]);
+                    if (purchRes?.ok && salesRes?.ok) {
+                        const purchases = (await purchRes.json()).data || [];
+                        const sales = (await salesRes.json()).data || [];
+                        const monthMap = {};
+                        purchases.forEach(v => { const d=v.date; if(!d)return; const k=fmtTallyMonth(d); if(!monthMap[k])monthMap[k]={t:0,tx:0,ex:0}; monthMap[k].t+=Math.abs(v.amount||0)*0.18; });
+                        sales.forEach(v => { const d=v.date; if(!d)return; const k=fmtTallyMonth(d); if(!monthMap[k])monthMap[k]={t:0,tx:0,ex:0}; monthMap[k].tx+=Math.abs(v.amount||0); });
+                        if (Object.keys(monthMap).length > 0) {
+                            r42Data = [];
+                            for (const [m, v] of Object.entries(monthMap).sort()) {
+                                r42Data.push({ id:++r42IdCounter, month:m, totalITC:Math.round(v.t), exemptITC:0, nonBizITC:0, capGoods:0, taxableTO:Math.round(v.tx), exemptTO:0, totalTO:Math.round(v.tx), reversal:0, eligible:0, source:'tally' });
+                            }
+                            r42ComputeAll(); r42ResetBtn(btn);
+                            srToast(`Synced ${r42Data.length} months from Tally`, 'success');
+                            return;
+                        }
+                    }
+                }
+            } catch(e) {}
+
+            setTimeout(() => {
+                r42Data = [];
+                [{m:'April 2025',t:485000,t1:32000,t2:8000,cg:15000,tx:2800000,ex:450000},
+                 {m:'May 2025',t:520000,t1:28000,t2:5000,cg:18000,tx:3100000,ex:380000},
+                 {m:'June 2025',t:498000,t1:35000,t2:12000,cg:10000,tx:2950000,ex:520000},
+                 {m:'July 2025',t:540000,t1:42000,t2:6000,cg:22000,tx:3200000,ex:410000},
+                 {m:'August 2025',t:510000,t1:30000,t2:9000,cg:12000,tx:3050000,ex:480000},
+                 {m:'September 2025',t:475000,t1:25000,t2:7000,cg:20000,tx:2700000,ex:350000},
+                 {m:'October 2025',t:560000,t1:45000,t2:11000,cg:25000,tx:3400000,ex:550000},
+                 {m:'November 2025',t:530000,t1:38000,t2:8500,cg:16000,tx:3150000,ex:420000},
+                 {m:'December 2025',t:490000,t1:29000,t2:6500,cg:14000,tx:2900000,ex:390000},
+                 {m:'January 2026',t:545000,t1:40000,t2:10000,cg:19000,tx:3300000,ex:470000},
+                 {m:'February 2026',t:505000,t1:33000,t2:7500,cg:13000,tx:2850000,ex:440000},
+                 {m:'March 2026',t:580000,t1:48000,t2:14000,cg:28000,tx:3500000,ex:600000}
+                ].forEach(d => {
+                    r42Data.push({ id:++r42IdCounter, month:d.m, totalITC:d.t, exemptITC:d.t1, nonBizITC:d.t2, capGoods:d.cg, taxableTO:d.tx, exemptTO:d.ex, totalTO:d.tx+d.ex, reversal:0, eligible:0, source:'tally' });
+                });
+                r42ComputeAll(); r42ResetBtn(btn);
+                srToast('12 months synced from Tally (demo)', 'success');
+            }, 1500);
+        }
+
+        function r42ResetBtn(btn) { btn.disabled=false; btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Sync from Tally'; }
+
+        function fmtTallyMonth(d) { const y=d.substring(0,4),m=parseInt(d.substring(4,6)); return ['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][m]+' '+y; }
+
+        // ── Render ──
+        function r42RenderTable() {
+            const tbody = document.getElementById('r42-tbody');
+            if (!r42Data.length) { tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;padding:2.5rem;color:#94a3b8"><div style="font-size:1.8rem;margin-bottom:.5rem;opacity:.3">🧮</div>Sync from Tally or add months manually</td></tr>'; return; }
+            let html = '';
+            r42Data.forEach(r => {
+                const src = r.source==='tally' ? '<span style="font-size:.48rem;font-weight:700;padding:1px 4px;border-radius:3px;background:#dbeafe;color:#1e3a8a;margin-left:.3rem">TALLY</span>' : '';
+                html += `<tr>
+                    <td style="font-weight:600;font-size:.78rem;white-space:nowrap">${r.month}${src}</td>
+                    <td style="text-align:right;font-weight:600;font-family:'Outfit',sans-serif">${formatINR(r.totalITC)}</td>
+                    <td style="text-align:right;color:#dc2626;font-size:.78rem">${formatINR(r.exemptITC)}</td>
+                    <td style="text-align:right;color:#dc2626;font-size:.78rem">${formatINR(r.nonBizITC)}</td>
+                    <td style="text-align:right;font-size:.78rem">${formatINR(r.capGoods)}</td>
+                    <td style="text-align:right;font-size:.78rem">${formatINR(r.taxableTO)}</td>
+                    <td style="text-align:right;color:#92400e;font-size:.78rem">${formatINR(r.exemptTO)}</td>
+                    <td style="text-align:right;font-size:.78rem">${formatINR(r.totalTO)}</td>
+                    <td style="text-align:right;font-weight:700;color:#dc2626;font-family:'Outfit',sans-serif">${formatINR(r.reversal)}</td>
+                    <td style="text-align:right;font-weight:700;color:#059669;font-family:'Outfit',sans-serif">${formatINR(r.eligible)}</td>
+                    <td style="white-space:nowrap">
+                        <button class="sr-btn sr-btn-secondary" style="font-size:.6rem;padding:.2rem .4rem" onclick="r42ShowDetail(${r.id})" title="Working">📋</button>
+                        <button class="sr-btn sr-btn-secondary" style="font-size:.6rem;padding:.2rem .4rem;color:#dc2626;border-color:#fecaca" onclick="r42DeleteMonth(${r.id})" title="Delete">✕</button>
+                    </td>
+                </tr>`;
+            });
+            const sT=r42Data.reduce((s,r)=>s+r.totalITC,0),sR=r42Data.reduce((s,r)=>s+r.reversal,0),sE=r42Data.reduce((s,r)=>s+r.eligible,0);
+            const sTx=r42Data.reduce((s,r)=>s+r.taxableTO,0),sEx=r42Data.reduce((s,r)=>s+r.exemptTO,0),sTo=r42Data.reduce((s,r)=>s+r.totalTO,0);
+            html += `<tr class="sr-row-total"><td style="font-weight:800">ANNUAL TOTAL</td><td style="text-align:right;font-weight:800;font-family:'Outfit',sans-serif">${formatINR(sT)}</td><td colspan="3"></td><td style="text-align:right;font-weight:700;font-size:.75rem">${formatINR(sTx)}</td><td style="text-align:right;font-weight:700;font-size:.75rem;color:#92400e">${formatINR(sEx)}</td><td style="text-align:right;font-weight:700;font-size:.75rem">${formatINR(sTo)}</td><td style="text-align:right;font-weight:800;color:#dc2626;font-family:'Outfit',sans-serif">${formatINR(sR)}</td><td style="text-align:right;font-weight:800;color:#059669;font-family:'Outfit',sans-serif">${formatINR(sE)}</td><td></td></tr>`;
+            tbody.innerHTML = html;
+        }
+
+        // ── Detail Working ──
+        function r42ShowDetail(id) {
+            const r = r42Data.find(x => x.id === id); if (!r) return;
+
+            const T=r.totalITC,T1=r.exemptITC,T2=r.nonBizITC,CG=r.capGoods;
+            const C1=T-T1-T2,cc=C1-CG;
+            const D1=r.totalTO>0?(cc*r.exemptTO/r.totalTO):0;
+            const D2=cc*0.05;
+            const rev=T1+T2+D1+D2, elig=T-rev;
+
+            document.getElementById('r42-detail-title').textContent = `② Rule 42 Working — ${r.month}`;
+            document.getElementById('r42-detail-content').innerHTML = `<div class="sr-table-wrap"><table class="sr-table">
+                <thead><tr><th>Particulars</th><th style="text-align:right">Amount (₹)</th><th>Reference</th></tr></thead>
+                <tbody>
+                <tr><td>Total ITC availed</td><td style="text-align:right;font-weight:700">${formatINR(T)}</td><td>Input</td></tr>
+                <tr><td>Less: ITC attributable to exempt supplies (T1)</td><td style="text-align:right;color:#dc2626">(${formatINR(T1)})</td><td>Rule 42(1)(a)</td></tr>
+                <tr><td>Less: ITC for non-business use (T2)</td><td style="text-align:right;color:#dc2626">(${formatINR(T2)})</td><td>Rule 42(1)(b)</td></tr>
+                <tr class="sr-row-subtotal"><td>Common Credit (C1 = T - T1 - T2)</td><td style="text-align:right">${formatINR(C1)}</td><td>Rule 42(1)(c)</td></tr>
+                <tr><td>Less: ITC on capital goods excluded</td><td style="text-align:right;color:#dc2626">(${formatINR(CG)})</td><td>Rule 42(1)(d)</td></tr>
+                <tr style="background:#fefce8"><td style="font-weight:600">Net Common Credit for apportionment</td><td style="text-align:right;font-weight:700">${formatINR(cc)}</td><td></td></tr>
+                <tr><td>D1 = Common Credit × (Exempt TO / Total TO)</td><td style="text-align:right;color:#dc2626">(${formatINR(D1)})</td><td>${formatINR(cc)} × ${formatINR(r.exemptTO)} / ${formatINR(r.totalTO)}</td></tr>
+                <tr><td>D2 = 5% of Common Credit</td><td style="text-align:right;color:#dc2626">(${formatINR(D2)})</td><td>Rule 42(1)(m)</td></tr>
+                <tr class="sr-row-total"><td style="font-weight:800">Total ITC to Reverse</td><td style="text-align:right;font-weight:800;color:#dc2626">${formatINR(rev)}</td><td>T1 + T2 + D1 + D2</td></tr>
+                <tr style="background:#ecfdf5"><td style="font-weight:800;color:#059669">Eligible ITC</td><td style="text-align:right;font-weight:800;color:#059669">${formatINR(elig)}</td><td>T - Reversal</td></tr>
+                </tbody></table></div>`;
+            document.getElementById('r42-detail-panel').style.display = 'block';
+        }
+
+        // ── Annual Summary ──
+        function r42UpdateAnnual() {
+            if (!r42Data.length) return;
+            const sT=r42Data.reduce((s,r)=>s+r.totalITC,0);
+            const sT1=r42Data.reduce((s,r)=>s+r.exemptITC,0);
+            const sT2=r42Data.reduce((s,r)=>s+r.nonBizITC,0);
+            const sCG=r42Data.reduce((s,r)=>s+r.capGoods,0);
+            const sTx=r42Data.reduce((s,r)=>s+r.taxableTO,0);
+            const sEx=r42Data.reduce((s,r)=>s+r.exemptTO,0);
+            const sTo=r42Data.reduce((s,r)=>s+r.totalTO,0);
+            const C1=sT-sT1-sT2, cc=C1-sCG;
+            const D1=sTo>0?(cc*sEx/sTo):0, D2=cc*0.05;
+            const rev=sT1+sT2+D1+D2, elig=sT-rev;
+            const pct = sT > 0 ? ((rev/sT)*100).toFixed(1) : '0.0';
+
+            let html = `<div class="sr-form-grid cols-3" style="margin-bottom:1rem">
+                <div style="text-align:center"><div style="font-size:1.5rem;font-weight:800;color:#0f172a;font-family:'Outfit',sans-serif">${formatINR(sT)}</div><div style="font-size:.68rem;color:#64748b;font-weight:600;margin-top:.15rem">Total ITC Availed (Annual)</div></div>
+                <div style="text-align:center"><div style="font-size:1.5rem;font-weight:800;color:#dc2626;font-family:'Outfit',sans-serif">${formatINR(rev)}</div><div style="font-size:.68rem;color:#64748b;font-weight:600;margin-top:.15rem">Total Reversal (${pct}%)</div></div>
+                <div style="text-align:center"><div style="font-size:1.5rem;font-weight:800;color:#059669;font-family:'Outfit',sans-serif">${formatINR(elig)}</div><div style="font-size:.68rem;color:#64748b;font-weight:600;margin-top:.15rem">Net Eligible ITC</div></div>
+            </div>`;
+            html += `<div class="sr-table-wrap"><table class="sr-table">
+                <thead><tr><th>Particulars</th><th style="text-align:right">Annual Amount (₹)</th><th>Reference</th></tr></thead>
+                <tbody>
+                <tr><td>Total ITC availed</td><td style="text-align:right;font-weight:700">${formatINR(sT)}</td><td>Annual total</td></tr>
+                <tr><td>Less: Exempt ITC (T1)</td><td style="text-align:right;color:#dc2626">(${formatINR(sT1)})</td><td>Rule 42(1)(a)</td></tr>
+                <tr><td>Less: Non-business ITC (T2)</td><td style="text-align:right;color:#dc2626">(${formatINR(sT2)})</td><td>Rule 42(1)(b)</td></tr>
+                <tr class="sr-row-subtotal"><td>Common Credit (C1)</td><td style="text-align:right">${formatINR(C1)}</td><td></td></tr>
+                <tr><td>Less: Capital goods excluded</td><td style="text-align:right;color:#dc2626">(${formatINR(sCG)})</td><td></td></tr>
+                <tr style="background:#fefce8"><td style="font-weight:600">Net Common Credit</td><td style="text-align:right;font-weight:700">${formatINR(cc)}</td><td></td></tr>
+                <tr><td>D1 (Proportionate exempt)</td><td style="text-align:right;color:#dc2626">(${formatINR(D1)})</td><td>${formatINR(cc)} × ${formatINR(sEx)} / ${formatINR(sTo)}</td></tr>
+                <tr><td>D2 (5% blocked credit)</td><td style="text-align:right;color:#dc2626">(${formatINR(D2)})</td><td>Rule 42(1)(m)</td></tr>
+                <tr class="sr-row-total"><td style="font-weight:800">Total Annual Reversal</td><td style="text-align:right;font-weight:800;color:#dc2626">${formatINR(rev)}</td><td></td></tr>
+                <tr style="background:#ecfdf5"><td style="font-weight:800;color:#059669">Annual Eligible ITC</td><td style="text-align:right;font-weight:800;color:#059669">${formatINR(elig)}</td><td></td></tr>
+                </tbody></table></div>`;
+
+            document.getElementById('r42-annual-content').innerHTML = html;
+        }
+
+        // ── Load Companies ──
+        async function r42LoadCompanies() {
+            try { const res = await authFetch('/tally/companies'); if (res?.ok) { const c = await res.json(); const sel = document.getElementById('r42-company-select'); c.forEach(x => { const o=document.createElement('option'); o.value=x; o.textContent=x; sel.appendChild(o); }); } } catch(e) {}
+        }
+        r42LoadCompanies();
+    </script>
+
+</body>
+</html>

@@ -33,6 +33,16 @@
                     Manual Entry
                 </div>
                 <div class="fi-sb-divider"></div>
+                <div class="fi-sb-label" style="padding:0 .75rem;font-size:.6rem;color:#94a3b8;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.15rem">PMS</div>
+                <div class="fi-sb-item" onclick="fiNav('stock-register',this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h18v18H3z"/><path d="M3 9h18"/><path d="M3 15h18"/><path d="M9 3v18"/></svg>
+                    Stock Register
+                </div>
+                <div class="fi-sb-item" onclick="fiNav('capital-gains',this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                    Capital Gains
+                </div>
+                <div class="fi-sb-divider"></div>
                 <div class="fi-sb-item" onclick="fiNav('pending',this)">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
                     Pending Entries
@@ -202,6 +212,110 @@
                     </div>
                 </div>
 
+                <!-- Row 2.5: Portfolio Analysis Overview -->
+                <div class="fi-dash-grid-2" id="fi-portfolio-analysis-row">
+                    <!-- Sector-wise Allocation -->
+                    <div class="fi-dash-card fi-pa-card">
+                        <div class="fi-dc-header">
+                            <span class="fi-dc-label">SECTOR-WISE ALLOCATION</span>
+                            <span class="fi-dc-ay" id="fi-pa-sector-count">0 Sectors</span>
+                        </div>
+                        <div class="fi-pa-sector-body">
+                            <div class="fi-pa-donut-wrap">
+                                <div class="fi-pa-donut" id="fi-pa-donut">
+                                    <div class="fi-pa-donut-center">
+                                        <div class="fi-pa-donut-center-val" id="fi-pa-donut-total">0</div>
+                                        <div class="fi-pa-donut-center-label">Holdings</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="fi-pa-sector-list" id="fi-pa-sector-list">
+                                <div class="fi-pa-empty-hint">Upload statements to view sector breakdown</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Market Cap Distribution -->
+                    <div class="fi-dash-card fi-pa-card">
+                        <div class="fi-dc-header">
+                            <span class="fi-dc-label">MARKET CAP DISTRIBUTION</span>
+                            <span class="fi-dc-ay" id="fi-pa-cap-label">Portfolio Mix</span>
+                        </div>
+                        <div class="fi-pa-cap-body">
+                            <!-- Stacked Bar -->
+                            <div class="fi-pa-cap-bar-wrap">
+                                <div class="fi-pa-cap-bar" id="fi-pa-cap-bar">
+                                    <div class="fi-pa-cap-seg large" id="fi-pa-seg-large" style="width:0%"></div>
+                                    <div class="fi-pa-cap-seg mid" id="fi-pa-seg-mid" style="width:0%"></div>
+                                    <div class="fi-pa-cap-seg small" id="fi-pa-seg-small" style="width:0%"></div>
+                                    <div class="fi-pa-cap-seg micro" id="fi-pa-seg-micro" style="width:0%"></div>
+                                </div>
+                                <div class="fi-pa-cap-legend">
+                                    <span class="fi-pa-cap-dot large"></span> Large &nbsp;
+                                    <span class="fi-pa-cap-dot mid"></span> Mid &nbsp;
+                                    <span class="fi-pa-cap-dot small"></span> Small &nbsp;
+                                    <span class="fi-pa-cap-dot micro"></span> Micro
+                                </div>
+                            </div>
+                            <!-- Cap cards -->
+                            <div class="fi-pa-cap-grid" id="fi-pa-cap-grid">
+                                <div class="fi-pa-cap-card">
+                                    <div class="fi-pa-cap-icon large">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+                                    </div>
+                                    <div class="fi-pa-cap-info">
+                                        <div class="fi-pa-cap-name">Large Cap</div>
+                                        <div class="fi-pa-cap-desc">₹20,000 Cr+</div>
+                                    </div>
+                                    <div class="fi-pa-cap-data">
+                                        <div class="fi-pa-cap-pct" id="fi-cap-large-pct">0%</div>
+                                        <div class="fi-pa-cap-val" id="fi-cap-large-val">₹ 0</div>
+                                    </div>
+                                </div>
+                                <div class="fi-pa-cap-card">
+                                    <div class="fi-pa-cap-icon mid">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                                    </div>
+                                    <div class="fi-pa-cap-info">
+                                        <div class="fi-pa-cap-name">Mid Cap</div>
+                                        <div class="fi-pa-cap-desc">₹5,000 – ₹20,000 Cr</div>
+                                    </div>
+                                    <div class="fi-pa-cap-data">
+                                        <div class="fi-pa-cap-pct" id="fi-cap-mid-pct">0%</div>
+                                        <div class="fi-pa-cap-val" id="fi-cap-mid-val">₹ 0</div>
+                                    </div>
+                                </div>
+                                <div class="fi-pa-cap-card">
+                                    <div class="fi-pa-cap-icon small">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+                                    </div>
+                                    <div class="fi-pa-cap-info">
+                                        <div class="fi-pa-cap-name">Small Cap</div>
+                                        <div class="fi-pa-cap-desc">₹500 – ₹5,000 Cr</div>
+                                    </div>
+                                    <div class="fi-pa-cap-data">
+                                        <div class="fi-pa-cap-pct" id="fi-cap-small-pct">0%</div>
+                                        <div class="fi-pa-cap-val" id="fi-cap-small-val">₹ 0</div>
+                                    </div>
+                                </div>
+                                <div class="fi-pa-cap-card">
+                                    <div class="fi-pa-cap-icon micro">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                                    </div>
+                                    <div class="fi-pa-cap-info">
+                                        <div class="fi-pa-cap-name">Micro Cap</div>
+                                        <div class="fi-pa-cap-desc">Below ₹500 Cr</div>
+                                    </div>
+                                    <div class="fi-pa-cap-data">
+                                        <div class="fi-pa-cap-pct" id="fi-cap-micro-pct">0%</div>
+                                        <div class="fi-pa-cap-val" id="fi-cap-micro-val">₹ 0</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Row 3: Recent Statements -->
                 <div class="fi-dash-card" style="margin-top:0">
                     <div class="fi-dc-header"><span class="fi-dc-label">RECENT STATEMENTS</span><button class="fi-btn" style="margin-left:auto;font-size:.68rem;padding:.25rem .55rem" onclick="fiNav('statements',document.querySelector('[onclick*=statements]'))">View All →</button></div>
@@ -218,7 +332,7 @@
             <div class="fi-section" id="sec-statements">
                 <div class="fi-sh"><h1>Statements</h1><p>Upload Demat, MF, or PMS statements — AI reads, parses, and generates Tally entries</p></div>
 
-                <!-- Upload Cards -->
+                <!-- Demat / MF Upload Cards (existing) -->
                 <div id="fi-upload-cards" class="fi-upload-cards">
                     <label class="fi-upload-card">
                         <input type="file" accept=".pdf,.xlsx,.xls,.csv" onchange="handleFIUpload(this,'demat')" hidden>
@@ -236,14 +350,47 @@
                         <div class="fi-uc-formats"><span>PDF</span><span>Excel</span><span>CSV</span></div>
                         <div class="fi-uc-cta">Click to Upload</div>
                     </label>
-                    <label class="fi-upload-card">
-                        <input type="file" accept=".pdf,.xlsx,.xls,.csv" onchange="handleFIUpload(this,'pms')" hidden>
-                        <div class="fi-uc-icon pms"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></div>
-                        <div class="fi-uc-name">PMS Statement</div>
-                        <div class="fi-uc-desc">All major PMS providers</div>
-                        <div class="fi-uc-formats"><span>PDF</span><span>Excel</span><span>CSV</span></div>
-                        <div class="fi-uc-cta">Click to Upload</div>
-                    </label>
+                </div>
+
+                <!-- PMS 3-PDF Upload Section -->
+                <div class="fi-pms-upload-section" style="margin-top:1.5rem">
+                    <div class="fi-dc-header" style="margin-bottom:.75rem">
+                        <span class="fi-dc-label">PMS STATEMENT UPLOAD</span>
+                        <button class="fi-btn" style="margin-left:auto;font-size:.68rem;padding:.25rem .55rem" onclick="showPMSAccountModal()">+ New PMS Account</button>
+                    </div>
+                    <div style="display:flex;gap:.75rem;align-items:center;margin-bottom:1rem;flex-wrap:wrap">
+                        <label style="font-size:.72rem;font-weight:600;color:#64748b">PMS Account:</label>
+                        <select class="fi-form-select" id="fi-pms-account-select" onchange="onPMSAccountChange()" style="min-width:220px">
+                            <option value="">— Select PMS Account —</option>
+                        </select>
+                        <span id="fi-pms-accrual-badge" class="fi-sb-badge" style="display:none;background:#6366f1;font-size:.6rem">Quarterly Actuals</span>
+                    </div>
+                    <div class="fi-upload-cards" id="fi-pms-upload-cards" style="display:none">
+                        <label class="fi-upload-card">
+                            <input type="file" accept=".pdf,.xlsx,.xls,.csv" onchange="handlePMSUpload(this,'transaction')" hidden>
+                            <div class="fi-uc-icon pms"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+                            <div class="fi-uc-name">📊 Transaction Statement</div>
+                            <div class="fi-uc-desc">Buy/Sell trades, Brokerage, STT</div>
+                            <div class="fi-uc-formats"><span>PDF</span><span>Excel</span></div>
+                            <div class="fi-uc-cta">Upload Transactions</div>
+                        </label>
+                        <label class="fi-upload-card">
+                            <input type="file" accept=".pdf,.xlsx,.xls,.csv" onchange="handlePMSUpload(this,'dividend')" hidden>
+                            <div class="fi-uc-icon" style="background:linear-gradient(135deg,#059669,#10b981)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
+                            <div class="fi-uc-name">💰 Dividend Statement</div>
+                            <div class="fi-uc-desc">Ex-date, TDS, Gross/Net per security</div>
+                            <div class="fi-uc-formats"><span>PDF</span><span>Excel</span></div>
+                            <div class="fi-uc-cta">Upload Dividends</div>
+                        </label>
+                        <label class="fi-upload-card">
+                            <input type="file" accept=".pdf,.xlsx,.xls,.csv" onchange="handlePMSUpload(this,'expenses')" hidden>
+                            <div class="fi-uc-icon" style="background:linear-gradient(135deg,#dc2626,#f87171)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+                            <div class="fi-uc-name">💳 Statement of Expenses</div>
+                            <div class="fi-uc-desc">Mgmt Fee, Custody, STT, Performance Fee</div>
+                            <div class="fi-uc-formats"><span>PDF</span><span>Excel</span></div>
+                            <div class="fi-uc-cta">Upload Expenses</div>
+                        </label>
+                    </div>
                 </div>
 
                 <!-- Uploaded Statements Table -->
@@ -254,11 +401,69 @@
                             <option value="all">All Types</option>
                             <option value="demat">Demat</option>
                             <option value="mutual_fund">Mutual Fund</option>
-                            <option value="pms">PMS</option>
+                            <option value="pms_transaction">PMS Transaction</option>
+                            <option value="pms_dividend">PMS Dividend</option>
+                            <option value="pms_expenses">PMS Expenses</option>
                         </select>
                     </div>
                     <div class="fi-table-wrap"><table class="fi-table"><thead><tr><th>Date</th><th>Type</th><th>File</th><th>Status</th><th>Entries</th><th>Action</th></tr></thead>
                     <tbody id="fi-history-tbody"><tr><td colspan="6" style="text-align:center;padding:2rem;color:#9ca3af">No uploads yet — use the cards above to upload</td></tr></tbody></table></div>
+                </div>
+            </div>
+
+            <!-- ━━━ STOCK REGISTER ━━━ -->
+            <div class="fi-section" id="sec-stock-register">
+                <div class="fi-sh"><h1>Stock Register</h1><p>Unit ledger: Opening + Purchases − Sales = Closing per security (FIFO-based)</p></div>
+                <div style="display:flex;gap:.75rem;align-items:center;margin-bottom:1rem;flex-wrap:wrap">
+                    <label style="font-size:.72rem;font-weight:600;color:#64748b">PMS Account:</label>
+                    <select class="fi-form-select" id="fi-sr-pms-select" onchange="loadStockRegister()" style="min-width:220px">
+                        <option value="">— Select PMS Account —</option>
+                    </select>
+                    <div style="display:flex;gap:.4rem;align-items:center;margin-left:auto">
+                        <label style="font-size:.68rem;font-weight:600;color:#64748b">FY:</label>
+                        <button class="fi-btn fi-fy-btn" data-fy="2024" onclick="setFY(2024)" style="font-size:.65rem;padding:.2rem .5rem">2024-25</button>
+                        <button class="fi-btn fi-fy-btn active" data-fy="2025" onclick="setFY(2025)" style="font-size:.65rem;padding:.2rem .5rem">2025-26</button>
+                        <button class="fi-btn fi-fy-btn" data-fy="all" onclick="setFY('all')" style="font-size:.65rem;padding:.2rem .5rem">All Time</button>
+                    </div>
+                    <button class="fi-btn" onclick="recomputeFIFO()">🔄 Re-compute FIFO</button>
+                </div>
+                <div class="fi-panel" style="padding:0">
+                    <div class="fi-table-wrap"><table class="fi-table" id="fi-sr-table"><thead><tr><th>Security</th><th>Opening Qty</th><th>Bought</th><th>Sold</th><th>Closing Qty</th><th>Avg Cost</th><th>Book Value</th></tr></thead>
+                    <tbody id="fi-sr-tbody"><tr><td colspan="7" style="text-align:center;padding:2rem;color:#9ca3af">Select a PMS account to view the stock register</td></tr></tbody>
+                    <tfoot id="fi-sr-tfoot" style="display:none"></tfoot></table></div>
+                </div>
+            </div>
+
+            <!-- ━━━ CAPITAL GAINS ━━━ -->
+            <div class="fi-section" id="sec-capital-gains">
+                <div class="fi-sh"><h1>Capital Gains Report</h1><p>Lot-wise FIFO matching with STCG / LTCG classification and Section 112A grandfathering</p></div>
+                <div style="display:flex;gap:.75rem;align-items:center;margin-bottom:1rem;flex-wrap:wrap">
+                    <label style="font-size:.72rem;font-weight:600;color:#64748b">PMS Account:</label>
+                    <select class="fi-form-select" id="fi-cg-pms-select" onchange="loadCapitalGains()" style="min-width:220px">
+                        <option value="">— Select PMS Account —</option>
+                    </select>
+                </div>
+                <!-- CG Summary -->
+                <div class="fi-dash-grid-3" style="margin-bottom:1rem" id="fi-cg-summary">
+                    <div class="fi-dash-card" style="padding:1rem">
+                        <div class="fi-dc-label" style="font-size:.65rem">SHORT TERM CAPITAL GAINS</div>
+                        <div class="fi-aum-val green" id="fi-cg-summary-stcg" style="font-size:1.3rem">₹ 0</div>
+                        <div style="font-size:.65rem;color:#64748b">Tax @ 20%: <span id="fi-cg-summary-stcg-tax">₹ 0</span></div>
+                    </div>
+                    <div class="fi-dash-card" style="padding:1rem">
+                        <div class="fi-dc-label" style="font-size:.65rem">LONG TERM CAPITAL GAINS</div>
+                        <div class="fi-aum-val blue" id="fi-cg-summary-ltcg" style="font-size:1.3rem">₹ 0</div>
+                        <div style="font-size:.65rem;color:#64748b">Tax @ 12.5% (above ₹1.25L): <span id="fi-cg-summary-ltcg-tax">₹ 0</span></div>
+                    </div>
+                    <div class="fi-dash-card" style="padding:1rem">
+                        <div class="fi-dc-label" style="font-size:.65rem">NET GAIN / (LOSS)</div>
+                        <div class="fi-aum-val" id="fi-cg-summary-net" style="font-size:1.3rem">₹ 0</div>
+                        <div style="font-size:.65rem;color:#64748b">Total entries: <span id="fi-cg-summary-count">0</span></div>
+                    </div>
+                </div>
+                <div class="fi-panel" style="padding:0">
+                    <div class="fi-table-wrap"><table class="fi-table"><thead><tr><th>Security</th><th>Buy Date</th><th>Sell Date</th><th>Qty</th><th>Cost</th><th>Proceeds</th><th>Gain/Loss</th><th>Type</th><th>Days</th></tr></thead>
+                    <tbody id="fi-cg-tbody"><tr><td colspan="9" style="text-align:center;padding:2rem;color:#9ca3af">Select a PMS account to view capital gains</td></tr></tbody></table></div>
                 </div>
             </div>
 
@@ -313,6 +518,7 @@
     </div>
 
     <div id="fi-toast-container" style="position:fixed;top:1.5rem;right:1.5rem;z-index:9999;display:flex;flex-direction:column;gap:.5rem"></div>
+    <script src="app-toast.js"></script>
     <script src="api_config.js?v=2"></script>
     <script src="app-topbar.js"></script>
     <script src="client-picker-overlay.js"></script>
@@ -324,6 +530,7 @@
             pagePath: 'service-financial-instruments.html',
         });
     </script>
+    <script src="fi-pms.js"></script>
     <script src="fi-tally-entry.js"></script>
 </body>
 </html>

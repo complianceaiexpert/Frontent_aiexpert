@@ -1009,16 +1009,31 @@
         </div>
     </div>
 
+    <script src="app-toast.js"></script>
     <script src="api_config.js"></script>
     <script>
         // ====== STATE ======
         const urlParams = new URLSearchParams(window.location.search);
-        const clientId = urlParams.get('clientId');
+        let clientId = urlParams.get('clientId');
         let currentService = null;
         let allServices = [];
         let clientServices = [];
         let currentClientData = null;
         const user = JSON.parse(localStorage.getItem('user'));
+
+        // ISS-032: Corporate auto-scope — resolve clientId from localStorage if missing
+        if (!clientId) {
+            try {
+                const sc = JSON.parse(localStorage.getItem('selectedClient') || '{}');
+                if (sc.id) {
+                    // Rewrite URL with clientId so all downstream code works
+                    const url = new URL(window.location);
+                    url.searchParams.set('clientId', sc.id);
+                    window.history.replaceState({}, '', url);
+                    clientId = sc.id;
+                }
+            } catch(_) {}
+        }
         if (!clientId) window.location.href = 'clients.html';
 
         // ====== SERVICE METADATA ======
@@ -1163,22 +1178,16 @@
             animateCounter('stat-services', AVAILABLE_SERVICES.length);
         }
 
-        // ====== VIEW SELECTION ======
+        // ====== VIEW SELECTION — ISS-044: Navigate directly (removed confusing modal) ======
         function openViewSelection(service) {
-            currentService = service;
-            document.getElementById('view-modal-title').textContent = `${service.name} for ${document.getElementById('client-name').textContent}`;
-            document.getElementById('view-modal').classList.add('active');
+            // Navigate directly to the service page — no more modal
+            window.location.href = `${service.page}?clientId=${clientId}`;
+            // Mark service as used for Getting Started progress
+            try { localStorage.setItem('gs_service_used', 'true'); } catch(_) {}
         }
 
         function navigateToView(viewType) {
             if (!currentService) return;
-            // AI Expert View — Coming Soon for all services
-            if (viewType === 'chat') {
-                alert('🚀 AI Expert View is coming soon! Stay tuned.');
-                closeModal('view-modal');
-                return;
-            }
-            // Navigate directly using the service's page property
             window.location.href = `${currentService.page}?clientId=${clientId}`;
         }
 

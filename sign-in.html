@@ -616,6 +616,25 @@
                 padding: 0.5rem 0.3rem;
             }
         }
+
+    /* ISS-020: Role Selection */
+    .role-toggle { display:flex; gap:.5rem; margin-bottom:1.25rem }
+    .role-card {
+        flex:1; padding:.85rem .75rem; border:2px solid var(--gray-200); border-radius:12px;
+        background:#fff; cursor:pointer; transition:all .25s; text-align:center;
+    }
+    .role-card:hover { border-color:var(--gray-300); background:var(--gray-50) }
+    .role-card.active { border-color:var(--primary-blue); background:#eff6ff }
+    .role-card .rc-icon { font-size:1.5rem; margin-bottom:.35rem }
+    .role-card .rc-label { font-weight:700; font-size:.88rem; color:var(--gray-800); margin-bottom:.15rem }
+    .role-card .rc-desc { font-size:.68rem; color:var(--gray-400); line-height:1.4 }
+    .role-card.active .rc-label { color:var(--primary-blue) }
+    .login-type-tag {
+        display:inline-flex; align-items:center; gap:.35rem; padding:.2rem .6rem;
+        border-radius:20px; font-size:.68rem; font-weight:700; margin-bottom:.6rem;
+        background:#eff6ff; color:#1e3a8a; border:1px solid #bfdbfe;
+    }
+    .login-type-tag.corp { background:#fef3c7; color:#92400e; border-color:#fde68a }
     </style>
 </head>
 
@@ -676,7 +695,22 @@
 
             <div class="form-wrap">
                 <h2>Welcome back!</h2>
-                <p class="subtitle">Sign in to continue your journey</p>
+                <p class="subtitle" id="signinSubtitle">Sign in to continue your journey</p>
+
+                <!-- ISS-020: Pre-login role selection (TC-047, TC-048) -->
+                <div class="role-toggle">
+                    <div class="role-card active" data-role="ca_firm" onclick="selectSignInRole('ca_firm')">
+                        <div class="rc-icon">🏛️</div>
+                        <div class="rc-label">CA Firm</div>
+                        <div class="rc-desc">Multi-client management, GST filing, certificates</div>
+                    </div>
+                    <div class="role-card" data-role="corporate" onclick="selectSignInRole('corporate')">
+                        <div class="rc-icon">🏢</div>
+                        <div class="rc-label">Corporate</div>
+                        <div class="rc-desc">Own company compliance, data entry, Tally sync</div>
+                    </div>
+                </div>
+                <div class="login-type-tag" id="login-type-tag">🏛️ Signing in as CA Firm</div>
 
                 <!-- Google Sign-In Button -->
                 <button type="button" class="btn-google" id="btn-google-signin" onclick="handleGoogleSignIn()">
@@ -804,6 +838,24 @@
 
     <script src="api_config.js"></script>
     <script>
+        // ISS-020: Role selection state
+        let selectedSignInRole = 'ca_firm';
+        function selectSignInRole(role) {
+            selectedSignInRole = role;
+            document.querySelectorAll('.role-card').forEach(c => c.classList.toggle('active', c.dataset.role === role));
+            const tag = document.getElementById('login-type-tag');
+            const sub = document.getElementById('signinSubtitle');
+            if (role === 'corporate') {
+                tag.textContent = '🏢 Signing in as Corporate';
+                tag.className = 'login-type-tag corp';
+                sub.textContent = 'Access your company dashboard';
+            } else {
+                tag.textContent = '🏛️ Signing in as CA Firm';
+                tag.className = 'login-type-tag';
+                sub.textContent = 'Sign in to continue your journey';
+            }
+        }
+
         // Redirect if already logged in
         const existingUser = localStorage.getItem('user');
         const existingToken = localStorage.getItem('access_token');

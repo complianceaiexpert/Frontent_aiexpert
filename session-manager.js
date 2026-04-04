@@ -48,6 +48,7 @@ function requireAuth() {
 
 // ═══════════════════════════════════
 // TRIAL EXPIRY GUARD (localStorage only — no API calls)
+// ISS-025 TC-058,059: Expired plan → redirect to payment/contact, block premium features
 // ═══════════════════════════════════
 function checkTrialExpiry() {
     if (!isLoggedIn()) return;
@@ -56,8 +57,13 @@ function checkTrialExpiry() {
     const currentPage = window.location.pathname.split('/').pop() || 'index.html';
     if (TRIAL_ALLOWED_PAGES.includes(currentPage)) return;
 
-    // Blocked — send to pricing
+    // Blocked — send to pricing with expired flag
     window.location.href = 'pricing.html?expired=1';
+}
+
+// ISS-025: Check if user can access premium features (called by individual pages)
+function isPlanExpired() {
+    return localStorage.getItem('trial_expired') === 'true';
 }
 
 function initSessionMonitoring() {

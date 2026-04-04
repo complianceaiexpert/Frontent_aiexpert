@@ -269,6 +269,7 @@
         .core-svc-card.cs-orange::before { background: linear-gradient(90deg, #1e3a8a, #2563eb) }
         .core-svc-card.cs-green::before { background: linear-gradient(90deg, #059669, #10b981) }
         .core-svc-card.cs-teal::before { background: linear-gradient(90deg, #0d9488, #14b8a6) }
+        .core-svc-card.cs-amber::before { background: linear-gradient(90deg, #d97706, #f59e0b) }
 
         .core-svc-card .cs-icon-row {
             display: flex;
@@ -366,6 +367,8 @@
         .cs-cta-green:hover { background: #047857 }
         .cs-cta-teal { background: #0d9488 }
         .cs-cta-teal:hover { background: #0f766e }
+        .cs-cta-amber { background: #d97706 }
+        .cs-cta-amber:hover { background: #b45309 }
 
         /* ── How It Works ── */
         .hiw-section {
@@ -784,20 +787,38 @@
         .client-card {
             background: #fff;
             border: 1px solid #e8ecf1;
-            border-radius: 10px;
+            border-radius: 12px;
             padding: 1rem 1.15rem;
             cursor: pointer;
             transition: all .25s cubic-bezier(.4,0,.2,1);
             display: flex;
             align-items: center;
             gap: 0.85rem;
-            position: relative
+            position: relative;
+            overflow: hidden
+        }
+
+        .client-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #3b82f6, #818cf8, #a78bfa);
+            opacity: 0;
+            transition: opacity .25s ease
         }
 
         .client-card:hover {
             border-color: #c7d2fe;
-            box-shadow: 0 4px 16px -4px rgba(30, 58, 138, .08);
-            background: #fafbff
+            box-shadow: 0 6px 20px -4px rgba(30, 58, 138, .1);
+            background: #fafbff;
+            transform: translateY(-1px)
+        }
+
+        .client-card:hover::before {
+            opacity: 1
         }
 
         .client-card.selected {
@@ -1669,9 +1690,9 @@
             <div id="app-sidebar-main" data-active="home"></div>
             <script src="app-sidebar.js?v=2"></script>
 
-            <!-- ═══ Services Section ═══ -->
+            <!-- ═══ Active Workspaces Section ═══ -->
             <div class="sb-section">
-                <div class="sb-section-label">Services</div>
+                <div class="sb-section-label">Active Workspaces</div>
                 <a href="service-gst-overview.html" class="sb-item">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <line x1="12" y1="1" x2="12" y2="23"/>
@@ -1688,14 +1709,7 @@
                     Data Entry
                     <span class="sb-badge" style="background:#f1f5f9;color:#475569">Live</span>
                 </a>
-                <a href="ca-certificates.html" class="sb-item">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="8" r="6"/>
-                        <path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/>
-                    </svg>
-                    CA Certificates
-                    <span class="sb-badge" style="background:#f1f5f9;color:#475569">Live</span>
-                </a>
+
                 <a href="service-financial-statements-overview.html" class="sb-item">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="3" y="3" width="18" height="18" rx="2"/>
@@ -1738,7 +1752,7 @@
                         <path
                             d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9v1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
                     </svg>
-                    Settings
+                    Integrations
                 </a>
             </div>
         </aside>
@@ -1751,7 +1765,7 @@
             <!-- ═══ All Services ═══ -->
             <div class="core-svc-header">
                 <div>
-                    <h2>Your Services <span class="cs-badge">5 Active</span></h2>
+                    <h2>Your Services <span class="cs-badge">6 Active</span></h2>
                     <p>Select a client below, then open any service. All modules are AI-powered.</p>
                 </div>
             </div>
@@ -1831,31 +1845,53 @@
                     </ul>
                     <span class="cs-cta cs-cta-teal" onclick="window.location.href='service-financial-instruments-overview.html'">Start Now <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg></span>
                 </div>
+                <!-- Statutory & Financial Reporting -->
+                <div class="core-svc-card cs-amber">
+                    <div class="cs-icon-row">
+                        <div class="cs-icon" style="background:#fef3c7">📑</div>
+                        <span class="cs-tag" style="background:#fef3c7;color:#92400e">New</span>
+                    </div>
+                    <div class="cs-name">Statutory & Financial Reporting</div>
+                    <p class="cs-desc">Form 3CD, CARO report, Rule 42 ITC reversal workings & depreciation comparison.</p>
+                    <ul class="cs-features">
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Form 3CD auto-population</li>
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>CARO 2020 report generation</li>
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>IT Act vs Co. Act depreciation</li>
+                    </ul>
+                    <span class="cs-cta cs-cta-amber" onclick="window.location.href='service-statutory-reporting-overview.html'">Start Now <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg></span>
+                </div>
             </div>
 
             <!-- ═══ Getting Started ═══ -->
-            <div class="hiw-section">
-                <div class="hiw-header">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
-                    Getting Started
+            <div class="hiw-section" id="getting-started-section" style="background:linear-gradient(135deg,#f0f7ff 0%,#f8fafc 50%,#f0fdf4 100%);border:1px solid #e0eaff;border-radius:14px;padding:1.5rem 2rem;margin-bottom:1.5rem;position:relative;overflow:hidden">
+                <div style="position:absolute;top:-30px;right:-20px;width:120px;height:120px;background:radial-gradient(circle,rgba(59,130,246,.06) 0%,transparent 70%);border-radius:50%"></div>
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+                    <div>
+                        <h3 style="font-family:'Outfit',sans-serif;font-size:1.05rem;font-weight:700;color:#1e293b;margin:0 0 .25rem">🚀 Getting Started</h3>
+                        <p style="font-size:.78rem;color:#64748b;margin:0">Complete these 3 steps to activate your CA workspace</p>
+                    </div>
+                    <div id="gs-progress" style="display:flex;align-items:center;gap:.5rem">
+                        <div style="width:80px;height:6px;background:#e2e8f0;border-radius:3px;overflow:hidden">
+                            <div id="gs-bar" style="width:0%;height:100%;background:linear-gradient(90deg,#3b82f6,#22c55e);border-radius:3px;transition:width .6s ease"></div>
+                        </div>
+                        <span id="gs-label" style="font-size:.7rem;font-weight:700;color:#3b82f6">0/3</span>
+                    </div>
                 </div>
-                <div class="hiw-steps">
-                    <div class="hiw-step">
-                        <div class="hiw-num">1</div>
-                        <h4>Onboard Client</h4>
-                        <p>Click "+ Add Client" and enter GSTIN, PAN, entity details.</p>
-                        <div class="hiw-arrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m9 18 6-6-6-6"/></svg></div>
+                <div class="hiw-steps" style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem">
+                    <div class="hiw-step" id="gs-step-1" style="background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:1rem;text-align:center;position:relative;transition:all .2s">
+                        <div style="width:32px;height:32px;border-radius:8px;background:#eff6ff;color:#3b82f6;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:.85rem;margin-bottom:.5rem">1</div>
+                        <h4 style="font-size:.82rem;font-weight:700;color:#1e293b;margin:0 0 .25rem">Onboard Client</h4>
+                        <p style="font-size:.72rem;color:#94a3b8;margin:0;line-height:1.4">Click "+ Add Client" and enter GSTIN, PAN, entity details.</p>
                     </div>
-                    <div class="hiw-step">
-                        <div class="hiw-num">2</div>
-                        <h4>Open Workspace</h4>
-                        <p>Click a client → their workspace with all 5 services opens instantly.</p>
-                        <div class="hiw-arrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m9 18 6-6-6-6"/></svg></div>
+                    <div class="hiw-step" id="gs-step-2" style="background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:1rem;text-align:center;position:relative;transition:all .2s">
+                        <div style="width:32px;height:32px;border-radius:8px;background:#eff6ff;color:#3b82f6;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:.85rem;margin-bottom:.5rem">2</div>
+                        <h4 style="font-size:.82rem;font-weight:700;color:#1e293b;margin:0 0 .25rem">Open Workspace</h4>
+                        <p style="font-size:.72rem;color:#94a3b8;margin:0;line-height:1.4">Click a client to open their workspace with all 5 services.</p>
                     </div>
-                    <div class="hiw-step">
-                        <div class="hiw-num">3</div>
-                        <h4>Run Any Service</h4>
-                        <p>GST, Data Entry, Certificates, Financial Statements, or Instruments — all AI-powered.</p>
+                    <div class="hiw-step" id="gs-step-3" style="background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:1rem;text-align:center;position:relative;transition:all .2s">
+                        <div style="width:32px;height:32px;border-radius:8px;background:#eff6ff;color:#3b82f6;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:.85rem;margin-bottom:.5rem">3</div>
+                        <h4 style="font-size:.82rem;font-weight:700;color:#1e293b;margin:0 0 .25rem">Run Any Service</h4>
+                        <p style="font-size:.72rem;color:#94a3b8;margin:0;line-height:1.4">GST, Data Entry, Certificates, Statements — all AI-powered.</p>
                     </div>
                 </div>
             </div>
@@ -2012,6 +2048,7 @@
         </form>
     </div>
 
+    <script src="app-toast.js"></script>
     <script src="api_config.js"></script>
     <script>
         // ====== AUTH & STATE ======
@@ -2076,11 +2113,20 @@
         function renderClients(clients) {
             const grid = document.getElementById('clients-grid'); grid.innerHTML = '';
             if (!clients.length) {
-                grid.innerHTML = `<div class="empty-state">
-                    <div style="font-size:2rem;margin-bottom:0.65rem;opacity:.5">👤</div>
-                    <h3>No clients yet</h3>
-                    <p>Add your first client to begin using GST Filing, Certificates, and Data Entry services.</p>
+                grid.innerHTML = `<div class="empty-state" style="padding:3.5rem 2rem">
+                    <div style="width:72px;height:72px;border-radius:18px;background:linear-gradient(135deg,#eff6ff,#dbeafe);display:inline-flex;align-items:center;justify-content:center;margin-bottom:1rem">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="1.5"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    </div>
+                    <h3 style="font-family:'Outfit',sans-serif;font-size:1.15rem;font-weight:700;color:#1e293b;margin-bottom:.35rem">No clients yet</h3>
+                    <p style="color:#94a3b8;font-size:.85rem;max-width:320px;margin:0 auto .75rem;line-height:1.5">Add your first client to start using GST Filing, Certificates, Data Entry, and all AI-powered services.</p>
+                    <button onclick="openDrawer()" style="display:inline-flex;align-items:center;gap:.4rem;padding:.55rem 1.25rem;background:#1e3a8a;color:#fff;border:none;border-radius:8px;font-weight:600;font-size:.82rem;cursor:pointer;font-family:inherit;transition:all .2s;box-shadow:0 2px 8px rgba(30,58,138,.2)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+                        Add Your First Client
+                    </button>
                 </div>`;
+                // Show getting started section prominently
+                const gs = document.getElementById('getting-started-section');
+                if (gs) gs.style.display = 'block';
                 return;
             }
             clients.forEach(client => {
@@ -2203,7 +2249,7 @@
                 if (gstins.some(g => !(g in gstinValidationResults))) await validateGSTINsField();
                 const invalid = gstins.filter(g => gstinValidationResults[g] && !gstinValidationResults[g].valid);
                 if (invalid.length > 0) {
-                    alert(`Cannot save: ${invalid.length} GSTIN(s) failed validation.\n\n${invalid.map(g => `• ${g} — ${gstinValidationResults[g].name}`).join('\n')}\n\nPlease correct or remove invalid GSTINs.`);
+                    showToast(`Cannot save: ${invalid.length} GSTIN(s) failed validation. Please correct or remove invalid GSTINs.`, 'error', 6000);
                     return;
                 }
             }
@@ -2214,9 +2260,9 @@
             const tan = document.getElementById('client-tan').value; const iec = document.getElementById('client-iec').value;
             try {
                 const r = await authFetch('/clients/', { method: 'POST', body: JSON.stringify({ name, email, gstins, pan, cin, tan, iec }) });
-                if (r.ok) { closeDrawer(); document.getElementById('add-client-form').reset(); document.getElementById('gstin-validation').innerHTML = ''; gstinValidationResults = {}; try { sessionStorage.removeItem('__topbar_clients'); } catch(_){} await loadClients() }
-                else { const e = await r.json(); alert('Error: ' + (typeof e.detail === 'string' ? e.detail : JSON.stringify(e.detail))) }
-            } catch (e) { alert('Connection error. Please try again.') }
+                if (r.ok) { closeDrawer(); document.getElementById('add-client-form').reset(); document.getElementById('gstin-validation').innerHTML = ''; gstinValidationResults = {}; try { sessionStorage.removeItem('__topbar_clients'); } catch(_){} showToast('Client created successfully!', 'success'); await loadClients(); updateGettingStarted(); }
+                else { const e = await r.json(); showToast('Error: ' + (typeof e.detail === 'string' ? e.detail : JSON.stringify(e.detail)), 'error', 6000) }
+            } catch (e) { showToast('Connection error. Please try again.', 'error') }
             finally { btn.disabled = false; btn.textContent = 'Create Client Profile' }
         }
 
@@ -2315,7 +2361,36 @@
             });
         }
 
-        loadClients();
+        // Getting Started progress tracker
+        function updateGettingStarted() {
+            const steps = [
+                { id: 'gs-step-1', done: allClients.length > 0 },
+                { id: 'gs-step-2', done: !!localStorage.getItem('selectedClient') },
+                { id: 'gs-step-3', done: !!localStorage.getItem('gs_service_used') }
+            ];
+            let completed = 0;
+            steps.forEach(s => {
+                const el = document.getElementById(s.id);
+                if (el && s.done) {
+                    completed++;
+                    el.style.borderColor = '#22c55e';
+                    el.style.background = '#f0fdf4';
+                    const numEl = el.querySelector('div');
+                    if (numEl) { numEl.style.background = '#dcfce7'; numEl.style.color = '#16a34a'; numEl.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>'; }
+                }
+            });
+            const bar = document.getElementById('gs-bar');
+            const label = document.getElementById('gs-label');
+            if (bar) bar.style.width = `${(completed / 3) * 100}%`;
+            if (label) label.textContent = `${completed}/3`;
+            // Hide getting started when all done
+            if (completed === 3) {
+                const gs = document.getElementById('getting-started-section');
+                if (gs) { gs.style.opacity = '.6'; gs.querySelector('h3').textContent = '✅ All set!'; }
+            }
+        }
+
+        loadClients().then(() => updateGettingStarted());
     </script>
     <script src="session-manager.js?v=2"></script>
     <script>if (!requireAuth()) { }</script>
