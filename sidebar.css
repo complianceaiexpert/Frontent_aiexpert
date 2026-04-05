@@ -1,0 +1,377 @@
+/* ══════════════════════════════════════════════════════════════
+   sidebar.css — Unified Sidebar Styles
+   ══════════════════════════════════════════════════════════════
+   Single source of truth for ALL sidebar styling.
+   Replaces: .de-sidebar, .fi-sidebar, .pf-sidebar, .ac-sidebar,
+             .tx-sidebar, .firm-sidebar, .ws-sidebar, .tool-sidebar
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── Base Sidebar Container ── */
+.app-sidebar {
+    width: 230px;
+    background: #fff;
+    border-right: 1px solid #e8ecf0;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* Fixed variant (for tool pages using margin-left layout) */
+.app-sidebar--fixed {
+    position: fixed;
+    top: 64px;
+    left: 0;
+    bottom: 0;
+    z-index: 90;
+}
+
+/* ── Section ── */
+.sb-section {
+    padding: 0.5rem 0.65rem;
+}
+
+/* ── Section Label ── */
+.sb-section-label {
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #9ca3af;
+    padding: 0.4rem 0.75rem;
+    margin-bottom: 0.1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+/* ── Nav Item ── */
+.sb-item {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #4b5563;
+    cursor: pointer;
+    transition: all .2s;
+    text-decoration: none;
+    margin-bottom: 1px;
+}
+
+.sb-item:hover {
+    background: #f1f5f9;
+    color: #1e3a8a;
+}
+
+.sb-item.active {
+    background: #eff6ff;
+    color: #1e3a8a;
+    font-weight: 600;
+}
+
+.sb-item svg {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+}
+
+/* ── Badge ── */
+.sb-badge {
+    margin-left: auto;
+    font-size: 0.58rem;
+    font-weight: 700;
+    background: #dbeafe;
+    color: #1e3a8a;
+    padding: 1px 6px;
+    border-radius: 10px;
+}
+
+.sb-badge--beta {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: #fff;
+}
+
+.sb-badge--green {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.sb-badge--orange {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.sb-badge--ai {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: #fff;
+}
+
+/* ── Divider ── */
+.sb-divider {
+    height: 1px;
+    background: #f1f5f9;
+    margin: 0.35rem 0.65rem;
+}
+
+/* ── Back Link ── */
+.sb-back {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.85rem 1rem;
+    border-top: 1px solid #f1f5f9;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #6b7280;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all .2s;
+    margin-top: auto;
+}
+
+.sb-back:hover {
+    color: #1e3a8a;
+    background: #f8fafc;
+}
+
+.sb-back svg {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+}
+
+/* ── Client Nav (injected by app-client-nav.js) ── */
+.cn-client-card {
+    padding: 0.9rem 1rem;
+    border-bottom: 1px solid #f1f5f9;
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+}
+
+.cn-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    font-weight: 800;
+    font-family: 'Outfit', sans-serif;
+    color: #fff;
+    flex-shrink: 0;
+}
+
+.cn-client-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.cn-client-name {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #111827;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.cn-client-type {
+    font-size: 0.62rem;
+    color: #9ca3af;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.cn-section {
+    padding: 0.5rem 0.75rem;
+}
+
+.cn-section-label {
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #9ca3af;
+    padding: 0.4rem 0.75rem;
+    margin-bottom: 0.1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.cn-item {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.45rem 0.75rem;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: #4b5563;
+    cursor: pointer;
+    transition: all .2s;
+    text-decoration: none;
+    margin-bottom: 1px;
+}
+
+.cn-item:hover {
+    background: #f1f5f9;
+    color: #1e3a8a;
+}
+
+.cn-item.active {
+    background: #eff6ff;
+    color: #1e3a8a;
+    font-weight: 600;
+}
+
+.cn-item svg {
+    flex-shrink: 0;
+    width: 15px;
+    height: 15px;
+}
+
+.cn-divider {
+    height: 1px;
+    background: #f1f5f9;
+    margin: 0.3rem 0.75rem;
+}
+
+/* ── Tool Sidebar (GST tools) ── */
+.tsb-section {
+    padding: 0.75rem 1rem;
+}
+
+.tsb-label {
+    font-size: 0.62rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #9ca3af;
+    padding: 0.5rem 0.75rem;
+    margin-bottom: 0.1rem;
+}
+
+.tsb-item {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: #4b5563;
+    cursor: pointer;
+    transition: all .2s;
+    text-decoration: none;
+    margin-bottom: 1px;
+}
+
+.tsb-item:hover {
+    background: #f1f5f9;
+    color: #1e3a8a;
+}
+
+.tsb-item.active {
+    background: #eff6ff;
+    color: #1e3a8a;
+    font-weight: 600;
+}
+
+.tsb-item svg {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+}
+
+.tsb-badge {
+    margin-left: auto;
+    font-size: 0.58rem;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 10px;
+}
+
+.tsb-badge-blue {
+    background: #dbeafe;
+    color: #1e3a8a;
+}
+
+.tsb-badge-green {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.tsb-badge-orange {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.tsb-divider {
+    height: 1px;
+    background: #f1f5f9;
+    margin: 0.4rem 1rem;
+}
+
+.tsb-back {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.85rem 1rem;
+    border-top: 1px solid #f1f5f9;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #6b7280;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all .2s;
+    margin-top: auto;
+}
+
+.tsb-back:hover {
+    color: #1e3a8a;
+    background: #f8fafc;
+}
+
+.tsb-back svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* ── Sync Tally Button (used in some service sidebars) ── */
+.sb-sync-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.5rem 0.85rem;
+    margin: 0.75rem 0.5rem;
+    background: #1e3a8a;
+    color: #fff;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all .15s;
+    font-family: inherit;
+}
+
+.sb-sync-btn:hover {
+    background: #1e40af;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+    .app-sidebar {
+        display: none;
+    }
+}

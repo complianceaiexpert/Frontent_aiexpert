@@ -680,7 +680,7 @@
 }
 
 .sr-comparison-header.it-act {
-    background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+    background: linear-gradient(135deg, #5b21b6, #8b5cf6);
 }
 
 .sr-comparison-header.co-act {
@@ -760,6 +760,7 @@
 .dep-stat-icon.diff{background:#fee2e2;color:#991b1b}
 .dep-stat-val{font-size:1.1rem;font-weight:800;font-family:'Outfit',sans-serif;color:#0f172a}
 .dep-stat-label{font-size:.58rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.04em;margin-top:1px}
+.dep-page-section{margin-bottom:.75rem}
 
 /* Table header */
 .dep-table-header{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;border-bottom:1px solid #f1f5f9;gap:.5rem;flex-wrap:wrap}

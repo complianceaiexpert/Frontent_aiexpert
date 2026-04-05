@@ -4,209 +4,213 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Financial Statements — Suvidha AI</title>
-    <meta name="description" content="AI-powered Balance Sheet, P&L and Schedules generator from Trial Balance">
+    <meta name="description" content="Generate Schedule III Balance Sheet, P&L and Schedules from Tally data or uploaded Trial Balance.">
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="statutory-reporting.css">
     <link rel="stylesheet" href="financial-statements.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* Override fs-layout to use sr-layout so we stay consistent */
+        .fs-layout { display:flex; min-height:100vh; padding-top:56px; background:#f8fafc }
+        .fs-main { margin-left:240px; flex:1; padding:1.75rem 2rem; max-width:100%; overflow-y:auto; height:calc(100vh - 56px) }
+        body { overflow:auto }
+        /* Tabs for internal navigation */
+        .fs-nav-tabs { display:flex; gap:0; background:#f1f5f9; border-radius:10px; padding:3px; margin-bottom:1rem }
+        .fs-nav-tab { padding:.45rem .85rem; font-size:.78rem; font-weight:600; border:none; background:none; color:#64748b; border-radius:8px; cursor:pointer; transition:all .15s; font-family:inherit }
+        .fs-nav-tab.active { background:#fff; color:#0f172a; box-shadow:0 1px 3px rgba(0,0,0,.06) }
+        .fs-nav-tab:hover:not(.active) { color:#374151 }
+        .fs-tab-content { display:none; animation:srFadeIn .3s ease }
+        .fs-tab-content.active { display:block }
+    </style>
 </head>
 <body>
     <div id="app-topbar" data-active="dashboard"></div>
+    <script src="app-topbar.js"></script>
 
     <div class="fs-layout">
-        <!-- ══════ SIDEBAR ══════ -->
-        <aside class="fs-sidebar">
+        <aside class="sr-sidebar">
             <div id="app-client-nav" data-active="financial-statements"></div>
             <script src="app-client-nav.js"></script>
+        </aside>
 
-            <div class="fs-sb-section">
-                <div class="fs-sb-label">Financial Statements</div>
-                <div class="fs-sb-item active" onclick="fsNav('prepare',this)">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
-                    Prepare Statements
-                    <span class="fs-sb-badge ai">AI</span>
+        <main class="fs-main">
+            <div class="sr-sh">
+                <h1>📋 Financial Statements <span class="sr-title-badge" style="background:linear-gradient(135deg,#1e3a8a,#3b82f6);color:#fff">SCHEDULE III</span></h1>
+                <p>Generate Balance Sheet, Profit &amp; Loss Statement and Schedules per Schedule III of the Companies Act, 2013 from synced Tally data or uploaded Trial Balance.</p>
+            </div>
+
+            <!-- Toolbar -->
+            <div class="dep-toolbar">
+                <div class="dep-toolbar-left">
+                    <select class="dep-select" id="fs-company-select">
+                        <option value="">— Select Tally Company —</option>
+                    </select>
+                    <select class="dep-select" id="fs-fy-select">
+                        <option value="2025-26">FY 2025-26</option>
+                        <option value="2024-25">FY 2024-25</option>
+                        <option value="2023-24">FY 2023-24</option>
+                    </select>
                 </div>
-                <div class="fs-sb-item" onclick="fsNav('results',this)">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 12h18"/><path d="M12 3v18"/></svg>
-                    Past Statements
-                    <span class="fs-sb-badge count" id="fs-past-count">0</span>
+                <div class="dep-toolbar-right">
+                    <button class="sr-btn sr-btn-secondary" onclick="fsLoadTallyTB()" id="fs-load-btn">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+                        Load Synced Data
+                    </button>
+                    <button class="sr-btn sr-btn-primary" onclick="fsGenerate()" id="fs-gen-btn">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                        Generate Statements
+                    </button>
+                    <button class="sr-btn sr-btn-secondary" style="margin-left:.3rem" onclick="fsExportReport()">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                        Export
+                    </button>
                 </div>
             </div>
 
-            <a class="fs-sb-back" id="fs-back-link" href="services-dashboard.html">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-                Back to Services
-            </a>
-        </aside>
-
-        <!-- ══════ MAIN ══════ -->
-        <main class="fs-main">
-
-            <!-- ═══ PREPARE STATEMENTS ═══ -->
-            <div class="fs-section active" id="sec-prepare">
-                <div class="fs-sh">
-                    <h1>Prepare Financial Statements</h1>
-                    <p>Select Trial Balance source → Review account grouping → Generate Schedule III statements</p>
+            <!-- Summary Cards -->
+            <div class="dep-stats-row">
+                <div class="dep-stat-card">
+                    <div class="dep-stat-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+                    <div><div class="dep-stat-val" id="fs-stat-accounts">0</div><div class="dep-stat-label">Accounts</div></div>
                 </div>
-
-                <!-- Step 1: Source Selection -->
-                <div class="fs-panel" id="fs-step-source">
-                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.85rem">
-                        <div class="fs-panel-title">① Select Trial Balance Source</div>
-                    </div>
-
-                    <div class="fs-source-grid">
-                        <!-- Tally Card -->
-                        <div class="fs-source-card" id="fs-src-tally" onclick="selectSource('tally')">
-                            <div class="fs-source-icon">📊</div>
-                            <div class="fs-source-title">From Tally (Recommended)</div>
-                            <div class="fs-source-desc">Auto-pull Trial Balance from synced Tally ledgers. No file upload needed.</div>
-                            <div class="fs-source-meta">
-                                <span id="fs-tally-badge" class="fs-source-badge tally-no">Checking…</span>
-                                <span id="fs-tally-info"></span>
-                            </div>
-                        </div>
-
-                        <!-- File Upload Card -->
-                        <div class="fs-source-card" id="fs-src-upload" onclick="selectSource('upload')">
-                            <div class="fs-source-icon">📤</div>
-                            <div class="fs-source-title">Upload File</div>
-                            <div class="fs-source-desc">Upload Trial Balance as Excel, CSV, or PDF. For clients not using Tally.</div>
-                            <div class="fs-source-meta">
-                                <span>Supports PDF, Excel, CSV</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Upload area (shown when "Upload File" selected) -->
-                    <div id="fs-upload-area" style="display:none">
-                        <div class="fs-upload-box" style="margin-bottom:.75rem" id="fs-drop-tb">
-                            <input type="file" accept=".pdf,.xlsx,.xls,.csv" onchange="handleFileSelect(this,'tb')">
-                            <h4>📄 Drop Trial Balance file here</h4>
-                            <p>PDF, Excel, or CSV — required</p>
-                        </div>
-                        <div id="fs-file-tb"></div>
-                    </div>
-
-                    <!-- Optional uploads (always available) -->
-                    <div id="fs-optional-files" style="display:none">
-                        <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;color:#9ca3af;letter-spacing:.04em;margin-bottom:.5rem;margin-top:.35rem">Optional — for comparative statements</div>
-                        <div class="fs-upload-row">
-                            <div>
-                                <div class="fs-upload-box" id="fs-drop-bs">
-                                    <input type="file" accept=".pdf,.xlsx,.xls,.csv" onchange="handleFileSelect(this,'bs')">
-                                    <h4>📋 Previous Year Balance Sheet</h4><p>PDF or Excel</p>
-                                </div>
-                                <div id="fs-file-bs"></div>
-                            </div>
-                            <div>
-                                <div class="fs-upload-box" id="fs-drop-notes">
-                                    <input type="file" accept=".pdf,.xlsx,.xls,.csv" onchange="handleFileSelect(this,'notes')">
-                                    <h4>📝 Notes to Accounts</h4><p>PDF or Excel</p>
-                                </div>
-                                <div id="fs-file-notes"></div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="dep-stat-card">
+                    <div class="dep-stat-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+                    <div><div class="dep-stat-val" id="fs-stat-dr">₹ 0</div><div class="dep-stat-label">Total Debit</div></div>
                 </div>
+                <div class="dep-stat-card">
+                    <div class="dep-stat-icon amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+                    <div><div class="dep-stat-val" id="fs-stat-cr">₹ 0</div><div class="dep-stat-label">Total Credit</div></div>
+                </div>
+                <div class="dep-stat-card">
+                    <div class="dep-stat-icon it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+                    <div><div class="dep-stat-val" id="fs-stat-balanced">—</div><div class="dep-stat-label">TB Status</div></div>
+                </div>
+                <div class="dep-stat-card">
+                    <div class="dep-stat-icon diff"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></div>
+                    <div><div class="dep-stat-val" id="fs-stat-source">—</div><div class="dep-stat-label">Data Source</div></div>
+                </div>
+            </div>
 
-                <!-- Step 2: Account Grouping Preview -->
-                <div class="fs-panel" id="fs-step-grouping" style="display:none">
-                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.65rem">
-                        <div class="fs-panel-title">② Account Grouping (Trial Balance)</div>
-                        <div style="display:flex;gap:.5rem">
-                            <input type="text" class="fs-group-search" placeholder="Search accounts…" id="fs-group-filter" oninput="filterGroupTable(this.value)" style="max-width:220px">
+            <!-- Tab Navigation -->
+            <div class="fs-nav-tabs">
+                <button class="fs-nav-tab active" onclick="fsTabSwitch('tb',this)">① Trial Balance</button>
+                <button class="fs-nav-tab" onclick="fsTabSwitch('upload',this)">📤 Upload Files</button>
+                <button class="fs-nav-tab" onclick="fsTabSwitch('bs',this)">Balance Sheet</button>
+                <button class="fs-nav-tab" onclick="fsTabSwitch('pl',this)">Profit & Loss</button>
+                <button class="fs-nav-tab" onclick="fsTabSwitch('schedules',this)">Schedules</button>
+                <button class="fs-nav-tab" onclick="fsTabSwitch('history',this)">Past Statements <span class="sr-badge amber" id="fs-hist-badge" style="margin-left:.25rem;font-size:.55rem">0</span></button>
+            </div>
+
+            <!-- ═══ TAB: Trial Balance ═══ -->
+            <div class="fs-tab-content active" id="tab-tb">
+                <div class="sr-panel" style="padding:0">
+                    <div class="dep-table-header">
+                        <div class="dep-table-title">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 12h18"/><path d="M12 3v18"/></svg>
+                            Trial Balance — Account Grouping
+                            <span class="sr-badge amber" id="fs-tb-badge">0 accounts</span>
+                        </div>
+                        <div style="display:flex;gap:.4rem;align-items:center">
+                            <input type="text" class="dep-select dep-select-sm" placeholder="Search accounts…" id="fs-tb-search" oninput="fsFilterTB(this.value)" style="min-width:180px">
                         </div>
                     </div>
-
-                    <div class="fs-group-wrap" id="fs-group-wrap">
-                        <table class="fs-group-table">
-                            <thead>
-                                <tr>
-                                    <th>Account Name</th>
-                                    <th>Tally Group</th>
-                                    <th>Debit (Dr)</th>
-                                    <th>Credit (Cr)</th>
-                                    <th>Schedule III Group</th>
-                                </tr>
-                            </thead>
-                            <tbody id="fs-group-tbody">
-                                <tr><td colspan="5" style="text-align:center;padding:2rem;color:#9ca3af">Select a source above to load Trial Balance</td></tr>
+                    <div class="sr-table-wrap" style="max-height:450px;overflow-y:auto">
+                        <table class="sr-table" id="fs-tb-table">
+                            <thead><tr>
+                                <th>Account Name</th>
+                                <th>Tally Group</th>
+                                <th style="text-align:right">Debit (Dr)</th>
+                                <th style="text-align:right">Credit (Cr)</th>
+                                <th>Schedule III Group</th>
+                            </tr></thead>
+                            <tbody id="fs-tb-tbody">
+                                <tr><td colspan="5" style="text-align:center;padding:2.5rem;color:#94a3b8">
+                                    <div style="font-size:1.8rem;margin-bottom:.5rem;opacity:.3">📊</div>
+                                    Select a Tally company and click "Load Synced Data" to pull the Trial Balance
+                                </td></tr>
                             </tbody>
                         </table>
                     </div>
-
-                    <div class="fs-tb-summary" id="fs-tb-summary" style="display:none">
-                        <div><div class="fs-tb-val fs-row-dr" id="fs-sum-dr">₹ 0</div><div class="fs-tb-label">Total Debit</div></div>
-                        <div><div class="fs-tb-val fs-row-cr" id="fs-sum-cr">₹ 0</div><div class="fs-tb-label">Total Credit</div></div>
-                        <div><div class="fs-tb-val" id="fs-sum-accounts">0</div><div class="fs-tb-label">Accounts</div></div>
-                        <div id="fs-sum-status" style="margin-left:auto"></div>
-                    </div>
                 </div>
+            </div>
 
-                <!-- Step 3: Generate -->
-                <div id="fs-step-generate" style="display:none">
-                    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:.5rem">
-                        <button class="fs-gen-btn" id="fs-gen-btn" onclick="handleGenerate()">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                            Generate Financial Statements
-                        </button>
-                        <span style="font-size:.75rem;color:#9ca3af" id="fs-gen-status"></span>
-                    </div>
-
-                    <!-- Progress -->
-                    <div id="fs-gen-progress" style="display:none" class="fs-panel">
-                        <div style="display:flex;align-items:center;gap:.75rem">
-                            <div style="font-size:1.4rem">⏳</div>
-                            <div style="flex:1">
-                                <div style="font-size:.85rem;font-weight:700;color:#1e293b" id="fs-prog-text">Processing…</div>
-                                <div class="fs-progress-bar"><div class="fs-progress-fill" id="fs-prog-bar" style="width:20%"></div></div>
-                            </div>
+            <!-- ═══ TAB: Upload Files ═══ -->
+            <div class="fs-tab-content" id="tab-upload">
+                <div class="sr-panel">
+                    <div class="sr-panel-title">Upload Financial Documents <span class="sr-tag" style="background:#eff6ff;color:#1e3a8a;font-size:.6rem">For non-Tally clients</span></div>
+                    <div class="sr-form-grid cols-3" style="margin-top:.75rem">
+                        <div>
+                            <div class="sr-upload-box" id="fs-drop-tb"><input type="file" accept=".pdf,.xlsx,.xls,.csv" onchange="fsHandleFile(this,'tb')"><h4>📄 Trial Balance</h4><p>Required — PDF, Excel or CSV</p></div>
+                            <div id="fs-file-tb"></div>
+                        </div>
+                        <div>
+                            <div class="sr-upload-box" id="fs-drop-bs"><input type="file" accept=".pdf,.xlsx,.xls,.csv" onchange="fsHandleFile(this,'bs')"><h4>📋 Prev Year BS</h4><p>Optional — for comparative</p></div>
+                            <div id="fs-file-bs"></div>
+                        </div>
+                        <div>
+                            <div class="sr-upload-box" id="fs-drop-notes"><input type="file" accept=".pdf,.xlsx,.xls,.csv" onchange="fsHandleFile(this,'notes')"><h4>📝 Notes to Accounts</h4><p>Optional — for schedule detail</p></div>
+                            <div id="fs-file-notes"></div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- ═══ RESULTS / PAST STATEMENTS ═══ -->
-            <div class="fs-section" id="sec-results">
-                <div class="fs-sh">
-                    <h1 id="fs-result-title">Past Statements</h1>
-                    <p id="fs-result-subtitle">Previously generated Balance Sheets, P&L and Schedules</p>
+            <!-- ═══ TAB: Balance Sheet ═══ -->
+            <div class="fs-tab-content" id="tab-bs">
+                <div id="fs-bs-content">
+                    <div style="text-align:center;padding:3rem;color:#94a3b8"><div style="font-size:2rem;margin-bottom:.5rem;opacity:.3">📋</div><div style="font-size:.85rem;font-weight:600;color:#64748b">No Balance Sheet generated yet</div><div style="font-size:.75rem;color:#94a3b8;margin-top:.3rem">Load Tally data and click "Generate Statements"</div></div>
                 </div>
+            </div>
 
-                <!-- Result tabs (shown when viewing a specific result) -->
-                <div class="fs-result-tabs" id="fs-result-tabs" style="display:none">
-                    <button class="fs-result-tab active" onclick="switchResultTab('bs',this)">Balance Sheet</button>
-                    <button class="fs-result-tab" onclick="switchResultTab('pl',this)">Profit & Loss</button>
-                    <button class="fs-result-tab" onclick="switchResultTab('schedules',this)">Schedules</button>
-                    <button class="fs-result-tab" onclick="switchResultTab('mappings',this)">Account Mappings</button>
+            <!-- ═══ TAB: Profit & Loss ═══ -->
+            <div class="fs-tab-content" id="tab-pl">
+                <div id="fs-pl-content">
+                    <div style="text-align:center;padding:3rem;color:#94a3b8"><div style="font-size:2rem;margin-bottom:.5rem;opacity:.3">📈</div><div style="font-size:.85rem;font-weight:600;color:#64748b">No P&L Statement generated yet</div><div style="font-size:.75rem;color:#94a3b8;margin-top:.3rem">Generate from Trial Balance data</div></div>
                 </div>
+            </div>
 
-                <div class="fs-result-panel active" id="rp-bs"><div id="fs-bs-content"></div></div>
-                <div class="fs-result-panel" id="rp-pl"><div id="fs-pl-content"></div></div>
-                <div class="fs-result-panel" id="rp-schedules"><div id="fs-sched-content"></div></div>
-                <div class="fs-result-panel" id="rp-mappings"><div id="fs-map-content"></div></div>
+            <!-- ═══ TAB: Schedules ═══ -->
+            <div class="fs-tab-content" id="tab-schedules">
+                <div id="fs-sched-content">
+                    <div style="text-align:center;padding:3rem;color:#94a3b8"><div style="font-size:2rem;margin-bottom:.5rem;opacity:.3">📑</div><div style="font-size:.85rem;font-weight:600;color:#64748b">No Schedules generated yet</div><div style="font-size:.75rem;color:#94a3b8;margin-top:.3rem">Schedules are auto-generated with the financial statements</div></div>
+                </div>
+            </div>
 
-                <!-- History list -->
-                <div class="fs-panel" id="fs-history-panel">
-                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.65rem">
-                        <div class="fs-panel-title">All Generations</div>
-                    </div>
-                    <div id="fs-history-list">
-                        <div class="fs-empty"><div class="fs-empty-icon">📋</div><h3>No statements generated yet</h3><p>Go to "Prepare Statements" to get started</p></div>
+            <!-- ═══ TAB: History ═══ -->
+            <div class="fs-tab-content" id="tab-history">
+                <div class="sr-panel">
+                    <div class="sr-panel-title">All Generations</div>
+                    <div id="fs-history-list" style="margin-top:.65rem">
+                        <div style="text-align:center;padding:2rem;color:#94a3b8;font-size:.8rem"><div style="font-size:1.5rem;margin-bottom:.5rem;opacity:.3">📋</div>No statements generated yet</div>
                     </div>
                 </div>
             </div>
 
+            <!-- ═══ Progress (shown during generation) ═══ -->
+            <div class="sr-panel" id="fs-progress-panel" style="display:none">
+                <div style="display:flex;align-items:center;gap:.75rem">
+                    <div style="font-size:1.4rem">⏳</div>
+                    <div style="flex:1">
+                        <div style="font-size:.85rem;font-weight:700;color:#1e293b" id="fs-prog-text">Processing…</div>
+                        <div class="fs-progress-bar"><div class="fs-progress-fill" id="fs-prog-bar" style="width:20%"></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Info Banner -->
+            <div class="sr-info-banner" style="margin-top:.5rem">
+                <div class="sr-info-icon">⚖️</div>
+                <p>Financial Statements are generated per <strong>Schedule III of the Companies Act, 2013</strong>. The AI maps Tally ledger groups to Schedule III line items (Share Capital, Trade Receivables, etc.) and generates BS, P&L and Notes. Always verify the account mapping before finalizing.</p>
+            </div>
         </main>
     </div>
 
-    <div id="fs-toast-ct" style="position:fixed;top:1.5rem;right:1.5rem;z-index:9999;display:flex;flex-direction:column;gap:.5rem"></div>
+    <div class="sr-toast-ct" id="sr-toast-ct"></div>
 
+    <script src="api_config.js"></script>
     <script src="app-toast.js"></script>
-    <script src="api_config.js?v=2"></script>
-    <script src="app-topbar.js"></script>
     <script src="client-picker-overlay.js"></script>
     <script>
         initClientPicker({
@@ -219,15 +223,6 @@
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         const clientId = urlParams.get('clientId');
-        document.getElementById('fs-back-link').href = `services-dashboard.html?clientId=${clientId}`;
-
-        // ═══ STATE ═══
-        let selectedSource = null;   // 'tally' or 'upload'
-        let tallyTBData = null;      // structured TB from tally
-        let tallyAvailable = false;
-        let clientCompanyName = '';
-        let selectedFiles = { tb: null, bs: null, notes: null };
-        let currentJobId = null;
 
         // Schedule III groups for dropdown
         const SCHEDULE_GROUPS = [
@@ -247,124 +242,95 @@
             'Other Expenses', 'Tax Expense',
         ];
 
-        // ═══ TOAST ═══
-        function fsToast(msg, type='info') {
-            const colors = { success:'#059669', error:'#dc2626', info:'#1e3a8a', warning:'#d97706' };
+        // ═══ UTILS ═══
+        function srToast(msg, type='info') {
+            const ct = document.getElementById('sr-toast-ct');
             const t = document.createElement('div');
-            t.style.cssText = `padding:.6rem 1rem;border-radius:10px;background:#fff;border:1px solid ${colors[type]};color:${colors[type]};font-size:.78rem;font-weight:600;box-shadow:0 4px 12px rgba(0,0,0,.1);animation:fsFadeIn .3s ease;font-family:inherit`;
-            t.textContent = msg;
-            document.getElementById('fs-toast-ct').appendChild(t);
-            setTimeout(() => t.remove(), 4000);
+            const bg = {success:'#059669',warning:'#d97706',info:'#3b82f6',error:'#dc2626'}[type]||'#3b82f6';
+            t.style.cssText = `padding:.55rem 1rem;background:${bg};color:#fff;border-radius:8px;font-size:.78rem;font-weight:600;box-shadow:0 4px 16px rgba(0,0,0,.15);animation:srFadeIn .3s ease`;
+            t.textContent = msg; ct.appendChild(t);
+            setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 3000);
         }
 
-        function formatINR(val) {
-            const num = Math.abs(Number(val) || 0);
-            return '₹ ' + num.toLocaleString('en-IN', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+        function formatINR(n) {
+            if (n===undefined||n===null||isNaN(n)) return '₹ 0';
+            const abs=Math.abs(Math.round(Number(n)));const s=abs.toString();
+            let f;if(s.length>3){f=s.slice(0,-3).replace(/\B(?=(\d{2})+(?!\d))/g,',')+','+s.slice(-3);}else{f=s;}
+            return (n<0?'-':'')+'₹ '+f;
         }
 
-        // ═══ NAV ═══
-        function fsNav(sectionId, el) {
-            document.querySelectorAll('.fs-section').forEach(s => s.classList.remove('active'));
-            document.getElementById('sec-' + sectionId)?.classList.add('active');
-            document.querySelectorAll('.fs-sb-section .fs-sb-item').forEach(l => l.classList.remove('active'));
+        // ═══ STATE ═══
+        let tallyTBData = null;
+        let selectedFiles = { tb: null, bs: null, notes: null };
+        let currentJobId = null;
+
+        // ═══ TAB NAVIGATION ═══
+        function fsTabSwitch(tabId, el) {
+            document.querySelectorAll('.fs-nav-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.fs-tab-content').forEach(c => c.classList.remove('active'));
             if (el) el.classList.add('active');
-            if (sectionId === 'results') loadHistory();
+            document.getElementById('tab-' + tabId)?.classList.add('active');
+            if (tabId === 'history') fsLoadHistory();
         }
 
-        function switchResultTab(tabId, el) {
-            document.querySelectorAll('.fs-result-tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.fs-result-panel').forEach(p => p.classList.remove('active'));
-            if (el) el.classList.add('active');
-            document.getElementById('rp-' + tabId)?.classList.add('active');
+        // ═══ INIT ═══
+        async function fsInit() {
+            await fsLoadCompanies();
+            fsLoadHistory();
         }
 
-        // ═══ INIT: Check Tally ═══
-        async function initTallyCheck() {
-            if (!clientId) return;
+        async function fsLoadCompanies() {
             try {
-                const res = await authFetch(`/clients/${clientId}`);
-                if (res.ok) {
-                    const client = await res.json();
-                    clientCompanyName = client.name || '';
+                const res = await authFetch('/tally/companies');
+                if (res?.ok) {
+                    const c = await res.json();
+                    const sel = document.getElementById('fs-company-select');
+                    c.forEach(x => { const o = document.createElement('option'); o.value = x; o.textContent = x; sel.appendChild(o); });
+                    if (c.length === 1) sel.value = c[0];
                 }
-            } catch (e) { /* ignore */ }
-
-            if (!clientCompanyName) {
-                document.getElementById('fs-tally-badge').textContent = 'No company linked';
-                document.getElementById('fs-tally-badge').className = 'fs-source-badge tally-no';
-                return;
-            }
-
-            try {
-                const res = await authFetch(`/tally/ledgers/stats?company_name=${encodeURIComponent(clientCompanyName)}`);
-                if (res.ok) {
-                    const stats = await res.json();
-                    if (stats.total_ledgers > 0) {
-                        tallyAvailable = true;
-                        document.getElementById('fs-tally-badge').textContent = '✓ Connected';
-                        document.getElementById('fs-tally-badge').className = 'fs-source-badge tally-ok';
-                        document.getElementById('fs-tally-info').innerHTML = `<strong>${stats.total_ledgers}</strong> ledgers · <strong>${stats.groups}</strong> groups`;
-                    } else {
-                        document.getElementById('fs-tally-badge').textContent = 'No ledgers synced';
-                        document.getElementById('fs-tally-badge').className = 'fs-source-badge tally-no';
-                    }
-                }
-            } catch (e) {
-                document.getElementById('fs-tally-badge').textContent = 'Offline';
-                document.getElementById('fs-tally-badge').className = 'fs-source-badge tally-no';
-            }
-        }
-
-        // ═══ SOURCE SELECTION ═══
-        function selectSource(src) {
-            if (src === 'tally' && !tallyAvailable) {
-                fsToast('No Tally ledgers available. Sync from Tally first or use file upload.', 'warning');
-                return;
-            }
-
-            selectedSource = src;
-            document.querySelectorAll('.fs-source-card').forEach(c => c.classList.remove('selected'));
-            document.getElementById('fs-src-' + src).classList.add('selected');
-
-            // Show/hide upload area
-            document.getElementById('fs-upload-area').style.display = src === 'upload' ? 'block' : 'none';
-            document.getElementById('fs-optional-files').style.display = 'block';
-
-            // Show grouping + generate
-            document.getElementById('fs-step-grouping').style.display = 'block';
-            document.getElementById('fs-step-generate').style.display = 'block';
-
-            if (src === 'tally') {
-                loadTallyTB();
-            } else {
-                document.getElementById('fs-group-tbody').innerHTML = '<tr><td colspan="5" style="text-align:center;padding:2rem;color:#9ca3af">Upload a Trial Balance file above</td></tr>';
-                document.getElementById('fs-tb-summary').style.display = 'none';
-            }
+            } catch(e) {}
         }
 
         // ═══ LOAD TALLY TB ═══
-        async function loadTallyTB() {
-            const tbody = document.getElementById('fs-group-tbody');
-            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:2rem;color:#9ca3af">⏳ Loading ledgers from Tally…</td></tr>';
+        async function fsLoadTallyTB() {
+            const company = document.getElementById('fs-company-select').value;
+            if (!company) { srToast('Please select a Tally company first', 'warning'); return; }
+
+            const btn = document.getElementById('fs-load-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="sr-spin"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Loading…';
 
             try {
-                const res = await authFetch(`/financial-statements/tally-tb?company_name=${encodeURIComponent(clientCompanyName)}`);
-                if (!res.ok) throw new Error('Failed to load Tally TB');
+                const res = await authFetch(`/fs-tally/trial-balance?company_name=${encodeURIComponent(company)}`);
+                if (!res?.ok) {
+                    const err = await res?.json().catch(() => ({}));
+                    throw new Error(err.detail || 'Failed to load Tally TB');
+                }
                 tallyTBData = await res.json();
-                renderGroupingTable(tallyTBData.accounts);
-                renderTBSummary(tallyTBData);
-                fsToast(`Loaded ${tallyTBData.accounts.length} accounts from Tally`, 'success');
-            } catch (e) {
-                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:2rem;color:#dc2626">❌ ${e.message}</td></tr>`;
-                fsToast(e.message, 'error');
+                fsRenderTBTable(tallyTBData.accounts);
+                fsUpdateTBStats(tallyTBData);
+                document.getElementById('fs-stat-source').textContent = 'Tally';
+                fsResetLoadBtn();
+                srToast(`Loaded ${tallyTBData.accounts.length} accounts from Tally`, 'success');
+                // Switch to TB tab
+                fsTabSwitch('tb', document.querySelector('.fs-nav-tab'));
+            } catch(e) {
+                fsResetLoadBtn();
+                srToast('Error: ' + e.message, 'error');
             }
         }
 
-        // ═══ RENDER GROUPING TABLE ═══
-        function renderGroupingTable(accounts) {
-            const tbody = document.getElementById('fs-group-tbody');
+        function fsResetLoadBtn() {
+            const btn = document.getElementById('fs-load-btn');
+            btn.disabled = false;
+            btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Load Synced Data';
+        }
+
+        // ═══ RENDER TB TABLE ═══
+        function fsRenderTBTable(accounts) {
+            const tbody = document.getElementById('fs-tb-tbody');
             if (!accounts || !accounts.length) {
-                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:2rem;color:#9ca3af">No accounts found</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:2.5rem;color:#94a3b8"><div style="font-size:1.8rem;margin-bottom:.5rem;opacity:.3">📊</div>No accounts found</td></tr>';
                 return;
             }
 
@@ -374,90 +340,96 @@
                 const tallyGroup = a.tally_group || a.sub_group || '';
 
                 // Build schedule group dropdown
-                let opts = SCHEDULE_GROUPS.map(g => {
+                let opts = '<option value="">— Select —</option>' + SCHEDULE_GROUPS.map(g => {
                     if (g.startsWith('---')) return `<option disabled style="font-weight:700;color:#6b7280">${g}</option>`;
                     const sel = g === a.schedule_group ? 'selected' : '';
                     return `<option value="${g}" ${sel}>${g}</option>`;
                 }).join('');
 
                 return `<tr data-idx="${i}" data-name="${(a.account_name||'').toLowerCase()}">
-                    <td style="font-weight:600;color:#0f172a">${a.account_name}</td>
-                    <td>${tallyGroup ? `<span class="fs-tally-grp">${tallyGroup}</span>` : '—'}</td>
-                    <td class="fs-row-dr">${dr}</td>
-                    <td class="fs-row-cr">${cr}</td>
-                    <td><select class="fs-group-select" data-idx="${i}" onchange="updateGrouping(${i},this.value)">${opts}</select></td>
+                    <td style="font-weight:600;color:#0f172a;font-size:.78rem">${a.account_name}</td>
+                    <td>${tallyGroup ? `<span style="font-size:.68rem;color:#6366f1;background:#eef2ff;padding:1px 5px;border-radius:4px">${tallyGroup}</span>` : '—'}</td>
+                    <td style="text-align:right;color:#dc2626;font-family:'Outfit',sans-serif;font-weight:600">${dr}</td>
+                    <td style="text-align:right;color:#059669;font-family:'Outfit',sans-serif;font-weight:600">${cr}</td>
+                    <td><select class="dep-select dep-select-sm" style="min-width:160px" data-idx="${i}" onchange="fsUpdateGrouping(${i},this.value)">${opts}</select></td>
                 </tr>`;
             }).join('');
+
+            document.getElementById('fs-tb-badge').textContent = accounts.length + ' accounts';
         }
 
-        function renderTBSummary(tb) {
-            document.getElementById('fs-sum-dr').textContent = formatINR(tb.total_debit);
-            document.getElementById('fs-sum-cr').textContent = formatINR(tb.total_credit);
-            document.getElementById('fs-sum-accounts').textContent = (tb.accounts || []).length;
-
+        function fsUpdateTBStats(tb) {
+            document.getElementById('fs-stat-accounts').textContent = (tb.accounts || []).length;
+            document.getElementById('fs-stat-dr').textContent = formatINR(tb.total_debit);
+            document.getElementById('fs-stat-cr').textContent = formatINR(tb.total_credit);
             const diff = Math.abs((tb.total_debit || 0) - (tb.total_credit || 0));
-            const balanced = diff < 1;
-            document.getElementById('fs-sum-status').innerHTML = balanced
-                ? '<span class="fs-badge balanced">✅ Tallied</span>'
-                : `<span class="fs-badge unbalanced">⚠️ Difference: ${formatINR(diff)}</span>`;
-            document.getElementById('fs-tb-summary').style.display = 'flex';
+            document.getElementById('fs-stat-balanced').textContent = diff < 1 ? '✅ Tallied' : '⚠️ Diff: ' + formatINR(diff);
         }
 
-        function updateGrouping(idx, newGroup) {
+        function fsUpdateGrouping(idx, newGroup) {
             if (tallyTBData && tallyTBData.accounts && tallyTBData.accounts[idx]) {
                 tallyTBData.accounts[idx].schedule_group = newGroup;
             }
         }
 
-        function filterGroupTable(val) {
-            const rows = document.querySelectorAll('#fs-group-tbody tr[data-name]');
+        function fsFilterTB(val) {
+            const rows = document.querySelectorAll('#fs-tb-tbody tr[data-name]');
             const q = val.toLowerCase();
-            rows.forEach(r => {
-                r.style.display = !q || r.dataset.name.includes(q) ? '' : 'none';
-            });
+            rows.forEach(r => { r.style.display = !q || r.dataset.name.includes(q) ? '' : 'none'; });
         }
 
-        // ═══ FILE HANDLING ═══
-        function handleFileSelect(input, type) {
-            const file = input.files[0];
-            if (!file) return;
+        // ═══ FILE UPLOAD ═══
+        function fsHandleFile(input, type) {
+            const file = input.files[0]; if (!file) return;
             selectedFiles[type] = file;
-            document.getElementById('fs-file-' + type).innerHTML = `<div class="fs-file-pill">📄 ${file.name} <span style="color:#9ca3af;font-weight:400">(${(file.size/1024).toFixed(0)} KB)</span></div>`;
+            document.getElementById('fs-file-' + type).innerHTML = `<div class="sr-file-pill">📄 ${file.name} <span style="color:#94a3b8;font-weight:400">(${(file.size/1024).toFixed(0)} KB)</span></div>`;
             document.getElementById('fs-drop-' + type).classList.add('has-file');
-
-            // If TB file uploaded, show grouping (it'll be processed server-side)
-            if (type === 'tb') {
-                document.getElementById('fs-group-tbody').innerHTML = '<tr><td colspan="5" style="text-align:center;padding:2rem;color:#6b7280">📄 File selected: <strong>' + file.name + '</strong><br><span style="font-size:.75rem;color:#9ca3af">AI will extract and classify accounts during generation</span></td></tr>';
-            }
         }
 
-        // ═══ GENERATE ═══
-        async function handleGenerate() {
-            if (!selectedSource) { fsToast('Select a source first', 'warning'); return; }
-            if (selectedSource === 'upload' && !selectedFiles.tb) { fsToast('Upload a Trial Balance file', 'error'); return; }
-            if (!clientId) { fsToast('No client context', 'error'); return; }
+        // ═══ GENERATE STATEMENTS ═══
+        async function fsGenerate() {
+            const company = document.getElementById('fs-company-select').value;
+            const hasTally = tallyTBData && tallyTBData.accounts && tallyTBData.accounts.length > 0;
+            const hasUpload = selectedFiles.tb;
+
+            if (!hasTally && !hasUpload) {
+                srToast('Load Tally data or upload a Trial Balance first', 'warning');
+                return;
+            }
+            if (!clientId) { srToast('No client context', 'error'); return; }
 
             const btn = document.getElementById('fs-gen-btn');
             btn.disabled = true;
-            btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin 1s linear infinite"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Generating…';
-            document.getElementById('fs-gen-progress').style.display = 'block';
+            btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="sr-spin"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Generating…';
+            document.getElementById('fs-progress-panel').style.display = 'block';
 
             try {
                 let jobId;
 
-                if (selectedSource === 'tally') {
-                    // JSON body — no file upload
-                    const res = await authFetch('/financial-statements/generate-from-tally', {
+                if (hasTally && company) {
+                    // Generate from Tally — instant, no AI needed
+                    const fy = document.getElementById('fs-fy-select').value;
+                    const res = await authFetch('/fs-tally/generate', {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ client_id: clientId, company_name: clientCompanyName }),
+                        body: JSON.stringify({ company_name: company, financial_year: fy }),
                     });
-                    if (!res.ok) { const e = await res.json().catch(()=>({})); throw new Error(e.detail || 'Failed'); }
+                    if (!res?.ok) { const e = await res?.json().catch(()=>({})); throw new Error(e.detail || 'Failed'); }
                     const data = await res.json();
-                    jobId = data.id;
-                    fsToast(`Generating from ${data.ledger_count || '?'} Tally ledgers…`, 'info');
+                    if (!data.has_data) { throw new Error(data.message || 'No data'); }
+                    // Instant result — render directly
+                    document.getElementById('fs-prog-text').textContent = '✅ Statements ready!';
+                    document.getElementById('fs-prog-bar').style.width = '100%';
+                    document.getElementById('fs-prog-bar').style.animation = 'none';
+                    setTimeout(() => { document.getElementById('fs-progress-panel').style.display = 'none'; }, 1200);
+                    fsRenderBalanceSheet(data);
+                    fsRenderProfitLoss(data);
+                    fsRenderSchedules(data);
+                    fsResetGenBtn();
+                    srToast(`Schedule III generated from ${data.total_ledgers} ledgers — ${data.summary.is_balanced ? 'Balanced ✅' : 'Unbalanced ⚠️'}`, 'success');
+                    fsTabSwitch('bs', document.querySelectorAll('.fs-nav-tab')[2]);
+                    return;
                 } else {
-                    // File upload
+                    // Generate from uploaded files
                     const formData = new FormData();
                     formData.append('trial_balance', selectedFiles.tb);
                     formData.append('client_id', clientId);
@@ -473,18 +445,19 @@
                     if (!res.ok) { const e = await res.json().catch(()=>({})); throw new Error(e.detail || 'Upload failed'); }
                     const data = await res.json();
                     jobId = data.id;
-                    fsToast('Processing uploaded files…', 'info');
+                    srToast('Processing uploaded files…', 'info');
                 }
 
                 currentJobId = jobId;
-                pollStatus(jobId);
-            } catch (e) {
-                fsToast(e.message, 'error');
-                resetGenBtn();
+                fsPollStatus(jobId);
+            } catch(e) {
+                srToast(e.message, 'error');
+                fsResetGenBtn();
+                document.getElementById('fs-progress-panel').style.display = 'none';
             }
         }
 
-        async function pollStatus(jobId) {
+        async function fsPollStatus(jobId) {
             const statusMap = {
                 extracting: { t: 'Extracting text from files…', w: '25%' },
                 parsing_tb: { t: 'Parsing Trial Balance — classifying accounts…', w: '40%' },
@@ -494,7 +467,7 @@
             const poll = async () => {
                 try {
                     const res = await authFetch(`/financial-statements/status/${jobId}`);
-                    if (!res.ok) return;
+                    if (!res?.ok) return;
                     const d = await res.json();
                     const s = statusMap[d.status] || { t: 'Processing…', w: '30%' };
                     document.getElementById('fs-prog-text').textContent = s.t;
@@ -504,53 +477,49 @@
                         document.getElementById('fs-prog-text').textContent = '✅ Statements ready!';
                         document.getElementById('fs-prog-bar').style.width = '100%';
                         document.getElementById('fs-prog-bar').style.animation = 'none';
-                        fsToast('✅ Financial statements generated!', 'success');
-                        resetGenBtn();
-                        loadResult(jobId);
+                        srToast('✅ Financial statements generated!', 'success');
+                        fsResetGenBtn();
+                        setTimeout(() => { document.getElementById('fs-progress-panel').style.display = 'none'; }, 1500);
+                        fsLoadResult(jobId);
                         return;
                     }
                     if (d.status === 'failed') {
                         document.getElementById('fs-prog-text').textContent = '❌ ' + (d.error || 'Failed');
                         document.getElementById('fs-prog-bar').style.animation = 'none';
                         document.getElementById('fs-prog-bar').style.background = '#dc2626';
-                        fsToast('Generation failed', 'error');
-                        resetGenBtn();
+                        srToast('Generation failed', 'error');
+                        fsResetGenBtn();
                         return;
                     }
                     setTimeout(poll, 3000);
-                } catch (e) { setTimeout(poll, 5000); }
+                } catch(e) { setTimeout(poll, 5000); }
             };
             setTimeout(poll, 2000);
         }
 
-        function resetGenBtn() {
+        function fsResetGenBtn() {
             const btn = document.getElementById('fs-gen-btn');
             btn.disabled = false;
-            btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Generate Financial Statements';
+            btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Generate Statements';
         }
 
         // ═══ LOAD & RENDER RESULT ═══
-        async function loadResult(jobId) {
+        async function fsLoadResult(jobId) {
             try {
                 const res = await authFetch(`/financial-statements/result/${jobId}`);
-                if (!res.ok) return;
+                if (!res?.ok) return;
                 const r = await res.json();
                 currentJobId = jobId;
-                renderBalanceSheet(r);
-                renderProfitLoss(r);
-                renderSchedules(r);
-                renderMappings(r);
-                document.getElementById('fs-result-tabs').style.display = 'flex';
-                document.getElementById('fs-history-panel').style.display = 'none';
-                document.getElementById('fs-result-title').textContent = r.company_name || 'Financial Statements';
-                document.getElementById('fs-result-subtitle').textContent = `Schedule III · ${r.current_year_date || 'Current Year'}`;
-                fsNav('results', document.querySelector('[onclick*=results]'));
-                switchResultTab('bs', document.querySelector('.fs-result-tab'));
-            } catch (e) { console.error(e); }
+                fsRenderBalanceSheet(r);
+                fsRenderProfitLoss(r);
+                fsRenderSchedules(r);
+                // Switch to BS tab
+                fsTabSwitch('bs', document.querySelectorAll('.fs-nav-tab')[2]);
+            } catch(e) { console.error(e); }
         }
 
         // ═══ RENDER: BALANCE SHEET ═══
-        function renderBalanceSheet(r) {
+        function fsRenderBalanceSheet(r) {
             const bs = r.balance_sheet; if (!bs) return;
             const cy = r.current_year_date || 'Current Year';
             const py = r.previous_year_date || 'Previous Year';
@@ -565,70 +534,54 @@
             h+='</tbody></table></div>';
             if(r.warnings&&r.warnings.length){h+='<div class="fs-warnings"><h4>⚠️ Warnings</h4><ul>'+r.warnings.map(w=>'<li>'+w+'</li>').join('')+'</ul></div>'}
             h+='</div>';
-            document.getElementById('fs-bs-content').innerHTML=h;
+            document.getElementById('fs-bs-content').innerHTML = h;
         }
 
         // ═══ RENDER: P&L ═══
-        function renderProfitLoss(r) {
-            const pl=r.profit_and_loss; if(!pl) return;
-            const cy=r.current_year_date||'Current Year',py=r.previous_year_date||'Previous Year';
-            let h=`<div class="fs-panel"><div class="fs-report-header"><h2>${r.company_name||'Company'}</h2><div class="fs-report-sub">Statement of Profit and Loss as per Schedule III</div><div class="fs-report-period">For the year ended ${cy}</div></div>`;
-            h+='<div style="overflow-x:auto"><table class="fs-stmt-table"><thead><tr><th>Particulars</th><th>'+cy+'</th><th>'+py+'</th></tr></thead><tbody>';
-            h+='<tr class="fs-heading-row"><td colspan="3">INCOME</td></tr>';
+        function fsRenderProfitLoss(r) {
+            const pl = r.profit_and_loss; if (!pl) return;
+            const cy = r.current_year_date || 'Current Year', py = r.previous_year_date || 'Previous Year';
+            let h = `<div class="fs-panel"><div class="fs-report-header"><h2>${r.company_name||'Company'}</h2><div class="fs-report-sub">Statement of Profit and Loss as per Schedule III</div><div class="fs-report-period">For the year ended ${cy}</div></div>`;
+            h += '<div style="overflow-x:auto"><table class="fs-stmt-table"><thead><tr><th>Particulars</th><th>'+cy+'</th><th>'+py+'</th></tr></thead><tbody>';
+            h += '<tr class="fs-heading-row"><td colspan="3">INCOME</td></tr>';
             (pl.income||[]).forEach(it=>{h+=`<tr><td>${it.name}${it.note_ref?'<span class="fs-note-ref">'+it.note_ref+'</span>':''}</td><td>${formatINR(it.current_year)}</td><td>${it.previous_year!=null?formatINR(it.previous_year):'—'}</td></tr>`});
             if(pl.total_income)h+=`<tr class="fs-subtotal-row"><td>Total Income</td><td>${formatINR(pl.total_income.current_year)}</td><td>${pl.total_income.previous_year!=null?formatINR(pl.total_income.previous_year):'—'}</td></tr>`;
-            h+='<tr class="fs-heading-row"><td colspan="3">EXPENSES</td></tr>';
+            h += '<tr class="fs-heading-row"><td colspan="3">EXPENSES</td></tr>';
             (pl.expenses||[]).forEach(it=>{h+=`<tr><td>${it.name}${it.note_ref?'<span class="fs-note-ref">'+it.note_ref+'</span>':''}</td><td>${formatINR(it.current_year)}</td><td>${it.previous_year!=null?formatINR(it.previous_year):'—'}</td></tr>`});
             if(pl.total_expenses)h+=`<tr class="fs-subtotal-row"><td>Total Expenses</td><td>${formatINR(pl.total_expenses.current_year)}</td><td>${pl.total_expenses.previous_year!=null?formatINR(pl.total_expenses.previous_year):'—'}</td></tr>`;
             if(pl.profit_before_tax)h+=`<tr class="fs-subtotal-row"><td>Profit Before Tax</td><td>${formatINR(pl.profit_before_tax.current_year)}</td><td>${pl.profit_before_tax.previous_year!=null?formatINR(pl.profit_before_tax.previous_year):'—'}</td></tr>`;
             if(pl.tax_expense)h+=`<tr><td>Tax Expense</td><td>${formatINR(pl.tax_expense.current_year)}</td><td>${pl.tax_expense.previous_year!=null?formatINR(pl.tax_expense.previous_year):'—'}</td></tr>`;
             if(pl.profit_after_tax)h+=`<tr class="fs-total-row"><td>PROFIT AFTER TAX</td><td>${formatINR(pl.profit_after_tax.current_year)}</td><td>${pl.profit_after_tax.previous_year!=null?formatINR(pl.profit_after_tax.previous_year):'—'}</td></tr>`;
-            h+='</tbody></table></div></div>';
-            document.getElementById('fs-pl-content').innerHTML=h;
+            h += '</tbody></table></div></div>';
+            document.getElementById('fs-pl-content').innerHTML = h;
         }
 
         // ═══ RENDER: SCHEDULES ═══
-        function renderSchedules(r) {
-            const s=r.schedules; if(!s||!s.length) return;
-            let h='';
-            s.forEach(sc=>{
-                h+=`<div class="fs-panel"><div class="fs-panel-title" style="margin-bottom:.65rem;border-left:4px solid #8b5cf6;padding-left:.65rem">${sc.note_ref}: ${sc.title}</div>`;
-                h+='<div style="overflow-x:auto"><table class="fs-stmt-table"><thead><tr><th>Description</th><th>Current Year</th><th>Previous Year</th></tr></thead><tbody>';
+        function fsRenderSchedules(r) {
+            const s = r.schedules; if (!s || !s.length) { document.getElementById('fs-sched-content').innerHTML = '<div style="text-align:center;padding:2rem;color:#94a3b8">No schedules in result</div>'; return; }
+            let h = '';
+            s.forEach(sc => {
+                h += `<div class="fs-panel"><div class="fs-panel-title" style="margin-bottom:.65rem;border-left:4px solid #8b5cf6;padding-left:.65rem">${sc.note_ref}: ${sc.title}</div>`;
+                h += '<div style="overflow-x:auto"><table class="fs-stmt-table"><thead><tr><th>Description</th><th>Current Year</th><th>Previous Year</th></tr></thead><tbody>';
                 (sc.items||[]).forEach(it=>{h+=`<tr><td>${it.description}</td><td>${formatINR(it.current_year)}</td><td>${it.previous_year!=null?formatINR(it.previous_year):'—'}</td></tr>`});
                 if(sc.total)h+=`<tr class="fs-subtotal-row"><td>Total</td><td>${formatINR(sc.total.current_year)}</td><td>${sc.total.previous_year!=null?formatINR(sc.total.previous_year):'—'}</td></tr>`;
-                h+='</tbody></table></div></div>';
+                h += '</tbody></table></div></div>';
             });
-            document.getElementById('fs-sched-content').innerHTML=h;
-        }
-
-        // ═══ RENDER: MAPPINGS ═══
-        function renderMappings(r) {
-            const m=r.account_mappings; if(!m||!m.length) return;
-            let h='<div class="fs-panel" style="padding:0"><div style="overflow-x:auto"><table class="fs-map-table"><thead><tr><th>TB Account</th><th>Mapped To</th><th>Schedule</th><th>Confidence</th></tr></thead><tbody>';
-            m.forEach(mp=>{const cls=(mp.confidence||'').toLowerCase();h+=`<tr><td style="font-weight:600">${mp.tb_account}</td><td>${mp.mapped_to}</td><td style="color:#6366f1;font-weight:600">${mp.schedule||'—'}</td><td><span class="fs-conf ${cls}">${mp.confidence}</span></td></tr>`});
-            h+='</tbody></table></div></div>';
-            document.getElementById('fs-map-content').innerHTML=h;
+            document.getElementById('fs-sched-content').innerHTML = h;
         }
 
         // ═══ HISTORY ═══
-        async function loadHistory() {
+        async function fsLoadHistory() {
             if (!clientId) return;
-            // Show history panel, hide result tabs
-            document.getElementById('fs-history-panel').style.display = 'block';
-            document.getElementById('fs-result-tabs').style.display = 'none';
-            document.querySelectorAll('.fs-result-panel').forEach(p => { p.classList.remove('active'); p.querySelector('div')&&(p.querySelector('div').innerHTML=''); });
-            document.getElementById('fs-result-title').textContent = 'Past Statements';
-            document.getElementById('fs-result-subtitle').textContent = 'Previously generated Balance Sheets, P&L and Schedules';
-
             try {
                 const res = await authFetch(`/financial-statements/?client_id=${clientId}`);
-                if (!res.ok) return;
+                if (!res?.ok) return;
                 const jobs = await res.json();
-                document.getElementById('fs-past-count').textContent = jobs.length;
+                document.getElementById('fs-hist-badge').textContent = jobs.length;
 
                 const el = document.getElementById('fs-history-list');
                 if (!jobs.length) {
-                    el.innerHTML = '<div class="fs-empty"><div class="fs-empty-icon">📋</div><h3>No statements generated yet</h3><p>Go to "Prepare Statements" to get started</p></div>';
+                    el.innerHTML = '<div style="text-align:center;padding:2rem;color:#94a3b8;font-size:.8rem"><div style="font-size:1.5rem;margin-bottom:.5rem;opacity:.3">📋</div>No statements generated yet</div>';
                     return;
                 }
 
@@ -640,33 +593,32 @@
                     const date = j.created_at ? new Date(j.created_at).toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }) : '—';
                     const source = isTally ? '<span style="font-size:.62rem;background:#eff6ff;color:#3b82f6;padding:1px 5px;border-radius:4px;font-weight:600;margin-left:.35rem">TALLY</span>' : '';
 
-                    return `<div class="fs-hist-item" onclick="${j.status==='completed'?`loadResult('${j.id}')`:''}">
-                        <div class="fs-hist-icon" style="background:${iconBg}">${icon}</div>
-                        <div class="fs-hist-meta">
-                            <div class="fs-hist-name">${label}${source}</div>
-                            <div class="fs-hist-date">${date}${j.financial_year?' · FY '+j.financial_year:''}</div>
+                    return `<div style="display:flex;align-items:center;gap:.85rem;padding:.65rem .5rem;border-bottom:1px solid #f1f5f9;cursor:pointer;transition:background .2s" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background=''" onclick="${j.status==='completed'?`fsLoadResult('${j.id}')`:''}"">
+                        <div style="width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.15rem;background:${iconBg}">${icon}</div>
+                        <div style="flex:1;min-width:0">
+                            <div style="font-size:.82rem;font-weight:600;color:#1e293b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${label}${source}</div>
+                            <div style="font-size:.68rem;color:#9ca3af;margin-top:.1rem">${date}${j.financial_year?' · FY '+j.financial_year:''}</div>
                         </div>
-                        <span class="fs-badge ${j.status}">${j.status}</span>
-                        <button class="fs-btn danger" style="padding:.25rem .45rem" onclick="event.stopPropagation();deleteJob('${j.id}')">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-                        </button>
+                        <span class="sr-badge ${j.status === 'completed' ? 'green' : j.status === 'failed' ? 'red' : 'amber'}">${j.status}</span>
+                        <button class="sr-btn sr-btn-secondary" style="padding:.2rem .4rem;font-size:.6rem;color:#dc2626;border-color:#fecaca" onclick="event.stopPropagation();fsDeleteJob('${j.id}')">✕</button>
                     </div>`;
                 }).join('');
-            } catch (e) { console.error(e); }
+            } catch(e) { console.error(e); }
         }
 
-        async function deleteJob(id) {
+        async function fsDeleteJob(id) {
             if (!confirm('Delete this generation?')) return;
             try {
                 const res = await authFetch(`/financial-statements/${id}`, { method: 'DELETE' });
-                if (res.ok) { fsToast('Deleted', 'success'); loadHistory(); }
-                else fsToast('Delete failed', 'error');
-            } catch (e) { fsToast(e.message, 'error'); }
+                if (res?.ok) { srToast('Deleted', 'success'); fsLoadHistory(); }
+                else srToast('Delete failed', 'error');
+            } catch(e) { srToast(e.message, 'error'); }
         }
 
-        // ═══ INIT ═══
-        initTallyCheck();
-        loadHistory(); // just to set the count badge
+        function fsExportReport() { srToast('Export coming soon', 'info'); }
+
+        // ═══ START ═══
+        fsInit();
     </script>
 </body>
 </html>

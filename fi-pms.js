@@ -22,7 +22,7 @@ async function loadPMSAccounts() {
     const clientId = new URLSearchParams(location.search).get('clientId') || localStorage.getItem('selectedClientId');
     if (!clientId) return;
 
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('access_token');
     try {
         const res = await fetch(`${PMS_API}/accounts?client_id=${clientId}`, {
             headers: { 'Authorization': `Bearer ${token}` },
@@ -74,6 +74,9 @@ function onPMSAccountChange() {
     } else if (badge) {
         badge.style.display = 'none';
     }
+
+    // Refresh PMS uploads table filtered by selected account
+    if (typeof loadStatementsTabbed === 'function') loadStatementsTabbed();
 }
 
 
@@ -141,7 +144,7 @@ async function createPMSAccount() {
     }
 
     try {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('access_token');
         const res = await fetch(`${PMS_API}/accounts`, {
             method: 'POST',
             headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
@@ -203,7 +206,7 @@ async function handlePMSUpload(input, statementType) {
     formData.append('statement_type', statementType);
 
     try {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('access_token');
         const res = await fetch(`${PMS_API}/upload`, {
             method: 'POST',
             headers: { 'Authorization': `Bearer ${token}` },
@@ -227,7 +230,7 @@ async function handlePMSUpload(input, statementType) {
 }
 
 async function pollUploadStatus(uploadId, statementType) {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('access_token');
     const FI_API = (typeof API_BASE !== 'undefined' ? API_BASE : 'http://localhost:8000/api/v1') + '/financial-instruments';
 
     const poll = async () => {
@@ -262,13 +265,41 @@ async function pollUploadStatus(uploadId, statementType) {
 
 // ─── Stock Register ──────────────────────────────────
 
+// Pill toggle helpers
+function setSRSource(val) {
+    document.querySelectorAll('[data-sr-source]').forEach(b => b.classList.toggle('active', b.dataset.srSource === val));
+    const hid = document.getElementById('fi-sr-source-select');
+    if(hid) hid.value = val;
+    // Show PMS account dropdown when PMS selected
+    const pm = document.getElementById('fi-sr-pms-select');
+    if(pm) pm.style.display = (val === 'pms') ? '' : 'none';
+    const fb = document.getElementById('fi-sr-fifo-btn');
+    if(fb) fb.style.display = (val === 'pms') ? '' : 'none';
+    loadStockRegister();
+}
+
+function setCGSource(val) {
+    document.querySelectorAll('[data-cg-source]').forEach(b => b.classList.toggle('active', b.dataset.cgSource === val));
+    const hid = document.getElementById('fi-cg-source-select');
+    if(hid) hid.value = val;
+    const pm = document.getElementById('fi-cg-pms-select');
+    if(pm) pm.style.display = (val === 'pms') ? '' : 'none';
+    loadCapitalGains();
+}
+
+function setCGCat(val) {
+    document.querySelectorAll('[data-cg-cat]').forEach(b => b.classList.toggle('active', b.dataset.cgCat === val));
+    const hid = document.getElementById('fi-cg-category');
+    if(hid) hid.value = val;
+    loadCapitalGains();
+}
+
 // FY state — default to current FY (April-March)
 let srSelectedFY = 2025;  // means FY 2025-26 (Apr 2025 – Mar 2026)
 
 function setFY(fy) {
     srSelectedFY = fy;
-    // Update button states
-    document.querySelectorAll('.fi-fy-btn').forEach(btn => {
+    document.querySelectorAll('[data-fy]').forEach(btn => {
         btn.classList.toggle('active', String(btn.dataset.fy) === String(fy));
     });
     loadStockRegister();
@@ -281,100 +312,180 @@ function _fyParams() {
     return `&fy_start=${start}&fy_end=${end}`;
 }
 
+// Helper: fetch all completed FI uploads with structured_data for given type
+async function _fetchFIData(typePrefix) {
+    const clientId = new URLSearchParams(location.search).get('clientId') || localStorage.getItem('selectedClientId');
+    if(!clientId) return [];
+    try {
+        const res = await authFetch(`/financial-instruments/?client_id=${clientId}`);
+        if(!res.ok) return [];
+        const uploads = await res.json();
+        const completed = uploads.filter(u => u.status === 'completed' && u.instrument_type?.startsWith(typePrefix));
+        const results = [];
+        for(const u of completed) {
+            try {
+                const dr = await authFetch(`/financial-instruments/data/${u.id}`);
+                if(dr.ok) {
+                    const d = await dr.json();
+                    results.push({ upload: u, data: d.structured_data || {} });
+                }
+            } catch(e) {}
+        }
+        return results;
+    } catch(e) { return []; }
+}
+
 async function loadStockRegister() {
-    const sel = document.getElementById('fi-sr-pms-select');
+    const sourceSelect = document.getElementById('fi-sr-source-select');
+    const pmsSelect = document.getElementById('fi-sr-pms-select');
     const tbody = document.getElementById('fi-sr-tbody');
     const tfoot = document.getElementById('fi-sr-tfoot');
-    if (!sel || !tbody) return;
+    const fifoBtn = document.getElementById('fi-sr-fifo-btn');
+    if(!tbody) return;
 
-    const accountId = sel.value;
-    if (!accountId) {
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:2rem;color:#9ca3af">Select a PMS account to view the stock register</td></tr>';
-        if (tfoot) tfoot.style.display = 'none';
+    const source = sourceSelect?.value || 'all';
+    // Show/hide PMS account selector
+    if(pmsSelect) pmsSelect.style.display = (source === 'pms' || source === 'all') ? '' : 'none';
+    if(fifoBtn) fifoBtn.style.display = source === 'pms' ? '' : 'none';
+
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:2rem;color:#94a3b8">Loading holdings...</td></tr>';
+    if(tfoot) tfoot.style.display = 'none';
+
+    const fmt = v => '₹' + Math.abs(v).toLocaleString('en-IN', { maximumFractionDigits: 2 });
+    let allRows = [];
+
+    // ── PMS Holdings ──
+    if(source === 'all' || source === 'pms') {
+        const accountId = pmsSelect?.value;
+        if(accountId) {
+            try {
+                const token = localStorage.getItem('access_token');
+                const fyQ = _fyParams();
+                const res = await fetch(`${PMS_API}/stock-register?pms_account_id=${accountId}${fyQ}`, {
+                    headers: { 'Authorization': `Bearer ${token}` },
+                });
+                if(res.ok) {
+                    const data = await res.json();
+                    const acct = pmsAccounts.find(a => a.id == accountId);
+                    const label = acct?.account_name || acct?.provider_name || 'PMS';
+                    (data.securities || []).forEach(sec => {
+                        const bookValue = sec.closing?.book_value || 0;
+                        allRows.push({
+                            name: sec.security_name,
+                            source: label,
+                            sourceType: 'pms',
+                            qty: sec.closing?.qty || 0,
+                            avgCost: sec.closing?.avg_cost || 0,
+                            marketPrice: 0,
+                            invested: bookValue,
+                            current: bookValue,
+                            pnl: 0,
+                        });
+                    });
+                }
+            } catch(e) {}
+        }
+    }
+
+    // ── Demat Holdings ──
+    if(source === 'all' || source === 'demat') {
+        const dematData = await _fetchFIData('demat_holdings');
+        dematData.forEach(({ upload, data }) => {
+            const broker = data.broker || 'Zerodha';
+            (data.holdings || []).forEach(h => {
+                const qty = Number(h.quantity || h.qty || 0);
+                const avgCost = Number(h.avg_cost || h.average_cost || 0);
+                const marketPrice = Number(h.close_price || h.market_price || h.ltp || 0);
+                const invested = Number(h.invested_value || h.total_cost || avgCost * qty || 0);
+                const current = Number(h.market_value || h.current_value || marketPrice * qty || 0);
+                allRows.push({
+                    name: h.scrip_name || h.security_name || h.name || 'Unknown',
+                    source: broker.charAt(0).toUpperCase() + broker.slice(1),
+                    sourceType: 'demat',
+                    qty,
+                    avgCost,
+                    marketPrice,
+                    invested,
+                    current,
+                    pnl: current - invested,
+                });
+            });
+        });
+    }
+
+    // ── Mutual Fund Holdings ──
+    if(source === 'all' || source === 'mf') {
+        const mfData = await _fetchFIData('mutual_fund');
+        mfData.forEach(({ upload, data }) => {
+            (data.holdings || data.funds || []).forEach(h => {
+                const invested = Number(h.invested_value || h.cost || 0);
+                const current = Number(h.market_value || h.current_value || 0);
+                allRows.push({
+                    name: h.fund_name || h.scheme_name || h.name || 'Unknown',
+                    source: 'AMC',
+                    sourceType: 'mf',
+                    qty: Number(h.units || h.quantity || 0),
+                    avgCost: Number(h.avg_nav || h.avg_cost || 0),
+                    marketPrice: Number(h.current_nav || h.nav || 0),
+                    invested,
+                    current,
+                    pnl: current - invested,
+                });
+            });
+        });
+    }
+
+    // Sort by current value descending
+    allRows.sort((a, b) => b.current - a.current);
+
+    if(!allRows.length) {
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:2rem;color:#9ca3af">No holdings found. Upload statements or select a PMS account.</td></tr>';
         return;
     }
 
-    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:2rem;color:#94a3b8">Loading...</td></tr>';
-    if (tfoot) tfoot.style.display = 'none';
+    const sourceBadge = (type) => {
+        const colors = { pms: '#d97706', demat: '#4338ca', mf: '#059669' };
+        const labels = { pms: 'PMS', demat: 'Demat', mf: 'MF' };
+        return `<span style="background:${colors[type]||'#94a3b8'}15;color:${colors[type]||'#94a3b8'};padding:1px 6px;border-radius:4px;font-size:.6rem;font-weight:600">${labels[type]||type}</span>`;
+    };
 
-    try {
-        const token = localStorage.getItem('token');
-        const fyQ = _fyParams();
-        const res = await fetch(`${PMS_API}/stock-register?pms_account_id=${accountId}${fyQ}`, {
-            headers: { 'Authorization': `Bearer ${token}` },
-        });
-        if (!res.ok) throw new Error('Failed to load');
-        const data = await res.json();
+    tbody.innerHTML = allRows.map(r => {
+        const pnlColor = r.pnl >= 0 ? '#059669' : '#dc2626';
+        const pnlSign = r.pnl >= 0 ? '+' : '';
+        return `<tr>
+            <td><strong>${r.name}</strong></td>
+            <td>${sourceBadge(r.sourceType)} ${r.source}</td>
+            <td>${r.qty.toLocaleString('en-IN', { maximumFractionDigits: 4 })}</td>
+            <td>${fmt(r.avgCost)}</td>
+            <td>${r.marketPrice ? fmt(r.marketPrice) : '—'}</td>
+            <td>${fmt(r.invested)}</td>
+            <td style="font-weight:600">${fmt(r.current)}</td>
+            <td style="font-weight:600;color:${pnlColor}">${pnlSign}${fmt(r.pnl)}</td>
+        </tr>`;
+    }).join('');
 
-        const securities = data.securities || [];
-        const totals = data.totals || {};
+    // Summary cards
+    const totalInvested = allRows.reduce((s, r) => s + r.invested, 0);
+    const totalCurrent = allRows.reduce((s, r) => s + r.current, 0);
+    const el = id => document.getElementById(id);
+    if(el('fi-sr-total-count')) el('fi-sr-total-count').textContent = allRows.length + ' securities';
+    if(el('fi-sr-invested')) el('fi-sr-invested').textContent = fmt(totalInvested);
+    if(el('fi-sr-current')) {
+        el('fi-sr-current').textContent = fmt(totalCurrent);
+        el('fi-sr-current').style.color = totalCurrent >= totalInvested ? '#059669' : '#dc2626';
+    }
 
-        if (!securities.length) {
-            tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:2rem;color:#9ca3af">No holdings found. Upload a Transaction Statement or set opening balances.</td></tr>';
-            return;
-        }
-
-        const fmt = (v) => '₹' + Math.abs(v).toLocaleString('en-IN', { maximumFractionDigits: 2 });
-
-        tbody.innerHTML = securities.map(sec => {
-            const boughtQty = sec.bought_qty || sec.purchases.reduce((s, p) => s + p.qty, 0);
-            const soldQty = sec.sold_qty || sec.sales.reduce((s, p) => s + p.qty, 0);
-            const bookValue = sec.closing.book_value != null ? sec.closing.book_value : sec.closing.value || 0;
-            const lotCount = (sec.remaining_lots || []).length;
-            const lotIcon = lotCount > 0 ? `<span class="fi-sr-expand" onclick="toggleLotDetail(this)" title="View ${lotCount} FIFO lots" style="cursor:pointer;margin-left:.35rem;font-size:.7rem;color:#6366f1">▶ ${lotCount} lots</span>` : '';
-
-            // Build hidden lot detail row
-            let lotDetailRow = '';
-            if (lotCount > 0) {
-                const lotRows = sec.remaining_lots.map(l => `
-                    <tr style="font-size:.68rem;color:#64748b">
-                        <td style="padding-left:2rem">${l.is_opening ? '📋 Opening' : '🛒 Buy'}</td>
-                        <td>${l.purchase_date || '—'}</td>
-                        <td>${l.remaining_qty.toFixed(4)} / ${l.original_qty.toFixed(4)}</td>
-                        <td>₹${l.cost_per_unit.toLocaleString('en-IN', { maximumFractionDigits: 2 })}</td>
-                        <td colspan="3">₹${l.book_value.toLocaleString('en-IN', { maximumFractionDigits: 2 })}</td>
-                    </tr>
-                `).join('');
-
-                lotDetailRow = `<tr class="fi-sr-lot-detail" style="display:none"><td colspan="7" style="padding:0;background:#f8fafc">
-                    <table style="width:100%;border-collapse:collapse"><thead>
-                    <tr style="font-size:.6rem;text-transform:uppercase;color:#94a3b8;letter-spacing:.05em">
-                        <th style="padding:.35rem .75rem;text-align:left">Type</th>
-                        <th style="padding:.35rem .75rem;text-align:left">Purchase Date</th>
-                        <th style="padding:.35rem .75rem;text-align:left">Remaining / Original</th>
-                        <th style="padding:.35rem .75rem;text-align:left">Cost/Unit</th>
-                        <th style="padding:.35rem .75rem;text-align:left" colspan="3">Book Value</th>
-                    </tr></thead><tbody>${lotRows}</tbody></table>
-                </td></tr>`;
-            }
-
-            return `<tr>
-                <td><strong>${sec.security_name}</strong>${lotIcon}</td>
-                <td>${sec.opening.qty.toFixed(4)}</td>
-                <td style="color:#059669">+${boughtQty.toFixed(4)}</td>
-                <td style="color:#dc2626">-${soldQty.toFixed(4)}</td>
-                <td><strong>${sec.closing.qty.toFixed(4)}</strong></td>
-                <td>₹${sec.closing.avg_cost.toLocaleString('en-IN', { maximumFractionDigits: 2 })}</td>
-                <td style="font-weight:600;color:#374151">${fmt(bookValue)}</td>
-            </tr>${lotDetailRow}`;
-        }).join('');
-
-        // Totals row
-        if (tfoot && totals) {
-            tfoot.style.display = '';
-            tfoot.innerHTML = `<tr style="font-weight:700;background:#f1f5f9;border-top:2px solid #e2e8f0">
-                <td style="padding:.6rem .75rem">TOTAL (${securities.length} securities)</td>
-                <td style="padding:.6rem .75rem">${(totals.opening_qty || 0).toFixed(4)}</td>
-                <td style="padding:.6rem .75rem;color:#059669">+${(totals.bought_qty || 0).toFixed(4)}</td>
-                <td style="padding:.6rem .75rem;color:#dc2626">-${(totals.sold_qty || 0).toFixed(4)}</td>
-                <td style="padding:.6rem .75rem">${(totals.closing_qty || 0).toFixed(4)}</td>
-                <td style="padding:.6rem .75rem">—</td>
-                <td style="padding:.6rem .75rem;color:#374151">${fmt(totals.closing_book_value || 0)}</td>
-            </tr>`;
-        }
-
-    } catch (e) {
-        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:2rem;color:#dc2626">${e.message}</td></tr>`;
+    // Total footer
+    if(tfoot) {
+        const totalPnl = totalCurrent - totalInvested;
+        tfoot.style.display = '';
+        tfoot.innerHTML = `<tr style="font-weight:700;background:#f1f5f9;border-top:2px solid #e2e8f0">
+            <td style="padding:.6rem .75rem">TOTAL (${allRows.length})</td>
+            <td></td><td></td><td></td><td></td>
+            <td style="padding:.6rem .75rem">${fmt(totalInvested)}</td>
+            <td style="padding:.6rem .75rem">${fmt(totalCurrent)}</td>
+            <td style="padding:.6rem .75rem;color:${totalPnl>=0?'#059669':'#dc2626'}">${totalPnl>=0?'+':''}${fmt(totalPnl)}</td>
+        </tr>`;
     }
 }
 
@@ -382,14 +493,12 @@ function toggleLotDetail(el) {
     const mainRow = el.closest('tr');
     const detailRow = mainRow.nextElementSibling;
     if (!detailRow || !detailRow.classList.contains('fi-sr-lot-detail')) return;
-
     const isHidden = detailRow.style.display === 'none';
     detailRow.style.display = isHidden ? '' : 'none';
     el.textContent = isHidden
         ? '▼ ' + el.textContent.replace('▶ ', '').replace('▼ ', '')
         : '▶ ' + el.textContent.replace('▶ ', '').replace('▼ ', '');
 }
-
 
 async function recomputeFIFO() {
     const sel = document.getElementById('fi-sr-pms-select');
@@ -398,11 +507,9 @@ async function recomputeFIFO() {
         if (typeof showToast === 'function') showToast('Select a PMS account first', 'error');
         return;
     }
-
     if (typeof showToast === 'function') showToast('Re-computing FIFO lots...', 'info');
-
     try {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('access_token');
         const res = await fetch(`${PMS_API}/run-fifo?pms_account_id=${accountId}`, {
             method: 'POST',
             headers: { 'Authorization': `Bearer ${token}` },
@@ -410,7 +517,7 @@ async function recomputeFIFO() {
         if (res.ok) {
             const data = await res.json();
             if (typeof showToast === 'function') showToast(
-                `FIFO complete: ${data.buys_processed} buys, ${data.sells_processed} sells, Net: ₹${data.net_gain.toLocaleString('en-IN')}`,
+                `FIFO complete: ${data.buys_processed} buys, ${data.sells_processed} sells`,
                 'success'
             );
             loadStockRegister();
@@ -424,69 +531,171 @@ async function recomputeFIFO() {
 }
 
 
-// ─── Capital Gains ───────────────────────────────────
+// ─── Capital Gains (Unified) ───────────────────────────────────
 
 async function loadCapitalGains() {
-    const sel = document.getElementById('fi-cg-pms-select');
+    const sourceSelect = document.getElementById('fi-cg-source-select');
+    const pmsSelect = document.getElementById('fi-cg-pms-select');
+    const categorySelect = document.getElementById('fi-cg-category');
     const tbody = document.getElementById('fi-cg-tbody');
-    if (!sel || !tbody) return;
+    if(!tbody) return;
 
-    const accountId = sel.value;
-    if (!accountId) {
-        tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:2rem;color:#9ca3af">Select a PMS account to view capital gains</td></tr>';
+    const source = sourceSelect?.value || 'all';
+    const category = categorySelect?.value || 'all';
+    // Show/hide PMS selector
+    if(pmsSelect) pmsSelect.style.display = (source === 'pms') ? '' : 'none';
+
+    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:2rem;color:#94a3b8">Loading capital gains...</td></tr>';
+
+    const fmt = v => '₹' + Math.abs(v).toLocaleString('en-IN', { maximumFractionDigits: 0 });
+    let allEntries = [];
+
+    // ── PMS Capital Gains ──
+    if(source === 'all' || source === 'pms') {
+        const accountId = pmsSelect?.value;
+        if(accountId) {
+            try {
+                const token = localStorage.getItem('access_token');
+                const res = await fetch(`${PMS_API}/capital-gains?pms_account_id=${accountId}`, {
+                    headers: { 'Authorization': `Bearer ${token}` },
+                });
+                if(res.ok) {
+                    const data = await res.json();
+                    const acct = pmsAccounts.find(a => a.id == accountId);
+                    const label = acct?.account_name || acct?.provider_name || 'PMS';
+                    (data.entries || []).forEach(e => {
+                        allEntries.push({
+                            name: e.security_name,
+                            source: label,
+                            sourceType: 'pms',
+                            buyDate: e.purchase_date || '—',
+                            sellDate: e.sale_date || '—',
+                            qty: e.qty || 0,
+                            buyValue: e.cost_basis || 0,
+                            sellValue: e.sale_proceeds || 0,
+                            gain: e.gain_loss || 0,
+                            type: e.gain_type || 'STCG',
+                            days: e.holding_days || 0,
+                            isGrandfathered: e.is_grandfathered || false,
+                        });
+                    });
+                }
+            } catch(e) {}
+        }
+    }
+
+    // ── Demat Capital Gains (from Tax P&L) ──
+    if(source === 'all' || source === 'demat') {
+        const dematData = await _fetchFIData('demat_taxpnl');
+        dematData.forEach(({ upload, data }) => {
+            const broker = data.broker || 'Zerodha';
+            const brokerLabel = broker.charAt(0).toUpperCase() + broker.slice(1);
+            (data.transactions || []).forEach(t => {
+                const buyVal = Number(t.buy_value || t.purchase_value || 0);
+                const sellVal = Number(t.sell_value || t.sale_value || 0);
+                const gain = Number(t.realized_pnl || t.pnl || t.profit || (sellVal - buyVal) || 0);
+                // Determine type from trade_type or holding period
+                let type = 'STCG';
+                const tt = String(t.trade_type || t.type || '').toLowerCase();
+                if(tt.includes('long') || tt === 'ltcg') type = 'LTCG';
+                else if(tt.includes('intraday') || tt.includes('speculative')) type = 'Intraday';
+                else if(tt.includes('short') || tt === 'stcg') type = 'STCG';
+                else if(t.holding_days && t.holding_days > 365) type = 'LTCG';
+
+                allEntries.push({
+                    name: t.scrip_name || t.security_name || t.symbol || 'Unknown',
+                    source: brokerLabel,
+                    sourceType: 'demat',
+                    buyDate: t.buy_date || t.purchase_date || '—',
+                    sellDate: t.sell_date || t.sale_date || '—',
+                    qty: Number(t.quantity || t.qty || 0),
+                    buyValue: buyVal,
+                    sellValue: sellVal,
+                    gain,
+                    type,
+                    days: Number(t.holding_days || 0),
+                    isGrandfathered: false,
+                });
+            });
+        });
+    }
+
+    // ── Apply Category Filter ──
+    if(category !== 'all') {
+        allEntries = allEntries.filter(e => {
+            if(category === 'intraday') return e.type === 'Intraday';
+            if(category === 'stcg') return e.type === 'STCG';
+            if(category === 'ltcg') return e.type === 'LTCG';
+            return true;
+        });
+    }
+
+    // Sort by sell date (most recent first)
+    allEntries.sort((a, b) => {
+        if(a.sellDate === '—') return 1;
+        if(b.sellDate === '—') return -1;
+        return b.sellDate.localeCompare(a.sellDate);
+    });
+
+    // ── Summary Computations ──
+    const specTotal = allEntries.filter(e => e.type === 'Intraday').reduce((s, e) => s + e.gain, 0);
+    const stcgTotal = allEntries.filter(e => e.type === 'STCG').reduce((s, e) => s + e.gain, 0);
+    const ltcgTotal = allEntries.filter(e => e.type === 'LTCG').reduce((s, e) => s + e.gain, 0);
+    const netTotal = specTotal + stcgTotal + ltcgTotal;
+    const stcgTax = Math.max(0, stcgTotal) * 0.20;
+    const ltcgTax = Math.max(0, ltcgTotal - 125000) * 0.125;
+
+    const el = id => document.getElementById(id);
+    const fmtSigned = v => (v >= 0 ? '' : '(') + fmt(v) + (v < 0 ? ')' : '');
+    if(el('fi-cg-summary-spec')) el('fi-cg-summary-spec').textContent = fmtSigned(specTotal);
+    if(el('fi-cg-summary-stcg')) el('fi-cg-summary-stcg').textContent = fmtSigned(stcgTotal);
+    if(el('fi-cg-summary-ltcg')) el('fi-cg-summary-ltcg').textContent = fmtSigned(ltcgTotal);
+    if(el('fi-cg-summary-net')) {
+        el('fi-cg-summary-net').textContent = fmtSigned(netTotal);
+        el('fi-cg-summary-net').style.color = netTotal >= 0 ? '#059669' : '#dc2626';
+    }
+    if(el('fi-cg-summary-stcg-tax')) el('fi-cg-summary-stcg-tax').textContent = fmt(stcgTax);
+    if(el('fi-cg-summary-ltcg-tax')) el('fi-cg-summary-ltcg-tax').textContent = fmt(Math.max(0, ltcgTax));
+    if(el('fi-cg-summary-count')) el('fi-cg-summary-count').textContent = allEntries.length;
+
+    if(!allEntries.length) {
+        tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:2rem;color:#9ca3af">No capital gains data found. Upload Tax P&L or transactions.</td></tr>';
         return;
     }
 
-    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:2rem;color:#94a3b8">Loading...</td></tr>';
+    const sourceBadge = (type) => {
+        const colors = { pms: '#d97706', demat: '#4338ca', mf: '#059669' };
+        const labels = { pms: 'PMS', demat: 'Demat', mf: 'MF' };
+        return `<span style="background:${colors[type]||'#94a3b8'}15;color:${colors[type]||'#94a3b8'};padding:1px 6px;border-radius:4px;font-size:.6rem;font-weight:600">${labels[type]||type}</span>`;
+    };
 
-    try {
-        const token = localStorage.getItem('token');
-        const res = await fetch(`${PMS_API}/capital-gains?pms_account_id=${accountId}`, {
-            headers: { 'Authorization': `Bearer ${token}` },
-        });
-        if (!res.ok) throw new Error('Failed to load');
-        const data = await res.json();
+    const typeBadge = (type) => {
+        if(type === 'LTCG') return '<span style="background:#ede9fe;color:#6366f1;padding:2px 6px;border-radius:4px;font-size:.6rem;font-weight:600">LTCG</span>';
+        if(type === 'Intraday') return '<span style="background:#fff7ed;color:#d97706;padding:2px 6px;border-radius:4px;font-size:.6rem;font-weight:600">Speculative</span>';
+        return '<span style="background:#dcfce7;color:#059669;padding:2px 6px;border-radius:4px;font-size:.6rem;font-weight:600">STCG</span>';
+    };
 
-        // Update summary cards
-        const fmt = (v) => '₹' + Math.abs(v).toLocaleString('en-IN', { maximumFractionDigits: 0 });
-        const el = (id) => document.getElementById(id);
-        if (el('fi-cg-summary-stcg')) el('fi-cg-summary-stcg').textContent = fmt(data.summary.stcg);
-        if (el('fi-cg-summary-ltcg')) el('fi-cg-summary-ltcg').textContent = fmt(data.summary.ltcg);
-        if (el('fi-cg-summary-net')) {
-            el('fi-cg-summary-net').textContent = (data.summary.total >= 0 ? '' : '(') + fmt(data.summary.total) + (data.summary.total < 0 ? ')' : '');
-            el('fi-cg-summary-net').style.color = data.summary.total >= 0 ? '#059669' : '#dc2626';
-        }
-        if (el('fi-cg-summary-stcg-tax')) el('fi-cg-summary-stcg-tax').textContent = fmt(data.summary.stcg_tax || 0);
-        if (el('fi-cg-summary-ltcg-tax')) el('fi-cg-summary-ltcg-tax').textContent = fmt(data.summary.ltcg_tax || 0);
-        if (el('fi-cg-summary-count')) el('fi-cg-summary-count').textContent = data.entries.length;
+    // Limit to 500 rows for performance
+    const displayEntries = allEntries.slice(0, 500);
+    tbody.innerHTML = displayEntries.map(e => {
+        const gainColor = e.gain >= 0 ? '#059669' : '#dc2626';
+        const gfBadge = e.isGrandfathered ? ' <span style="color:#d97706;font-size:.55rem" title="Section 112A grandfathered">⚡112A</span>' : '';
+        return `<tr>
+            <td><strong>${e.name}</strong>${gfBadge}</td>
+            <td>${sourceBadge(e.sourceType)} ${e.source}</td>
+            <td>${e.buyDate}</td>
+            <td>${e.sellDate}</td>
+            <td>${e.qty.toLocaleString('en-IN', { maximumFractionDigits: 4 })}</td>
+            <td>${fmt(e.buyValue)}</td>
+            <td>${fmt(e.sellValue)}</td>
+            <td style="font-weight:600;color:${gainColor}">${e.gain >= 0 ? '+' : ''}${fmt(e.gain)}</td>
+            <td>${typeBadge(e.type)}</td>
+            <td>${e.days || '—'}</td>
+        </tr>`;
+    }).join('');
 
-        if (!data.entries.length) {
-            tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:2rem;color:#9ca3af">No sales found — upload a Transaction Statement with sell trades.</td></tr>';
-            return;
-        }
-
-        tbody.innerHTML = data.entries.map(e => {
-            const gainColor = e.gain_loss >= 0 ? '#059669' : '#dc2626';
-            const typeBadge = e.gain_type === 'LTCG'
-                ? '<span style="background:#ede9fe;color:#6366f1;padding:2px 6px;border-radius:4px;font-size:.65rem;font-weight:600">LTCG</span>'
-                : '<span style="background:#dcfce7;color:#059669;padding:2px 6px;border-radius:4px;font-size:.65rem;font-weight:600">STCG</span>';
-            const gfBadge = e.is_grandfathered ? ' <span style="color:#d97706;font-size:.6rem" title="Section 112A grandfathered">⚡112A</span>' : '';
-
-            return `<tr>
-                <td><strong>${e.security_name}</strong>${gfBadge}</td>
-                <td>${e.purchase_date || '—'}</td>
-                <td>${e.sale_date || '—'}</td>
-                <td>${e.qty.toFixed(4)}</td>
-                <td>₹${e.cost_basis.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</td>
-                <td>₹${e.sale_proceeds.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</td>
-                <td style="font-weight:600;color:${gainColor}">${e.gain_loss >= 0 ? '+' : ''}₹${e.gain_loss.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</td>
-                <td>${typeBadge}</td>
-                <td>${e.holding_days || '—'}</td>
-            </tr>`;
-        }).join('');
-
-    } catch (e) {
-        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:2rem;color:#dc2626">${e.message}</td></tr>`;
+    if(allEntries.length > 500) {
+        tbody.innerHTML += `<tr><td colspan="10" style="text-align:center;padding:.75rem;color:#94a3b8;font-size:.72rem">Showing 500 of ${allEntries.length} entries</td></tr>`;
     }
 }
 

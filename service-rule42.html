@@ -42,11 +42,15 @@
                 <div class="dep-toolbar-right">
                     <button class="sr-btn sr-btn-secondary" onclick="r42SyncFromTally()" id="r42-sync-btn">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
-                        Sync from Tally
+                        Load Synced Data
                     </button>
                     <button class="sr-btn sr-btn-primary" onclick="r42ComputeAll()">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
                         Compute Reversal
+                    </button>
+                    <button class="sr-btn sr-btn-secondary" onclick="r42ExportExcel()" style="margin-left:.3rem">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                        Export Excel
                     </button>
                 </div>
             </div>
@@ -91,12 +95,12 @@
                             <thead><tr>
                                 <th>Month</th>
                                 <th style="text-align:right">Total ITC (T)</th>
-                                <th style="text-align:right">Exempt ITC (T1)</th>
-                                <th style="text-align:right">Non-Biz (T2)</th>
-                                <th style="text-align:right">Cap Goods</th>
-                                <th style="text-align:right">Taxable TO</th>
-                                <th style="text-align:right">Exempt TO</th>
-                                <th style="text-align:right">Total TO</th>
+                                <th style="text-align:right">Exempt (T2)</th>
+                                <th style="text-align:right">Non-Biz (T1)</th>
+                                <th style="text-align:right">Blocked (T3)</th>
+                                <th style="text-align:right">Exempt TO (E)</th>
+                                <th style="text-align:right">Total TO (F)</th>
+                                <th style="text-align:right">Ratio %</th>
                                 <th style="text-align:right;color:#dc2626">Reversal</th>
                                 <th style="text-align:right;color:#059669">Eligible</th>
                                 <th></th>
@@ -148,229 +152,399 @@
         const params = new URLSearchParams(window.location.search);
         const clientId = params.get('clientId');
 
-
         function srToast(msg, type='info') {
             const ct = document.getElementById('sr-toast-ct');
             const t = document.createElement('div');
             const bg = {success:'#059669',warning:'#d97706',info:'#3b82f6',error:'#dc2626'}[type]||'#3b82f6';
             t.style.cssText = `padding:.55rem 1rem;background:${bg};color:#fff;border-radius:8px;font-size:.78rem;font-weight:600;box-shadow:0 4px 16px rgba(0,0,0,.15);animation:srFadeIn .3s ease`;
-            t.textContent = msg;
-            ct.appendChild(t);
+            t.textContent = msg; ct.appendChild(t);
             setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 3000);
         }
 
         function formatINR(n) {
             if (n === undefined || n === null || isNaN(n)) return '₹ 0';
-            const abs = Math.abs(Math.round(n));
-            const s = abs.toString();
-            let formatted;
-            if (s.length > 3) { formatted = s.slice(0,-3).replace(/\B(?=(\d{2})+(?!\d))/g,',')+','+s.slice(-3); }
-            else { formatted = s; }
-            return (n < 0 ? '-' : '') + '₹ ' + formatted;
+            const abs = Math.abs(Math.round(n)); const s = abs.toString();
+            let f; if (s.length > 3) { f = s.slice(0,-3).replace(/\B(?=(\d{2})+(?!\d))/g,',')+','+s.slice(-3); } else { f = s; }
+            return (n < 0 ? '-' : '') + '₹ ' + f;
         }
 
-        // ═══════════════════════════════════════════════════
-        // RULE 42 ENGINE
-        // ═══════════════════════════════════════════════════
+        // ═══ STATE ═══
+        let r42Data = [];  // Array of {period, inputs:{T,T1,T2,T3,E,N,F}, results:{...}, status, id}
+        let r42FY = '2025-26';
+        let _saveTimers = {};
 
-        const R42_MONTHS = ['April 2025','May 2025','June 2025','July 2025','August 2025','September 2025','October 2025','November 2025','December 2025','January 2026','February 2026','March 2026'];
-        let r42Data = [];
-        let r42IdCounter = 0;
-
-        function r42Compute(row) {
-            const T = row.totalITC, T1 = row.exemptITC, T2 = row.nonBizITC, CG = row.capGoods;
-            const C1 = T - T1 - T2, cc = C1 - CG;
-            const D1 = row.totalTO > 0 ? (cc * row.exemptTO / row.totalTO) : 0;
-            const D2 = cc * 0.05;
-            row.reversal = Math.round(T1 + T2 + D1 + D2);
-            row.eligible = Math.round(T - row.reversal);
+        // ═══ INIT ═══
+        async function r42Init() {
+            r42FY = document.getElementById('r42-fy-select').value;
+            await r42LoadCompanies();
+            await r42LoadHistory();
         }
 
-        function r42ComputeAll() {
-            r42Data.forEach(r => r42Compute(r));
-            r42RenderTable();
+        // ═══ LOAD FROM BACKEND ═══
+        async function r42LoadHistory() {
+            if (!clientId) return;
+            try {
+                const res = await authFetch(`/rule42/history?client_id=${clientId}&financial_year=${r42FY}&tax_head=cgst`);
+                if (!res?.ok) return;
+                const data = await res.json();
+                r42Data = data.map(c => ({
+                    id: c.id, period: c.period, status: c.status,
+                    inputs: c.inputs || {}, results: c.results || {},
+                    notes: c.notes, source: 'saved',
+                }));
+                // Ensure all rows have computed results
+                r42Data.forEach(r => {
+                    if (!r.results || !r.results.C1) r42ComputeLocal(r);
+                });
+                r42RenderTable(); r42UpdateStats(); r42UpdateAnnual();
+                if (r42Data.length > 0) document.getElementById('r42-month-badge').textContent = r42Data.length + ' months';
+            } catch(e) { console.error('Load history:', e); }
+        }
+
+        // ═══ CLIENT-SIDE RULE 42 CALCULATOR ═══
+        function r42ComputeLocal(row) {
+            const i = row.inputs;
+            const T = i.T||0, T1 = i.T1||0, T2 = i.T2||0, T3 = i.T3||0;
+            const E = i.E||0, N = i.N||0, F = i.F||0;
+            const C1 = Math.max(0, T - T1 - T2 - T3);
+            const D1 = T2;  // mandatory reversal for exempt
+            const D2 = T1;  // mandatory reversal for non-business
+            const C2 = Math.max(0, C1 - D1 - D2);
+            const F_safe = F > 0 ? F : 1;
+            const exempt_ratio = (E + N) / F_safe;
+            const C3 = C2 * exempt_ratio;
+            const C4 = C2 - C3;
+            const total_reversal = D1 + D2 + C3;
+            row.results = {
+                C1: Math.round(C1*100)/100, D1: Math.round(D1*100)/100,
+                D2: Math.round(D2*100)/100, C2: Math.round(C2*100)/100,
+                exempt_ratio: Math.round(exempt_ratio*1000000)/1000000,
+                C3: Math.round(C3*100)/100, C4: Math.round(C4*100)/100,
+                total_reversal: Math.round(total_reversal*100)/100,
+                net_eligible_itc: Math.round(C4*100)/100,
+                gstr3b_4b1: Math.round(D1*100)/100,
+                gstr3b_4b2: Math.round((D2+C3)*100)/100,
+            };
+        }
+
+        // ═══ SAVE TO BACKEND (background, non-blocking) ═══
+        async function r42SaveMonth(row) {
+            if (!clientId) return false;
+            try {
+                const res = await authFetch('/rule42/save', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        client_id: clientId, period: row.period,
+                        financial_year: r42FY, tax_head: 'cgst',
+                        inputs: row.inputs, status: row.status || 'draft',
+                    }),
+                });
+                if (res?.ok) {
+                    const saved = await res.json();
+                    row.id = saved.id;
+                    if (saved.results) row.results = saved.results;
+                    row.status = saved.status;
+                    return true;
+                }
+            } catch(e) { console.error('Save:', e); }
+            return false;
+        }
+
+        // ═══ DEBOUNCED CELL EDIT ═══
+        function r42CellEdit(period, field, value) {
+            const row = r42Data.find(r => r.period === period);
+            if (!row) return;
+            row.inputs[field] = parseFloat(value) || 0;
+            // Compute locally FIRST (instant feedback)
+            r42ComputeLocal(row);
+            r42RenderRow(period);
             r42UpdateStats();
             r42UpdateAnnual();
-            if (r42Data.length > 0) srToast('Reversal computed for all months', 'success');
+            // Debounce save to backend
+            clearTimeout(_saveTimers[period]);
+            _saveTimers[period] = setTimeout(() => r42SaveMonth(row), 800);
         }
 
-        function r42UpdateStats() {
-            document.getElementById('r42-stat-total').textContent = formatINR(r42Data.reduce((s,r) => s+r.totalITC, 0));
-            document.getElementById('r42-stat-eligible').textContent = formatINR(r42Data.reduce((s,r) => s+r.eligible, 0));
-            document.getElementById('r42-stat-reversal').textContent = formatINR(r42Data.reduce((s,r) => s+r.reversal, 0));
-            document.getElementById('r42-stat-taxable').textContent = formatINR(r42Data.reduce((s,r) => s+r.taxableTO, 0));
-            document.getElementById('r42-stat-exempt').textContent = formatINR(r42Data.reduce((s,r) => s+r.exemptTO, 0));
-            document.getElementById('r42-month-badge').textContent = r42Data.length + ' month' + (r42Data.length !== 1 ? 's' : '');
-        }
-
+        // ═══ ADD MONTH ═══
         function r42AddMonth() {
-            const used = r42Data.map(r => r.month);
-            const next = R42_MONTHS.find(m => !used.includes(m)) || `Month ${r42Data.length+1}`;
-            r42Data.push({ id: ++r42IdCounter, month: next, totalITC:0, exemptITC:0, nonBizITC:0, capGoods:0, taxableTO:0, exemptTO:0, totalTO:0, reversal:0, eligible:0, source:'manual' });
-            r42RenderTable(); r42UpdateStats();
+            const MONTHS = ['04','05','06','07','08','09','10','11','12','01','02','03'];
+            const fyStart = parseInt(r42FY.split('-')[0]);
+            const used = r42Data.map(r => r.period);
+            for (const m of MONTHS) {
+                const yr = parseInt(m) >= 4 ? fyStart : fyStart + 1;
+                const period = `${yr}-${m}`;
+                if (!used.includes(period)) {
+                    r42Data.push({
+                        period, status: 'draft', source: 'manual',
+                        inputs: { T:0, T1:0, T2:0, T3:0, E:0, N:0, F:0 },
+                        results: {},
+                    });
+                    r42RenderTable(); r42UpdateStats();
+                    return;
+                }
+            }
+            srToast('All 12 months already added', 'warning');
         }
 
-        function r42DeleteMonth(id) { r42Data = r42Data.filter(r => r.id !== id); r42ComputeAll(); }
+        // ═══ DELETE MONTH ═══
+        async function r42DeleteMonth(period) {
+            const row = r42Data.find(r => r.period === period);
+            if (row?.id) {
+                try { await authFetch(`/rule42/${row.id}`, { method: 'DELETE' }); } catch(_) {}
+            }
+            r42Data = r42Data.filter(r => r.period !== period);
+            r42RenderTable(); r42UpdateStats(); r42UpdateAnnual();
+        }
 
-        // ── Tally Sync ──
+        // ═══ COMPUTE ALL ═══
+        async function r42ComputeAll() {
+            // Step 1: compute locally (instant)
+            r42Data.forEach(r => r42ComputeLocal(r));
+            r42RenderTable(); r42UpdateStats(); r42UpdateAnnual();
+            // Step 2: save to backend in background
+            let saved = 0;
+            for (const row of r42Data) {
+                if (await r42SaveMonth(row)) saved++;
+            }
+            if (saved > 0) {
+                r42RenderTable(); r42UpdateStats(); r42UpdateAnnual();
+                srToast(`Computed & saved ${saved} months`, 'success');
+            } else {
+                srToast(`Computed ${r42Data.length} months (local)`, 'info');
+            }
+        }
+
+        // ═══ TALLY SYNC ═══
         async function r42SyncFromTally() {
             const btn = document.getElementById('r42-sync-btn');
+            const company = document.getElementById('r42-company-select').value;
             btn.disabled = true;
             btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="sr-spin"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Syncing…';
 
             try {
-                const company = document.getElementById('r42-company-select').value;
                 if (company) {
-                    const [purchRes, salesRes] = await Promise.all([
-                        authFetch(`/tally/vouchers?company_name=${encodeURIComponent(company)}&voucher_type=Purchase&per_page=200`),
-                        authFetch(`/tally/vouchers?company_name=${encodeURIComponent(company)}&voucher_type=Sales&per_page=200`),
-                    ]);
-                    if (purchRes?.ok && salesRes?.ok) {
-                        const purchases = (await purchRes.json()).data || [];
-                        const sales = (await salesRes.json()).data || [];
-                        const monthMap = {};
-                        purchases.forEach(v => { const d=v.date; if(!d)return; const k=fmtTallyMonth(d); if(!monthMap[k])monthMap[k]={t:0,tx:0,ex:0}; monthMap[k].t+=Math.abs(v.amount||0)*0.18; });
-                        sales.forEach(v => { const d=v.date; if(!d)return; const k=fmtTallyMonth(d); if(!monthMap[k])monthMap[k]={t:0,tx:0,ex:0}; monthMap[k].tx+=Math.abs(v.amount||0); });
-                        if (Object.keys(monthMap).length > 0) {
-                            r42Data = [];
-                            for (const [m, v] of Object.entries(monthMap).sort()) {
-                                r42Data.push({ id:++r42IdCounter, month:m, totalITC:Math.round(v.t), exemptITC:0, nonBizITC:0, capGoods:0, taxableTO:Math.round(v.tx), exemptTO:0, totalTO:Math.round(v.tx), reversal:0, eligible:0, source:'tally' });
-                            }
-                            r42ComputeAll(); r42ResetBtn(btn);
-                            srToast(`Synced ${r42Data.length} months from Tally`, 'success');
+                    const res = await authFetch('/rule42/sync-from-tally', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ client_id: clientId, company_name: company, financial_year: r42FY }),
+                    });
+                    if (res?.ok) {
+                        const data = await res.json();
+                        if (data.months?.length > 0) {
+                            r42Data = data.months.map(m => ({
+                                period: m.period, status: 'draft', source: m.source || 'tally',
+                                inputs: { T: m.T, T1: m.T1, T2: m.T2, T3: m.T3, E: m.E, N: m.N, F: m.F },
+                                results: m.results || {},
+                                itc_detail: m.itc_detail,
+                            }));
+                            // Ensure all rows have computed results
+                            r42Data.forEach(r => r42ComputeLocal(r));
+                            r42RenderTable(); r42UpdateStats(); r42UpdateAnnual();
+                            r42ResetBtn(btn);
+                            const src = data.months[0]?.source === 'ledger' ? 'ledger balances' : 'voucher data';
+                            srToast(`${data.total_months} months loaded from ${src}`, 'success');
                             return;
                         }
                     }
                 }
-            } catch(e) {}
-
-            setTimeout(() => {
-                r42Data = [];
-                [{m:'April 2025',t:485000,t1:32000,t2:8000,cg:15000,tx:2800000,ex:450000},
-                 {m:'May 2025',t:520000,t1:28000,t2:5000,cg:18000,tx:3100000,ex:380000},
-                 {m:'June 2025',t:498000,t1:35000,t2:12000,cg:10000,tx:2950000,ex:520000},
-                 {m:'July 2025',t:540000,t1:42000,t2:6000,cg:22000,tx:3200000,ex:410000},
-                 {m:'August 2025',t:510000,t1:30000,t2:9000,cg:12000,tx:3050000,ex:480000},
-                 {m:'September 2025',t:475000,t1:25000,t2:7000,cg:20000,tx:2700000,ex:350000},
-                 {m:'October 2025',t:560000,t1:45000,t2:11000,cg:25000,tx:3400000,ex:550000},
-                 {m:'November 2025',t:530000,t1:38000,t2:8500,cg:16000,tx:3150000,ex:420000},
-                 {m:'December 2025',t:490000,t1:29000,t2:6500,cg:14000,tx:2900000,ex:390000},
-                 {m:'January 2026',t:545000,t1:40000,t2:10000,cg:19000,tx:3300000,ex:470000},
-                 {m:'February 2026',t:505000,t1:33000,t2:7500,cg:13000,tx:2850000,ex:440000},
-                 {m:'March 2026',t:580000,t1:48000,t2:14000,cg:28000,tx:3500000,ex:600000}
-                ].forEach(d => {
-                    r42Data.push({ id:++r42IdCounter, month:d.m, totalITC:d.t, exemptITC:d.t1, nonBizITC:d.t2, capGoods:d.cg, taxableTO:d.tx, exemptTO:d.ex, totalTO:d.tx+d.ex, reversal:0, eligible:0, source:'tally' });
-                });
-                r42ComputeAll(); r42ResetBtn(btn);
-                srToast('12 months synced from Tally (demo)', 'success');
-            }, 1500);
+                // Fallback: demo data
+                r42LoadDemo(); r42ResetBtn(btn);
+                srToast('No Tally data found — loaded demo data', 'warning');
+            } catch(e) {
+                r42LoadDemo(); r42ResetBtn(btn);
+                srToast('Tally sync failed — loaded demo', 'warning');
+            }
         }
 
-        function r42ResetBtn(btn) { btn.disabled=false; btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Sync from Tally'; }
+        function r42LoadDemo() {
+            const fyStart = parseInt(r42FY.split('-')[0]);
+            const demo = [
+                {m:'04',t:485000,t2:32000,t1:8000,t3:15000,e:450000,f:3250000},
+                {m:'05',t:520000,t2:28000,t1:5000,t3:18000,e:380000,f:3480000},
+                {m:'06',t:498000,t2:35000,t1:12000,t3:10000,e:520000,f:3470000},
+                {m:'07',t:540000,t2:42000,t1:6000,t3:22000,e:410000,f:3610000},
+                {m:'08',t:510000,t2:30000,t1:9000,t3:12000,e:480000,f:3530000},
+                {m:'09',t:475000,t2:25000,t1:7000,t3:20000,e:350000,f:3050000},
+                {m:'10',t:560000,t2:45000,t1:11000,t3:25000,e:550000,f:3950000},
+                {m:'11',t:530000,t2:38000,t1:8500,t3:16000,e:420000,f:3570000},
+                {m:'12',t:490000,t2:29000,t1:6500,t3:14000,e:390000,f:3290000},
+                {m:'01',t:545000,t2:40000,t1:10000,t3:19000,e:470000,f:3770000},
+                {m:'02',t:505000,t2:33000,t1:7500,t3:13000,e:440000,f:3290000},
+                {m:'03',t:580000,t2:48000,t1:14000,t3:28000,e:600000,f:4100000},
+            ];
+            r42Data = demo.map(d => {
+                const yr = parseInt(d.m) >= 4 ? fyStart : fyStart + 1;
+                return {
+                    period: `${yr}-${d.m}`, status: 'draft', source: 'demo',
+                    inputs: { T:d.t, T1:d.t1, T2:d.t2, T3:d.t3, E:d.e, N:0, F:d.f },
+                    results: {},
+                };
+            });
+            r42ComputeAll();
+        }
 
-        function fmtTallyMonth(d) { const y=d.substring(0,4),m=parseInt(d.substring(4,6)); return ['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][m]+' '+y; }
+        function r42ResetBtn(btn) { btn.disabled=false; btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Load Synced Data'; }
 
-        // ── Render ──
+        // ═══ RENDER TABLE ═══
         function r42RenderTable() {
             const tbody = document.getElementById('r42-tbody');
             if (!r42Data.length) { tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;padding:2.5rem;color:#94a3b8"><div style="font-size:1.8rem;margin-bottom:.5rem;opacity:.3">🧮</div>Sync from Tally or add months manually</td></tr>'; return; }
+            // Sort by period
+            r42Data.sort((a,b) => a.period.localeCompare(b.period));
             let html = '';
-            r42Data.forEach(r => {
-                const src = r.source==='tally' ? '<span style="font-size:.48rem;font-weight:700;padding:1px 4px;border-radius:3px;background:#dbeafe;color:#1e3a8a;margin-left:.3rem">TALLY</span>' : '';
-                html += `<tr>
-                    <td style="font-weight:600;font-size:.78rem;white-space:nowrap">${r.month}${src}</td>
-                    <td style="text-align:right;font-weight:600;font-family:'Outfit',sans-serif">${formatINR(r.totalITC)}</td>
-                    <td style="text-align:right;color:#dc2626;font-size:.78rem">${formatINR(r.exemptITC)}</td>
-                    <td style="text-align:right;color:#dc2626;font-size:.78rem">${formatINR(r.nonBizITC)}</td>
-                    <td style="text-align:right;font-size:.78rem">${formatINR(r.capGoods)}</td>
-                    <td style="text-align:right;font-size:.78rem">${formatINR(r.taxableTO)}</td>
-                    <td style="text-align:right;color:#92400e;font-size:.78rem">${formatINR(r.exemptTO)}</td>
-                    <td style="text-align:right;font-size:.78rem">${formatINR(r.totalTO)}</td>
-                    <td style="text-align:right;font-weight:700;color:#dc2626;font-family:'Outfit',sans-serif">${formatINR(r.reversal)}</td>
-                    <td style="text-align:right;font-weight:700;color:#059669;font-family:'Outfit',sans-serif">${formatINR(r.eligible)}</td>
-                    <td style="white-space:nowrap">
-                        <button class="sr-btn sr-btn-secondary" style="font-size:.6rem;padding:.2rem .4rem" onclick="r42ShowDetail(${r.id})" title="Working">📋</button>
-                        <button class="sr-btn sr-btn-secondary" style="font-size:.6rem;padding:.2rem .4rem;color:#dc2626;border-color:#fecaca" onclick="r42DeleteMonth(${r.id})" title="Delete">✕</button>
-                    </td>
-                </tr>`;
-            });
-            const sT=r42Data.reduce((s,r)=>s+r.totalITC,0),sR=r42Data.reduce((s,r)=>s+r.reversal,0),sE=r42Data.reduce((s,r)=>s+r.eligible,0);
-            const sTx=r42Data.reduce((s,r)=>s+r.taxableTO,0),sEx=r42Data.reduce((s,r)=>s+r.exemptTO,0),sTo=r42Data.reduce((s,r)=>s+r.totalTO,0);
-            html += `<tr class="sr-row-total"><td style="font-weight:800">ANNUAL TOTAL</td><td style="text-align:right;font-weight:800;font-family:'Outfit',sans-serif">${formatINR(sT)}</td><td colspan="3"></td><td style="text-align:right;font-weight:700;font-size:.75rem">${formatINR(sTx)}</td><td style="text-align:right;font-weight:700;font-size:.75rem;color:#92400e">${formatINR(sEx)}</td><td style="text-align:right;font-weight:700;font-size:.75rem">${formatINR(sTo)}</td><td style="text-align:right;font-weight:800;color:#dc2626;font-family:'Outfit',sans-serif">${formatINR(sR)}</td><td style="text-align:right;font-weight:800;color:#059669;font-family:'Outfit',sans-serif">${formatINR(sE)}</td><td></td></tr>`;
+            r42Data.forEach(r => { html += r42RowHTML(r); });
+            // Totals
+            const sT=r42Data.reduce((s,r)=>s+(r.inputs.T||0),0);
+            const sRev=r42Data.reduce((s,r)=>s+(r.results.total_reversal||0),0);
+            const sElig=r42Data.reduce((s,r)=>s+(r.results.net_eligible_itc||0),0);
+            const sE=r42Data.reduce((s,r)=>s+(r.inputs.E||0),0);
+            const sF=r42Data.reduce((s,r)=>s+(r.inputs.F||0),0);
+            html += `<tr class="sr-row-total"><td style="font-weight:800">ANNUAL TOTAL</td><td style="text-align:right;font-weight:800;font-family:'Outfit',sans-serif">${formatINR(sT)}</td><td colspan="3"></td><td style="text-align:right;font-weight:700;font-size:.75rem">${formatINR(sE)}</td><td style="text-align:right;font-weight:700;font-size:.75rem">${formatINR(sF)}</td><td style="text-align:right;font-weight:700;font-size:.75rem">${sF>0?((sE/sF*100).toFixed(1)+'%'):'-'}</td><td style="text-align:right;font-weight:800;color:#dc2626;font-family:'Outfit',sans-serif">${formatINR(sRev)}</td><td style="text-align:right;font-weight:800;color:#059669;font-family:'Outfit',sans-serif">${formatINR(sElig)}</td><td></td></tr>`;
             tbody.innerHTML = html;
         }
 
-        // ── Detail Working ──
-        function r42ShowDetail(id) {
-            const r = r42Data.find(x => x.id === id); if (!r) return;
+        function r42RowHTML(r) {
+            const i = r.inputs, res = r.results || {};
+            const srcMap = { tally:'SYNCED', saved:'SAVED', ledger:'LEDGER', demo:'DEMO', manual:'' };
+            const srcColors = { tally:'#dbeafe;color:#1e3a8a', saved:'#dcfce7;color:#166534', ledger:'#e0e7ff;color:#4338ca', demo:'#fef3c7;color:#92400e' };
+            const srcLabel = srcMap[r.source] || '';
+            const src = srcLabel ? `<span style="font-size:.48rem;font-weight:700;padding:1px 4px;border-radius:3px;background:${srcColors[r.source]||'#f1f5f9;color:#64748b'};margin-left:.3rem">${srcLabel}</span>` : '';
+            const label = _periodLabel(r.period);
+            const ed = (field, val) => `<input type="number" value="${Math.round(val||0)}" onchange="r42CellEdit('${r.period}','${field}',this.value)" style="width:80px;text-align:right;border:1px solid #e2e8f0;border-radius:4px;padding:2px 4px;font-size:.75rem;font-family:'Outfit',sans-serif" />`;
+            const ratio = res.exempt_ratio ? (res.exempt_ratio * 100).toFixed(1) + '%' : '-';
 
-            const T=r.totalITC,T1=r.exemptITC,T2=r.nonBizITC,CG=r.capGoods;
-            const C1=T-T1-T2,cc=C1-CG;
-            const D1=r.totalTO>0?(cc*r.exemptTO/r.totalTO):0;
-            const D2=cc*0.05;
-            const rev=T1+T2+D1+D2, elig=T-rev;
+            return `<tr data-period="${r.period}">
+                <td style="font-weight:600;font-size:.78rem;white-space:nowrap">${label}${src}</td>
+                <td style="text-align:right">${ed('T', i.T)}</td>
+                <td style="text-align:right">${ed('T2', i.T2)}</td>
+                <td style="text-align:right">${ed('T1', i.T1)}</td>
+                <td style="text-align:right">${ed('T3', i.T3)}</td>
+                <td style="text-align:right">${ed('E', i.E)}</td>
+                <td style="text-align:right">${ed('F', i.F)}</td>
+                <td style="text-align:right;font-size:.75rem;color:#64748b">${ratio}</td>
+                <td style="text-align:right;font-weight:700;color:#dc2626;font-family:'Outfit',sans-serif">${formatINR(res.total_reversal||0)}</td>
+                <td style="text-align:right;font-weight:700;color:#059669;font-family:'Outfit',sans-serif">${formatINR(res.net_eligible_itc||0)}</td>
+                <td style="white-space:nowrap">
+                    <button class="sr-btn sr-btn-secondary" style="font-size:.6rem;padding:.2rem .4rem" onclick="r42ShowDetail('${r.period}')" title="Working">📋</button>
+                    <button class="sr-btn sr-btn-secondary" style="font-size:.6rem;padding:.2rem .4rem;color:#dc2626;border-color:#fecaca" onclick="r42DeleteMonth('${r.period}')" title="Delete">✕</button>
+                </td>
+            </tr>`;
+        }
 
-            document.getElementById('r42-detail-title').textContent = `② Rule 42 Working — ${r.month}`;
+        function r42RenderRow(period) {
+            const tr = document.querySelector(`tr[data-period="${period}"]`);
+            if (!tr) return r42RenderTable();
+            const r = r42Data.find(x => x.period === period);
+            if (!r) return;
+            const temp = document.createElement('tbody');
+            temp.innerHTML = r42RowHTML(r);
+            tr.replaceWith(temp.firstElementChild);
+        }
+
+        // ═══ STATS ═══
+        function r42UpdateStats() {
+            const sT=r42Data.reduce((s,r)=>s+(r.inputs.T||0),0);
+            const sRev=r42Data.reduce((s,r)=>s+(r.results.total_reversal||0),0);
+            const sElig=r42Data.reduce((s,r)=>s+(r.results.net_eligible_itc||0),0);
+            const sE=r42Data.reduce((s,r)=>s+(r.inputs.E||0),0);
+            const sF=r42Data.reduce((s,r)=>s+(r.inputs.F||0),0);
+            document.getElementById('r42-stat-total').textContent = formatINR(sT);
+            document.getElementById('r42-stat-eligible').textContent = formatINR(sElig);
+            document.getElementById('r42-stat-reversal').textContent = formatINR(sRev);
+            document.getElementById('r42-stat-taxable').textContent = formatINR(sF - sE);
+            document.getElementById('r42-stat-exempt').textContent = formatINR(sE);
+            document.getElementById('r42-month-badge').textContent = r42Data.length + ' month' + (r42Data.length!==1?'s':'');
+        }
+
+        // ═══ DETAIL WORKING ═══
+        function r42ShowDetail(period) {
+            const r = r42Data.find(x => x.period === period); if (!r) return;
+            const i = r.inputs, res = r.results || {};
+            const label = _periodLabel(period);
+
+            document.getElementById('r42-detail-title').textContent = `② Rule 42 Working — ${label}`;
             document.getElementById('r42-detail-content').innerHTML = `<div class="sr-table-wrap"><table class="sr-table">
                 <thead><tr><th>Particulars</th><th style="text-align:right">Amount (₹)</th><th>Reference</th></tr></thead>
                 <tbody>
-                <tr><td>Total ITC availed</td><td style="text-align:right;font-weight:700">${formatINR(T)}</td><td>Input</td></tr>
-                <tr><td>Less: ITC attributable to exempt supplies (T1)</td><td style="text-align:right;color:#dc2626">(${formatINR(T1)})</td><td>Rule 42(1)(a)</td></tr>
-                <tr><td>Less: ITC for non-business use (T2)</td><td style="text-align:right;color:#dc2626">(${formatINR(T2)})</td><td>Rule 42(1)(b)</td></tr>
-                <tr class="sr-row-subtotal"><td>Common Credit (C1 = T - T1 - T2)</td><td style="text-align:right">${formatINR(C1)}</td><td>Rule 42(1)(c)</td></tr>
-                <tr><td>Less: ITC on capital goods excluded</td><td style="text-align:right;color:#dc2626">(${formatINR(CG)})</td><td>Rule 42(1)(d)</td></tr>
-                <tr style="background:#fefce8"><td style="font-weight:600">Net Common Credit for apportionment</td><td style="text-align:right;font-weight:700">${formatINR(cc)}</td><td></td></tr>
-                <tr><td>D1 = Common Credit × (Exempt TO / Total TO)</td><td style="text-align:right;color:#dc2626">(${formatINR(D1)})</td><td>${formatINR(cc)} × ${formatINR(r.exemptTO)} / ${formatINR(r.totalTO)}</td></tr>
-                <tr><td>D2 = 5% of Common Credit</td><td style="text-align:right;color:#dc2626">(${formatINR(D2)})</td><td>Rule 42(1)(m)</td></tr>
-                <tr class="sr-row-total"><td style="font-weight:800">Total ITC to Reverse</td><td style="text-align:right;font-weight:800;color:#dc2626">${formatINR(rev)}</td><td>T1 + T2 + D1 + D2</td></tr>
-                <tr style="background:#ecfdf5"><td style="font-weight:800;color:#059669">Eligible ITC</td><td style="text-align:right;font-weight:800;color:#059669">${formatINR(elig)}</td><td>T - Reversal</td></tr>
+                <tr><td>Total ITC availed (T)</td><td style="text-align:right;font-weight:700">${formatINR(i.T)}</td><td>GSTR-3B Table 4(A)</td></tr>
+                <tr><td>Less: ITC for non-business use (T1)</td><td style="text-align:right;color:#dc2626">(${formatINR(i.T1)})</td><td>Rule 42(1)(a)</td></tr>
+                <tr><td>Less: ITC for exempt supplies (T2)</td><td style="text-align:right;color:#dc2626">(${formatINR(i.T2)})</td><td>Rule 42(1)(b)</td></tr>
+                <tr><td>Less: Blocked credit u/s 17(5) (T3)</td><td style="text-align:right;color:#dc2626">(${formatINR(i.T3)})</td><td>Section 17(5)</td></tr>
+                <tr class="sr-row-subtotal"><td>Common Credit (C1 = T−T1−T2−T3)</td><td style="text-align:right">${formatINR(res.C1||0)}</td><td>Rule 42(1)(c)</td></tr>
+                <tr><td>D1 = T2 (mandatory reversal for exempt)</td><td style="text-align:right;color:#dc2626">(${formatINR(res.D1||0)})</td><td>→ GSTR-3B 4(B)(1)</td></tr>
+                <tr><td>D2 = T1 (mandatory reversal for non-biz)</td><td style="text-align:right;color:#dc2626">(${formatINR(res.D2||0)})</td><td>→ GSTR-3B 4(B)(2)</td></tr>
+                <tr style="background:#fefce8"><td style="font-weight:600">Common Credit Pool (C2 = C1−D1−D2)</td><td style="text-align:right;font-weight:700">${formatINR(res.C2||0)}</td><td></td></tr>
+                <tr><td>Exempt ratio = (E+N) / F</td><td style="text-align:right;font-weight:600">${res.exempt_ratio ? (res.exempt_ratio*100).toFixed(2)+'%' : '-'}</td><td>${formatINR(i.E)} / ${formatINR(i.F)}</td></tr>
+                <tr><td>C3 = C2 × Exempt Ratio (proportionate reversal)</td><td style="text-align:right;color:#dc2626">(${formatINR(res.C3||0)})</td><td>Rule 42(1)(h)</td></tr>
+                <tr class="sr-row-total"><td style="font-weight:800">Total ITC to Reverse</td><td style="text-align:right;font-weight:800;color:#dc2626">${formatINR(res.total_reversal||0)}</td><td>D1 + D2 + C3</td></tr>
+                <tr style="background:#ecfdf5"><td style="font-weight:800;color:#059669">Net Eligible ITC (C4)</td><td style="text-align:right;font-weight:800;color:#059669">${formatINR(res.net_eligible_itc||0)}</td><td>→ GSTR-3B 4(A)</td></tr>
+                ${res.gstr3b_4b1 !== undefined ? `<tr style="background:#f8fafc"><td style="font-size:.75rem;color:#64748b">GSTR-3B Table 4(B)(1)</td><td style="text-align:right;font-size:.75rem">${formatINR(res.gstr3b_4b1)}</td><td style="font-size:.7rem">D1</td></tr>` : ''}
+                ${res.gstr3b_4b2 !== undefined ? `<tr style="background:#f8fafc"><td style="font-size:.75rem;color:#64748b">GSTR-3B Table 4(B)(2)</td><td style="text-align:right;font-size:.75rem">${formatINR(res.gstr3b_4b2)}</td><td style="font-size:.7rem">D2 + C3</td></tr>` : ''}
                 </tbody></table></div>`;
             document.getElementById('r42-detail-panel').style.display = 'block';
         }
 
-        // ── Annual Summary ──
+        // ═══ ANNUAL SUMMARY ═══
         function r42UpdateAnnual() {
             if (!r42Data.length) return;
-            const sT=r42Data.reduce((s,r)=>s+r.totalITC,0);
-            const sT1=r42Data.reduce((s,r)=>s+r.exemptITC,0);
-            const sT2=r42Data.reduce((s,r)=>s+r.nonBizITC,0);
-            const sCG=r42Data.reduce((s,r)=>s+r.capGoods,0);
-            const sTx=r42Data.reduce((s,r)=>s+r.taxableTO,0);
-            const sEx=r42Data.reduce((s,r)=>s+r.exemptTO,0);
-            const sTo=r42Data.reduce((s,r)=>s+r.totalTO,0);
-            const C1=sT-sT1-sT2, cc=C1-sCG;
-            const D1=sTo>0?(cc*sEx/sTo):0, D2=cc*0.05;
-            const rev=sT1+sT2+D1+D2, elig=sT-rev;
-            const pct = sT > 0 ? ((rev/sT)*100).toFixed(1) : '0.0';
+            const sT=r42Data.reduce((s,r)=>s+(r.inputs.T||0),0);
+            const sRev=r42Data.reduce((s,r)=>s+(r.results.total_reversal||0),0);
+            const sElig=r42Data.reduce((s,r)=>s+(r.results.net_eligible_itc||0),0);
+            const sE=r42Data.reduce((s,r)=>s+(r.inputs.E||0),0);
+            const sF=r42Data.reduce((s,r)=>s+(r.inputs.F||0),0);
+            const pct = sT > 0 ? ((sRev/sT)*100).toFixed(1) : '0.0';
+            const sC2=r42Data.reduce((s,r)=>s+(r.results.C2||0),0);
+            const sC3=r42Data.reduce((s,r)=>s+(r.results.C3||0),0);
+            const annRatio = sF > 0 ? ((sE/sF)*100).toFixed(2) : '0.00';
 
-            let html = `<div class="sr-form-grid cols-3" style="margin-bottom:1rem">
-                <div style="text-align:center"><div style="font-size:1.5rem;font-weight:800;color:#0f172a;font-family:'Outfit',sans-serif">${formatINR(sT)}</div><div style="font-size:.68rem;color:#64748b;font-weight:600;margin-top:.15rem">Total ITC Availed (Annual)</div></div>
-                <div style="text-align:center"><div style="font-size:1.5rem;font-weight:800;color:#dc2626;font-family:'Outfit',sans-serif">${formatINR(rev)}</div><div style="font-size:.68rem;color:#64748b;font-weight:600;margin-top:.15rem">Total Reversal (${pct}%)</div></div>
-                <div style="text-align:center"><div style="font-size:1.5rem;font-weight:800;color:#059669;font-family:'Outfit',sans-serif">${formatINR(elig)}</div><div style="font-size:.68rem;color:#64748b;font-weight:600;margin-top:.15rem">Net Eligible ITC</div></div>
-            </div>`;
-            html += `<div class="sr-table-wrap"><table class="sr-table">
+            document.getElementById('r42-annual-content').innerHTML = `
+                <div class="sr-form-grid cols-3" style="margin-bottom:1rem">
+                    <div style="text-align:center"><div style="font-size:1.5rem;font-weight:800;color:#0f172a;font-family:'Outfit',sans-serif">${formatINR(sT)}</div><div style="font-size:.68rem;color:#64748b;font-weight:600;margin-top:.15rem">Total ITC (Annual)</div></div>
+                    <div style="text-align:center"><div style="font-size:1.5rem;font-weight:800;color:#dc2626;font-family:'Outfit',sans-serif">${formatINR(sRev)}</div><div style="font-size:.68rem;color:#64748b;font-weight:600;margin-top:.15rem">Total Reversal (${pct}%)</div></div>
+                    <div style="text-align:center"><div style="font-size:1.5rem;font-weight:800;color:#059669;font-family:'Outfit',sans-serif">${formatINR(sElig)}</div><div style="font-size:.68rem;color:#64748b;font-weight:600;margin-top:.15rem">Net Eligible ITC</div></div>
+                </div>
+                <div class="sr-table-wrap"><table class="sr-table">
                 <thead><tr><th>Particulars</th><th style="text-align:right">Annual Amount (₹)</th><th>Reference</th></tr></thead>
                 <tbody>
-                <tr><td>Total ITC availed</td><td style="text-align:right;font-weight:700">${formatINR(sT)}</td><td>Annual total</td></tr>
-                <tr><td>Less: Exempt ITC (T1)</td><td style="text-align:right;color:#dc2626">(${formatINR(sT1)})</td><td>Rule 42(1)(a)</td></tr>
-                <tr><td>Less: Non-business ITC (T2)</td><td style="text-align:right;color:#dc2626">(${formatINR(sT2)})</td><td>Rule 42(1)(b)</td></tr>
-                <tr class="sr-row-subtotal"><td>Common Credit (C1)</td><td style="text-align:right">${formatINR(C1)}</td><td></td></tr>
-                <tr><td>Less: Capital goods excluded</td><td style="text-align:right;color:#dc2626">(${formatINR(sCG)})</td><td></td></tr>
-                <tr style="background:#fefce8"><td style="font-weight:600">Net Common Credit</td><td style="text-align:right;font-weight:700">${formatINR(cc)}</td><td></td></tr>
-                <tr><td>D1 (Proportionate exempt)</td><td style="text-align:right;color:#dc2626">(${formatINR(D1)})</td><td>${formatINR(cc)} × ${formatINR(sEx)} / ${formatINR(sTo)}</td></tr>
-                <tr><td>D2 (5% blocked credit)</td><td style="text-align:right;color:#dc2626">(${formatINR(D2)})</td><td>Rule 42(1)(m)</td></tr>
-                <tr class="sr-row-total"><td style="font-weight:800">Total Annual Reversal</td><td style="text-align:right;font-weight:800;color:#dc2626">${formatINR(rev)}</td><td></td></tr>
-                <tr style="background:#ecfdf5"><td style="font-weight:800;color:#059669">Annual Eligible ITC</td><td style="text-align:right;font-weight:800;color:#059669">${formatINR(elig)}</td><td></td></tr>
+                <tr><td>Total ITC availed</td><td style="text-align:right;font-weight:700">${formatINR(sT)}</td><td>Sum of monthly T</td></tr>
+                <tr style="background:#fefce8"><td style="font-weight:600">Sum of monthly C2 (common credit)</td><td style="text-align:right;font-weight:700">${formatINR(sC2)}</td><td></td></tr>
+                <tr><td>Annual Exempt Ratio (E/F)</td><td style="text-align:right;font-weight:600">${annRatio}%</td><td>${formatINR(sE)} / ${formatINR(sF)}</td></tr>
+                <tr><td>Sum of monthly C3 (provisional reversals)</td><td style="text-align:right;color:#dc2626">(${formatINR(sC3)})</td><td>Provisional</td></tr>
+                <tr class="sr-row-total"><td style="font-weight:800">Total Annual Reversal</td><td style="text-align:right;font-weight:800;color:#dc2626">${formatINR(sRev)}</td><td></td></tr>
+                <tr style="background:#ecfdf5"><td style="font-weight:800;color:#059669">Annual Eligible ITC</td><td style="text-align:right;font-weight:800;color:#059669">${formatINR(sElig)}</td><td></td></tr>
+                <tr style="background:#f8fafc"><td style="font-size:.75rem;color:#64748b;font-style:italic">Note: Annual true-up required under Rule 42(2) using actual FY turnover. Adjustment in April GSTR-3B.</td><td></td><td></td></tr>
                 </tbody></table></div>`;
-
-            document.getElementById('r42-annual-content').innerHTML = html;
         }
 
-        // ── Load Companies ──
+        // ═══ EXPORT EXCEL ═══
+        async function r42ExportExcel() {
+            if (!clientId) return;
+            try {
+                const res = await authFetch(`/rule42/export-excel?client_id=${clientId}&financial_year=${r42FY}&tax_head=cgst`);
+                if (res?.ok) {
+                    const blob = await res.blob();
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a'); a.href = url; a.download = `Rule42_ITC_${r42FY}.xlsx`; a.click();
+                    srToast('Excel exported', 'success');
+                }
+            } catch(e) { srToast('Export failed', 'error'); }
+        }
+
+        // ═══ HELPERS ═══
+        function _periodLabel(p) {
+            const M = {'01':'Jan','02':'Feb','03':'Mar','04':'Apr','05':'May','06':'Jun','07':'Jul','08':'Aug','09':'Sep','10':'Oct','11':'Nov','12':'Dec'};
+            const [y,m] = p.split('-'); return `${M[m]||m} ${y}`;
+        }
+
         async function r42LoadCompanies() {
             try { const res = await authFetch('/tally/companies'); if (res?.ok) { const c = await res.json(); const sel = document.getElementById('r42-company-select'); c.forEach(x => { const o=document.createElement('option'); o.value=x; o.textContent=x; sel.appendChild(o); }); } } catch(e) {}
         }
-        r42LoadCompanies();
+
+        // FY change handler
+        document.getElementById('r42-fy-select').addEventListener('change', () => { r42FY = document.getElementById('r42-fy-select').value; r42LoadHistory(); });
+
+        r42Init();
     </script>
 
 </body>

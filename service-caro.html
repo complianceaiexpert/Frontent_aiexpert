@@ -4,12 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CARO 2020 Report — Suvidha AI</title>
-    <meta name="description" content="Generate CARO 2020 clause-wise auditor's report with AI-assisted observations. Upload financials for auto-analysis.">
+    <meta name="description" content="Generate CARO 2020 clause-wise auditor's report. Auto-analyze from synced Tally data with AI-assisted observations.">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="statutory-reporting.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .caro-clause-card{background:#fff;border:1px solid #e8ecf1;border-radius:14px;padding:0;margin-bottom:.75rem;overflow:hidden;transition:all .2s}
+        .caro-clause-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.04)}
+        .caro-clause-hdr{display:flex;align-items:center;gap:.75rem;padding:.85rem 1.15rem;cursor:pointer;user-select:none}
+        .caro-clause-num{font-family:'Outfit',sans-serif;font-size:.78rem;font-weight:800;color:#92400e;min-width:42px;text-align:center;background:#fef3c7;padding:.25rem .45rem;border-radius:6px}
+        .caro-clause-title{font-weight:700;font-size:.85rem;color:#0f172a;flex:1}
+        .caro-clause-status{font-size:.62rem;font-weight:700;padding:3px 10px;border-radius:6px;text-transform:uppercase;letter-spacing:.03em}
+        .caro-clause-status.clean{background:#ecfdf5;color:#059669}
+        .caro-clause-status.review{background:#fef3c7;color:#d97706}
+        .caro-clause-status.adverse{background:#fef2f2;color:#dc2626}
+        .caro-clause-status.not_applicable{background:#f1f5f9;color:#64748b}
+        .caro-clause-status.draft{background:#e0e7ff;color:#4338ca}
+        .caro-clause-chevron{width:16px;height:16px;transition:transform .2s;color:#94a3b8}
+        .caro-clause-card.open .caro-clause-chevron{transform:rotate(180deg)}
+        .caro-clause-body{display:none;padding:0 1.15rem 1rem;border-top:1px solid #f1f5f9}
+        .caro-clause-card.open .caro-clause-body{display:block;animation:srFadeIn .2s ease}
+        .caro-sub-item{display:flex;align-items:flex-start;gap:.5rem;padding:.35rem 0;font-size:.78rem;color:#475569;line-height:1.55}
+        .caro-sub-check{width:16px;height:16px;border-radius:4px;border:2px solid #d1d5db;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;font-size:.6rem;cursor:pointer;transition:all .15s}
+        .caro-sub-check.checked{background:#059669;border-color:#059669;color:#fff}
+        .caro-sub-check.flagged{background:#dc2626;border-color:#dc2626;color:#fff}
+        .caro-obs-area{width:100%;min-height:70px;border:1px solid #e2e8f0;border-radius:8px;padding:.6rem .75rem;font-size:.78rem;font-family:inherit;color:#1e293b;resize:vertical;margin-top:.5rem;transition:border .15s;line-height:1.6}
+        .caro-obs-area:focus{outline:none;border-color:#d97706;box-shadow:0 0 0 3px rgba(217,119,6,.08)}
+        .caro-status-select{padding:.3rem .5rem;border:1px solid #e2e8f0;border-radius:6px;font-size:.72rem;font-weight:600;font-family:inherit;cursor:pointer}
+        .caro-data-banner{background:linear-gradient(135deg,#f0fdf4,#ecfdf5);border:1px solid #a7f3d0;border-radius:8px;padding:.5rem .85rem;font-size:.72rem;color:#065f46;display:flex;align-items:center;gap:.5rem;margin-top:.5rem}
+        .caro-data-banner svg{width:14px;height:14px;flex-shrink:0}
+        .caro-section-label{font-size:.62rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin:.6rem 0 .2rem;display:flex;align-items:center;gap:.35rem}
+        .caro-section-label svg{width:12px;height:12px}
+        .caro-act-ref{font-size:.62rem;color:#6366f1;font-weight:600;background:#ede9fe;padding:1px 6px;border-radius:4px;margin-left:.4rem}
+        .caro-tag{font-size:.5rem;font-weight:700;padding:1px 5px;border-radius:3px;margin-left:.3rem}
+        .caro-tag.auto{background:#dbeafe;color:#1e3a8a}
+        .caro-tag.data{background:#ecfdf5;color:#059669}
+    </style>
 </head>
 <body>
     <div id="app-topbar" data-active="dashboard"></div>
@@ -23,15 +55,15 @@
 
         <main class="sr-main">
             <div class="sr-sh">
-                <h1>✅ CARO 2020 Report Generation <span class="sr-title-badge">AI</span></h1>
-                <p>Generate Companies (Auditor's Report) Order 2020 with AI-assisted clause-by-clause commentary. Upload Balance Sheet &amp; P&amp;L for automatic analysis.</p>
+                <h1>✅ CARO 2020 — Auditor's Report <span class="sr-title-badge" style="background:linear-gradient(135deg,#059669,#10b981);color:#fff">21 CLAUSES</span></h1>
+                <p>Companies (Auditor's Report) Order, 2020 — clause-by-clause commentary with auto-analysis from synced Tally data. Edit observations, set statuses, and export the final report.</p>
             </div>
 
             <!-- Toolbar -->
             <div class="dep-toolbar">
                 <div class="dep-toolbar-left">
                     <select class="dep-select" id="caro-company-select">
-                        <option value="">— Select Tally Company —</option>
+                        <option value="">— Select Company —</option>
                     </select>
                     <select class="dep-select" id="caro-fy-select">
                         <option value="2025-26">FY 2025-26</option>
@@ -40,34 +72,38 @@
                     </select>
                 </div>
                 <div class="dep-toolbar-right">
-                    <button class="sr-btn sr-btn-secondary" onclick="caroSyncFromTally()" id="caro-sync-btn">
+                    <button class="sr-btn sr-btn-secondary" onclick="caroLoadSyncedData()" id="caro-sync-btn">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
-                        Sync from Tally
+                        Load Synced Data
                     </button>
-                    <button class="sr-btn sr-btn-primary" onclick="generateCARO()">
+                    <button class="sr-btn sr-btn-primary" onclick="caroExpandAll()">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-                        Generate Report
+                        Expand All
+                    </button>
+                    <button class="sr-btn sr-btn-secondary" onclick="caroExportReport()" style="margin-left:.3rem">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                        Export Report
                     </button>
                 </div>
             </div>
 
             <!-- Summary Cards -->
-            <div class="dep-stats-row">
+            <div class="dep-stats-row" id="caro-stats-row">
                 <div class="dep-stat-card">
                     <div class="dep-stat-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
-                    <div><div class="dep-stat-val" id="caro-stat-clauses">11</div><div class="dep-stat-label">Total Clauses</div></div>
+                    <div><div class="dep-stat-val" id="caro-stat-clauses">21</div><div class="dep-stat-label">Total Clauses</div></div>
                 </div>
-                <div class="dep-stat-card">
+                <div class="dep-stat-card" style="border-left:3px solid #059669">
                     <div class="dep-stat-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
-                    <div><div class="dep-stat-val" id="caro-stat-clean">0</div><div class="dep-stat-label">Clean / No Remarks</div></div>
+                    <div><div class="dep-stat-val" id="caro-stat-clean" style="color:#059669">0</div><div class="dep-stat-label">Clean / No Remarks</div></div>
                 </div>
-                <div class="dep-stat-card">
+                <div class="dep-stat-card" style="border-left:3px solid #d97706">
                     <div class="dep-stat-icon amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
-                    <div><div class="dep-stat-val" id="caro-stat-review">0</div><div class="dep-stat-label">Need Review</div></div>
+                    <div><div class="dep-stat-val" id="caro-stat-review" style="color:#d97706">0</div><div class="dep-stat-label">Need Review</div></div>
                 </div>
-                <div class="dep-stat-card">
+                <div class="dep-stat-card" style="border-left:3px solid #dc2626">
                     <div class="dep-stat-icon diff"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></div>
-                    <div><div class="dep-stat-val" id="caro-stat-adverse">0</div><div class="dep-stat-label">Adverse Remarks</div></div>
+                    <div><div class="dep-stat-val" id="caro-stat-adverse" style="color:#dc2626">0</div><div class="dep-stat-label">Adverse Remarks</div></div>
                 </div>
                 <div class="dep-stat-card">
                     <div class="dep-stat-icon it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></div>
@@ -75,65 +111,19 @@
                 </div>
             </div>
 
-            <!-- Company Info Panel -->
-            <div class="sr-panel">
-                <div class="sr-panel-title">① Company & Financial Year Details</div>
-                <div class="sr-form-grid cols-3">
-                    <div class="sr-field"><label>Company Name</label><input type="text" id="caro-company" placeholder="e.g. ABC Pvt Ltd"></div>
-                    <div class="sr-field"><label>CIN</label><input type="text" id="caro-cin" placeholder="e.g. U12345MH2020PTC123456"></div>
-                    <div class="sr-field"><label>Financial Year</label>
-                        <select id="caro-fy"><option>2025-26</option><option>2024-25</option><option>2023-24</option></select>
-                    </div>
+            <!-- Clause Cards Container -->
+            <div id="caro-clauses-container">
+                <div style="text-align:center;padding:3rem 2rem;color:#94a3b8">
+                    <div style="font-size:2.5rem;margin-bottom:.75rem;opacity:.2">✅</div>
+                    <div style="font-size:.88rem;font-weight:600;color:#64748b;margin-bottom:.35rem">No CARO report generated yet</div>
+                    <div style="font-size:.75rem;color:#94a3b8;max-width:420px;margin:0 auto;line-height:1.5">Select a company and click <strong>Load Synced Data</strong> to auto-analyze Tally ledgers against all 21 CARO 2020 clauses.</div>
                 </div>
             </div>
 
-            <!-- Upload Panel -->
-            <div class="sr-panel">
-                <div class="sr-panel-title">② Upload Documents</div>
-                <div class="sr-form-grid">
-                    <div>
-                        <div class="sr-upload-box" id="caro-drop-bs"><input type="file" accept=".pdf,.xlsx,.xls" onchange="handleCaroFile(this,'bs')"><h4>📊 Balance Sheet</h4><p>PDF or Excel</p></div>
-                        <div id="caro-file-bs"></div>
-                    </div>
-                    <div>
-                        <div class="sr-upload-box" id="caro-drop-pl"><input type="file" accept=".pdf,.xlsx,.xls" onchange="handleCaroFile(this,'pl')"><h4>📈 Profit & Loss</h4><p>PDF or Excel</p></div>
-                        <div id="caro-file-pl"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- CARO Clause-wise Table -->
-            <div class="sr-panel" style="padding:0">
-                <div class="dep-table-header">
-                    <div class="dep-table-title">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-                        CARO 2020 — Clause-wise Report
-                        <span class="sr-badge amber" id="caro-clause-badge">0 / 11 reported</span>
-                    </div>
-                </div>
-                <div class="sr-table-wrap">
-                    <table class="sr-table" id="caro-table">
-                        <thead><tr>
-                            <th>Clause</th>
-                            <th>Title</th>
-                            <th>Sub-clauses</th>
-                            <th>Status</th>
-                            <th>AI Observation</th>
-                        </tr></thead>
-                        <tbody id="caro-tbody">
-                            <tr><td colspan="5" style="text-align:center;padding:2.5rem;color:#94a3b8">
-                                <div style="font-size:1.8rem;margin-bottom:.5rem;opacity:.3">✅</div>
-                                Enter company details and generate CARO report, or sync from Tally
-                            </td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Detailed Clause Expansion -->
-            <div class="sr-panel" id="caro-detail-panel" style="display:none;margin-top:1rem">
-                <div class="sr-panel-title" id="caro-detail-title">③ Detailed Report</div>
-                <div id="caro-detail-content"></div>
+            <!-- Info Banner -->
+            <div class="sr-info-banner" style="margin-top:.5rem">
+                <div class="sr-info-icon">⚖️</div>
+                <p>CARO 2020 applies to all companies except One Person Companies, Small Companies, and specified categories. As a <strong>Statutory Auditor</strong>, your report under CARO is annexed to the main audit report. Clauses marked <strong>⚠️ Review</strong> require verification from management representations and supporting documents.</p>
             </div>
         </main>
     </div>
@@ -152,115 +142,257 @@
             const t = document.createElement('div');
             const bg = {success:'#059669',warning:'#d97706',info:'#3b82f6',error:'#dc2626'}[type]||'#3b82f6';
             t.style.cssText = `padding:.55rem 1rem;background:${bg};color:#fff;border-radius:8px;font-size:.78rem;font-weight:600;box-shadow:0 4px 16px rgba(0,0,0,.15);animation:srFadeIn .3s ease`;
-            t.textContent = msg;
-            ct.appendChild(t);
+            t.textContent = msg; ct.appendChild(t);
             setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 3000);
         }
 
         function formatINR(n) {
-            if (n === undefined || n === null || isNaN(n)) return '₹ 0';
-            const abs = Math.abs(Math.round(n)); const s = abs.toString();
-            let formatted;
-            if (s.length > 3) { formatted = s.slice(0,-3).replace(/\B(?=(\d{2})+(?!\d))/g,',')+','+s.slice(-3); }
-            else { formatted = s; }
-            return (n < 0 ? '-' : '') + '₹ ' + formatted;
+            if (n===undefined||n===null||isNaN(n)) return '₹ 0';
+            const abs=Math.abs(Math.round(n));const s=abs.toString();
+            let f;if(s.length>3){f=s.slice(0,-3).replace(/\B(?=(\d{2})+(?!\d))/g,',')+','+s.slice(-3);}else{f=s;}
+            return (n<0?'-':'')+'₹ '+f;
         }
 
-        // ═══════════════════════════════════════════════════
-        // CARO ENGINE
-        // ═══════════════════════════════════════════════════
+        // ═══ Companies Act references per clause ═══
+        const CARO_REFS = {
+            'i':    'Sec 123(1), Schedule II',
+            'ii':   'Sec 143(3)(b), AS-2',
+            'iii':  'Sec 185 & 186',
+            'iv':   'Sec 185, 186',
+            'v':    'Sec 73-76, RBI Act',
+            'vi':   'Sec 148(1)',
+            'vii':  'Sec 143(1)(a)',
+            'viii': 'Sec 115BBE',
+            'ix':   'Sec 45-IA RBI Act',
+            'x':    'Sec 42, 62',
+            'xi':   'Sec 143(12)',
+            'xii':  'Sec 406',
+            'xiii': 'Sec 177, 188, AS-18',
+            'xiv':  'Sec 138',
+            'xv':   'Sec 192',
+            'xvi':  'Sec 45-IA RBI Act',
+            'xvii': 'Schedule III',
+            'xviii':'Sec 140',
+            'xix':  'Ind AS 1, Sec 129',
+            'xx':   'Sec 135',
+            'xxi':  'Sec 143(3)',
+        };
 
-        const CARO_CLAUSES = [
-            { id:'i', title:'Fixed Assets', sub:['(a) Proper records maintained','(b) Physical verification done','(c) Title deeds held in company name'], key:'fixedAssets' },
-            { id:'ii', title:'Inventory', sub:['(a) Physical verification at reasonable intervals','(b) Discrepancies dealt with in books'], key:'inventory' },
-            { id:'iii', title:'Loans & Advances', sub:['(a) Loans to parties in register u/s 189','(b) Terms not prejudicial to company','(c) Principal & interest receipts regular'], key:'loans' },
-            { id:'iv', title:'Compliance with Sec 185 & 186', sub:['Loans, investments, guarantees per sections'], key:'sec185' },
-            { id:'v', title:'Deposits', sub:['Compliance with Sec 73-76 and NCLT orders'], key:'deposits' },
-            { id:'vi', title:'Cost Records', sub:['Maintenance of cost records u/s 148(1)'], key:'costRecords' },
-            { id:'vii', title:'Statutory Dues', sub:['(a) Regularity of deposit','(b) Disputed dues with forums'], key:'statDues' },
-            { id:'viii', title:'Unrecorded Transactions', sub:['Transactions not recorded — surrendered or disclosed'], key:'unrecorded' },
-            { id:'ix', title:'Loans from Banks/FIs', sub:['(a) Default in repayment','(b) Declared wilful defaulter','(c) Term loans applied for purpose'], key:'bankLoans' },
-            { id:'x', title:'IPO/Further Issue', sub:['Money raised applied for intended purposes'], key:'ipo' },
-            { id:'xi', title:'Fraud Reporting', sub:['(a) Fraud by/on company','(b) Orders by authorities under fraud provisions'], key:'fraud' },
-        ];
+        // ═══ Standard CARO wording templates ═══
+        const CARO_TEMPLATES = {
+            clean: {
+                'i':    'In our opinion, the company is maintaining proper records showing full particulars, including quantitative details and situation of property, plant and equipment. The fixed assets have been physically verified by the management at reasonable intervals and no material discrepancies were noticed. The title deeds of all the immovable properties are held in the name of the company.',
+                'ii':   'The inventory has been physically verified by the management at reasonable intervals during the year. The discrepancies noticed on such verification were not material and have been properly dealt with in the books of account. The company has not been sanctioned working capital limits in excess of ₹5 crore from banks on the basis of security of current assets.',
+                'iii':  'The company has not granted any loans, secured or unsecured, to companies, firms, limited liability partnerships or other parties covered in the register maintained under Section 189 of the Act.',
+                'v':    'The company has not accepted any deposits within the meaning of provisions of Sec 73-76 of the Companies Act, 2013 and the rules framed thereunder.',
+                'vii':  'According to the information and explanations given to us, the company is generally regular in depositing undisputed statutory dues including GST, Income Tax, TDS, PF, ESI and other statutory dues with the appropriate authorities.',
+                'ix':   'The company has not defaulted in repayment of loans or other borrowings from any lender during the year.',
+                'xvii': 'The company has not incurred cash losses in the financial year and in the immediately preceding financial year.',
+                'xix':  'On the basis of the financial ratios, ageing and expected dates of realisation of financial assets and payment of financial liabilities, there is no material uncertainty existing as on the date of the balance sheet that the company is capable of meeting its liabilities as they fall due within one year.',
+            },
+            not_applicable: 'In our opinion, the clause is not applicable to the company.',
+        };
 
-        let caroData = []; // { clauseId, status: 'clean'|'review'|'adverse', observation, tallyData }
-        let caroFiles = {};
-        let caroGenerated = false;
+        let caroData = [];
+        let caroFY = '2025-26';
+        let caroCompanyName = '';
 
-        function handleCaroFile(input, type) {
-            const file = input.files[0]; if (!file) return;
-            caroFiles[type] = file;
-            document.getElementById('caro-file-' + type).innerHTML = `<div class="sr-file-pill">📄 ${file.name} <span style="color:#94a3b8;font-weight:400">(${(file.size/1024).toFixed(0)} KB)</span></div>`;
-            document.getElementById('caro-drop-' + type).classList.add('has-file');
+        // ═══ INIT ═══
+        async function caroInit() {
+            caroFY = document.getElementById('caro-fy-select').value;
+            await caroLoadCompanies();
         }
 
-        // ── Tally Sync ──
-        async function caroSyncFromTally() {
-            const btn = document.getElementById('caro-sync-btn');
-            btn.disabled = true;
-            btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="sr-spin"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Syncing…';
-
+        // ═══ LOAD COMPANIES ═══
+        async function caroLoadCompanies() {
             try {
-                const company = document.getElementById('caro-company-select').value;
-                if (company) {
-                    // Fetch key ledger groups for CARO analysis
-                    const [faRes, loanRes, invRes] = await Promise.all([
-                        authFetch(`/tally/ledgers?parent=Fixed Assets&per_page=100`),
-                        authFetch(`/tally/ledgers?parent=Loans (Liability)&per_page=100`),
-                        authFetch(`/tally/ledgers?parent=Investments&per_page=100`),
-                    ]);
-                    if (faRes?.ok) {
-                        const fa = (await faRes.json()).data || [];
-                        document.getElementById('caro-company').value = company;
-                        document.getElementById('caro-stat-source').textContent = 'Tally';
-                        caroResetBtn(btn);
-                        srToast(`Synced data for ${company}`, 'success');
-                        generateCARO(); // auto-generate
-                        return;
-                    }
+                const res = await authFetch('/tally/companies');
+                if (res?.ok) {
+                    const c = await res.json();
+                    const sel = document.getElementById('caro-company-select');
+                    c.forEach(x => { const o=document.createElement('option'); o.value=x; o.textContent=x; sel.appendChild(o); });
+                    if (c.length === 1) sel.value = c[0];
                 }
             } catch(e) {}
+        }
 
-            // Demo fallback
-            setTimeout(() => {
-                document.getElementById('caro-company').value = 'Demo Trading Pvt Ltd';
-                document.getElementById('caro-cin').value = 'U51909MH2018PTC123456';
-                document.getElementById('caro-stat-source').textContent = 'Tally';
-                caroResetBtn(btn);
-                generateCARO();
-                srToast('Company data synced from Tally (demo)', 'success');
-            }, 1500);
+        // ═══ LOAD SYNCED DATA ═══
+        async function caroLoadSyncedData() {
+            const btn = document.getElementById('caro-sync-btn');
+            const company = document.getElementById('caro-company-select').value;
+
+            if (!company) { srToast('Please select a company first', 'warning'); return; }
+
+            btn.disabled = true;
+            btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="sr-spin"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Analyzing…';
+
+            try {
+                const res = await authFetch('/caro/analyze', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        company_name: company,
+                        financial_year: caroFY,
+                        client_id: clientId,
+                    }),
+                });
+
+                if (res?.ok) {
+                    const data = await res.json();
+
+                    if (!data.has_data) {
+                        caroResetBtn(btn);
+                        srToast(data.message || 'No Tally data found — sync from Data Entry first', 'warning');
+                        return;
+                    }
+
+                    caroData = data.clauses || [];
+                    caroCompanyName = data.company_name || company;
+                    document.getElementById('caro-stat-source').textContent = 'Tally';
+                    caroRenderClauses();
+                    caroUpdateStats();
+                    caroResetBtn(btn);
+                    srToast(`CARO analyzed: ${data.total_ledgers} ledgers, ${data.total_vouchers} vouchers`, 'success');
+                    return;
+                }
+            } catch(e) {
+                console.error('CARO analyze:', e);
+            }
+
+            caroResetBtn(btn);
+            srToast('Analysis failed — check backend', 'error');
         }
 
         function caroResetBtn(btn) {
             btn.disabled = false;
-            btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Sync from Tally';
+            btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Load Synced Data';
         }
 
-        // ── Generate Report ──
-        function generateCARO() {
-            const company = document.getElementById('caro-company').value.trim();
-            if (!company) { srToast('Enter company name or Sync from Tally', 'warning'); return; }
+        // ═══ RENDER CLAUSES ═══
+        function caroRenderClauses() {
+            const ct = document.getElementById('caro-clauses-container');
+            if (!caroData.length) {
+                ct.innerHTML = '<div style="text-align:center;padding:3rem;color:#94a3b8"><div style="font-size:2.5rem;margin-bottom:.75rem;opacity:.2">✅</div><div style="font-size:.88rem;font-weight:600;color:#64748b">Select a company and load data to begin</div></div>';
+                return;
+            }
 
-            // Simulate AI analysis — in production, this calls backend
-            caroData = CARO_CLAUSES.map(cl => {
-                // random but realistic statuses
-                const rand = Math.random();
-                let status, observation;
-                if (rand < 0.6) { status = 'clean'; observation = 'No adverse remarks. Records properly maintained.'; }
-                else if (rand < 0.85) { status = 'review'; observation = 'Partial compliance noted. CA review recommended.'; }
-                else { status = 'adverse'; observation = 'Discrepancies observed. Qualification may be required.'; }
-                return { clauseId: cl.id, title: cl.title, sub: cl.sub, status, observation };
-            });
+            ct.innerHTML = caroData.map((cl, i) => {
+                const statusClass = cl.status || 'draft';
+                const statusLabel = {clean:'✅ Clean', review:'⚠️ Review', adverse:'❌ Adverse', not_applicable:'— N/A', draft:'📝 Draft'}[statusClass] || '📝 Draft';
+                const autoTag = cl.auto_filled ? '<span class="caro-tag auto">AUTO-FILLED</span>' : '';
+                const dataTag = cl.data_found && cl.total_balance > 0 ? `<span class="caro-tag data">${cl.ledger_count} ledgers · ${formatINR(cl.total_balance)}</span>` : '';
+                const actRef = CARO_REFS[cl.id] ? `<span class="caro-act-ref">${CARO_REFS[cl.id]}</span>` : '';
 
-            caroGenerated = true;
-            caroRenderTable();
-            caroRenderDetail();
+                // Use standard CA wording for observations when available
+                let obsText = cl.observation || '';
+                if (statusClass === 'clean' && CARO_TEMPLATES.clean[cl.id]) {
+                    obsText = CARO_TEMPLATES.clean[cl.id];
+                } else if (statusClass === 'not_applicable' && !cl.data_found) {
+                    obsText = CARO_TEMPLATES.not_applicable;
+                }
+                // Keep backend observation as the analysis note
+                const analysisNote = cl.observation || '';
+
+                let subHtml = cl.sub.map((s, si) => `
+                    <div class="caro-sub-item">
+                        <div class="caro-sub-check ${cl.status==='clean'?'checked':cl.status==='adverse'?'flagged':''}" onclick="caroToggleSub(${i},${si},this)">
+                            ${cl.status==='clean'?'✓':cl.status==='adverse'?'✗':''}
+                        </div>
+                        <span>${s}</span>
+                    </div>
+                `).join('');
+
+                // Build data details if ledger data exists
+                let dataDetail = '';
+                if (cl.data_found && cl.total_balance > 0) {
+                    dataDetail = `<div class="caro-data-banner">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+                        <span><strong>Tally Data:</strong> ${cl.ledger_count} ledger(s) analyzed with aggregate closing balance of <strong>${formatINR(cl.total_balance)}</strong></span>
+                    </div>`;
+                }
+
+                // Show the analysis note from backend separately if different from template
+                let analysisSection = '';
+                if (analysisNote && analysisNote !== obsText) {
+                    analysisSection = `
+                        <div class="caro-section-label" style="margin-top:.65rem">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                            AI Analysis Note (from Tally data)
+                        </div>
+                        <div style="font-size:.75rem;color:#64748b;background:#f8fafc;border-radius:6px;padding:.5rem .75rem;border:1px solid #e8ecf1;line-height:1.55;font-style:italic">${analysisNote}</div>`;
+                }
+
+                return `
+                <div class="caro-clause-card" id="caro-cl-${i}">
+                    <div class="caro-clause-hdr" onclick="caroToggleClause(${i})">
+                        <span class="caro-clause-num">Cl. ${cl.id}</span>
+                        <span class="caro-clause-title">${cl.title}${actRef}${autoTag}${dataTag}</span>
+                        <span class="caro-clause-status ${statusClass}">${statusLabel}</span>
+                        <svg class="caro-clause-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                    </div>
+                    <div class="caro-clause-body">
+                        <div style="display:flex;align-items:center;gap:.5rem;margin:.65rem 0 .4rem">
+                            <span class="caro-section-label" style="margin:0">Status:</span>
+                            <select class="caro-status-select" onchange="caroSetStatus(${i},this.value)">
+                                <option value="clean" ${cl.status==='clean'?'selected':''}>✅ Clean — No qualification</option>
+                                <option value="review" ${cl.status==='review'?'selected':''}>⚠️ Under Review — Pending verification</option>
+                                <option value="adverse" ${cl.status==='adverse'?'selected':''}>❌ Adverse — Qualification required</option>
+                                <option value="not_applicable" ${cl.status==='not_applicable'?'selected':''}>— Not Applicable</option>
+                            </select>
+                        </div>
+                        <div class="caro-section-label">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                            Sub-clauses / Verification Checklist
+                        </div>
+                        ${subHtml}
+                        <div class="caro-section-label" style="margin-top:.65rem">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                            Auditor's Observation (for Final Report)
+                        </div>
+                        <textarea class="caro-obs-area" onchange="caroSetObs(${i},this.value)" placeholder="Draft your CARO observation for this clause…">${obsText}</textarea>
+                        ${analysisSection}
+                        ${dataDetail}
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        // ═══ INTERACTIONS ═══
+        function caroToggleClause(idx) {
+            document.getElementById('caro-cl-'+idx).classList.toggle('open');
+        }
+
+        function caroExpandAll() {
+            const cards = document.querySelectorAll('.caro-clause-card');
+            const allOpen = [...cards].every(c => c.classList.contains('open'));
+            cards.forEach(c => { allOpen ? c.classList.remove('open') : c.classList.add('open'); });
+        }
+
+        function caroSetStatus(idx, val) {
+            caroData[idx].status = val;
+            caroRenderClauses();
+            document.getElementById('caro-cl-'+idx).classList.add('open');
             caroUpdateStats();
-            srToast(`CARO 2020 report generated — 11 clauses for ${company}`, 'success');
         }
 
+        function caroSetObs(idx, val) {
+            caroData[idx].observation = val;
+        }
+
+        function caroToggleSub(clauseIdx, subIdx, el) {
+            if (el.classList.contains('checked')) {
+                el.classList.remove('checked');
+                el.classList.add('flagged');
+                el.textContent = '✗';
+            } else if (el.classList.contains('flagged')) {
+                el.classList.remove('flagged');
+                el.textContent = '';
+            } else {
+                el.classList.add('checked');
+                el.textContent = '✓';
+            }
+        }
+
+        // ═══ STATS ═══
         function caroUpdateStats() {
             const clean = caroData.filter(c => c.status === 'clean').length;
             const review = caroData.filter(c => c.status === 'review').length;
@@ -268,75 +400,64 @@
             document.getElementById('caro-stat-clean').textContent = clean;
             document.getElementById('caro-stat-review').textContent = review;
             document.getElementById('caro-stat-adverse').textContent = adverse;
-            document.getElementById('caro-clause-badge').textContent = `${caroData.length} / 11 reported`;
         }
 
-        function caroRenderTable() {
-            const tbody = document.getElementById('caro-tbody');
-            if (!caroData.length) {
-                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:2.5rem;color:#94a3b8"><div style="font-size:1.8rem;margin-bottom:.5rem;opacity:.3">✅</div>Enter company details and generate CARO report</td></tr>';
-                return;
-            }
+        // ═══ EXPORT REPORT ═══
+        function caroExportReport() {
+            if (!caroData.length) { srToast('Generate report first', 'warning'); return; }
 
-            tbody.innerHTML = caroData.map(c => {
-                const badge = c.status === 'clean' ? '<span class="sr-badge green">✅ Clean</span>'
-                    : c.status === 'review' ? '<span class="sr-badge amber">⚠️ Review</span>'
-                    : '<span class="sr-badge red">❌ Adverse</span>';
-                return `<tr>
-                    <td style="font-weight:700;color:#92400e;font-family:'Outfit',sans-serif">Cl. ${c.clauseId}</td>
-                    <td style="font-weight:600;font-size:.8rem">${c.title}</td>
-                    <td style="font-size:.72rem;color:#64748b">${c.sub.length} sub-clause${c.sub.length>1?'s':''}</td>
-                    <td>${badge}</td>
-                    <td style="font-size:.75rem;color:#475569;max-width:250px">${c.observation}</td>
-                </tr>`;
-            }).join('');
+            // Build plain-text report for clipboard
+            const fy = document.getElementById('caro-fy-select').value;
+            let report = `ANNEXURE TO THE INDEPENDENT AUDITOR'S REPORT\n`;
+            report += `COMPANIES (AUDITOR'S REPORT) ORDER, 2020 ("CARO 2020")\n`;
+            report += `FOR THE FINANCIAL YEAR ENDED 31ST MARCH ${parseInt(fy.split('-')[0]) + 1}\n`;
+            report += `COMPANY: ${caroCompanyName.toUpperCase()}\n`;
+            report += `${'═'.repeat(80)}\n\n`;
 
-            // Summary row
-            const clean = caroData.filter(c => c.status === 'clean').length;
-            const review = caroData.filter(c => c.status === 'review').length;
-            const adverse = caroData.filter(c => c.status === 'adverse').length;
-            tbody.innerHTML += `<tr class="sr-row-total"><td colspan="2" style="font-weight:800">SUMMARY</td><td></td><td style="font-weight:700"><span class="sr-badge green">${clean} ✅</span> <span class="sr-badge amber">${review} ⚠️</span> <span class="sr-badge red">${adverse} ❌</span></td><td style="font-size:.72rem;color:#64748b">${adverse === 0 ? 'No qualification required' : 'Qualification may be needed'}</td></tr>`;
-        }
-
-        function caroRenderDetail() {
-            let html = '';
             caroData.forEach(cl => {
-                const borderColor = cl.status === 'clean' ? '#059669' : cl.status === 'review' ? '#d97706' : '#dc2626';
-                html += `<div style="margin-bottom:1.25rem;border-left:3px solid ${borderColor};padding-left:1rem">
-                    <div style="font-weight:700;font-size:.88rem;color:#0f172a;margin-bottom:.35rem;display:flex;align-items:center;gap:.5rem">
-                        Clause ${cl.clauseId}: ${cl.title}
-                        ${cl.status === 'clean' ? '<span class="sr-badge green" style="font-size:.55rem">✅ Clean</span>' :
-                          cl.status === 'review' ? '<span class="sr-badge amber" style="font-size:.55rem">⚠️ Review</span>' :
-                          '<span class="sr-badge red" style="font-size:.55rem">❌ Adverse</span>'}
-                    </div>`;
-                cl.sub.forEach(s => {
-                    const icon = cl.status === 'clean' ? '✓' : cl.status === 'review' ? '⚠' : '✗';
-                    const badgeClass = cl.status === 'clean' ? 'green' : cl.status === 'review' ? 'amber' : 'red';
-                    html += `<div style="display:flex;align-items:flex-start;gap:.5rem;margin-bottom:.3rem">
-                        <span class="sr-badge ${badgeClass}" style="margin-top:2px;font-size:.55rem">${icon}</span>
-                        <span style="font-size:.78rem;color:#475569;line-height:1.5">${s}</span>
-                    </div>`;
-                });
-                html += `<div style="font-size:.72rem;color:#94a3b8;font-style:italic;margin-top:.25rem">AI Observation: ${cl.observation}</div>`;
-                html += `</div>`;
+                const statusMap = {clean:'CLEAN', review:'UNDER REVIEW', adverse:'ADVERSE', not_applicable:'NOT APPLICABLE', draft:'DRAFT'};
+                const statusText = statusMap[cl.status] || 'DRAFT';
+                report += `Clause ${cl.id.toUpperCase()} — ${cl.title} [${statusText}]\n`;
+                report += `${'-'.repeat(60)}\n`;
+
+                // Get the observation text
+                const obsEl = document.querySelector(`#caro-cl-${caroData.indexOf(cl)} .caro-obs-area`);
+                const obsText = obsEl ? obsEl.value : (cl.observation || '');
+                if (obsText) {
+                    report += `${obsText}\n`;
+                }
+
+                if (cl.data_found && cl.total_balance > 0) {
+                    report += `[Tally Data: ${cl.ledger_count} ledger(s), Balance: ${formatINR(cl.total_balance)}]\n`;
+                }
+                report += `\n`;
             });
 
-            document.getElementById('caro-detail-content').innerHTML = html;
-            document.getElementById('caro-detail-panel').style.display = 'block';
+            report += `${'═'.repeat(80)}\n`;
+            report += `For [Firm Name], Chartered Accountants\nFirm Registration No.: [FRN]\n\n`;
+            report += `[Partner Name]\nPartner\nMembership No.: [M.No.]\nUDIN: [UDIN]\n\nPlace: [City]\nDate: [Date]`;
+
+            // Copy to clipboard
+            navigator.clipboard.writeText(report).then(() => {
+                srToast('CARO report copied to clipboard — paste in Word/Google Docs', 'success');
+            }).catch(() => {
+                // Fallback: download as text file
+                const blob = new Blob([report], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `CARO_2020_${caroCompanyName.replace(/\s+/g,'_')}_${fy}.txt`;
+                a.click();
+                srToast('CARO report downloaded as text file', 'success');
+            });
         }
 
-        // ── Load Tally companies ──
-        async function caroLoadCompanies() {
-            try {
-                const res = await authFetch('/tally/companies');
-                if (res?.ok) {
-                    const companies = await res.json();
-                    const sel = document.getElementById('caro-company-select');
-                    companies.forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = c; sel.appendChild(o); });
-                }
-            } catch(e) {}
-        }
-        caroLoadCompanies();
+        // ═══ FY CHANGE ═══
+        document.getElementById('caro-fy-select').addEventListener('change', () => {
+            caroFY = document.getElementById('caro-fy-select').value;
+        });
+
+        caroInit();
     </script>
 </body>
 </html>

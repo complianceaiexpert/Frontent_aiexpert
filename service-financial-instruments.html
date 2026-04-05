@@ -33,7 +33,7 @@
                     Manual Entry
                 </div>
                 <div class="fi-sb-divider"></div>
-                <div class="fi-sb-label" style="padding:0 .75rem;font-size:.6rem;color:#94a3b8;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.15rem">PMS</div>
+                <div class="fi-sb-label" style="padding:0 .75rem;font-size:.6rem;color:#94a3b8;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.15rem">Portfolio</div>
                 <div class="fi-sb-item" onclick="fiNav('stock-register',this)">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h18v18H3z"/><path d="M3 9h18"/><path d="M3 15h18"/><path d="M9 3v18"/></svg>
                     Stock Register
@@ -43,14 +43,15 @@
                     Capital Gains
                 </div>
                 <div class="fi-sb-divider"></div>
+                <div class="fi-sb-label" style="padding:0 .75rem;font-size:.6rem;color:#94a3b8;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.15rem">Tally Sync</div>
                 <div class="fi-sb-item" onclick="fiNav('pending',this)">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-                    Pending Entries
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+                    Pending Review
                     <span class="fi-sb-badge" id="fi-sb-pending-count" style="display:none">0</span>
                 </div>
                 <div class="fi-sb-item" onclick="fiNav('journal-entries',this)">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-                    Journal Entries
+                    Journal Ledger
                 </div>
             </div>
             <a class="fi-sb-back" id="fi-back-link" href="services-dashboard.html">
@@ -65,7 +66,7 @@
             <!-- ━━━ DASHBOARD ━━━ -->
             <div class="fi-section active" id="sec-dashboard">
                 <!-- Row 1: AUM + Capital Gains + Tally Pipeline -->
-                <div class="fi-dash-grid-3">
+                <div class="fi-dash-grid-3" id="fi-row-overview">
                     <!-- AUM Overview -->
                     <div class="fi-dash-card fi-aum-card">
                         <div class="fi-dc-header"><span class="fi-dc-label">PORTFOLIO OVERVIEW</span><span class="fi-dc-ay" id="fi-ay">—</span></div>
@@ -89,15 +90,23 @@
                     <div class="fi-dash-card">
                         <div class="fi-dc-header"><span class="fi-dc-label">CAPITAL GAINS TRACKER</span><span class="fi-dc-ay" id="fi-fy-cg">—</span></div>
                         <div class="fi-cg-grid">
+                            <div class="fi-cg-item" id="fi-cg-spec-row" style="display:none">
+                                <div class="fi-cg-val orange" id="fi-cg-spec">₹ 0</div>
+                                <div class="fi-cg-label">Speculative<br><span class="fi-cg-sec">Sec 73 · Intraday</span></div>
+                                <div class="fi-cg-bar"><div class="fi-cg-fill" id="fi-cg-spec-bar" style="width:0%;background:#d97706"></div></div>
+                                <div class="fi-cg-tooltip" id="fi-cg-spec-tip"></div>
+                            </div>
                             <div class="fi-cg-item">
                                 <div class="fi-cg-val green" id="fi-cg-stcg">₹ 0</div>
-                                <div class="fi-cg-label">STCG<br><span class="fi-cg-sec">Sec 111A</span></div>
+                                <div class="fi-cg-label">STCG<br><span class="fi-cg-sec">Sec 111A · 20%</span></div>
                                 <div class="fi-cg-bar"><div class="fi-cg-fill" id="fi-cg-stcg-bar" style="width:0%;background:#059669"></div></div>
+                                <div class="fi-cg-tooltip" id="fi-cg-stcg-tip"></div>
                             </div>
                             <div class="fi-cg-item">
                                 <div class="fi-cg-val blue" id="fi-cg-ltcg">₹ 0</div>
-                                <div class="fi-cg-label">LTCG<br><span class="fi-cg-sec">Sec 112A</span></div>
+                                <div class="fi-cg-label">LTCG<br><span class="fi-cg-sec">Sec 112A · 12.5%</span></div>
                                 <div class="fi-cg-bar"><div class="fi-cg-fill" id="fi-cg-ltcg-bar" style="width:0%;background:#6366f1"></div></div>
+                                <div class="fi-cg-tooltip" id="fi-cg-ltcg-tip"></div>
                             </div>
                             <div class="fi-cg-divider"></div>
                             <div class="fi-cg-item fi-cg-net">
@@ -106,9 +115,9 @@
                             </div>
                         </div>
                         <div class="fi-cg-footer">
-                            <span>Tax @ 15% STCG</span>
+                            <span>Tax @ 20% STCG</span>
                             <span class="fi-cg-tax" id="fi-cg-tax-stcg">₹ 0</span>
-                            <span style="margin-left:.75rem">Tax @ 10% LTCG</span>
+                            <span style="margin-left:.75rem">Tax @ 12.5% LTCG</span>
                             <span class="fi-cg-tax" id="fi-cg-tax-ltcg">₹ 0</span>
                         </div>
                     </div>
@@ -143,34 +152,69 @@
                 </div>
 
                 <!-- Row 2: Instrument Allocation + TDS Compliance -->
-                <div class="fi-dash-grid-2">
+                <div class="fi-dash-grid-2" id="fi-row-alloc-tds">
                     <!-- Instrument Allocation -->
                     <div class="fi-dash-card">
                         <div class="fi-dc-header"><span class="fi-dc-label">INSTRUMENT ALLOCATION</span></div>
                         <div class="fi-alloc-list">
-                            <div class="fi-alloc-item" onclick="fiNav('statements',document.querySelector('[onclick*=statements]'))">
-                                <div class="fi-alloc-icon eq"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg></div>
-                                <div class="fi-alloc-info"><div class="fi-alloc-name">Equity / Demat</div><div class="fi-alloc-sub">CDSL · NSDL · Zerodha · Groww</div></div>
-                                <div class="fi-alloc-data"><div class="fi-alloc-pct" id="fi-alloc-eq-pct">0%</div><div class="fi-alloc-val" id="fi-alloc-eq-val">₹ 0</div></div>
-                                <svg class="fi-qc-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                            <!-- Equity / Demat -->
+                            <div class="fi-alloc-wrap">
+                                <div class="fi-alloc-item" onclick="toggleAllocDrop('eq')">
+                                    <div class="fi-alloc-icon eq"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg></div>
+                                    <div class="fi-alloc-info"><div class="fi-alloc-name">Equity / Demat</div><div class="fi-alloc-sub">CDSL · NSDL · Zerodha · Groww</div></div>
+                                    <div class="fi-alloc-data"><div class="fi-alloc-pct" id="fi-alloc-eq-pct">0%</div><div class="fi-alloc-val" id="fi-alloc-eq-val">₹ 0</div></div>
+                                    <svg class="fi-alloc-arrow" id="fi-alloc-arrow-eq" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                                </div>
+                                <div class="fi-alloc-drop" id="fi-alloc-drop-eq" style="display:none">
+                                    <div class="fi-alloc-drop-inner" id="fi-alloc-drop-eq-body">
+                                        <div style="color:#94a3b8;font-size:.72rem;text-align:center;padding:.5rem">No holdings data</div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="fi-alloc-item" onclick="fiNav('statements',document.querySelector('[onclick*=statements]'))">
-                                <div class="fi-alloc-icon mf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg></div>
-                                <div class="fi-alloc-info"><div class="fi-alloc-name">Mutual Funds</div><div class="fi-alloc-sub">CAMS · KFintech · AMC CAS</div></div>
-                                <div class="fi-alloc-data"><div class="fi-alloc-pct" id="fi-alloc-mf-pct">0%</div><div class="fi-alloc-val" id="fi-alloc-mf-val">₹ 0</div></div>
-                                <svg class="fi-qc-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+
+                            <!-- Mutual Funds -->
+                            <div class="fi-alloc-wrap">
+                                <div class="fi-alloc-item" onclick="toggleAllocDrop('mf')">
+                                    <div class="fi-alloc-icon mf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg></div>
+                                    <div class="fi-alloc-info"><div class="fi-alloc-name">Mutual Funds</div><div class="fi-alloc-sub">CAMS · KFintech · AMC CAS</div></div>
+                                    <div class="fi-alloc-data"><div class="fi-alloc-pct" id="fi-alloc-mf-pct">0%</div><div class="fi-alloc-val" id="fi-alloc-mf-val">₹ 0</div></div>
+                                    <svg class="fi-alloc-arrow" id="fi-alloc-arrow-mf" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                                </div>
+                                <div class="fi-alloc-drop" id="fi-alloc-drop-mf" style="display:none">
+                                    <div class="fi-alloc-drop-inner" id="fi-alloc-drop-mf-body">
+                                        <div style="color:#94a3b8;font-size:.72rem;text-align:center;padding:.5rem">No mutual fund data</div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="fi-alloc-item" onclick="fiNav('statements',document.querySelector('[onclick*=statements]'))">
-                                <div class="fi-alloc-icon pms"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></div>
-                                <div class="fi-alloc-info"><div class="fi-alloc-name">PMS / AIF</div><div class="fi-alloc-sub">Portfolio Management Services</div></div>
-                                <div class="fi-alloc-data"><div class="fi-alloc-pct" id="fi-alloc-pms-pct">0%</div><div class="fi-alloc-val" id="fi-alloc-pms-val">₹ 0</div></div>
-                                <svg class="fi-qc-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+
+                            <!-- PMS / AIF -->
+                            <div class="fi-alloc-wrap">
+                                <div class="fi-alloc-item" onclick="toggleAllocDrop('pms')">
+                                    <div class="fi-alloc-icon pms"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></div>
+                                    <div class="fi-alloc-info"><div class="fi-alloc-name">PMS / AIF</div><div class="fi-alloc-sub">Portfolio Management Services</div></div>
+                                    <div class="fi-alloc-data"><div class="fi-alloc-pct" id="fi-alloc-pms-pct">0%</div><div class="fi-alloc-val" id="fi-alloc-pms-val">₹ 0</div></div>
+                                    <svg class="fi-alloc-arrow" id="fi-alloc-arrow-pms" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                                </div>
+                                <div class="fi-alloc-drop" id="fi-alloc-drop-pms" style="display:none">
+                                    <div class="fi-alloc-drop-inner" id="fi-alloc-drop-pms-body">
+                                        <div style="color:#94a3b8;font-size:.72rem;text-align:center;padding:.5rem">No PMS data</div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="fi-alloc-item" onclick="fiNav('new-entry',document.querySelector('[onclick*=new-entry]'))">
-                                <div class="fi-alloc-icon bond"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
-                                <div class="fi-alloc-info"><div class="fi-alloc-name">Bonds / NCDs / FDs</div><div class="fi-alloc-sub">Fixed income instruments</div></div>
-                                <div class="fi-alloc-data"><div class="fi-alloc-pct" id="fi-alloc-bond-pct">0%</div><div class="fi-alloc-val" id="fi-alloc-bond-val">₹ 0</div></div>
-                                <svg class="fi-qc-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+
+                            <!-- Bonds / NCDs / FDs -->
+                            <div class="fi-alloc-wrap">
+                                <div class="fi-alloc-item" onclick="toggleAllocDrop('bond')">
+                                    <div class="fi-alloc-icon bond"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+                                    <div class="fi-alloc-info"><div class="fi-alloc-name">Bonds / NCDs / FDs</div><div class="fi-alloc-sub">Fixed income instruments</div></div>
+                                    <div class="fi-alloc-data"><div class="fi-alloc-pct" id="fi-alloc-bond-pct">0%</div><div class="fi-alloc-val" id="fi-alloc-bond-val">₹ 0</div></div>
+                                    <svg class="fi-alloc-arrow" id="fi-alloc-arrow-bond" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                                </div>
+                                <div class="fi-alloc-drop" id="fi-alloc-drop-bond" style="display:none">
+                                    <div class="fi-alloc-drop-inner" id="fi-alloc-drop-bond-body">
+                                        <div style="color:#94a3b8;font-size:.72rem;text-align:center;padding:.5rem">No bond data</div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -317,7 +361,7 @@
                 </div>
 
                 <!-- Row 3: Recent Statements -->
-                <div class="fi-dash-card" style="margin-top:0">
+                <div class="fi-dash-card" style="margin-top:0" id="fi-row-recent">
                     <div class="fi-dc-header"><span class="fi-dc-label">RECENT STATEMENTS</span><button class="fi-btn" style="margin-left:auto;font-size:.68rem;padding:.25rem .55rem" onclick="fiNav('statements',document.querySelector('[onclick*=statements]'))">View All →</button></div>
                     <div id="fi-recent-vouchers">
                         <div class="fi-empty-mini">
@@ -326,44 +370,235 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Row 4: Dividend Summary + Compliance Alerts -->
+                <div class="fi-dash-grid-2" style="margin-top:.85rem" id="fi-row-div-alerts">
+                    <!-- Dividend Income Summary -->
+                    <div class="fi-dash-card">
+                        <div class="fi-dc-header"><span class="fi-dc-label">DIVIDEND INCOME SUMMARY</span><span class="fi-dc-ay" id="fi-div-fy">—</span></div>
+                        <div style="display:flex;gap:1rem;margin-bottom:.65rem">
+                            <div style="flex:1;text-align:center;padding:.5rem;background:#ecfdf5;border-radius:10px">
+                                <div style="font-family:'Outfit',sans-serif;font-size:1.1rem;font-weight:800;color:#059669" id="fi-div-total">₹ 0</div>
+                                <div style="font-size:.58rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.04em;margin-top:2px">Total Dividend</div>
+                            </div>
+                            <div style="flex:1;text-align:center;padding:.5rem;background:#fef2f2;border-radius:10px">
+                                <div style="font-family:'Outfit',sans-serif;font-size:1.1rem;font-weight:800;color:#dc2626" id="fi-div-tds-total">₹ 0</div>
+                                <div style="font-size:.58rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.04em;margin-top:2px">TDS u/s 194</div>
+                            </div>
+                        </div>
+                        <div style="font-size:.62rem;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.35rem">Source Breakup</div>
+                        <div id="fi-div-breakup" style="max-height:140px;overflow-y:auto">
+                            <div style="text-align:center;padding:.75rem;color:#94a3b8;font-size:.72rem">Upload statements with dividend data</div>
+                        </div>
+                        <div style="margin-top:.5rem;padding-top:.5rem;border-top:1px solid #f1f5f9;display:flex;align-items:center;gap:.35rem">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/></svg>
+                            <span style="font-size:.65rem;color:#92400e" id="fi-div-tds-note">Cross-verify with 26AS for TDS reconciliation</span>
+                        </div>
+                    </div>
+
+                    <!-- Compliance Alerts -->
+                    <div class="fi-dash-card">
+                        <div class="fi-dc-header"><span class="fi-dc-label">⚠️ COMPLIANCE ALERTS</span><span class="fi-dc-ay" id="fi-alert-count" style="background:#fef2f2;color:#dc2626;padding:2px 8px;border-radius:8px;font-size:.6rem;font-weight:700">0</span></div>
+                        <div id="fi-compliance-alerts" style="max-height:230px;overflow-y:auto">
+                            <div style="text-align:center;padding:1.5rem;color:#94a3b8;font-size:.72rem">
+                                <div style="font-size:1.5rem;margin-bottom:.35rem;opacity:.3">✅</div>
+                                No alerts — upload statements to enable compliance checks
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Row 5: Unrealized Gain/Loss + 26AS Cross-Match -->
+                <div class="fi-dash-grid-2" style="margin-top:.85rem" id="fi-row-unreal-26as">
+                    <!-- Unrealized Gain/Loss -->
+                    <div class="fi-dash-card">
+                        <div class="fi-dc-header"><span class="fi-dc-label">UNREALIZED GAIN/LOSS</span><span class="fi-dc-ay" style="font-size:.55rem">Ind AS 109 · Fair Value</span></div>
+                        <div style="display:flex;gap:1rem;margin-bottom:.65rem">
+                            <div style="flex:1;text-align:center;padding:.5rem;background:#ede9fe;border-radius:10px">
+                                <div style="font-family:'Outfit',sans-serif;font-size:1.1rem;font-weight:800;color:#5b21b6" id="fi-unreal-cost">₹ 0</div>
+                                <div style="font-size:.58rem;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-top:2px">Book Cost</div>
+                            </div>
+                            <div style="flex:1;text-align:center;padding:.5rem;background:#f0fdf4;border-radius:10px">
+                                <div style="font-family:'Outfit',sans-serif;font-size:1.1rem;font-weight:800;color:#059669" id="fi-unreal-market">₹ 0</div>
+                                <div style="font-size:.58rem;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-top:2px">Market Value</div>
+                            </div>
+                            <div style="flex:1;text-align:center;padding:.5rem;background:#fef3c7;border-radius:10px">
+                                <div style="font-family:'Outfit',sans-serif;font-size:1.1rem;font-weight:800" id="fi-unreal-pnl" style="color:#d97706">₹ 0</div>
+                                <div style="font-size:.58rem;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-top:2px">Unrealized P&L</div>
+                            </div>
+                        </div>
+                        <div style="font-size:.62rem;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.35rem">By Instrument Type</div>
+                        <div id="fi-unreal-breakup">
+                            <div style="text-align:center;padding:.75rem;color:#94a3b8;font-size:.72rem">Holdings data populates after statement upload</div>
+                        </div>
+                    </div>
+
+                    <!-- 26AS / AIS Cross-Match -->
+                    <div class="fi-dash-card">
+                        <div class="fi-dc-header"><span class="fi-dc-label">🔄 26AS / AIS CROSS-MATCH</span><span class="fi-dc-ay" style="font-size:.55rem">TDS Reconciliation</span></div>
+                        <div style="border-radius:10px;overflow:hidden;border:1px solid #e8ecf1">
+                            <table style="width:100%;border-collapse:collapse;font-size:.72rem">
+                                <thead><tr style="background:#f8fafc">
+                                    <th style="padding:.45rem .65rem;text-align:left;font-weight:700;color:#64748b;font-size:.6rem;text-transform:uppercase;letter-spacing:.04em">Section</th>
+                                    <th style="padding:.45rem .65rem;text-align:right;font-weight:700;color:#64748b;font-size:.6rem;text-transform:uppercase">As per Stmts</th>
+                                    <th style="padding:.45rem .65rem;text-align:right;font-weight:700;color:#64748b;font-size:.6rem;text-transform:uppercase">As per 26AS</th>
+                                    <th style="padding:.45rem .65rem;text-align:center;font-weight:700;color:#64748b;font-size:.6rem;text-transform:uppercase">Match</th>
+                                </tr></thead>
+                                <tbody id="fi-26as-tbody">
+                                    <tr><td style="padding:.45rem .65rem;font-weight:600">194 — Dividend</td><td style="padding:.45rem .65rem;text-align:right;font-family:'Outfit',sans-serif;font-weight:700" id="fi-26as-194-stmt">₹ 0</td><td style="padding:.45rem .65rem;text-align:right;font-family:'Outfit',sans-serif;color:#94a3b8">—</td><td style="padding:.45rem .65rem;text-align:center"><span style="font-size:.55rem;font-weight:700;padding:1px 6px;border-radius:4px;background:#fef3c7;color:#d97706">PENDING</span></td></tr>
+                                    <tr style="border-top:1px solid #f1f5f9"><td style="padding:.45rem .65rem;font-weight:600">194K — MF Income</td><td style="padding:.45rem .65rem;text-align:right;font-family:'Outfit',sans-serif;font-weight:700" id="fi-26as-194k-stmt">₹ 0</td><td style="padding:.45rem .65rem;text-align:right;font-family:'Outfit',sans-serif;color:#94a3b8">—</td><td style="padding:.45rem .65rem;text-align:center"><span style="font-size:.55rem;font-weight:700;padding:1px 6px;border-radius:4px;background:#fef3c7;color:#d97706">PENDING</span></td></tr>
+                                    <tr style="border-top:1px solid #f1f5f9"><td style="padding:.45rem .65rem;font-weight:600">Sec 112A — LTCG</td><td style="padding:.45rem .65rem;text-align:right;font-family:'Outfit',sans-serif;font-weight:700" id="fi-26as-ltcg-stmt">₹ 0</td><td style="padding:.45rem .65rem;text-align:right;font-family:'Outfit',sans-serif;color:#94a3b8">—</td><td style="padding:.45rem .65rem;text-align:center"><span style="font-size:.55rem;font-weight:700;padding:1px 6px;border-radius:4px;background:#f1f5f9;color:#64748b">N/A</span></td></tr>
+                                    <tr style="border-top:1px solid #f1f5f9"><td style="padding:.45rem .65rem;font-weight:600">Sec 111A — STCG</td><td style="padding:.45rem .65rem;text-align:right;font-family:'Outfit',sans-serif;font-weight:700" id="fi-26as-stcg-stmt">₹ 0</td><td style="padding:.45rem .65rem;text-align:right;font-family:'Outfit',sans-serif;color:#94a3b8">—</td><td style="padding:.45rem .65rem;text-align:center"><span style="font-size:.55rem;font-weight:700;padding:1px 6px;border-radius:4px;background:#f1f5f9;color:#64748b">N/A</span></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div style="margin-top:.5rem;display:flex;align-items:center;gap:.35rem;padding:.55rem .75rem;background:#ede9fe;border-radius:8px">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#5b21b6" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                            <span style="font-size:.62rem;color:#5b21b6;font-weight:600">Upload 26AS/AIS PDF to enable auto-matching (coming soon)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Row 6: Transaction Timeline -->
+                <div class="fi-dash-card" style="margin-top:.85rem" id="fi-row-timeline">
+                    <div class="fi-dc-header"><span class="fi-dc-label">📅 TRANSACTION TIMELINE</span><span class="fi-dc-ay" id="fi-timeline-fy">—</span></div>
+                    <div style="display:flex;align-items:flex-end;gap:3px;height:100px;padding:.5rem 0" id="fi-timeline-bars">
+                        <!-- 12 month bars Apr-Mar -->
+                        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px" data-month="0"><div style="display:flex;gap:1px;align-items:flex-end;width:100%;height:80px"><div style="flex:1;background:#059669;border-radius:3px 3px 0 0;min-height:0;transition:height .3s" id="fi-tl-buy-0"></div><div style="flex:1;background:#dc2626;border-radius:3px 3px 0 0;min-height:0;transition:height .3s" id="fi-tl-sell-0"></div></div><div style="font-size:.5rem;font-weight:700;color:#94a3b8">Apr</div></div>
+                        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px" data-month="1"><div style="display:flex;gap:1px;align-items:flex-end;width:100%;height:80px"><div style="flex:1;background:#059669;border-radius:3px 3px 0 0;min-height:0;transition:height .3s" id="fi-tl-buy-1"></div><div style="flex:1;background:#dc2626;border-radius:3px 3px 0 0;min-height:0;transition:height .3s" id="fi-tl-sell-1"></div></div><div style="font-size:.5rem;font-weight:700;color:#94a3b8">May</div></div>
+                        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px" data-month="2"><div style="display:flex;gap:1px;align-items:flex-end;width:100%;height:80px"><div style="flex:1;background:#059669;border-radius:3px 3px 0 0;min-height:0;transition:height .3s" id="fi-tl-buy-2"></div><div style="flex:1;background:#dc2626;border-radius:3px 3px 0 0;min-height:0;transition:height .3s" id="fi-tl-sell-2"></div></div><div style="font-size:.5rem;font-weight:700;color:#94a3b8">Jun</div></div>
+                        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px" data-month="3"><div style="display:flex;gap:1px;align-items:flex-end;width:100%;height:80px"><div style="flex:1;background:#059669;border-radius:3px 3px 0 0;min-height:0;transition:height .3s" id="fi-tl-buy-3"></div><div style="flex:1;background:#dc2626;border-radius:3px 3px 0 0;min-height:0;transition:height .3s" id="fi-tl-sell-3"></div></div><div style="font-size:.5rem;font-weight:700;color:#94a3b8">Jul</div></div>
+                        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px" data-month="4"><div style="display:flex;gap:1px;align-items:flex-end;width:100%;height:80px"><div style="flex:1;background:#059669;border-radius:3px 3px 0 0;min-height:0;transition:height .3s" id="fi-tl-buy-4"></div><div style="flex:1;background:#dc2626;border-radius:3px 3px 0 0;min-height:0;transition:height .3s" id="fi-tl-sell-4"></div></div><div style="font-size:.5rem;font-weight:700;color:#94a3b8">Aug</div></div>
+                        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px" data-month="5"><div style="display:flex;gap:1px;align-items:flex-end;width:100%;height:80px"><div style="flex:1;background:#059669;border-radius:3px 3px 0 0;min-height:0;transition:height .3s" id="fi-tl-buy-5"></div><div style="flex:1;background:#dc2626;border-radius:3px 3px 0 0;min-height:0;transition:height .3s" id="fi-tl-sell-5"></div></div><div style="font-size:.5rem;font-weight:700;color:#94a3b8">Sep</div></div>
+                        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px" data-month="6"><div style="display:flex;gap:1px;align-items:flex-end;width:100%;height:80px"><div style="flex:1;background:#059669;border-radius:3px 3px 0 0;min-height:0;transition:height .3s" id="fi-tl-buy-6"></div><div style="flex:1;background:#dc2626;border-radius:3px 3px 0 0;min-height:0;transition:height .3s" id="fi-tl-sell-6"></div></div><div style="font-size:.5rem;font-weight:700;color:#94a3b8">Oct</div></div>
+                        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px" data-month="7"><div style="display:flex;gap:1px;align-items:flex-end;width:100%;height:80px"><div style="flex:1;background:#059669;border-radius:3px 3px 0 0;min-height:0;transition:height .3s" id="fi-tl-buy-7"></div><div style="flex:1;background:#dc2626;border-radius:3px 3px 0 0;min-height:0;transition:height .3s" id="fi-tl-sell-7"></div></div><div style="font-size:.5rem;font-weight:700;color:#94a3b8">Nov</div></div>
+                        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px" data-month="8"><div style="display:flex;gap:1px;align-items:flex-end;width:100%;height:80px"><div style="flex:1;background:#059669;border-radius:3px 3px 0 0;min-height:0;transition:height .3s" id="fi-tl-buy-8"></div><div style="flex:1;background:#dc2626;border-radius:3px 3px 0 0;min-height:0;transition:height .3s" id="fi-tl-sell-8"></div></div><div style="font-size:.5rem;font-weight:700;color:#94a3b8">Dec</div></div>
+                        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px" data-month="9"><div style="display:flex;gap:1px;align-items:flex-end;width:100%;height:80px"><div style="flex:1;background:#059669;border-radius:3px 3px 0 0;min-height:0;transition:height .3s" id="fi-tl-buy-9"></div><div style="flex:1;background:#dc2626;border-radius:3px 3px 0 0;min-height:0;transition:height .3s" id="fi-tl-sell-9"></div></div><div style="font-size:.5rem;font-weight:700;color:#94a3b8">Jan</div></div>
+                        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px" data-month="10"><div style="display:flex;gap:1px;align-items:flex-end;width:100%;height:80px"><div style="flex:1;background:#059669;border-radius:3px 3px 0 0;min-height:0;transition:height .3s" id="fi-tl-buy-10"></div><div style="flex:1;background:#dc2626;border-radius:3px 3px 0 0;min-height:0;transition:height .3s" id="fi-tl-sell-10"></div></div><div style="font-size:.5rem;font-weight:700;color:#94a3b8">Feb</div></div>
+                        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px" data-month="11"><div style="display:flex;gap:1px;align-items:flex-end;width:100%;height:80px"><div style="flex:1;background:#059669;border-radius:3px 3px 0 0;min-height:0;transition:height .3s" id="fi-tl-buy-11"></div><div style="flex:1;background:#dc2626;border-radius:3px 3px 0 0;min-height:0;transition:height .3s" id="fi-tl-sell-11"></div></div><div style="font-size:.5rem;font-weight:700;color:#94a3b8">Mar</div></div>
+                    </div>
+                    <div style="display:flex;gap:1rem;justify-content:center;margin-top:.35rem">
+                        <div style="display:flex;align-items:center;gap:.3rem"><div style="width:8px;height:8px;border-radius:2px;background:#059669"></div><span style="font-size:.58rem;font-weight:600;color:#64748b">Buy / Invest</span></div>
+                        <div style="display:flex;align-items:center;gap:.3rem"><div style="width:8px;height:8px;border-radius:2px;background:#dc2626"></div><span style="font-size:.58rem;font-weight:600;color:#64748b">Sell / Redeem</span></div>
+                    </div>
+                </div>
+
+                <!-- ── Dashboard Reorder: Action items first, analytics & ops last ── -->
+                <script>
+                (function() {
+                    const dash = document.getElementById('sec-dashboard');
+                    // Desired order: Overview → Div+Alerts → Unreal+26AS → Timeline → Alloc+TDS → Sector+Cap → Recent
+                    const order = [
+                        'fi-row-overview',       // 1. Portfolio + CG + Pipeline
+                        'fi-row-div-alerts',     // 2. Dividend + Compliance Alerts
+                        'fi-row-unreal-26as',    // 3. Unrealized + 26AS Cross-Match
+                        'fi-row-timeline',       // 4. Transaction Timeline
+                        'fi-row-alloc-tds',      // 5. Instrument Allocation + TDS
+                        'fi-portfolio-analysis-row', // 6. Sector + Market Cap
+                        'fi-row-recent',         // 7. Recent Statements
+                    ];
+                    order.forEach(id => {
+                        const el = document.getElementById(id);
+                        if (el) { el.style.marginTop = '.85rem'; dash.appendChild(el); }
+                    });
+                    // Fix first row margin
+                    const first = document.getElementById('fi-row-overview');
+                    if (first) first.style.marginTop = '0';
+                })();
+                </script>
             </div>
 
-            <!-- ━━━ STATEMENTS (Upload + History combined) ━━━ -->
+            <!-- ━━━ STATEMENTS (Tabbed: Demat / MF / PMS) ━━━ -->
             <div class="fi-section" id="sec-statements">
                 <div class="fi-sh"><h1>Statements</h1><p>Upload Demat, MF, or PMS statements — AI reads, parses, and generates Tally entries</p></div>
 
-                <!-- Demat / MF Upload Cards (existing) -->
-                <div id="fi-upload-cards" class="fi-upload-cards">
-                    <label class="fi-upload-card">
-                        <input type="file" accept=".pdf,.xlsx,.xls,.csv" onchange="handleFIUpload(this,'demat')" hidden>
-                        <div class="fi-uc-icon demat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg></div>
-                        <div class="fi-uc-name">Demat Statement</div>
-                        <div class="fi-uc-desc">CDSL · NSDL · Zerodha · Groww · Upstox</div>
-                        <div class="fi-uc-formats"><span>PDF</span><span>Excel</span><span>CSV</span></div>
-                        <div class="fi-uc-cta">Click to Upload</div>
-                    </label>
-                    <label class="fi-upload-card">
-                        <input type="file" accept=".pdf,.xlsx,.xls,.csv" onchange="handleFIUpload(this,'mutual_fund')" hidden>
-                        <div class="fi-uc-icon mf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg></div>
-                        <div class="fi-uc-name">Mutual Fund CAS</div>
-                        <div class="fi-uc-desc">CAMS · KFintech · AMC Statements</div>
-                        <div class="fi-uc-formats"><span>PDF</span><span>Excel</span><span>CSV</span></div>
-                        <div class="fi-uc-cta">Click to Upload</div>
-                    </label>
+                <!-- ── 3 Tab Cards ── -->
+                <div class="fi-stmt-tabs" style="display:flex;gap:.75rem;margin-bottom:0">
+                    <div class="fi-stmt-tab active" id="fi-tab-demat" onclick="switchStmtTab('demat')">
+                        <div class="fi-uc-icon demat" style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg></div>
+                        <div>
+                            <div style="font-weight:700;font-size:.82rem;color:#0f172a">Demat Statement</div>
+                            <div style="font-size:.65rem;color:#94a3b8;margin-top:1px">CDSL · NSDL · Zerodha · Groww</div>
+                        </div>
+                        <span class="fi-stmt-tab-count" id="fi-tab-demat-count">0</span>
+                    </div>
+                    <div class="fi-stmt-tab" id="fi-tab-mf" onclick="switchStmtTab('mf')">
+                        <div class="fi-uc-icon mf" style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg></div>
+                        <div>
+                            <div style="font-weight:700;font-size:.82rem;color:#0f172a">Mutual Fund CAS</div>
+                            <div style="font-size:.65rem;color:#94a3b8;margin-top:1px">CAMS · KFintech · AMC Statements</div>
+                        </div>
+                        <span class="fi-stmt-tab-count" id="fi-tab-mf-count">0</span>
+                    </div>
+                    <div class="fi-stmt-tab" id="fi-tab-pms" onclick="switchStmtTab('pms')">
+                        <div class="fi-uc-icon pms" style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>
+                        <div>
+                            <div style="font-weight:700;font-size:.82rem;color:#0f172a">PMS Accounting</div>
+                            <div style="font-size:.65rem;color:#94a3b8;margin-top:1px">Abakkus · Marcellus · ASK · Motilal</div>
+                        </div>
+                        <span class="fi-stmt-tab-count" id="fi-tab-pms-count">0</span>
+                    </div>
                 </div>
 
-                <!-- PMS 3-PDF Upload Section -->
-                <div class="fi-pms-upload-section" style="margin-top:1.5rem">
-                    <div class="fi-dc-header" style="margin-bottom:.75rem">
-                        <span class="fi-dc-label">PMS STATEMENT UPLOAD</span>
-                        <button class="fi-btn" style="margin-left:auto;font-size:.68rem;padding:.25rem .55rem" onclick="showPMSAccountModal()">+ New PMS Account</button>
+                <!-- ═══ DEMAT Panel ═══ -->
+                <div class="fi-stmt-panel" id="fi-panel-demat" style="margin-top:1rem">
+                    <!-- Upload Zone — Multi-file -->
+                    <div class="fi-panel" id="fi-demat-dropzone" style="padding:1.25rem;border:2px dashed #c7d2fe;background:#fafbff;border-radius:12px;text-align:center;cursor:pointer;transition:all .2s" onclick="document.getElementById('fi-upload-demat-multi').click()" onmouseover="this.style.borderColor='#4338ca';this.style.background='#eef2ff'" onmouseout="this.style.borderColor='#c7d2fe';this.style.background='#fafbff'">
+                        <input type="file" id="fi-upload-demat-multi" accept=".pdf,.xlsx,.xls,.csv" multiple onchange="handleDematMultiSelect(this)" hidden>
+                        <div style="font-size:.9rem;font-weight:700;color:#4338ca;margin-bottom:.25rem">📤 Upload Demat Files (Holdings + Tax P&L + Tradebook)</div>
+                        <div style="font-size:.7rem;color:#94a3b8">Select all 3 files together — Supports PDF, Excel, CSV</div>
                     </div>
+
+                    <!-- File Checklist (shows after selection) -->
+                    <div id="fi-demat-checklist" style="display:none;margin-top:.75rem">
+                        <div class="fi-panel" style="padding:1rem">
+                            <div style="font-size:.72rem;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.65rem">Selected Files</div>
+                            <div id="fi-demat-file-list" style="display:flex;flex-direction:column;gap:.45rem"></div>
+                            <div id="fi-demat-missing-warn" style="display:none;margin-top:.75rem;padding:.6rem .85rem;background:#fef2f2;border:1px solid #fecaca;border-radius:8px;font-size:.75rem;color:#dc2626;font-weight:600">
+                                ⚠️ Missing required files — please upload all 3: Holdings, Tax P&L, and Tradebook
+                            </div>
+                            <div style="display:flex;gap:.5rem;margin-top:.85rem;justify-content:flex-end">
+                                <button class="fi-btn" onclick="clearDematFiles()">Cancel</button>
+                                <button class="fi-btn primary" id="fi-demat-process-btn" onclick="processDematMultiUpload()" disabled>🚀 Process All Files</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Uploaded Statements Table -->
+                    <div class="fi-panel" style="padding:0;margin-top:1rem">
+                        <div class="fi-toolbar">
+                            <div style="font-size:.72rem;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:.05em">Demat Uploads</div>
+                        </div>
+                        <div class="fi-table-wrap"><table class="fi-table"><thead><tr><th>Date</th><th>Type</th><th>File</th><th>Status</th><th>Entries</th><th>Action</th></tr></thead>
+                        <tbody id="fi-demat-tbody"><tr><td colspan="6" style="text-align:center;padding:2rem;color:#94a3b8">No Demat statements uploaded yet</td></tr></tbody></table></div>
+                    </div>
+                </div>
+
+                <!-- ═══ MUTUAL FUND Panel ═══ -->
+                <div class="fi-stmt-panel" id="fi-panel-mf" style="margin-top:1rem;display:none">
+                    <div class="fi-panel" style="padding:1.25rem;border:2px dashed #a7f3d0;background:#f0fdf4;border-radius:12px;text-align:center;cursor:pointer;transition:all .2s" onclick="document.getElementById('fi-upload-mf').click()" onmouseover="this.style.borderColor='#059669';this.style.background='#ecfdf5'" onmouseout="this.style.borderColor='#a7f3d0';this.style.background='#f0fdf4'">
+                        <input type="file" id="fi-upload-mf" accept=".pdf,.xlsx,.xls,.csv" onchange="handleFIUpload(this,'mutual_fund')" hidden>
+                        <div style="font-size:.9rem;font-weight:700;color:#059669;margin-bottom:.25rem">📤 Click to Upload Mutual Fund CAS</div>
+                        <div style="font-size:.7rem;color:#94a3b8">Supports CAMS, KFintech, AMC consolidated statements</div>
+                    </div>
+                    <div class="fi-panel" style="padding:0;margin-top:1rem">
+                        <div class="fi-toolbar">
+                            <div style="font-size:.72rem;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:.05em">Mutual Fund Uploads</div>
+                        </div>
+                        <div class="fi-table-wrap"><table class="fi-table"><thead><tr><th>Date</th><th>File</th><th>Status</th><th>Entries</th><th>Action</th></tr></thead>
+                        <tbody id="fi-mf-tbody"><tr><td colspan="5" style="text-align:center;padding:2rem;color:#94a3b8">No Mutual Fund statements uploaded yet</td></tr></tbody></table></div>
+                    </div>
+                </div>
+
+                <!-- ═══ PMS Panel ═══ -->
+                <div class="fi-stmt-panel" id="fi-panel-pms" style="margin-top:1rem;display:none">
                     <div style="display:flex;gap:.75rem;align-items:center;margin-bottom:1rem;flex-wrap:wrap">
                         <label style="font-size:.72rem;font-weight:600;color:#64748b">PMS Account:</label>
                         <select class="fi-form-select" id="fi-pms-account-select" onchange="onPMSAccountChange()" style="min-width:220px">
                             <option value="">— Select PMS Account —</option>
                         </select>
                         <span id="fi-pms-accrual-badge" class="fi-sb-badge" style="display:none;background:#6366f1;font-size:.6rem">Quarterly Actuals</span>
+                        <button class="fi-btn" style="margin-left:auto;font-size:.68rem;padding:.25rem .55rem" onclick="showPMSAccountModal()">+ New PMS Account</button>
                     </div>
                     <div class="fi-upload-cards" id="fi-pms-upload-cards" style="display:none">
                         <label class="fi-upload-card">
@@ -391,81 +626,114 @@
                             <div class="fi-uc-cta">Upload Expenses</div>
                         </label>
                     </div>
+                    <div class="fi-panel" style="padding:0;margin-top:1rem">
+                        <div class="fi-toolbar">
+                            <div style="font-size:.72rem;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:.05em">PMS Uploads</div>
+                            <select class="fi-form-select" style="margin-left:auto;min-width:120px" id="fi-pms-stmt-filter" onchange="loadStatementsTabbed()">
+                                <option value="all">All PMS Types</option>
+                                <option value="pms_transaction">Transactions</option>
+                                <option value="pms_dividend">Dividends</option>
+                                <option value="pms_expenses">Expenses</option>
+                            </select>
+                        </div>
+                        <div class="fi-table-wrap"><table class="fi-table"><thead><tr><th>Date</th><th>Type</th><th>File</th><th>Status</th><th>Entries</th><th>Action</th></tr></thead>
+                        <tbody id="fi-pms-tbody"><tr><td colspan="6" style="text-align:center;padding:2rem;color:#94a3b8">Select a PMS account to view uploads</td></tr></tbody></table></div>
+                    </div>
                 </div>
 
-                <!-- Uploaded Statements Table -->
-                <div class="fi-panel" style="padding:0;margin-top:1.25rem">
-                    <div class="fi-toolbar">
-                        <div style="font-size:.72rem;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:.05em">All Uploaded Statements</div>
-                        <select class="fi-form-select" style="margin-left:auto;min-width:120px" id="fi-stmt-filter" onchange="loadStatements()">
-                            <option value="all">All Types</option>
-                            <option value="demat">Demat</option>
-                            <option value="mutual_fund">Mutual Fund</option>
-                            <option value="pms_transaction">PMS Transaction</option>
-                            <option value="pms_dividend">PMS Dividend</option>
-                            <option value="pms_expenses">PMS Expenses</option>
-                        </select>
-                    </div>
-                    <div class="fi-table-wrap"><table class="fi-table"><thead><tr><th>Date</th><th>Type</th><th>File</th><th>Status</th><th>Entries</th><th>Action</th></tr></thead>
-                    <tbody id="fi-history-tbody"><tr><td colspan="6" style="text-align:center;padding:2rem;color:#9ca3af">No uploads yet — use the cards above to upload</td></tr></tbody></table></div>
-                </div>
             </div>
+
+
 
             <!-- ━━━ STOCK REGISTER ━━━ -->
             <div class="fi-section" id="sec-stock-register">
-                <div class="fi-sh"><h1>Stock Register</h1><p>Unit ledger: Opening + Purchases − Sales = Closing per security (FIFO-based)</p></div>
-                <div style="display:flex;gap:.75rem;align-items:center;margin-bottom:1rem;flex-wrap:wrap">
-                    <label style="font-size:.72rem;font-weight:600;color:#64748b">PMS Account:</label>
-                    <select class="fi-form-select" id="fi-sr-pms-select" onchange="loadStockRegister()" style="min-width:220px">
-                        <option value="">— Select PMS Account —</option>
-                    </select>
-                    <div style="display:flex;gap:.4rem;align-items:center;margin-left:auto">
-                        <label style="font-size:.68rem;font-weight:600;color:#64748b">FY:</label>
-                        <button class="fi-btn fi-fy-btn" data-fy="2024" onclick="setFY(2024)" style="font-size:.65rem;padding:.2rem .5rem">2024-25</button>
-                        <button class="fi-btn fi-fy-btn active" data-fy="2025" onclick="setFY(2025)" style="font-size:.65rem;padding:.2rem .5rem">2025-26</button>
-                        <button class="fi-btn fi-fy-btn" data-fy="all" onclick="setFY('all')" style="font-size:.65rem;padding:.2rem .5rem">All Time</button>
+                <div class="fi-sh"><h1>Stock Register</h1><p>Unified holdings across Demat, PMS & Mutual Funds</p></div>
+                <div class="fi-filter-bar">
+                    <div class="fi-pill-group">
+                        <button class="fi-pill active" data-sr-source="all" onclick="setSRSource('all')">All</button>
+                        <button class="fi-pill" data-sr-source="demat" onclick="setSRSource('demat')"><span class="fi-pill-dot" style="background:#4338ca"></span>Demat</button>
+                        <button class="fi-pill" data-sr-source="pms" onclick="setSRSource('pms')"><span class="fi-pill-dot" style="background:#d97706"></span>PMS</button>
+                        <button class="fi-pill" data-sr-source="mf" onclick="setSRSource('mf')"><span class="fi-pill-dot" style="background:#059669"></span>MF</button>
                     </div>
-                    <button class="fi-btn" onclick="recomputeFIFO()">🔄 Re-compute FIFO</button>
+                    <select class="fi-form-select fi-inline-select" id="fi-sr-pms-select" onchange="loadStockRegister()" style="display:none"><option value="">— PMS Account —</option></select>
+                    <div style="flex:1"></div>
+                    <div class="fi-pill-group">
+                        <button class="fi-pill fi-pill-s" data-fy="2024" onclick="setFY(2024)">FY 24-25</button>
+                        <button class="fi-pill fi-pill-s active" data-fy="2025" onclick="setFY(2025)">FY 25-26</button>
+                        <button class="fi-pill fi-pill-s" data-fy="all" onclick="setFY('all')">All</button>
+                    </div>
+                    <button class="fi-btn" onclick="recomputeFIFO()" id="fi-sr-fifo-btn" style="display:none;font-size:.68rem;padding:.25rem .6rem">🔄 FIFO</button>
+                </div>
+                <select id="fi-sr-source-select" style="display:none"><option value="all">All</option></select>
+                <div class="fi-dash-grid-3" style="margin-bottom:1rem" id="fi-sr-summary">
+                    <div class="fi-dash-card" style="padding:.75rem 1rem">
+                        <div class="fi-dc-label" style="font-size:.6rem">TOTAL HOLDINGS</div>
+                        <div style="font-size:1.15rem;font-weight:800;font-family:'Outfit',sans-serif;color:#0f172a" id="fi-sr-total-count">0</div>
+                    </div>
+                    <div class="fi-dash-card" style="padding:.75rem 1rem">
+                        <div class="fi-dc-label" style="font-size:.6rem">INVESTED VALUE</div>
+                        <div style="font-size:1.15rem;font-weight:800;font-family:'Outfit',sans-serif;color:#0f172a" id="fi-sr-invested">₹ 0</div>
+                    </div>
+                    <div class="fi-dash-card" style="padding:.75rem 1rem">
+                        <div class="fi-dc-label" style="font-size:.6rem">CURRENT VALUE</div>
+                        <div style="font-size:1.15rem;font-weight:800;font-family:'Outfit',sans-serif;color:#059669" id="fi-sr-current">₹ 0</div>
+                    </div>
                 </div>
                 <div class="fi-panel" style="padding:0">
-                    <div class="fi-table-wrap"><table class="fi-table" id="fi-sr-table"><thead><tr><th>Security</th><th>Opening Qty</th><th>Bought</th><th>Sold</th><th>Closing Qty</th><th>Avg Cost</th><th>Book Value</th></tr></thead>
-                    <tbody id="fi-sr-tbody"><tr><td colspan="7" style="text-align:center;padding:2rem;color:#9ca3af">Select a PMS account to view the stock register</td></tr></tbody>
+                    <div class="fi-table-wrap"><table class="fi-table" id="fi-sr-table"><thead><tr><th>Security</th><th>Source</th><th>Qty</th><th>Avg Cost</th><th>Market Price</th><th>Invested</th><th>Current Value</th><th>P&L</th></tr></thead>
+                    <tbody id="fi-sr-tbody"><tr><td colspan="8" style="text-align:center;padding:2rem;color:#9ca3af">Loading holdings...</td></tr></tbody>
                     <tfoot id="fi-sr-tfoot" style="display:none"></tfoot></table></div>
                 </div>
             </div>
 
-            <!-- ━━━ CAPITAL GAINS ━━━ -->
             <div class="fi-section" id="sec-capital-gains">
-                <div class="fi-sh"><h1>Capital Gains Report</h1><p>Lot-wise FIFO matching with STCG / LTCG classification and Section 112A grandfathering</p></div>
-                <div style="display:flex;gap:.75rem;align-items:center;margin-bottom:1rem;flex-wrap:wrap">
-                    <label style="font-size:.72rem;font-weight:600;color:#64748b">PMS Account:</label>
-                    <select class="fi-form-select" id="fi-cg-pms-select" onchange="loadCapitalGains()" style="min-width:220px">
-                        <option value="">— Select PMS Account —</option>
-                    </select>
+                <div class="fi-sh"><h1>Capital Gains Report</h1><p>Unified exits from all sources — Demat tradewise + PMS FIFO matching</p></div>
+                <div class="fi-filter-bar">
+                    <div class="fi-pill-group">
+                        <button class="fi-pill active" data-cg-source="all" onclick="setCGSource('all')">All</button>
+                        <button class="fi-pill" data-cg-source="demat" onclick="setCGSource('demat')"><span class="fi-pill-dot" style="background:#4338ca"></span>Demat</button>
+                        <button class="fi-pill" data-cg-source="pms" onclick="setCGSource('pms')"><span class="fi-pill-dot" style="background:#d97706"></span>PMS</button>
+                        <button class="fi-pill" data-cg-source="mf" onclick="setCGSource('mf')"><span class="fi-pill-dot" style="background:#059669"></span>MF</button>
+                    </div>
+                    <select class="fi-form-select fi-inline-select" id="fi-cg-pms-select" onchange="loadCapitalGains()" style="display:none"><option value="">— PMS Account —</option></select>
+                    <div class="fi-filter-divider"></div>
+                    <div class="fi-pill-group">
+                        <button class="fi-pill active" data-cg-cat="all" onclick="setCGCat('all')">All Types</button>
+                        <button class="fi-pill" data-cg-cat="intraday" onclick="setCGCat('intraday')"><span class="fi-pill-dot" style="background:#d97706"></span>Speculative</button>
+                        <button class="fi-pill" data-cg-cat="stcg" onclick="setCGCat('stcg')"><span class="fi-pill-dot" style="background:#059669"></span>STCG</button>
+                        <button class="fi-pill" data-cg-cat="ltcg" onclick="setCGCat('ltcg')"><span class="fi-pill-dot" style="background:#6366f1"></span>LTCG</button>
+                    </div>
                 </div>
+                <select id="fi-cg-source-select" style="display:none"><option value="all">All</option></select>
+                <select id="fi-cg-category" style="display:none"><option value="all">All</option></select>
                 <!-- CG Summary -->
-                <div class="fi-dash-grid-3" style="margin-bottom:1rem" id="fi-cg-summary">
-                    <div class="fi-dash-card" style="padding:1rem">
-                        <div class="fi-dc-label" style="font-size:.65rem">SHORT TERM CAPITAL GAINS</div>
-                        <div class="fi-aum-val green" id="fi-cg-summary-stcg" style="font-size:1.3rem">₹ 0</div>
-                        <div style="font-size:.65rem;color:#64748b">Tax @ 20%: <span id="fi-cg-summary-stcg-tax">₹ 0</span></div>
+                <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-bottom:1rem" id="fi-cg-summary">
+                    <div class="fi-dash-card" style="padding:.75rem 1rem">
+                        <div class="fi-dc-label" style="font-size:.6rem">SPECULATIVE <span style="color:#94a3b8;font-size:.5rem">Sec 73</span></div>
+                        <div style="font-size:1.1rem;font-weight:800;font-family:'Outfit',sans-serif;color:#d97706" id="fi-cg-summary-spec">₹ 0</div>
                     </div>
-                    <div class="fi-dash-card" style="padding:1rem">
-                        <div class="fi-dc-label" style="font-size:.65rem">LONG TERM CAPITAL GAINS</div>
-                        <div class="fi-aum-val blue" id="fi-cg-summary-ltcg" style="font-size:1.3rem">₹ 0</div>
-                        <div style="font-size:.65rem;color:#64748b">Tax @ 12.5% (above ₹1.25L): <span id="fi-cg-summary-ltcg-tax">₹ 0</span></div>
+                    <div class="fi-dash-card" style="padding:.75rem 1rem">
+                        <div class="fi-dc-label" style="font-size:.6rem">SHORT TERM CG <span style="color:#94a3b8;font-size:.5rem">Sec 111A · 20%</span></div>
+                        <div style="font-size:1.1rem;font-weight:800;font-family:'Outfit',sans-serif;color:#059669" id="fi-cg-summary-stcg">₹ 0</div>
+                        <div style="font-size:.6rem;color:#64748b">Tax: <span id="fi-cg-summary-stcg-tax">₹ 0</span></div>
                     </div>
-                    <div class="fi-dash-card" style="padding:1rem">
-                        <div class="fi-dc-label" style="font-size:.65rem">NET GAIN / (LOSS)</div>
-                        <div class="fi-aum-val" id="fi-cg-summary-net" style="font-size:1.3rem">₹ 0</div>
-                        <div style="font-size:.65rem;color:#64748b">Total entries: <span id="fi-cg-summary-count">0</span></div>
+                    <div class="fi-dash-card" style="padding:.75rem 1rem">
+                        <div class="fi-dc-label" style="font-size:.6rem">LONG TERM CG <span style="color:#94a3b8;font-size:.5rem">Sec 112A · 12.5%</span></div>
+                        <div style="font-size:1.1rem;font-weight:800;font-family:'Outfit',sans-serif;color:#4338ca" id="fi-cg-summary-ltcg">₹ 0</div>
+                        <div style="font-size:.6rem;color:#64748b">Tax: <span id="fi-cg-summary-ltcg-tax">₹ 0</span></div>
+                    </div>
+                    <div class="fi-dash-card" style="padding:.75rem 1rem">
+                        <div class="fi-dc-label" style="font-size:.6rem">NET GAIN / (LOSS)</div>
+                        <div style="font-size:1.1rem;font-weight:800;font-family:'Outfit',sans-serif" id="fi-cg-summary-net">₹ 0</div>
+                        <div style="font-size:.6rem;color:#64748b">Total exits: <span id="fi-cg-summary-count">0</span></div>
                     </div>
                 </div>
                 <div class="fi-panel" style="padding:0">
-                    <div class="fi-table-wrap"><table class="fi-table"><thead><tr><th>Security</th><th>Buy Date</th><th>Sell Date</th><th>Qty</th><th>Cost</th><th>Proceeds</th><th>Gain/Loss</th><th>Type</th><th>Days</th></tr></thead>
-                    <tbody id="fi-cg-tbody"><tr><td colspan="9" style="text-align:center;padding:2rem;color:#9ca3af">Select a PMS account to view capital gains</td></tr></tbody></table></div>
+                    <div class="fi-table-wrap"><table class="fi-table"><thead><tr><th>Security</th><th>Source</th><th>Buy Date</th><th>Sell Date</th><th>Qty</th><th>Buy Value</th><th>Sell Value</th><th>Gain/Loss</th><th>Type</th><th>Days</th></tr></thead>
+                    <tbody id="fi-cg-tbody"><tr><td colspan="10" style="text-align:center;padding:2rem;color:#9ca3af">Loading capital gains...</td></tr></tbody></table></div>
                 </div>
             </div>
+
 
             <!-- ━━━ NEW ENTRY ━━━ -->
             <div class="fi-section" id="sec-new-entry">
@@ -473,7 +741,7 @@
                 <div class="fi-txn-type-grid" id="fi-txn-types">
                     <div class="fi-txn-type-card" data-type="purchase" onclick="selectTxnType('purchase')"><div class="fi-txn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg></div><div class="fi-txn-name">Purchase / Buy</div><div class="fi-txn-desc">Shares, MF units, Bonds</div></div>
                     <div class="fi-txn-type-card" data-type="sale" onclick="selectTxnType('sale')"><div class="fi-txn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div><div class="fi-txn-name">Sale / Redemption</div><div class="fi-txn-desc">With STCG / LTCG auto-calc</div></div>
-                    <div class="fi-txn-type-card" data-type="dividend" onclick="selectTxnType('dividend')"><div class="fi-txn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div><div class="fi-txn-name">Dividend / Interest</div><div class="fi-txn-desc">Income with TDS deduction</div></div>
+                        <div class="fi-txn-type-card" data-type="dividend" onclick="selectTxnType('dividend')"><div class="fi-txn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div><div class="fi-txn-name">Dividend / Interest</div><div class="fi-txn-desc">Income with TDS deduction</div></div>
                     <div class="fi-txn-type-card" data-type="charges" onclick="selectTxnType('charges')"><div class="fi-txn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><div class="fi-txn-name">Charges / Fees</div><div class="fi-txn-desc">DP, Brokerage, STT, PMS Fee</div></div>
                     <div class="fi-txn-type-card" data-type="sip" onclick="selectTxnType('sip')"><div class="fi-txn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><div class="fi-txn-name">SIP / STP</div><div class="fi-txn-desc">Recurring MF investments</div></div>
                     <div class="fi-txn-type-card" data-type="ipo" onclick="selectTxnType('ipo')"><div class="fi-txn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div><div class="fi-txn-name">IPO Allotment</div><div class="fi-txn-desc">New share allotment entry</div></div>
@@ -485,31 +753,39 @@
 
             <!-- ━━━ PENDING ENTRIES (staging before Tally sync) ━━━ -->
             <div class="fi-section" id="sec-pending">
-                <div class="fi-sh"><h1>Pending Entries</h1><p>All journal entries awaiting review & Tally sync — from AI extraction and manual entry</p></div>
+                <div class="fi-sh"><h1>Pending Entries</h1><p>Auto-generated journal entries from parsed files — review, approve & sync to Tally</p></div>
                 <div class="fi-panel" style="padding:0">
                     <div class="fi-toolbar">
                         <div style="display:flex;align-items:center;gap:.5rem">
-                            <span style="font-size:.72rem;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:.05em">Pending</span>
+                            <span style="font-size:.72rem;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:.05em">Entries</span>
                             <span class="fi-sb-badge" id="fi-pending-total" style="background:#d97706;min-width:20px;text-align:center">0</span>
                         </div>
-                        <select class="fi-form-select" id="fi-pending-source" onchange="loadPendingEntries()" style="min-width:140px">
-                            <option value="all">All Sources</option>
-                            <option value="ai">AI Extracted</option>
-                            <option value="manual">Manual Entry</option>
-                        </select>
                         <div style="margin-left:auto;display:flex;gap:.5rem">
-                            <button class="fi-btn success" onclick="approveAllPending()">✓ Approve All</button>
-                            <button class="fi-btn tally" onclick="syncAllPending()">↻ Sync to Tally</button>
+                            <button class="fi-btn success" onclick="approveAllPending()" style="font-size:.68rem">✓ Approve All</button>
+                            <button class="fi-btn tally" onclick="syncAllPending()" style="font-size:.68rem">↻ Sync All to Tally</button>
                         </div>
                     </div>
-                    <div id="fi-pending-list"><div class="fi-empty-mini"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><p>No pending entries — upload a statement or create one manually</p></div></div>
+                    <div id="fi-pending-list" style="padding:.5rem"></div>
                 </div>
             </div>
 
-            <!-- ━━━ JOURNAL ENTRIES ━━━ -->
+            <!-- ━━━ JOURNAL LEDGER (Read-only history) ━━━ -->
             <div class="fi-section" id="sec-journal-entries">
-                <div class="fi-sh"><h1>Journal Entries</h1><p>AI-generated double-entry accounting entries in Tally format (Dr / Cr)</p></div>
-                <div id="fi-journal-list"><div class="fi-empty-mini"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><p>Upload a statement to auto-generate entries</p></div></div>
+                <div class="fi-sh"><h1>Journal Ledger</h1><p>Complete history of all synced & approved journal vouchers — read-only</p></div>
+                <div class="fi-panel" style="padding:0">
+                    <div class="fi-toolbar">
+                        <div style="display:flex;align-items:center;gap:.5rem">
+                            <span style="font-size:.72rem;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:.05em">History</span>
+                            <span class="fi-sb-badge" id="fi-journal-total" style="background:#4338ca;min-width:20px;text-align:center">0</span>
+                        </div>
+                        <div class="fi-pill-group" style="margin-left:auto">
+                            <button class="fi-pill active" data-jl-filter="all" onclick="filterJournal('all')">All</button>
+                            <button class="fi-pill" data-jl-filter="synced" onclick="filterJournal('synced')"><span class="fi-pill-dot" style="background:#059669"></span>Synced</button>
+                            <button class="fi-pill" data-jl-filter="approved" onclick="filterJournal('approved')"><span class="fi-pill-dot" style="background:#d97706"></span>Approved</button>
+                        </div>
+                    </div>
+                    <div id="fi-journal-list" style="padding:.5rem"></div>
+                </div>
             </div>
 
 

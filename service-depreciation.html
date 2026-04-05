@@ -25,15 +25,15 @@
         <!-- ══════ MAIN ══════ -->
         <main class="sr-main">
             <div class="sr-sh">
-                <h1>📊 Depreciation: IT Act vs Companies Act <span class="sr-title-badge">TALLY SYNC</span></h1>
-                <p>Side-by-side depreciation as per Income Tax Act (Sec 32, WDV) and Companies Act, 2013 (Schedule II). Sync fixed assets from Tally or add manually.</p>
+                <h1>📊 Depreciation: IT Act vs Companies Act <span class="sr-title-badge" style="background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff">DUAL REGIME</span></h1>
+                <p>Side-by-side computation per <strong>Sec 32 (IT Act, WDV)</strong> and <strong>Schedule II (Companies Act 2013)</strong>. Load fixed assets from synced Tally data or add manually. Auto-computes deferred tax per Ind AS 12.</p>
             </div>
 
             <!-- Toolbar -->
             <div class="dep-toolbar">
                 <div class="dep-toolbar-left">
                     <select class="dep-select" id="dep-company-select" onchange="depLoadAssets()">
-                        <option value="">— Select Tally Company —</option>
+                        <option value="">— Select Company —</option>
                     </select>
                     <select class="dep-select" id="dep-fy-select">
                         <option value="2025-26">FY 2025-26</option>
@@ -44,11 +44,15 @@
                 <div class="dep-toolbar-right">
                     <button class="sr-btn sr-btn-secondary" onclick="depSyncFromTally()" id="dep-sync-btn">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
-                        Sync from Tally
+                        Load Synced Data
                     </button>
                     <button class="sr-btn sr-btn-primary" onclick="depShowAddModal()">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
                         Add Asset
+                    </button>
+                    <button class="sr-btn sr-btn-secondary" onclick="depComputeAll()" style="margin-left:.15rem">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+                        Compute All
                     </button>
                 </div>
             </div>
@@ -61,19 +65,19 @@
                 </div>
                 <div class="dep-stat-card">
                     <div class="dep-stat-icon amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
-                    <div><div class="dep-stat-val" id="dep-stat-cost">₹ 0</div><div class="dep-stat-label">Total Cost</div></div>
+                    <div><div class="dep-stat-val" id="dep-stat-cost">₹ 0</div><div class="dep-stat-label">Gross Block</div></div>
                 </div>
-                <div class="dep-stat-card">
+                <div class="dep-stat-card" style="border-left:3px solid #8b5cf6">
                     <div class="dep-stat-icon it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg></div>
-                    <div><div class="dep-stat-val" id="dep-stat-it">₹ 0</div><div class="dep-stat-label">IT Act Dep. (FY)</div></div>
+                    <div><div class="dep-stat-val" id="dep-stat-it" style="color:#5b21b6">₹ 0</div><div class="dep-stat-label">IT Act Dep. (FY)</div></div>
                 </div>
-                <div class="dep-stat-card">
+                <div class="dep-stat-card" style="border-left:3px solid #059669">
                     <div class="dep-stat-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg></div>
-                    <div><div class="dep-stat-val" id="dep-stat-co">₹ 0</div><div class="dep-stat-label">Co. Act Dep. (FY)</div></div>
+                    <div><div class="dep-stat-val" id="dep-stat-co" style="color:#059669">₹ 0</div><div class="dep-stat-label">Co. Act Dep. (FY)</div></div>
                 </div>
-                <div class="dep-stat-card">
+                <div class="dep-stat-card" style="border-left:3px solid #dc2626">
                     <div class="dep-stat-icon diff"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
-                    <div><div class="dep-stat-val" id="dep-stat-diff">₹ 0</div><div class="dep-stat-label">Deferred Tax Impact</div></div>
+                    <div><div class="dep-stat-val" id="dep-stat-diff" style="color:#dc2626">₹ 0</div><div class="dep-stat-label">Deferred Tax Impact</div></div>
                 </div>
             </div>
 
@@ -83,7 +87,7 @@
                     <div class="dep-table-header">
                         <div class="dep-table-title">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h18v18H3z"/><path d="M3 9h18"/><path d="M9 3v18"/></svg>
-                            Asset Register
+                            Fixed Asset Register
                             <span class="sr-badge amber" id="dep-asset-count-badge">0 assets</span>
                         </div>
                         <div style="display:flex;gap:.4rem;align-items:center">
@@ -97,10 +101,6 @@
                                 <option value="Buildings">Buildings</option>
                                 <option value="Intangible Assets">Intangible Assets</option>
                             </select>
-                            <button class="sr-btn sr-btn-primary" onclick="depComputeAll()" style="font-size:.72rem;padding:.35rem .75rem">
-                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
-                                Compute All
-                            </button>
                         </div>
                     </div>
                     <div class="sr-table-wrap">
@@ -111,15 +111,16 @@
                                 <th style="text-align:right">Cost (₹)</th>
                                 <th>IT Rate</th>
                                 <th>Co. Life</th>
-                                <th style="text-align:right">IT Dep (₹)</th>
-                                <th style="text-align:right">Co. Dep (₹)</th>
+                                <th style="text-align:right;color:#5b21b6">IT Dep (₹)</th>
+                                <th style="text-align:right;color:#059669">Co. Dep (₹)</th>
                                 <th style="text-align:right">Difference</th>
-                                <th>Actions</th>
+                                <th style="text-align:center">Actions</th>
                             </tr></thead>
                             <tbody id="dep-asset-tbody">
-                                <tr><td colspan="9" style="text-align:center;padding:2.5rem;color:#94a3b8">
-                                    <div style="font-size:1.8rem;margin-bottom:.5rem;opacity:.3">📊</div>
-                                    Sync from Tally or add assets manually to begin
+                                <tr><td colspan="9" style="text-align:center;padding:3rem 2rem;color:#94a3b8">
+                                    <div style="font-size:2.5rem;margin-bottom:.75rem;opacity:.2">📊</div>
+                                    <div style="font-size:.88rem;font-weight:600;color:#64748b;margin-bottom:.35rem">No assets loaded yet</div>
+                                    <div style="font-size:.75rem;color:#94a3b8;max-width:400px;margin:0 auto;line-height:1.5">Select a company and click <strong>Load Synced Data</strong> to import fixed assets, or <strong>Add Asset</strong> manually.</div>
                                 </td></tr>
                             </tbody>
                         </table>
@@ -155,9 +156,9 @@
             <!-- Add Asset Modal -->
             <div class="dep-modal-overlay" id="dep-add-modal" style="display:none">
                 <div class="dep-modal">
-                    <div class="dep-modal-header">
-                        <span>Add Fixed Asset</span>
-                        <button onclick="depHideAddModal()" style="background:none;border:none;font-size:1.1rem;cursor:pointer;color:#94a3b8">✕</button>
+                    <div class="dep-modal-header" style="background:linear-gradient(135deg,#5b21b6,#8b5cf6);color:#fff;border-bottom:none">
+                        <span>🏗️ Add Fixed Asset</span>
+                        <button onclick="depHideAddModal()" style="background:none;border:none;font-size:1.1rem;cursor:pointer;color:rgba(255,255,255,.7)">✕</button>
                     </div>
                     <div class="dep-modal-body">
                         <div class="sr-form-grid cols-3">
@@ -204,58 +205,122 @@
 
     <script src="api_config.js"></script>
     <script>
-        // ── Auth check ──
         const user = JSON.parse(localStorage.getItem('user'));
         if (!user) window.location.href = 'index.html';
         const params = new URLSearchParams(window.location.search);
         const clientId = params.get('clientId');
 
-
-        // ── Toast ──
         function srToast(msg, type='info') {
             const ct = document.getElementById('sr-toast-ct');
             const t = document.createElement('div');
             const bg = {success:'#059669',warning:'#d97706',info:'#3b82f6',error:'#dc2626'}[type]||'#3b82f6';
             t.style.cssText = `padding:.55rem 1rem;background:${bg};color:#fff;border-radius:8px;font-size:.78rem;font-weight:600;box-shadow:0 4px 16px rgba(0,0,0,.15);animation:srFadeIn .3s ease`;
-            t.textContent = msg;
-            ct.appendChild(t);
+            t.textContent = msg; ct.appendChild(t);
             setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 3000);
         }
 
-        // ── INR Formatter ──
         function formatINR(n) {
             if (n === undefined || n === null || isNaN(n)) return '₹ 0';
-            const abs = Math.abs(Math.round(n));
-            const s = abs.toString();
-            let formatted;
-            if (s.length > 3) {
-                const last3 = s.slice(-3);
-                const rest = s.slice(0, -3);
-                formatted = rest.replace(/\B(?=(\d{2})+(?!\d))/g, ',') + ',' + last3;
-            } else {
-                formatted = s;
-            }
-            return (n < 0 ? '-' : '') + '₹ ' + formatted;
+            const abs = Math.abs(Math.round(n)); const s = abs.toString();
+            let f; if (s.length > 3) { f = s.slice(0,-3).replace(/\B(?=(\d{2})+(?!\d))/g,',')+','+s.slice(-3); } else { f = s; }
+            return (n < 0 ? '-' : '') + '₹ ' + f;
         }
 
-        // ═══════════════════════════════════════════════════
-        // DEPRECIATION ENGINE
-        // ═══════════════════════════════════════════════════
-
+        // ═══ RATE MAP ═══
         const DEP_RATE_MAP = {
             'Plant & Machinery':    { itRate: 15, itMethod: 'WDV', coLife: 15, coMethod: 'SLM' },
             'Furniture & Fixtures': { itRate: 10, itMethod: 'WDV', coLife: 10, coMethod: 'SLM' },
-            'Motor Vehicles':       { itRate: 15, itMethod: 'WDV', coLife: 8,  coMethod: 'SLM' },
-            'Office Equipment':     { itRate: 15, itMethod: 'WDV', coLife: 5,  coMethod: 'SLM' },
-            'Computers':            { itRate: 40, itMethod: 'WDV', coLife: 3,  coMethod: 'SLM' },
+            'Motor Vehicles':       { itRate: 15, itMethod: 'WDV', coLife:  8, coMethod: 'SLM' },
+            'Office Equipment':     { itRate: 15, itMethod: 'WDV', coLife:  5, coMethod: 'SLM' },
+            'Computers':            { itRate: 40, itMethod: 'WDV', coLife:  3, coMethod: 'SLM' },
             'Buildings':            { itRate: 10, itMethod: 'WDV', coLife: 30, coMethod: 'SLM' },
             'Intangible Assets':    { itRate: 25, itMethod: 'WDV', coLife: 10, coMethod: 'SLM' },
         };
 
         let depAssets = [];
-        let depIdCounter = 0;
+        let depFY = '2025-26';
 
-        // ── Modal ──
+        // ═══ INIT ═══
+        async function depInit() {
+            depFY = document.getElementById('dep-fy-select').value;
+            await depLoadCompanies();
+            await depLoadAssets();
+        }
+
+        // ═══ LOAD FROM BACKEND ═══
+        async function depLoadAssets() {
+            if (!clientId) return;
+            try {
+                const res = await authFetch(`/depreciation/list?client_id=${clientId}&financial_year=${depFY}`);
+                if (res?.ok) {
+                    const data = await res.json();
+                    depAssets = data.map(a => ({
+                        id: a.id, name: a.name, group: a.group_name,
+                        date: a.date_acquired, cost: a.cost,
+                        residual: a.residual_value,
+                        itRate: a.it_rate, itMethod: a.it_method,
+                        coLife: a.co_life, coMethod: a.co_method,
+                        itDep: a.it_dep_fy || 0, coDep: a.co_dep_fy || 0,
+                        results: a.results || {},
+                        source: a.source, status: a.status,
+                    }));
+                    // Ensure computed
+                    depAssets.forEach(a => { if (!a.itDep) depComputeOneLocal(a); });
+                    depRenderTable(); depUpdateStats(); depUpdateDeferredTax();
+                }
+            } catch(e) { console.error('Load assets:', e); }
+        }
+
+        // ═══ LOCAL COMPUTATION ═══
+        function depComputeOneLocal(a) {
+            const halfYear = a.date ? new Date(a.date + 'T00:00').getMonth() >= 9 : false;
+            // IT Act
+            a.itDep = Math.round(a.cost * (a.itRate / 100));
+            if (halfYear) a.itDep = Math.round(a.itDep / 2);
+            // Companies Act
+            const depBase = a.cost - (a.residual || Math.round(a.cost * 0.05));
+            if (a.coMethod === 'SLM') {
+                a.coDep = Math.round(depBase / (a.coLife || 15));
+            } else {
+                const coRate = (1 - Math.pow(Math.max(a.residual||1, 1) / Math.max(a.cost, 1), 1 / (a.coLife||15))) * 100;
+                a.coDep = Math.round(a.cost * (coRate / 100));
+            }
+            if (halfYear) a.coDep = Math.round(a.coDep / 2);
+        }
+
+        // ═══ SAVE TO BACKEND ═══
+        async function depSaveAsset(a) {
+            if (!clientId) return false;
+            try {
+                const res = await authFetch('/depreciation/save', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        id: a.id || undefined, client_id: clientId,
+                        name: a.name, group_name: a.group,
+                        date_acquired: a.date, cost: a.cost,
+                        residual_value: a.residual,
+                        it_rate: a.itRate, it_method: a.itMethod,
+                        co_life: a.coLife, co_method: a.coMethod,
+                        financial_year: depFY, source: a.source || 'manual',
+                        tally_ledger_name: a.tally_ledger_name,
+                    }),
+                });
+                if (res?.ok) {
+                    const saved = await res.json();
+                    a.id = saved.id;
+                    if (saved.results) {
+                        a.itDep = saved.it_dep_fy || a.itDep;
+                        a.coDep = saved.co_dep_fy || a.coDep;
+                        a.results = saved.results;
+                    }
+                    return true;
+                }
+            } catch(e) { console.error('Save asset:', e); }
+            return false;
+        }
+
+        // ═══ MODAL ═══
         function depShowAddModal() {
             document.getElementById('dep-add-modal').style.display = 'flex';
             depAutoFillRates();
@@ -271,13 +336,13 @@
             document.getElementById('dep-add-co-method').value = r.coMethod;
         }
 
-        function depAddAsset() {
+        async function depAddAsset() {
             const name = document.getElementById('dep-add-name').value.trim();
             const cost = parseFloat(document.getElementById('dep-add-cost').value) || 0;
             if (!name || !cost) { srToast('Enter asset name and cost', 'warning'); return; }
             const residualInput = parseFloat(document.getElementById('dep-add-residual').value);
-            depAssets.push({
-                id: ++depIdCounter, name, group: document.getElementById('dep-add-group').value,
+            const a = {
+                name, group: document.getElementById('dep-add-group').value,
                 date: document.getElementById('dep-add-date').value || '2025-04-01', cost,
                 itRate: parseFloat(document.getElementById('dep-add-it-rate').value) || 15,
                 itMethod: document.getElementById('dep-add-it-method').value,
@@ -285,45 +350,112 @@
                 coMethod: document.getElementById('dep-add-co-method').value,
                 residual: isNaN(residualInput) ? Math.round(cost * 0.05) : residualInput,
                 itDep: 0, coDep: 0, source: 'manual'
-            });
+            };
+            depComputeOneLocal(a);
+            depAssets.push(a);
             depHideAddModal();
             ['dep-add-name','dep-add-cost','dep-add-residual'].forEach(id => document.getElementById(id).value = '');
-            depComputeAll();
-            srToast(`"${name}" added`, 'success');
+            depRenderTable(); depUpdateStats(); depUpdateDeferredTax();
+            // Save to backend in background
+            const ok = await depSaveAsset(a);
+            if (ok) srToast(`"${name}" saved`, 'success');
+            else srToast(`"${name}" added (local)`, 'info');
         }
 
-        function depDeleteAsset(id) { depAssets = depAssets.filter(a => a.id !== id); depComputeAll(); }
-
-        // ── Compute ──
-        function depComputeOne(a) {
-            a.itDep = Math.round(a.cost * (a.itRate / 100));
-            const acqMonth = new Date(a.date).getMonth();
-            if (acqMonth >= 9) a.itDep = Math.round(a.itDep / 2);
-
-            const depBase = a.cost - a.residual;
-            if (a.coMethod === 'SLM') {
-                a.coDep = Math.round(depBase / a.coLife);
-            } else {
-                const coRate = (1 - Math.pow(a.residual / a.cost, 1 / a.coLife)) * 100;
-                a.coDep = Math.round(a.cost * (coRate / 100));
+        async function depDeleteAsset(idx) {
+            const a = depAssets[idx];
+            if (a?.id) {
+                try { await authFetch(`/depreciation/${a.id}`, { method: 'DELETE' }); } catch(_) {}
             }
-            if (acqMonth >= 9) a.coDep = Math.round(a.coDep / 2);
+            depAssets.splice(idx, 1);
+            depRenderTable(); depUpdateStats(); depUpdateDeferredTax();
         }
 
-        function depComputeAll() {
-            depAssets.forEach(a => depComputeOne(a));
-            depRenderTable();
-            depUpdateStats();
-            depUpdateDeferredTax();
+        // ═══ COMPUTE ALL ═══
+        async function depComputeAll() {
+            depAssets.forEach(a => depComputeOneLocal(a));
+            depRenderTable(); depUpdateStats(); depUpdateDeferredTax();
+            // Save all to backend
+            let saved = 0;
+            for (const a of depAssets) {
+                if (await depSaveAsset(a)) saved++;
+            }
+            if (saved > 0) {
+                depRenderTable(); depUpdateStats(); depUpdateDeferredTax();
+                srToast(`Computed & saved ${saved} assets`, 'success');
+            } else {
+                srToast(`Computed ${depAssets.length} assets (local)`, 'info');
+            }
         }
 
+        // ═══ SYNC FROM SYNCED DATA ═══
+        async function depSyncFromTally() {
+            const btn = document.getElementById('dep-sync-btn');
+            const company = document.getElementById('dep-company-select').value;
+            btn.disabled = true;
+            btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="sr-spin"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Loading…';
+
+            try {
+                if (company) {
+                    const res = await authFetch('/depreciation/sync-from-tally', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ client_id: clientId, company_name: company, financial_year: depFY }),
+                    });
+                    if (res?.ok) {
+                        const data = await res.json();
+                        if (data.assets?.length > 0) {
+                            // Reload from DB to get IDs
+                            await depLoadAssets();
+                            depResetBtn(btn);
+                            srToast(`${data.total} assets loaded from synced data`, 'success');
+                            return;
+                        }
+                    }
+                }
+                // Fallback: demo
+                depLoadDemo(); depResetBtn(btn);
+                srToast('No fixed asset data found — loaded demo', 'warning');
+            } catch(e) {
+                depLoadDemo(); depResetBtn(btn);
+                srToast('Load failed — using demo data', 'warning');
+            }
+        }
+
+        function depLoadDemo() {
+            const demo = [
+                { name:'CNC Milling Machine', group:'Plant & Machinery', date:'2023-07-15', cost:2500000 },
+                { name:'Office Furniture Set', group:'Furniture & Fixtures', date:'2024-01-10', cost:350000 },
+                { name:'Toyota Fortuner (Office)', group:'Motor Vehicles', date:'2023-04-01', cost:3200000 },
+                { name:'Dell Servers (Rack)', group:'Computers', date:'2024-06-01', cost:800000 },
+                { name:'HP Laptops (5 units)', group:'Computers', date:'2025-01-15', cost:500000 },
+                { name:'Factory Building', group:'Buildings', date:'2020-04-01', cost:15000000 },
+                { name:'Lathe Machine', group:'Plant & Machinery', date:'2024-09-20', cost:1800000 },
+                { name:'Canon Printers (3)', group:'Office Equipment', date:'2025-02-01', cost:180000 },
+            ];
+            demo.forEach(d => {
+                const r = DEP_RATE_MAP[d.group];
+                const a = { ...d, itRate:r.itRate, itMethod:r.itMethod, coLife:r.coLife, coMethod:r.coMethod, residual:Math.round(d.cost*0.05), itDep:0, coDep:0, source:'demo' };
+                depComputeOneLocal(a);
+                depAssets.push(a);
+            });
+            depRenderTable(); depUpdateStats(); depUpdateDeferredTax();
+            // Background save
+            depAssets.forEach(a => depSaveAsset(a));
+        }
+
+        function depResetBtn(btn) {
+            btn.disabled = false;
+            btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Load Synced Data';
+        }
+
+        // ═══ STATS ═══
         function depUpdateStats() {
             const totalCost = depAssets.reduce((s, a) => s + a.cost, 0);
             const totalIT = depAssets.reduce((s, a) => s + a.itDep, 0);
             const totalCo = depAssets.reduce((s, a) => s + a.coDep, 0);
             const diff = totalIT - totalCo;
-            const deferredTax = Math.round(Math.abs(diff) * 0.252);
-
+            const deferredTax = Math.round(Math.abs(diff) * 0.2517);
             document.getElementById('dep-stat-assets').textContent = depAssets.length;
             document.getElementById('dep-stat-cost').textContent = formatINR(totalCost);
             document.getElementById('dep-stat-it').textContent = formatINR(totalIT);
@@ -332,31 +464,29 @@
             document.getElementById('dep-asset-count-badge').textContent = depAssets.length + ' asset' + (depAssets.length !== 1 ? 's' : '');
         }
 
-        // ── Render Table ──
+        // ═══ RENDER TABLE ═══
         function depRenderTable() {
             const tbody = document.getElementById('dep-asset-tbody');
             const filter = document.getElementById('dep-group-filter').value;
             const list = filter === 'all' ? depAssets : depAssets.filter(a => a.group === filter);
-
-            if (list.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:2.5rem;color:#94a3b8"><div style="font-size:1.8rem;margin-bottom:.5rem;opacity:.3">📊</div>Sync from Tally or add assets manually to begin</td></tr>';
-                return;
-            }
+            if (!list.length) { tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:3rem 2rem;color:#94a3b8"><div style="font-size:2.5rem;margin-bottom:.75rem;opacity:.2">📊</div><div style="font-size:.88rem;font-weight:600;color:#64748b;margin-bottom:.35rem">No assets loaded yet</div><div style="font-size:.75rem;color:#94a3b8;max-width:400px;margin:0 auto;line-height:1.5">Select a company and click <strong>Load Synced Data</strong> to import fixed assets, or <strong>Add Asset</strong> manually.</div></td></tr>'; return; }
 
             const groups = {};
-            list.forEach(a => { if (!groups[a.group]) groups[a.group] = []; groups[a.group].push(a); });
+            list.forEach((a, i) => { if (!groups[a.group]) groups[a.group] = []; groups[a.group].push({...a, _idx: depAssets.indexOf(a)}); });
 
             let html = '';
             for (const [group, assets] of Object.entries(groups)) {
-                const gIT = assets.reduce((s, a) => s + a.itDep, 0);
-                const gCo = assets.reduce((s, a) => s + a.coDep, 0);
-                const gCost = assets.reduce((s, a) => s + a.cost, 0);
+                const gIT = assets.reduce((s,a) => s+a.itDep, 0);
+                const gCo = assets.reduce((s,a) => s+a.coDep, 0);
+                const gCost = assets.reduce((s,a) => s+a.cost, 0);
                 html += `<tr class="sr-row-heading"><td colspan="2">${group}</td><td style="text-align:right">${formatINR(gCost)}</td><td></td><td></td><td style="text-align:right">${formatINR(gIT)}</td><td style="text-align:right">${formatINR(gCo)}</td><td style="text-align:right;color:${gIT-gCo>=0?'#059669':'#dc2626'}">${formatINR(Math.abs(gIT-gCo))}</td><td></td></tr>`;
                 assets.forEach(a => {
                     const diff = a.itDep - a.coDep;
-                    const srcBadge = a.source === 'tally' ? '<span style="font-size:.5rem;font-weight:700;padding:1px 5px;border-radius:3px;background:#dbeafe;color:#1e3a8a;margin-left:.35rem">TALLY</span>' : '';
+                    const srcMap = {tally:'SYNCED',ledger:'SYNCED',saved:'SAVED',demo:'DEMO'};
+                    const srcClr = {tally:'#dbeafe;color:#1e3a8a',ledger:'#dbeafe;color:#1e3a8a',demo:'#fef3c7;color:#92400e'};
+                    const badge = srcMap[a.source] ? `<span style="font-size:.5rem;font-weight:700;padding:1px 5px;border-radius:3px;background:${srcClr[a.source]||'#f1f5f9;color:#64748b'};margin-left:.35rem">${srcMap[a.source]}</span>` : '';
                     html += `<tr>
-                        <td><div class="dep-asset-name">${a.name}${srcBadge}</div></td>
+                        <td><div class="dep-asset-name">${a.name}${badge}</div></td>
                         <td style="font-size:.75rem;color:#64748b">${a.date ? new Date(a.date+'T00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}) : '—'}</td>
                         <td style="text-align:right;font-weight:600;font-family:'Outfit',sans-serif">${formatINR(a.cost)}</td>
                         <td><span class="dep-rate-pill it">${a.itRate}% ${a.itMethod}</span></td>
@@ -365,8 +495,8 @@
                         <td style="text-align:right;font-weight:700;color:#065f46;font-family:'Outfit',sans-serif">${formatINR(a.coDep)}</td>
                         <td style="text-align:right" class="${diff>=0?'dep-diff-positive':'dep-diff-negative'}">${diff>=0?'+':''}${formatINR(diff)}</td>
                         <td style="white-space:nowrap">
-                            <button class="sr-btn sr-btn-secondary" style="font-size:.62rem;padding:.2rem .45rem" onclick="depShowDetail(${a.id})" title="Year-wise comparison">📊</button>
-                            <button class="sr-btn sr-btn-secondary" style="font-size:.62rem;padding:.2rem .45rem;color:#dc2626;border-color:#fecaca" onclick="depDeleteAsset(${a.id})" title="Delete">✕</button>
+                            <button class="sr-btn sr-btn-secondary" style="font-size:.62rem;padding:.2rem .45rem" onclick="depShowDetail(${a._idx})" title="Year-wise">📊</button>
+                            <button class="sr-btn sr-btn-secondary" style="font-size:.62rem;padding:.2rem .45rem;color:#dc2626;border-color:#fecaca" onclick="depDeleteAsset(${a._idx})" title="Delete">✕</button>
                         </td>
                     </tr>`;
                 });
@@ -377,37 +507,36 @@
             const totCo = list.reduce((s,a) => s+a.coDep, 0);
             const totDiff = totIT - totCo;
             html += `<tr class="sr-row-total"><td colspan="2" style="font-weight:800">GRAND TOTAL</td><td style="text-align:right;font-weight:800;font-family:'Outfit',sans-serif">${formatINR(totCost)}</td><td></td><td></td><td style="text-align:right;font-weight:800;color:#5b21b6;font-family:'Outfit',sans-serif">${formatINR(totIT)}</td><td style="text-align:right;font-weight:800;color:#065f46;font-family:'Outfit',sans-serif">${formatINR(totCo)}</td><td style="text-align:right;font-weight:800;color:${totDiff>=0?'#059669':'#dc2626'};font-family:'Outfit',sans-serif">${totDiff>=0?'+':''}${formatINR(totDiff)}</td><td></td></tr>`;
-
             tbody.innerHTML = html;
         }
 
-        // ── Detail View ──
-        function depShowDetail(assetId) {
-            const a = depAssets.find(x => x.id === assetId);
-            if (!a) return;
-
-
-            const years = Math.min(a.coLife, 20);
+        // ═══ DETAIL VIEW ═══
+        function depShowDetail(idx) {
+            const a = depAssets[idx]; if (!a) return;
+            const years = Math.min(a.coLife || 15, 20);
             let itRows = [], coRows = [];
             let itWDV = a.cost, coWDV = a.cost;
-            const coDepAmt = a.coMethod === 'SLM' ? (a.cost - a.residual) / a.coLife : 0;
+            const halfYear = a.date ? new Date(a.date+'T00:00').getMonth() >= 9 : false;
+            const coDepAmt = a.coMethod === 'SLM' ? (a.cost - (a.residual||0)) / (a.coLife||15) : 0;
 
             for (let y = 1; y <= years; y++) {
                 let itDep = a.itMethod === 'WDV' ? itWDV * (a.itRate / 100) : a.cost * (a.itRate / 100);
+                if (y === 1 && halfYear) itDep /= 2;
                 itDep = Math.min(itDep, itWDV); itWDV -= itDep;
-                itRows.push({ year: y, dep: itDep, closing: itWDV });
+                itRows.push({ year: y, dep: itDep, closing: Math.max(0, itWDV) });
 
                 let coDep;
                 if (a.coMethod === 'SLM') { coDep = coDepAmt; }
-                else { const coRate = (1 - Math.pow(a.residual / a.cost, 1 / a.coLife)) * 100; coDep = coWDV * (coRate / 100); }
-                coDep = Math.min(coDep, Math.max(0, coWDV - a.residual));
+                else { const coRate = (1-Math.pow(Math.max(a.residual||1,1)/Math.max(a.cost,1),1/(a.coLife||15)))*100; coDep = coWDV * (coRate/100); }
+                if (y === 1 && halfYear) coDep /= 2;
+                coDep = Math.min(coDep, Math.max(0, coWDV - (a.residual||0)));
                 if (coDep < 0) coDep = 0;
                 coWDV -= coDep;
-                coRows.push({ year: y, dep: coDep, closing: coWDV });
+                coRows.push({ year: y, dep: coDep, closing: Math.max(0, coWDV) });
             }
 
-            const totalIT = itRows.reduce((s, r) => s + r.dep, 0);
-            const totalCo = coRows.reduce((s, r) => s + r.dep, 0);
+            const totalIT = itRows.reduce((s,r) => s+r.dep, 0);
+            const totalCo = coRows.reduce((s,r) => s+r.dep, 0);
             const diff = totalIT - totalCo;
 
             document.getElementById('dep-detail-summary').innerHTML = `
@@ -428,16 +557,15 @@
             document.getElementById('dep-detail-tables').innerHTML =
                 makeTable(itRows, `Income Tax Act — ${a.itMethod} @ ${a.itRate}%`, 'it-act') +
                 makeTable(coRows, `Companies Act — ${a.coMethod} (${a.coLife} yrs)`, 'co-act');
-
             document.getElementById('dep-detail-panel').style.display = 'block';
         }
 
-        // ── Deferred Tax Summary ──
+        // ═══ DEFERRED TAX ═══
         function depUpdateDeferredTax() {
-            if (depAssets.length === 0) return;
+            if (!depAssets.length) return;
             const groups = {};
             depAssets.forEach(a => {
-                if (!groups[a.group]) groups[a.group] = { cost: 0, it: 0, co: 0, count: 0 };
+                if (!groups[a.group]) groups[a.group] = { cost:0, it:0, co:0, count:0 };
                 groups[a.group].cost += a.cost;
                 groups[a.group].it += a.itDep;
                 groups[a.group].co += a.coDep;
@@ -449,7 +577,7 @@
             let totalIT = 0, totalCo = 0;
             for (const [group, g] of Object.entries(groups)) {
                 const diff = g.it - g.co;
-                const dt = Math.round(Math.abs(diff) * 0.252);
+                const dt = Math.round(Math.abs(diff) * 0.2517);
                 totalIT += g.it; totalCo += g.co;
                 html += `<tr>
                     <td style="font-weight:600">${group}</td>
@@ -463,7 +591,7 @@
             }
 
             const totDiff = totalIT - totalCo;
-            const totDT = Math.round(Math.abs(totDiff) * 0.252);
+            const totDT = Math.round(Math.abs(totDiff) * 0.2517);
             html += `<tr class="sr-row-total"><td style="font-weight:800">TOTAL</td><td></td><td style="text-align:right;font-weight:800;color:#5b21b6;font-family:'Outfit',sans-serif">${formatINR(totalIT)}</td><td style="text-align:right;font-weight:800;color:#065f46;font-family:'Outfit',sans-serif">${formatINR(totalCo)}</td><td style="text-align:right;font-weight:800;color:${totDiff>=0?'#059669':'#dc2626'}">${totDiff>=0?'+':''}${formatINR(totDiff)}</td><td style="text-align:right;font-weight:800;font-family:'Outfit',sans-serif">${formatINR(totDT)}</td><td><span class="sr-badge ${totDiff>=0?'blue':'red'}" style="font-size:.7rem">${totDiff>=0?'Net DTL':'Net DTA'}</span></td></tr>`;
             html += '</tbody></table></div>';
 
@@ -472,90 +600,16 @@
             document.getElementById('dep-deferred-content').innerHTML = html;
         }
 
-        // ── Tally Sync ──
-        async function depSyncFromTally() {
-            const btn = document.getElementById('dep-sync-btn');
-            btn.disabled = true;
-            btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="sr-spin"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Syncing…';
-
-            try {
-                const res = await authFetch('/tally/ledgers?parent=Fixed Assets&per_page=200');
-                if (res && res.ok) {
-                    const data = await res.json();
-                    if (data.data && data.data.length > 0) {
-                        data.data.forEach(l => {
-                            const group = mapTallyGroup(l.parent);
-                            const r = DEP_RATE_MAP[group] || DEP_RATE_MAP['Plant & Machinery'];
-                            const bal = Math.abs(l.opening_balance || l.closing_balance || 0);
-                            if (bal > 0 && !depAssets.find(a => a.name === l.name)) {
-                                depAssets.push({
-                                    id: ++depIdCounter, name: l.name, group, date: '2025-04-01', cost: bal,
-                                    itRate: r.itRate, itMethod: r.itMethod, coLife: r.coLife, coMethod: r.coMethod,
-                                    residual: Math.round(bal * 0.05), itDep: 0, coDep: 0, source: 'tally'
-                                });
-                            }
-                        });
-                        depComputeAll();
-                        depResetBtn(btn);
-                        srToast(`Synced ${data.data.length} ledgers from Tally`, 'success');
-                        return;
-                    }
-                }
-            } catch(e) { console.log('Tally API not available, loading demo data'); }
-
-            // Demo data fallback
-            setTimeout(() => {
-                const demo = [
-                    { name:'CNC Milling Machine', group:'Plant & Machinery', date:'2023-07-15', cost:2500000 },
-                    { name:'Office Furniture Set', group:'Furniture & Fixtures', date:'2024-01-10', cost:350000 },
-                    { name:'Toyota Fortuner (Office)', group:'Motor Vehicles', date:'2023-04-01', cost:3200000 },
-                    { name:'Dell Servers (Rack)', group:'Computers', date:'2024-06-01', cost:800000 },
-                    { name:'HP Laptops (5 units)', group:'Computers', date:'2025-01-15', cost:500000 },
-                    { name:'Factory Building', group:'Buildings', date:'2020-04-01', cost:15000000 },
-                    { name:'Lathe Machine', group:'Plant & Machinery', date:'2024-09-20', cost:1800000 },
-                    { name:'Canon Printers (3)', group:'Office Equipment', date:'2025-02-01', cost:180000 },
-                ];
-                demo.forEach(d => {
-                    const r = DEP_RATE_MAP[d.group];
-                    depAssets.push({ id: ++depIdCounter, ...d, itRate: r.itRate, itMethod: r.itMethod, coLife: r.coLife, coMethod: r.coMethod, residual: Math.round(d.cost * 0.05), itDep: 0, coDep: 0, source: 'tally' });
-                });
-                depComputeAll();
-                depResetBtn(btn);
-                srToast('8 assets synced from Tally (demo)', 'success');
-            }, 1500);
-        }
-
-        function depResetBtn(btn) {
-            btn.disabled = false;
-            btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Sync from Tally';
-        }
-
-        function mapTallyGroup(parent) {
-            const p = (parent || '').toLowerCase();
-            if (p.includes('plant') || p.includes('machinery')) return 'Plant & Machinery';
-            if (p.includes('furniture') || p.includes('fixture')) return 'Furniture & Fixtures';
-            if (p.includes('vehicle') || p.includes('motor')) return 'Motor Vehicles';
-            if (p.includes('computer')) return 'Computers';
-            if (p.includes('building')) return 'Buildings';
-            if (p.includes('intangible')) return 'Intangible Assets';
-            if (p.includes('office') || p.includes('equipment')) return 'Office Equipment';
-            return 'Plant & Machinery';
-        }
-
-        // ── Load Tally companies ──
+        // ═══ HELPERS ═══
         async function depLoadCompanies() {
-            try {
-                const res = await authFetch('/tally/companies');
-                if (res && res.ok) {
-                    const companies = await res.json();
-                    const sel = document.getElementById('dep-company-select');
-                    companies.forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = c; sel.appendChild(o); });
-                }
-            } catch(e) {}
+            try { const res = await authFetch('/tally/companies'); if (res?.ok) { const c = await res.json(); const sel = document.getElementById('dep-company-select'); c.forEach(x => { const o=document.createElement('option'); o.value=x; o.textContent=x; sel.appendChild(o); }); } } catch(e) {}
         }
-        function depLoadAssets() { /* Will call backend when ready */ }
-        depLoadCompanies();
+
+        document.getElementById('dep-fy-select').addEventListener('change', () => { depFY = document.getElementById('dep-fy-select').value; depLoadAssets(); });
+
+        depInit();
     </script>
 
 </body>
 </html>
+

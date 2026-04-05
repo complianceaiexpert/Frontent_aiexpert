@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Statutory & Financial Reporting — Suvidha AI</title>
-    <meta name="description" content="AI-powered Form 3CD, CARO Report, Rule 42 ITC Reversal, and Depreciation comparison tools for CAs">
+    <meta name="description" content="AI-powered Form 3CD, CARO Report, Rule 42 ITC Reversal, Depreciation comparison, and Financial Statement generation for CAs">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="statutory-reporting.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -22,29 +22,29 @@
 
             <div class="sr-sb-section">
                 <div class="sr-sb-label">Statutory Reporting</div>
-                <div class="sr-sb-item active" onclick="srNav('dashboard',this)">
+                <div class="sr-sb-item active">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
                     Dashboard
                 </div>
                 <a class="sr-sb-item" id="sr-link-form3cd" href="service-form3cd.html">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
                     Form 3CD
-                    <span class="sr-sb-badge count">New</span>
                 </a>
                 <a class="sr-sb-item" id="sr-link-caro" href="service-caro.html">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
                     CARO Report
-                    <span class="sr-sb-badge count">New</span>
                 </a>
                 <a class="sr-sb-item" id="sr-link-rule42" href="service-rule42.html">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
                     Rule 42 ITC
-                    <span class="sr-sb-badge count">New</span>
                 </a>
                 <a class="sr-sb-item" id="sr-link-depreciation" href="service-depreciation.html">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
                     Depreciation
-                    <span class="sr-sb-badge count">New</span>
+                </a>
+                <a class="sr-sb-item" id="sr-link-fs" href="service-financial-statements.html">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg>
+                    Financial Statements
                 </a>
             </div>
 
@@ -56,401 +56,125 @@
 
         <!-- ══════ MAIN ══════ -->
         <main class="sr-main">
+            <div class="sr-sh">
+                <h1>📑 Statutory & Financial Reporting</h1>
+                <p>AI-powered statutory compliance tools — Form 3CD, CARO, ITC workings, depreciation comparison & financial statement generation. Each tool syncs data directly from Tally.</p>
+            </div>
 
-            <!-- ═══ DASHBOARD ═══ -->
-            <div class="sr-section active" id="sec-dashboard">
-                <div class="sr-sh">
-                    <h1>📑 Statutory & Financial Reporting <span class="sr-title-badge">New</span></h1>
-                    <p>AI-powered statutory compliance tools — Form 3CD, CARO, ITC workings & depreciation comparison.</p>
+            <!-- Service Cards Grid -->
+            <div class="sr-cards-grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr))">
+                <!-- Form 3CD -->
+                <div class="sr-card" id="sr-card-form3cd">
+                    <div class="sr-card-icon" style="background:#eff6ff">📄</div>
+                    <div class="sr-card-name">Form 3CD Auto-Population</div>
+                    <div class="sr-card-desc">Auto-populate 44 clauses of Tax Audit Report from synced Tally data. AI maps financials to each clause with status tracking.</div>
+                    <div style="margin-top:.5rem;display:flex;gap:.35rem;flex-wrap:wrap">
+                        <span class="sr-badge green" style="font-size:.55rem">44 Clauses</span>
+                        <span class="sr-badge amber" style="font-size:.55rem">Tally Sync</span>
+                    </div>
+                    <div class="sr-card-cta">Open Tool <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg></div>
                 </div>
-                <div class="sr-cards-grid">
-                    <div class="sr-card" id="sr-card-form3cd" onclick="window.location.href='service-form3cd.html'">
-                        <div class="sr-card-icon" style="background:#eff6ff">📄</div>
-                        <div class="sr-card-name">Form 3CD Auto-Population</div>
-                        <div class="sr-card-desc">Auto-populate 44 clauses of Tax Audit Report from Tally data. AI maps financials to clauses.</div>
-                        <div class="sr-card-cta">Open Tool <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg></div>
+
+                <!-- CARO 2020 -->
+                <div class="sr-card" id="sr-card-caro">
+                    <div class="sr-card-icon" style="background:#ecfdf5">✅</div>
+                    <div class="sr-card-name">CARO 2020 Report</div>
+                    <div class="sr-card-desc">Generate CARO 2020 clause-by-clause report with AI-assisted observations. Companies Act section references and auditor wording templates.</div>
+                    <div style="margin-top:.5rem;display:flex;gap:.35rem;flex-wrap:wrap">
+                        <span class="sr-badge green" style="font-size:.55rem">21 Clauses</span>
+                        <span class="sr-badge amber" style="font-size:.55rem">Export Ready</span>
                     </div>
-                    <div class="sr-card" id="sr-card-caro" onclick="window.location.href='service-caro.html'">
-                        <div class="sr-card-icon" style="background:#ecfdf5">✅</div>
-                        <div class="sr-card-name">CARO Report Generation</div>
-                        <div class="sr-card-desc">Generate CARO 2020 clause-by-clause report with AI-assisted observations. Sync from Tally.</div>
-                        <div class="sr-card-cta">Open Tool <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg></div>
+                    <div class="sr-card-cta">Open Tool <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg></div>
+                </div>
+
+                <!-- Rule 42 ITC -->
+                <div class="sr-card" id="sr-card-rule42">
+                    <div class="sr-card-icon" style="background:#fef3c7">🧮</div>
+                    <div class="sr-card-name">Rule 42 ITC Reversal</div>
+                    <div class="sr-card-desc">Compute ITC reversal under Rule 42 for exempt & taxable supplies. Monthly register from Tally vouchers, annual summary and detailed workings.</div>
+                    <div style="margin-top:.5rem;display:flex;gap:.35rem;flex-wrap:wrap">
+                        <span class="sr-badge green" style="font-size:.55rem">Monthly Register</span>
+                        <span class="sr-badge amber" style="font-size:.55rem">Tally Sync</span>
                     </div>
-                    <div class="sr-card" id="sr-card-rule42" onclick="window.location.href='service-rule42.html'">
-                        <div class="sr-card-icon" style="background:#fef3c7">🧮</div>
-                        <div class="sr-card-name">Rule 42 ITC Reversal Workings</div>
-                        <div class="sr-card-desc">Compute ITC reversal under Rule 42 for exempt & taxable supplies. Sync from Tally, monthly register, annual summary.</div>
-                        <div class="sr-card-cta">Open Tool <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg></div>
+                    <div class="sr-card-cta">Open Tool <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg></div>
+                </div>
+
+                <!-- Depreciation -->
+                <div class="sr-card" id="sr-card-depreciation">
+                    <div class="sr-card-icon" style="background:#f5f3ff">📊</div>
+                    <div class="sr-card-name">Depreciation: IT vs Co. Act</div>
+                    <div class="sr-card-desc">Side-by-side depreciation as per Income Tax Act (Sec 32, WDV) and Companies Act (Schedule II). Asset register with deferred tax impact.</div>
+                    <div style="margin-top:.5rem;display:flex;gap:.35rem;flex-wrap:wrap">
+                        <span class="sr-badge green" style="font-size:.55rem">Dual Computation</span>
+                        <span class="sr-badge amber" style="font-size:.55rem">Tally Sync</span>
                     </div>
-                    <div class="sr-card" id="sr-card-depreciation" onclick="window.location.href='service-depreciation.html'">
-                        <div class="sr-card-icon" style="background:#f5f3ff">📊</div>
-                        <div class="sr-card-name">Depreciation: IT Act vs Companies Act</div>
-                        <div class="sr-card-desc">Side-by-side depreciation with Tally sync. Asset register, year-wise comparison, deferred tax impact.</div>
-                        <div class="sr-card-cta">Open Tool <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg></div>
+                    <div class="sr-card-cta">Open Tool <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg></div>
+                </div>
+
+                <!-- Financial Statements -->
+                <div class="sr-card" id="sr-card-fs">
+                    <div class="sr-card-icon" style="background:#fef2f2">📋</div>
+                    <div class="sr-card-name">Financial Statements</div>
+                    <div class="sr-card-desc">Generate Schedule III Balance Sheet, Profit & Loss Statement, and Notes to Accounts directly from synced Tally ledger data.</div>
+                    <div style="margin-top:.5rem;display:flex;gap:.35rem;flex-wrap:wrap">
+                        <span class="sr-badge green" style="font-size:.55rem">Schedule III</span>
+                        <span class="sr-badge amber" style="font-size:.55rem">Instant Gen</span>
                     </div>
+                    <div class="sr-card-cta">Open Tool <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg></div>
                 </div>
             </div>
 
-            <!-- ═══ FORM 3CD ═══ -->
-            <div class="sr-section" id="sec-form3cd">
-                <div class="sr-sh">
-                    <h1>📄 Form 3CD Auto-Population</h1>
-                    <p>Upload Trial Balance, P&L and Balance Sheet — AI maps each clause to the relevant data and auto-fills the Tax Audit Report.</p>
-                </div>
-                <div class="sr-info-banner">
-                    <div class="sr-info-icon">💡</div>
-                    <p>Form 3CD contains 44 clauses under Section 44AB. Upload your financial data and AI will auto-populate applicable clauses with relevant figures and notes.</p>
-                </div>
-                <div class="sr-panel">
-                    <div class="sr-panel-title">① Upload Financial Data</div>
-                    <div class="sr-form-grid">
-                        <div class="sr-field">
-                            <label>Assessment Year</label>
-                            <select id="sr-3cd-ay">
-                                <option value="2026-27">AY 2026-27</option>
-                                <option value="2025-26">AY 2025-26</option>
-                                <option value="2024-25">AY 2024-25</option>
-                            </select>
-                        </div>
-                        <div class="sr-field">
-                            <label>Audit Type</label>
-                            <select id="sr-3cd-type">
-                                <option value="44AB(a)">Sec 44AB(a) — Business (Turnover > ₹1Cr)</option>
-                                <option value="44AB(b)">Sec 44AB(b) — Profession (Receipts > ₹50L)</option>
-                                <option value="44AB(d)">Sec 44AB(d) — Presumptive opted out</option>
-                                <option value="44AB(e)">Sec 44AB(e) — Other provisions</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div style="margin-top:1rem">
-                        <div class="sr-upload-box" id="sr-3cd-drop">
-                            <input type="file" accept=".pdf,.xlsx,.xls,.csv" multiple onchange="handle3CDFiles(this)">
-                            <h4>📤 Drop Trial Balance, P&L, Balance Sheet</h4>
-                            <p>PDF, Excel or CSV — multiple files supported</p>
-                        </div>
-                        <div id="sr-3cd-files"></div>
-                    </div>
-                </div>
-                <div class="sr-panel" id="sr-3cd-clauses-panel" style="display:none">
-                    <div class="sr-panel-title">② Clause-wise Auto-Population <span class="sr-tag" style="background:#eff6ff;color:#1e3a8a">44 Clauses</span></div>
-                    <div class="sr-table-wrap">
-                        <table class="sr-table">
-                            <thead><tr><th>Clause</th><th>Description</th><th>Status</th><th>Value / Remarks</th></tr></thead>
-                            <tbody id="sr-3cd-tbody"></tbody>
-                        </table>
-                    </div>
-                </div>
-                <div style="margin-top:1rem;display:flex;gap:.65rem">
-                    <button class="sr-btn sr-btn-primary" id="sr-3cd-gen-btn" onclick="generate3CD()">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                        Generate Form 3CD
-                    </button>
-                    <button class="sr-btn sr-btn-secondary" onclick="export3CD()" style="display:none" id="sr-3cd-export">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                        Export as PDF
-                    </button>
+            <!-- Quick Reference Section -->
+            <div class="sr-panel" style="margin-top:1.5rem">
+                <div class="sr-panel-title">📚 Quick Reference — Data Sources</div>
+                <div style="margin-top:.75rem;overflow-x:auto">
+                    <table class="sr-table">
+                        <thead><tr>
+                            <th>Module</th>
+                            <th>Backend API</th>
+                            <th>Data Source</th>
+                            <th>Output</th>
+                        </tr></thead>
+                        <tbody>
+                            <tr>
+                                <td style="font-weight:600">Form 3CD</td>
+                                <td><code style="font-size:.68rem;background:#f1f5f9;padding:2px 5px;border-radius:4px">/form3cd/analyze</code></td>
+                                <td>Tally Ledgers + Vouchers</td>
+                                <td>44-clause analysis with auto-fill</td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight:600">CARO 2020</td>
+                                <td><code style="font-size:.68rem;background:#f1f5f9;padding:2px 5px;border-radius:4px">/caro/analyze</code></td>
+                                <td>Tally Ledgers + Vouchers</td>
+                                <td>Clause-wise observations + export</td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight:600">Rule 42 ITC</td>
+                                <td><code style="font-size:.68rem;background:#f1f5f9;padding:2px 5px;border-radius:4px">/rule42/compute</code></td>
+                                <td>Tally Vouchers (Purchase/Sales)</td>
+                                <td>Monthly reversal register</td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight:600">Depreciation</td>
+                                <td><code style="font-size:.68rem;background:#f1f5f9;padding:2px 5px;border-radius:4px">/depreciation/compute</code></td>
+                                <td>Tally Fixed Asset Ledgers</td>
+                                <td>IT vs Co. Act comparison</td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight:600">Financial Stmts</td>
+                                <td><code style="font-size:.68rem;background:#f1f5f9;padding:2px 5px;border-radius:4px">/fs-tally/generate</code></td>
+                                <td>Tally Ledgers (all groups)</td>
+                                <td>Schedule III BS, P&L, Notes</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
-            <!-- ═══ CARO REPORT ═══ -->
-            <div class="sr-section" id="sec-caro">
-                <div class="sr-sh">
-                    <h1>✅ CARO Report Generation</h1>
-                    <p>Generate CARO 2020 report with AI-assisted observations for each clause. Upload financial statements for automatic analysis.</p>
-                </div>
-                <div class="sr-info-banner">
-                    <div class="sr-info-icon">📋</div>
-                    <p>CARO 2020 applies to all companies except One Person, Small companies, and specified categories. AI generates observations based on uploaded data.</p>
-                </div>
-                <div class="sr-panel">
-                    <div class="sr-panel-title">① Company & Financial Year Details</div>
-                    <div class="sr-form-grid cols-3">
-                        <div class="sr-field"><label>Company Name</label><input type="text" id="sr-caro-company" placeholder="e.g. ABC Pvt Ltd"></div>
-                        <div class="sr-field"><label>CIN</label><input type="text" id="sr-caro-cin" placeholder="e.g. U12345MH2020PTC123456"></div>
-                        <div class="sr-field"><label>Financial Year</label>
-                            <select id="sr-caro-fy"><option>2025-26</option><option>2024-25</option><option>2023-24</option></select>
-                        </div>
-                    </div>
-                </div>
-                <div class="sr-panel">
-                    <div class="sr-panel-title">② Upload Documents</div>
-                    <div class="sr-form-grid">
-                        <div>
-                            <div class="sr-upload-box" id="sr-caro-drop-bs"><input type="file" accept=".pdf,.xlsx,.xls" onchange="handleCaroFile(this,'bs')"><h4>📊 Balance Sheet</h4><p>PDF or Excel</p></div>
-                            <div id="sr-caro-file-bs"></div>
-                        </div>
-                        <div>
-                            <div class="sr-upload-box" id="sr-caro-drop-pl"><input type="file" accept=".pdf,.xlsx,.xls" onchange="handleCaroFile(this,'pl')"><h4>📈 Profit & Loss</h4><p>PDF or Excel</p></div>
-                            <div id="sr-caro-file-pl"></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="sr-panel" id="sr-caro-results" style="display:none">
-                    <div class="sr-panel-title">③ CARO 2020 — Clause-wise Report</div>
-                    <div id="sr-caro-content"></div>
-                </div>
-                <div style="margin-top:1rem">
-                    <button class="sr-btn sr-btn-primary" onclick="generateCARO()">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-                        Generate CARO Report
-                    </button>
-                </div>
+            <div class="sr-info-banner" style="margin-top:1rem">
+                <div class="sr-info-icon">💡</div>
+                <p>All modules pull data from <strong>synced Tally ledgers and vouchers</strong>. Ensure your client's company is synced via the <strong>Data Entry</strong> module before using these tools. Each module has its own dedicated backend API — no hardcoded values.</p>
             </div>
-
-            <!-- ═══ RULE 42 ITC ═══ -->
-            <div class="sr-section" id="sec-rule42">
-                <div class="sr-sh">
-                    <h1>🧮 Rule 42 ITC Reversal Workings</h1>
-                    <p>Calculate proportionate ITC reversal for inputs/input services used for exempt &amp; taxable supplies. Sync from Tally or enter manually.</p>
-                </div>
-
-                <!-- Toolbar -->
-                <div class="dep-toolbar">
-                    <div class="dep-toolbar-left">
-                        <select class="dep-select" id="r42-company-select">
-                            <option value="">— Select Tally Company —</option>
-                        </select>
-                        <select class="dep-select" id="r42-fy-select">
-                            <option value="2025-26">FY 2025-26</option>
-                            <option value="2024-25">FY 2024-25</option>
-                            <option value="2023-24">FY 2023-24</option>
-                        </select>
-                    </div>
-                    <div class="dep-toolbar-right">
-                        <button class="sr-btn sr-btn-secondary" onclick="r42SyncFromTally()" id="r42-sync-btn">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
-                            Sync from Tally
-                        </button>
-                        <button class="sr-btn sr-btn-primary" onclick="r42ComputeAll()">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-                            Compute Reversal
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Summary Cards -->
-                <div class="dep-stats-row">
-                    <div class="dep-stat-card">
-                        <div class="dep-stat-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
-                        <div><div class="dep-stat-val" id="r42-stat-total">₹ 0</div><div class="dep-stat-label">Total ITC Availed</div></div>
-                    </div>
-                    <div class="dep-stat-card">
-                        <div class="dep-stat-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
-                        <div><div class="dep-stat-val" id="r42-stat-eligible">₹ 0</div><div class="dep-stat-label">Eligible ITC</div></div>
-                    </div>
-                    <div class="dep-stat-card">
-                        <div class="dep-stat-icon diff"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
-                        <div><div class="dep-stat-val" id="r42-stat-reversal">₹ 0</div><div class="dep-stat-label">Total Reversal</div></div>
-                    </div>
-                    <div class="dep-stat-card">
-                        <div class="dep-stat-icon amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg></div>
-                        <div><div class="dep-stat-val" id="r42-stat-taxable">₹ 0</div><div class="dep-stat-label">Taxable Turnover</div></div>
-                    </div>
-                    <div class="dep-stat-card">
-                        <div class="dep-stat-icon it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
-                        <div><div class="dep-stat-val" id="r42-stat-exempt">₹ 0</div><div class="dep-stat-label">Exempt Turnover</div></div>
-                    </div>
-                </div>
-
-                <!-- Monthly ITC Register -->
-                <div class="sr-panel" style="padding:0">
-                    <div class="dep-table-header">
-                        <div class="dep-table-title">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                            Monthly ITC Register
-                            <span class="sr-badge amber" id="r42-month-badge">0 months</span>
-                        </div>
-                        <div style="display:flex;gap:.4rem;align-items:center">
-                            <button class="sr-btn sr-btn-secondary" style="font-size:.68rem;padding:.3rem .6rem" onclick="r42AddMonth()">+ Add Month</button>
-                        </div>
-                    </div>
-                    <div class="sr-table-wrap">
-                        <table class="sr-table" id="r42-table">
-                            <thead><tr>
-                                <th>Month</th>
-                                <th style="text-align:right">Total ITC (T)</th>
-                                <th style="text-align:right">Exempt ITC (T1)</th>
-                                <th style="text-align:right">Non-Biz (T2)</th>
-                                <th style="text-align:right">Cap Goods</th>
-                                <th style="text-align:right">Taxable TO</th>
-                                <th style="text-align:right">Exempt TO</th>
-                                <th style="text-align:right">Total TO</th>
-                                <th style="text-align:right;color:#dc2626">Reversal</th>
-                                <th style="text-align:right;color:#059669">Eligible</th>
-                                <th></th>
-                            </tr></thead>
-                            <tbody id="r42-tbody">
-                                <tr><td colspan="11" style="text-align:center;padding:2.5rem;color:#94a3b8">
-                                    <div style="font-size:1.8rem;margin-bottom:.5rem;opacity:.3">🧮</div>
-                                    Sync from Tally or add months manually
-                                </td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- Detailed Working (for selected month) -->
-                <div class="sr-panel" id="r42-detail-panel" style="display:none;margin-top:1rem">
-                    <div class="sr-panel-title" id="r42-detail-title">② Rule 42 Working</div>
-                    <div id="r42-detail-content"></div>
-                </div>
-            </div>
-
-            <!-- ═══ DEPRECIATION ═══ -->
-            <div class="sr-section" id="sec-depreciation">
-                <div class="sr-sh">
-                    <h1>📊 Depreciation: IT Act vs Companies Act</h1>
-                    <p>Side-by-side depreciation as per Income Tax Act (Sec 32, WDV) and Companies Act, 2013 (Schedule II). Sync from Tally or add manually.</p>
-                </div>
-
-                <!-- Toolbar -->
-                <div class="dep-toolbar">
-                    <div class="dep-toolbar-left">
-                        <select class="dep-select" id="dep-company-select" onchange="depLoadAssets()">
-                            <option value="">— Select Tally Company —</option>
-                        </select>
-                        <select class="dep-select" id="dep-fy-select">
-                            <option value="2025-26">FY 2025-26</option>
-                            <option value="2024-25">FY 2024-25</option>
-                            <option value="2023-24">FY 2023-24</option>
-                        </select>
-                    </div>
-                    <div class="dep-toolbar-right">
-                        <button class="sr-btn sr-btn-secondary" onclick="depSyncFromTally()" id="dep-sync-btn">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
-                            Sync from Tally
-                        </button>
-                        <button class="sr-btn sr-btn-primary" onclick="depShowAddModal()">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-                            Add Asset
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Summary Cards -->
-                <div class="dep-stats-row" id="dep-stats-row">
-                    <div class="dep-stat-card">
-                        <div class="dep-stat-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></div>
-                        <div><div class="dep-stat-val" id="dep-stat-assets">0</div><div class="dep-stat-label">Fixed Assets</div></div>
-                    </div>
-                    <div class="dep-stat-card">
-                        <div class="dep-stat-icon amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
-                        <div><div class="dep-stat-val" id="dep-stat-cost">₹ 0</div><div class="dep-stat-label">Total Cost</div></div>
-                    </div>
-                    <div class="dep-stat-card">
-                        <div class="dep-stat-icon it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg></div>
-                        <div><div class="dep-stat-val" id="dep-stat-it">₹ 0</div><div class="dep-stat-label">IT Act Dep. (FY)</div></div>
-                    </div>
-                    <div class="dep-stat-card">
-                        <div class="dep-stat-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg></div>
-                        <div><div class="dep-stat-val" id="dep-stat-co">₹ 0</div><div class="dep-stat-label">Co. Act Dep. (FY)</div></div>
-                    </div>
-                    <div class="dep-stat-card">
-                        <div class="dep-stat-icon diff"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
-                        <div><div class="dep-stat-val" id="dep-stat-diff">₹ 0</div><div class="dep-stat-label">Deferred Tax Impact</div></div>
-                    </div>
-                </div>
-
-                <!-- Asset Register Table -->
-                <div class="sr-panel" style="padding:0">
-                    <div class="dep-table-header">
-                        <div class="dep-table-title">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h18v18H3z"/><path d="M3 9h18"/><path d="M9 3v18"/></svg>
-                            Asset Register
-                            <span class="sr-badge amber" id="dep-asset-count-badge">0 assets</span>
-                        </div>
-                        <div style="display:flex;gap:.4rem;align-items:center">
-                            <select class="dep-select dep-select-sm" id="dep-group-filter" onchange="depRenderTable()">
-                                <option value="all">All Groups</option>
-                                <option value="Plant & Machinery">Plant & Machinery</option>
-                                <option value="Furniture & Fixtures">Furniture & Fixtures</option>
-                                <option value="Motor Vehicles">Motor Vehicles</option>
-                                <option value="Office Equipment">Office Equipment</option>
-                                <option value="Computers">Computers</option>
-                                <option value="Buildings">Buildings</option>
-                                <option value="Intangible Assets">Intangible Assets</option>
-                            </select>
-                            <button class="sr-btn sr-btn-primary" onclick="depComputeAll()" style="font-size:.72rem;padding:.35rem .75rem">
-                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
-                                Compute All
-                            </button>
-                        </div>
-                    </div>
-                    <div class="sr-table-wrap">
-                        <table class="sr-table" id="dep-asset-table">
-                            <thead><tr>
-                                <th>Asset / Group</th>
-                                <th>Acquisition</th>
-                                <th style="text-align:right">Cost (₹)</th>
-                                <th>IT Rate</th>
-                                <th>Co. Life</th>
-                                <th style="text-align:right">IT Dep (₹)</th>
-                                <th style="text-align:right">Co. Dep (₹)</th>
-                                <th style="text-align:right">Difference</th>
-                                <th>Actions</th>
-                            </tr></thead>
-                            <tbody id="dep-asset-tbody">
-                                <tr><td colspan="9" style="text-align:center;padding:2.5rem;color:#94a3b8">
-                                    <div style="font-size:1.8rem;margin-bottom:.5rem;opacity:.3">📊</div>
-                                    Sync from Tally or add assets manually to begin
-                                </td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- Detailed Comparison (shown when an asset is selected) -->
-                <div id="dep-detail-panel" style="display:none;margin-top:1rem">
-                    <div class="sr-panel" id="dep-detail-summary"></div>
-                    <div class="sr-comparison-grid" id="dep-detail-tables"></div>
-                </div>
-
-                <!-- Add Asset Modal -->
-                <div class="dep-modal-overlay" id="dep-add-modal" style="display:none">
-                    <div class="dep-modal">
-                        <div class="dep-modal-header">
-                            <span>Add Fixed Asset</span>
-                            <button onclick="depHideAddModal()" style="background:none;border:none;font-size:1.1rem;cursor:pointer;color:#94a3b8">✕</button>
-                        </div>
-                        <div class="dep-modal-body">
-                            <div class="sr-form-grid cols-3">
-                                <div class="sr-field"><label>Asset Name</label><input type="text" id="dep-add-name" placeholder="e.g. CNC Machine"></div>
-                                <div class="sr-field"><label>Asset Group</label>
-                                    <select id="dep-add-group" onchange="depAutoFillRates()">
-                                        <option value="Plant & Machinery">Plant & Machinery</option>
-                                        <option value="Furniture & Fixtures">Furniture & Fixtures</option>
-                                        <option value="Motor Vehicles">Motor Vehicles</option>
-                                        <option value="Office Equipment">Office Equipment</option>
-                                        <option value="Computers">Computers</option>
-                                        <option value="Buildings">Buildings</option>
-                                        <option value="Intangible Assets">Intangible Assets</option>
-                                    </select>
-                                </div>
-                                <div class="sr-field"><label>Date of Acquisition</label><input type="date" id="dep-add-date"></div>
-                            </div>
-                            <div class="sr-form-grid cols-3" style="margin-top:.65rem">
-                                <div class="sr-field"><label>Cost of Acquisition (₹)</label><input type="number" id="dep-add-cost" placeholder="e.g. 500000"></div>
-                                <div class="sr-field"><label>IT Act Rate (%)</label><input type="number" id="dep-add-it-rate" value="15" step="0.01"></div>
-                                <div class="sr-field"><label>IT Method</label>
-                                    <select id="dep-add-it-method"><option value="WDV">WDV</option><option value="SLM">SLM</option></select>
-                                </div>
-                            </div>
-                            <div class="sr-form-grid cols-3" style="margin-top:.65rem">
-                                <div class="sr-field"><label>Useful Life (Co. Act) Yrs</label><input type="number" id="dep-add-co-life" value="15"></div>
-                                <div class="sr-field"><label>Co. Act Method</label>
-                                    <select id="dep-add-co-method"><option value="SLM">SLM</option><option value="WDV">WDV</option></select>
-                                </div>
-                                <div class="sr-field"><label>Residual Value (₹)</label><input type="number" id="dep-add-residual" placeholder="Auto: 5% of cost"></div>
-                            </div>
-                        </div>
-                        <div class="dep-modal-footer">
-                            <button class="sr-btn sr-btn-secondary" onclick="depHideAddModal()">Cancel</button>
-                            <button class="sr-btn sr-btn-primary" onclick="depAddAsset()">Add Asset</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
         </main>
     </div>
 
@@ -464,680 +188,29 @@
         initClientPicker({
             serviceName: 'Statutory & Financial Reporting',
             serviceIcon: '📑',
-            serviceDesc: 'Select a client for Form 3CD, CARO, Rule 42 ITC & Depreciation tools',
+            serviceDesc: 'Select a client for Form 3CD, CARO, Rule 42 ITC, Depreciation & Financial Statements',
             pagePath: 'service-statutory-reporting.html',
         });
     </script>
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         const clientId = urlParams.get('clientId');
-        document.getElementById('sr-back-link').href = `services-dashboard.html?clientId=${clientId}`;
-        // Fix standalone page links with clientId
         const cq = clientId ? `?clientId=${clientId}` : '';
+
+        // Fix all navigation links with clientId
+        document.getElementById('sr-back-link').href = `services-dashboard.html${cq}`;
         document.getElementById('sr-link-form3cd').href = `service-form3cd.html${cq}`;
+        document.getElementById('sr-link-caro').href = `service-caro.html${cq}`;
         document.getElementById('sr-link-rule42').href = `service-rule42.html${cq}`;
         document.getElementById('sr-link-depreciation').href = `service-depreciation.html${cq}`;
-        document.getElementById('sr-link-caro').href = `service-caro.html${cq}`;
+        document.getElementById('sr-link-fs').href = `service-financial-statements.html${cq}`;
+
+        // Card click handlers
         document.getElementById('sr-card-form3cd').onclick = () => { window.location.href = `service-form3cd.html${cq}`; };
         document.getElementById('sr-card-caro').onclick = () => { window.location.href = `service-caro.html${cq}`; };
         document.getElementById('sr-card-rule42').onclick = () => { window.location.href = `service-rule42.html${cq}`; };
         document.getElementById('sr-card-depreciation').onclick = () => { window.location.href = `service-depreciation.html${cq}`; };
-
-        function srToast(msg, type='info') {
-            const colors = { success:'#059669', error:'#dc2626', info:'#d97706', warning:'#92400e' };
-            const t = document.createElement('div');
-            t.style.cssText = `padding:.6rem 1rem;border-radius:10px;background:#fff;border:1px solid ${colors[type]};color:${colors[type]};font-size:.78rem;font-weight:600;box-shadow:0 4px 12px rgba(0,0,0,.1);animation:srFadeIn .3s ease;font-family:inherit`;
-            t.textContent = msg;
-            document.getElementById('sr-toast-ct').appendChild(t);
-            setTimeout(() => t.remove(), 4000);
-        }
-
-        function formatINR(val) {
-            const num = Math.abs(Number(val) || 0);
-            return '₹ ' + num.toLocaleString('en-IN', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
-        }
-
-        // ═══ NAV ═══
-        function srNav(sectionId, el) {
-            document.querySelectorAll('.sr-section').forEach(s => s.classList.remove('active'));
-            document.getElementById('sec-' + sectionId)?.classList.add('active');
-            document.querySelectorAll('.sr-sb-section .sr-sb-item').forEach(l => l.classList.remove('active'));
-            if (el) el.classList.add('active');
-        }
-
-        // ═══ FORM 3CD ═══
-        let files3CD = [];
-        function handle3CDFiles(input) {
-            files3CD = Array.from(input.files);
-            const el = document.getElementById('sr-3cd-files');
-            el.innerHTML = files3CD.map(f => `<div class="sr-file-pill">📄 ${f.name} <span style="color:#94a3b8;font-weight:400">(${(f.size/1024).toFixed(0)} KB)</span></div>`).join(' ');
-            document.getElementById('sr-3cd-drop').classList.add('has-file');
-        }
-
-        function generate3CD() {
-            if (!files3CD.length) { srToast('Upload financial data files first', 'warning'); return; }
-            const btn = document.getElementById('sr-3cd-gen-btn');
-            btn.disabled = true;
-            btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="sr-spin"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Processing…';
-
-            // Demo: populate sample clauses after delay
-            setTimeout(() => {
-                const clauses = [
-                    { cl: '1', desc: 'Name of the assessee', status: 'filled', val: 'Auto-populated from client data' },
-                    { cl: '2', desc: 'Address', status: 'filled', val: 'Auto-populated from client data' },
-                    { cl: '3', desc: 'PAN', status: 'filled', val: 'Auto-populated from client data' },
-                    { cl: '4', desc: 'Whether assessee is liable to pay indirect tax', status: 'filled', val: 'Yes — GST Registered' },
-                    { cl: '5', desc: 'Status of the assessee', status: 'review', val: 'Company — Needs confirmation' },
-                    { cl: '6', desc: 'Previous year ended on', status: 'filled', val: '31-Mar-2026' },
-                    { cl: '7(a)', desc: 'Books of account prescribed u/s 44AA', status: 'filled', val: 'Yes' },
-                    { cl: '8', desc: 'Nature of business or profession', status: 'review', val: 'AI detected: Manufacturing' },
-                    { cl: '9(a)', desc: 'Section of IT Act under which assessable', status: 'filled', val: 'Section 44AB(a)' },
-                    { cl: '10', desc: 'Whether books audited u/s 44AB earlier', status: 'review', val: 'Check previous year files' },
-                    { cl: '11(a)', desc: 'Total Turnover from P&L', status: 'filled', val: formatINR(35000000) },
-                    { cl: '12', desc: 'Gross Profit / Turnover Ratio', status: 'filled', val: '24.5%' },
-                    { cl: '13(a)', desc: 'Amounts debited to P&L — Capital nature', status: 'review', val: formatINR(250000) },
-                    { cl: '14(a)', desc: 'Amounts not debited to P&L', status: 'pending', val: 'Requires manual input' },
-                    { cl: '17', desc: 'Amounts admissible under sections', status: 'filled', val: 'Sec 30 to 37 analysis complete' },
-                    { cl: '18', desc: 'Particulars of depreciation', status: 'filled', val: 'See depreciation schedule' },
-                    { cl: '21(a)', desc: 'Amounts debited as interest u/s 36(1)(iii)', status: 'review', val: formatINR(180000) },
-                    { cl: '26', desc: 'Deduction allowed u/s 10A, 10AA, 10B etc.', status: 'pending', val: 'Not applicable / Verify' },
-                    { cl: '27(a)', desc: 'Tax deducted/collected at source', status: 'filled', val: 'TDS details extracted' },
-                    { cl: '29', desc: 'Whether shares/securities held as stock-in-trade', status: 'filled', val: 'No' },
-                    { cl: '31', desc: 'Particulars of expenditure on scientific research u/s 35', status: 'pending', val: 'Needs input' },
-                    { cl: '34', desc: 'Whether assessee is required to furnish auditor report u/s 92E', status: 'filled', val: 'Not Applicable' },
-                    { cl: '36', desc: 'Whether assessee has received any judgment/order', status: 'pending', val: 'Requires manual input' },
-                    { cl: '37', desc: 'Whether any expenditure is covered under Sec 40A(3)', status: 'filled', val: 'Cash payments > ₹10,000 = ₹0' },
-                    { cl: '44', desc: 'Break up of total expenditure of entities registered or not under GST', status: 'filled', val: 'From GSTR-2B data' },
-                ];
-
-                const tbody = document.getElementById('sr-3cd-tbody');
-                tbody.innerHTML = clauses.map(c => {
-                    const statusBadge = c.status === 'filled' ? '<span class="sr-badge green">✅ Filled</span>'
-                        : c.status === 'review' ? '<span class="sr-badge amber">⚠️ Review</span>'
-                        : '<span class="sr-badge red">❌ Pending</span>';
-                    return `<tr><td style="font-weight:700;color:#92400e">Cl. ${c.cl}</td><td>${c.desc}</td><td>${statusBadge}</td><td style="font-size:.78rem;color:#475569">${c.val}</td></tr>`;
-                }).join('');
-
-                document.getElementById('sr-3cd-clauses-panel').style.display = 'block';
-                document.getElementById('sr-3cd-export').style.display = 'inline-flex';
-                btn.disabled = false;
-                btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Regenerate';
-                srToast('Form 3CD populated — 25 clauses processed', 'success');
-            }, 2000);
-        }
-
-        function export3CD() { srToast('PDF export coming soon', 'info'); }
-
-        // ═══ CARO ═══
-        let caroFiles = {};
-        function handleCaroFile(input, type) {
-            const file = input.files[0]; if (!file) return;
-            caroFiles[type] = file;
-            document.getElementById('sr-caro-file-' + type).innerHTML = `<div class="sr-file-pill">📄 ${file.name}</div>`;
-            document.getElementById('sr-caro-drop-' + type).classList.add('has-file');
-        }
-
-        function generateCARO() {
-            const company = document.getElementById('sr-caro-company').value.trim();
-            if (!company) { srToast('Enter company name', 'warning'); return; }
-
-            const caroClausesDef = [
-                { id: 'i', title: 'Fixed Assets', sub: ['(a) Proper records maintained', '(b) Physical verification done', '(c) Title deeds held in name of company'] },
-                { id: 'ii', title: 'Inventory', sub: ['(a) Physical verification at reasonable intervals', '(b) Discrepancies noticed and dealt with in books'] },
-                { id: 'iii', title: 'Loans & Advances', sub: ['(a) Loans granted to parties in register u/s 189', '(b) Terms not prejudicial to company interest', '(c) Receipt of principal and interest regular'] },
-                { id: 'iv', title: 'Compliance with Sec 185 & 186', sub: ['Loans, investments, guarantees per sections'] },
-                { id: 'v', title: 'Deposits', sub: ['Compliance with Sec 73-76 and NCLT orders'] },
-                { id: 'vi', title: 'Cost Records', sub: ['Maintenance of cost records u/s 148(1)'] },
-                { id: 'vii', title: 'Statutory Dues', sub: ['(a) Regularity of deposit', '(b) Disputed dues with forums'] },
-                { id: 'viii', title: 'Unrecorded Transactions', sub: ['Transactions not recorded - surrendered or disclosed'] },
-                { id: 'ix', title: 'Loans from Banks/FIs', sub: ['(a) Default in repayment', '(b) Declared wilful defaulter', '(c) Term loans applied for purpose'] },
-                { id: 'x', title: 'IPO/Further Issue', sub: ['Money raised applied for purposes'] },
-                { id: 'xi', title: 'Fraud Reporting', sub: ['(a) Fraud by company or on the company', '(b) Orders passed by authorities under provisions'] },
-            ];
-
-            let html = '';
-            caroClausesDef.forEach(cl => {
-                html += `<div style="margin-bottom:1rem;border-left:3px solid #d97706;padding-left:1rem">
-                    <div style="font-weight:700;font-size:.88rem;color:#0f172a;margin-bottom:.35rem">Clause ${cl.id}: ${cl.title}</div>`;
-                cl.sub.forEach(s => {
-                    html += `<div style="display:flex;align-items:flex-start;gap:.5rem;margin-bottom:.3rem">
-                        <span class="sr-badge green" style="margin-top:2px">✓</span>
-                        <span style="font-size:.78rem;color:#475569;line-height:1.5">${s}</span>
-                    </div>`;
-                });
-                html += `<div style="font-size:.72rem;color:#94a3b8;font-style:italic;margin-top:.25rem">AI Observation: Based on uploaded data — no adverse remarks. Review recommended.</div>`;
-                html += `</div>`;
-            });
-
-            document.getElementById('sr-caro-content').innerHTML = html;
-            document.getElementById('sr-caro-results').style.display = 'block';
-            srToast('CARO 2020 report generated — 11 clauses', 'success');
-        }
-
-        // ═══════════════════════════════════════════════════
-        // RULE 42 — Full Monthly Register Module
-        // ═══════════════════════════════════════════════════
-
-        const R42_MONTHS = ['April 2025','May 2025','June 2025','July 2025','August 2025','September 2025','October 2025','November 2025','December 2025','January 2026','February 2026','March 2026'];
-        let r42Data = []; // array of {month, totalITC, exemptITC, nonBizITC, capGoods, taxableTO, exemptTO, totalTO, reversal, eligible}
-        let r42IdCounter = 0;
-
-        function r42Compute(row) {
-            const T = row.totalITC, T1 = row.exemptITC, T2 = row.nonBizITC, CG = row.capGoods;
-            const C1 = T - T1 - T2;
-            const commonCredit = C1 - CG;
-            const D1 = row.totalTO > 0 ? (commonCredit * row.exemptTO / row.totalTO) : 0;
-            const D2 = commonCredit * 0.05;
-            row.reversal = Math.round(T1 + T2 + D1 + D2);
-            row.eligible = Math.round(T - row.reversal);
-        }
-
-        function r42ComputeAll() {
-            r42Data.forEach(r => r42Compute(r));
-            r42RenderTable();
-            r42UpdateStats();
-            if (r42Data.length > 0) srToast('Rule 42 reversal computed for all months', 'success');
-        }
-
-        function r42UpdateStats() {
-            const totITC = r42Data.reduce((s, r) => s + r.totalITC, 0);
-            const totEligible = r42Data.reduce((s, r) => s + r.eligible, 0);
-            const totReversal = r42Data.reduce((s, r) => s + r.reversal, 0);
-            const totTaxable = r42Data.reduce((s, r) => s + r.taxableTO, 0);
-            const totExempt = r42Data.reduce((s, r) => s + r.exemptTO, 0);
-            document.getElementById('r42-stat-total').textContent = formatINR(totITC);
-            document.getElementById('r42-stat-eligible').textContent = formatINR(totEligible);
-            document.getElementById('r42-stat-reversal').textContent = formatINR(totReversal);
-            document.getElementById('r42-stat-taxable').textContent = formatINR(totTaxable);
-            document.getElementById('r42-stat-exempt').textContent = formatINR(totExempt);
-            document.getElementById('r42-month-badge').textContent = r42Data.length + ' month' + (r42Data.length !== 1 ? 's' : '');
-        }
-
-        function r42AddMonth() {
-            const usedMonths = r42Data.map(r => r.month);
-            const next = R42_MONTHS.find(m => !usedMonths.includes(m)) || `Month ${r42Data.length + 1}`;
-            r42Data.push({ id: ++r42IdCounter, month: next, totalITC: 0, exemptITC: 0, nonBizITC: 0, capGoods: 0, taxableTO: 0, exemptTO: 0, totalTO: 0, reversal: 0, eligible: 0, source: 'manual' });
-            r42RenderTable();
-            r42UpdateStats();
-        }
-
-        function r42DeleteMonth(id) {
-            r42Data = r42Data.filter(r => r.id !== id);
-            r42ComputeAll();
-        }
-
-        // ── Tally Sync ──
-        async function r42SyncFromTally() {
-            const btn = document.getElementById('r42-sync-btn');
-            btn.disabled = true;
-            btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="sr-spin"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Syncing…';
-
-            // Try real API — aggregate purchase ITC & sales turnover by month
-            try {
-                const company = document.getElementById('r42-company-select').value;
-                if (company) {
-                    const [purchRes, salesRes] = await Promise.all([
-                        authFetch(`/tally/vouchers?company_name=${encodeURIComponent(company)}&voucher_type=Purchase&per_page=200`),
-                        authFetch(`/tally/vouchers?company_name=${encodeURIComponent(company)}&voucher_type=Sales&per_page=200`),
-                    ]);
-                    if (purchRes?.ok && salesRes?.ok) {
-                        const purchases = (await purchRes.json()).data || [];
-                        const sales = (await salesRes.json()).data || [];
-                        const monthMap = {};
-                        // Aggregate purchase ITC by month
-                        purchases.forEach(v => {
-                            const d = v.date; if (!d) return;
-                            const mKey = formatTallyMonth(d);
-                            if (!monthMap[mKey]) monthMap[mKey] = { totalITC: 0, taxableTO: 0, exemptTO: 0 };
-                            monthMap[mKey].totalITC += Math.abs(v.amount || 0) * 0.18; // estimate 18% GST
-                        });
-                        sales.forEach(v => {
-                            const d = v.date; if (!d) return;
-                            const mKey = formatTallyMonth(d);
-                            if (!monthMap[mKey]) monthMap[mKey] = { totalITC: 0, taxableTO: 0, exemptTO: 0 };
-                            monthMap[mKey].taxableTO += Math.abs(v.amount || 0);
-                        });
-                        if (Object.keys(monthMap).length > 0) {
-                            r42Data = [];
-                            for (const [month, vals] of Object.entries(monthMap).sort()) {
-                                r42Data.push({
-                                    id: ++r42IdCounter, month, totalITC: Math.round(vals.totalITC),
-                                    exemptITC: 0, nonBizITC: 0, capGoods: 0,
-                                    taxableTO: Math.round(vals.taxableTO), exemptTO: 0,
-                                    totalTO: Math.round(vals.taxableTO),
-                                    reversal: 0, eligible: 0, source: 'tally'
-                                });
-                            }
-                            r42ComputeAll();
-                            r42ResetBtn(btn);
-                            srToast(`Synced ${r42Data.length} months from Tally`, 'success');
-                            return;
-                        }
-                    }
-                }
-            } catch(e) { console.log('Tally API not ready, loading demo'); }
-
-            // Demo fallback
-            setTimeout(() => {
-                r42Data = [];
-                const demoVals = [
-                    {m:'April 2025',t:485000,t1:32000,t2:8000,cg:15000,tx:2800000,ex:450000},
-                    {m:'May 2025',t:520000,t1:28000,t2:5000,cg:18000,tx:3100000,ex:380000},
-                    {m:'June 2025',t:498000,t1:35000,t2:12000,cg:10000,tx:2950000,ex:520000},
-                    {m:'July 2025',t:540000,t1:42000,t2:6000,cg:22000,tx:3200000,ex:410000},
-                    {m:'August 2025',t:510000,t1:30000,t2:9000,cg:12000,tx:3050000,ex:480000},
-                    {m:'September 2025',t:475000,t1:25000,t2:7000,cg:20000,tx:2700000,ex:350000},
-                    {m:'October 2025',t:560000,t1:45000,t2:11000,cg:25000,tx:3400000,ex:550000},
-                    {m:'November 2025',t:530000,t1:38000,t2:8500,cg:16000,tx:3150000,ex:420000},
-                    {m:'December 2025',t:490000,t1:29000,t2:6500,cg:14000,tx:2900000,ex:390000},
-                    {m:'January 2026',t:545000,t1:40000,t2:10000,cg:19000,tx:3300000,ex:470000},
-                    {m:'February 2026',t:505000,t1:33000,t2:7500,cg:13000,tx:2850000,ex:440000},
-                    {m:'March 2026',t:580000,t1:48000,t2:14000,cg:28000,tx:3500000,ex:600000},
-                ];
-                demoVals.forEach(d => {
-                    r42Data.push({
-                        id: ++r42IdCounter, month: d.m, totalITC: d.t, exemptITC: d.t1,
-                        nonBizITC: d.t2, capGoods: d.cg, taxableTO: d.tx, exemptTO: d.ex,
-                        totalTO: d.tx + d.ex, reversal: 0, eligible: 0, source: 'tally'
-                    });
-                });
-                r42ComputeAll();
-                r42ResetBtn(btn);
-                srToast('12 months synced from Tally (demo)', 'success');
-            }, 1500);
-        }
-
-        function r42ResetBtn(btn) {
-            btn.disabled = false;
-            btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Sync from Tally';
-        }
-
-        function formatTallyMonth(dateStr) {
-            // Tally date format: YYYYMMDD
-            const y = dateStr.substring(0, 4), m = parseInt(dateStr.substring(4, 6));
-            const names = ['','January','February','March','April','May','June','July','August','September','October','November','December'];
-            return `${names[m] || 'Month'} ${y}`;
-        }
-
-        // ── Render Table ──
-        function r42RenderTable() {
-            const tbody = document.getElementById('r42-tbody');
-            if (r42Data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;padding:2.5rem;color:#94a3b8"><div style="font-size:1.8rem;margin-bottom:.5rem;opacity:.3">🧮</div>Sync from Tally or add months manually</td></tr>';
-                return;
-            }
-            let html = '';
-            r42Data.forEach(r => {
-                const src = r.source === 'tally' ? '<span style="font-size:.48rem;font-weight:700;padding:1px 4px;border-radius:3px;background:#dbeafe;color:#1e3a8a;margin-left:.3rem">TALLY</span>' : '';
-                html += `<tr>
-                    <td style="font-weight:600;font-size:.78rem;white-space:nowrap">${r.month}${src}</td>
-                    <td style="text-align:right;font-weight:600;font-family:'Outfit',sans-serif">${formatINR(r.totalITC)}</td>
-                    <td style="text-align:right;color:#dc2626;font-size:.78rem">${formatINR(r.exemptITC)}</td>
-                    <td style="text-align:right;color:#dc2626;font-size:.78rem">${formatINR(r.nonBizITC)}</td>
-                    <td style="text-align:right;font-size:.78rem">${formatINR(r.capGoods)}</td>
-                    <td style="text-align:right;font-size:.78rem">${formatINR(r.taxableTO)}</td>
-                    <td style="text-align:right;color:#92400e;font-size:.78rem">${formatINR(r.exemptTO)}</td>
-                    <td style="text-align:right;font-size:.78rem">${formatINR(r.totalTO)}</td>
-                    <td style="text-align:right;font-weight:700;color:#dc2626;font-family:'Outfit',sans-serif">${formatINR(r.reversal)}</td>
-                    <td style="text-align:right;font-weight:700;color:#059669;font-family:'Outfit',sans-serif">${formatINR(r.eligible)}</td>
-                    <td style="white-space:nowrap">
-                        <button class="sr-btn sr-btn-secondary" style="font-size:.6rem;padding:.2rem .4rem" onclick="r42ShowDetail(${r.id})" title="Working">📋</button>
-                        <button class="sr-btn sr-btn-secondary" style="font-size:.6rem;padding:.2rem .4rem;color:#dc2626;border-color:#fecaca" onclick="r42DeleteMonth(${r.id})" title="Delete">✕</button>
-                    </td>
-                </tr>`;
-            });
-            // Totals row
-            const sT = r42Data.reduce((s,r)=>s+r.totalITC,0), sR = r42Data.reduce((s,r)=>s+r.reversal,0), sE = r42Data.reduce((s,r)=>s+r.eligible,0);
-            const sTx = r42Data.reduce((s,r)=>s+r.taxableTO,0), sEx = r42Data.reduce((s,r)=>s+r.exemptTO,0), sTo = r42Data.reduce((s,r)=>s+r.totalTO,0);
-            html += `<tr class="sr-row-total"><td style="font-weight:800">ANNUAL TOTAL</td><td style="text-align:right;font-weight:800;font-family:'Outfit',sans-serif">${formatINR(sT)}</td><td colspan="3"></td><td style="text-align:right;font-weight:700;font-size:.75rem">${formatINR(sTx)}</td><td style="text-align:right;font-weight:700;font-size:.75rem;color:#92400e">${formatINR(sEx)}</td><td style="text-align:right;font-weight:700;font-size:.75rem">${formatINR(sTo)}</td><td style="text-align:right;font-weight:800;color:#dc2626;font-family:'Outfit',sans-serif">${formatINR(sR)}</td><td style="text-align:right;font-weight:800;color:#059669;font-family:'Outfit',sans-serif">${formatINR(sE)}</td><td></td></tr>`;
-            tbody.innerHTML = html;
-        }
-
-        // ── Detail Working ──
-        function r42ShowDetail(id) {
-            const r = r42Data.find(x => x.id === id);
-            if (!r) return;
-            const T = r.totalITC, T1 = r.exemptITC, T2 = r.nonBizITC, CG = r.capGoods;
-            const C1 = T - T1 - T2, cc = C1 - CG;
-            const D1 = r.totalTO > 0 ? (cc * r.exemptTO / r.totalTO) : 0;
-            const D2 = cc * 0.05;
-            const rev = T1 + T2 + D1 + D2, elig = T - rev;
-
-            document.getElementById('r42-detail-title').textContent = `② Rule 42 Working — ${r.month}`;
-            document.getElementById('r42-detail-content').innerHTML = `<div class="sr-table-wrap"><table class="sr-table">
-                <thead><tr><th>Particulars</th><th style="text-align:right">Amount (₹)</th><th>Reference</th></tr></thead>
-                <tbody>
-                <tr><td>Total ITC availed</td><td style="text-align:right;font-weight:700">${formatINR(T)}</td><td>Input</td></tr>
-                <tr><td>Less: ITC attributable to exempt supplies (T1)</td><td style="text-align:right;color:#dc2626">(${formatINR(T1)})</td><td>Rule 42(1)(a)</td></tr>
-                <tr><td>Less: ITC for non-business use (T2)</td><td style="text-align:right;color:#dc2626">(${formatINR(T2)})</td><td>Rule 42(1)(b)</td></tr>
-                <tr class="sr-row-subtotal"><td>Common Credit (C1 = T - T1 - T2)</td><td style="text-align:right">${formatINR(C1)}</td><td>Rule 42(1)(c)</td></tr>
-                <tr><td>Less: ITC on capital goods excluded</td><td style="text-align:right;color:#dc2626">(${formatINR(CG)})</td><td>Rule 42(1)(d)</td></tr>
-                <tr style="background:#fefce8"><td style="font-weight:600">Net Common Credit for apportionment</td><td style="text-align:right;font-weight:700">${formatINR(cc)}</td><td></td></tr>
-                <tr><td>D1 = Common Credit × (Exempt TO / Total TO)</td><td style="text-align:right;color:#dc2626">(${formatINR(D1)})</td><td>${formatINR(cc)} × ${formatINR(r.exemptTO)} / ${formatINR(r.totalTO)}</td></tr>
-                <tr><td>D2 = 5% of Common Credit</td><td style="text-align:right;color:#dc2626">(${formatINR(D2)})</td><td>Rule 42(1)(m)</td></tr>
-                <tr class="sr-row-total"><td style="font-weight:800">Total ITC to Reverse</td><td style="text-align:right;font-weight:800;color:#dc2626">${formatINR(rev)}</td><td>T1 + T2 + D1 + D2</td></tr>
-                <tr style="background:#ecfdf5"><td style="font-weight:800;color:#059669">Eligible ITC</td><td style="text-align:right;font-weight:800;color:#059669">${formatINR(elig)}</td><td>T - Reversal</td></tr>
-                </tbody></table></div>`;
-            document.getElementById('r42-detail-panel').style.display = 'block';
-            document.getElementById('r42-detail-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-
-        // Load Tally companies for R42 too
-        async function r42LoadCompanies() {
-            try {
-                const res = await authFetch('/tally/companies');
-                if (res?.ok) {
-                    const companies = await res.json();
-                    const sel = document.getElementById('r42-company-select');
-                    companies.forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = c; sel.appendChild(o); });
-                }
-            } catch(e) {}
-        }
-        r42LoadCompanies();
-
-        // ═══════════════════════════════════════════════════
-        // DEPRECIATION — Full Asset Register Module
-        // ═══════════════════════════════════════════════════
-
-        // Rate tables (IT Act Section 32 + Companies Act Schedule II)
-        const DEP_RATE_MAP = {
-            'Plant & Machinery':    { itRate: 15, itMethod: 'WDV', coLife: 15, coMethod: 'SLM' },
-            'Furniture & Fixtures': { itRate: 10, itMethod: 'WDV', coLife: 10, coMethod: 'SLM' },
-            'Motor Vehicles':       { itRate: 15, itMethod: 'WDV', coLife: 8,  coMethod: 'SLM' },
-            'Office Equipment':     { itRate: 15, itMethod: 'WDV', coLife: 5,  coMethod: 'SLM' },
-            'Computers':            { itRate: 40, itMethod: 'WDV', coLife: 3,  coMethod: 'SLM' },
-            'Buildings':            { itRate: 10, itMethod: 'WDV', coLife: 30, coMethod: 'SLM' },
-            'Intangible Assets':    { itRate: 25, itMethod: 'WDV', coLife: 10, coMethod: 'SLM' },
-        };
-
-        let depAssets = [];
-        let depIdCounter = 0;
-
-        // ── Modal ──
-        function depShowAddModal() {
-            document.getElementById('dep-add-modal').style.display = 'flex';
-            depAutoFillRates();
-        }
-        function depHideAddModal() {
-            document.getElementById('dep-add-modal').style.display = 'none';
-        }
-        function depAutoFillRates() {
-            const group = document.getElementById('dep-add-group').value;
-            const r = DEP_RATE_MAP[group] || DEP_RATE_MAP['Plant & Machinery'];
-            document.getElementById('dep-add-it-rate').value = r.itRate;
-            document.getElementById('dep-add-it-method').value = r.itMethod;
-            document.getElementById('dep-add-co-life').value = r.coLife;
-            document.getElementById('dep-add-co-method').value = r.coMethod;
-        }
-
-        function depAddAsset() {
-            const name = document.getElementById('dep-add-name').value.trim();
-            const cost = parseFloat(document.getElementById('dep-add-cost').value) || 0;
-            if (!name || !cost) { srToast('Enter asset name and cost', 'warning'); return; }
-            const residualInput = parseFloat(document.getElementById('dep-add-residual').value);
-            depAssets.push({
-                id: ++depIdCounter,
-                name: name,
-                group: document.getElementById('dep-add-group').value,
-                date: document.getElementById('dep-add-date').value || '2025-04-01',
-                cost: cost,
-                itRate: parseFloat(document.getElementById('dep-add-it-rate').value) || 15,
-                itMethod: document.getElementById('dep-add-it-method').value,
-                coLife: parseInt(document.getElementById('dep-add-co-life').value) || 15,
-                coMethod: document.getElementById('dep-add-co-method').value,
-                residual: isNaN(residualInput) ? Math.round(cost * 0.05) : residualInput,
-                itDep: 0, coDep: 0, source: 'manual'
-            });
-            depHideAddModal();
-            document.getElementById('dep-add-name').value = '';
-            document.getElementById('dep-add-cost').value = '';
-            document.getElementById('dep-add-residual').value = '';
-            depComputeAll();
-            srToast(`"${name}" added`, 'success');
-        }
-
-        function depDeleteAsset(id) {
-            depAssets = depAssets.filter(a => a.id !== id);
-            depComputeAll();
-        }
-
-        // ── Tally Sync (stub — calls API when backend ready) ──
-        async function depSyncFromTally() {
-            const btn = document.getElementById('dep-sync-btn');
-            btn.disabled = true;
-            btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="sr-spin"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Syncing…';
-
-            // Try real API first
-            try {
-                const res = await authFetch('/tally/ledgers?parent=Fixed Assets&per_page=200');
-                if (res && res.ok) {
-                    const data = await res.json();
-                    if (data.data && data.data.length > 0) {
-                        data.data.forEach(l => {
-                            const group = mapTallyGroup(l.parent);
-                            const r = DEP_RATE_MAP[group] || DEP_RATE_MAP['Plant & Machinery'];
-                            const bal = Math.abs(l.opening_balance || l.closing_balance || 0);
-                            if (bal > 0 && !depAssets.find(a => a.name === l.name)) {
-                                depAssets.push({
-                                    id: ++depIdCounter, name: l.name, group: group,
-                                    date: '2025-04-01', cost: bal,
-                                    itRate: r.itRate, itMethod: r.itMethod,
-                                    coLife: r.coLife, coMethod: r.coMethod,
-                                    residual: Math.round(bal * 0.05),
-                                    itDep: 0, coDep: 0, source: 'tally'
-                                });
-                            }
-                        });
-                        depComputeAll();
-                        srToast(`Synced ${data.data.length} ledgers from Tally`, 'success');
-                        btn.disabled = false;
-                        btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Sync from Tally';
-                        return;
-                    }
-                }
-            } catch(e) { console.log('Tally API not available, loading demo data'); }
-
-            // Demo data fallback
-            setTimeout(() => {
-                const demo = [
-                    { name:'CNC Milling Machine', group:'Plant & Machinery', date:'2023-07-15', cost:2500000 },
-                    { name:'Office Furniture Set', group:'Furniture & Fixtures', date:'2024-01-10', cost:350000 },
-                    { name:'Toyota Fortuner (Office)', group:'Motor Vehicles', date:'2023-04-01', cost:3200000 },
-                    { name:'Dell Servers (Rack)', group:'Computers', date:'2024-06-01', cost:800000 },
-                    { name:'HP Laptops (5 units)', group:'Computers', date:'2025-01-15', cost:500000 },
-                    { name:'Factory Building', group:'Buildings', date:'2020-04-01', cost:15000000 },
-                    { name:'Lathe Machine', group:'Plant & Machinery', date:'2024-09-20', cost:1800000 },
-                    { name:'Canon Printers (3)', group:'Office Equipment', date:'2025-02-01', cost:180000 },
-                ];
-                demo.forEach(d => {
-                    const r = DEP_RATE_MAP[d.group];
-                    depAssets.push({
-                        id: ++depIdCounter, ...d,
-                        itRate: r.itRate, itMethod: r.itMethod,
-                        coLife: r.coLife, coMethod: r.coMethod,
-                        residual: Math.round(d.cost * 0.05),
-                        itDep: 0, coDep: 0, source: 'tally'
-                    });
-                });
-                depComputeAll();
-                srToast('8 assets synced from Tally (demo)', 'success');
-                btn.disabled = false;
-                btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Sync from Tally';
-            }, 1500);
-        }
-
-        function mapTallyGroup(parent) {
-            const p = (parent || '').toLowerCase();
-            if (p.includes('plant') || p.includes('machinery')) return 'Plant & Machinery';
-            if (p.includes('furniture') || p.includes('fixture')) return 'Furniture & Fixtures';
-            if (p.includes('vehicle') || p.includes('motor')) return 'Motor Vehicles';
-            if (p.includes('computer')) return 'Computers';
-            if (p.includes('building')) return 'Buildings';
-            if (p.includes('intangible')) return 'Intangible Assets';
-            if (p.includes('office') || p.includes('equipment')) return 'Office Equipment';
-            return 'Plant & Machinery';
-        }
-
-        // ── Compute ──
-        function depComputeOne(a) {
-            // IT Act
-            if (a.itMethod === 'WDV') {
-                a.itDep = Math.round(a.cost * (a.itRate / 100));
-            } else {
-                a.itDep = Math.round(a.cost * (a.itRate / 100));
-            }
-            // Half-year rule: if acquired after Sept, half dep
-            const acqMonth = new Date(a.date).getMonth(); // 0-indexed
-            if (acqMonth >= 9) a.itDep = Math.round(a.itDep / 2); // Oct onwards
-
-            // Companies Act
-            const depBase = a.cost - a.residual;
-            if (a.coMethod === 'SLM') {
-                a.coDep = Math.round(depBase / a.coLife);
-            } else {
-                const coRate = (1 - Math.pow(a.residual / a.cost, 1 / a.coLife)) * 100;
-                a.coDep = Math.round(a.cost * (coRate / 100));
-            }
-            // Pro-rata for part year
-            if (acqMonth >= 9) a.coDep = Math.round(a.coDep / 2);
-        }
-
-        function depComputeAll() {
-            depAssets.forEach(a => depComputeOne(a));
-            depRenderTable();
-            depUpdateStats();
-        }
-
-        function depUpdateStats() {
-            const totalCost = depAssets.reduce((s, a) => s + a.cost, 0);
-            const totalIT = depAssets.reduce((s, a) => s + a.itDep, 0);
-            const totalCo = depAssets.reduce((s, a) => s + a.coDep, 0);
-            const diff = totalIT - totalCo;
-            const deferredTax = Math.round(Math.abs(diff) * 0.252); // 25.168% effective rate
-
-            document.getElementById('dep-stat-assets').textContent = depAssets.length;
-            document.getElementById('dep-stat-cost').textContent = formatINR(totalCost);
-            document.getElementById('dep-stat-it').textContent = formatINR(totalIT);
-            document.getElementById('dep-stat-co').textContent = formatINR(totalCo);
-            document.getElementById('dep-stat-diff').textContent = formatINR(deferredTax);
-            document.getElementById('dep-asset-count-badge').textContent = depAssets.length + ' asset' + (depAssets.length !== 1 ? 's' : '');
-        }
-
-        // ── Render Table ──
-        function depRenderTable() {
-            const tbody = document.getElementById('dep-asset-tbody');
-            const filter = document.getElementById('dep-group-filter').value;
-            const list = filter === 'all' ? depAssets : depAssets.filter(a => a.group === filter);
-
-            if (list.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:2.5rem;color:#94a3b8"><div style="font-size:1.8rem;margin-bottom:.5rem;opacity:.3">📊</div>Sync from Tally or add assets manually to begin</td></tr>';
-                return;
-            }
-
-            // Group assets
-            const groups = {};
-            list.forEach(a => { if (!groups[a.group]) groups[a.group] = []; groups[a.group].push(a); });
-
-            let html = '';
-            for (const [group, assets] of Object.entries(groups)) {
-                const gIT = assets.reduce((s, a) => s + a.itDep, 0);
-                const gCo = assets.reduce((s, a) => s + a.coDep, 0);
-                const gCost = assets.reduce((s, a) => s + a.cost, 0);
-                html += `<tr class="sr-row-heading"><td colspan="2">${group}</td><td style="text-align:right">${formatINR(gCost)}</td><td></td><td></td><td style="text-align:right">${formatINR(gIT)}</td><td style="text-align:right">${formatINR(gCo)}</td><td style="text-align:right;color:${gIT-gCo>=0?'#059669':'#dc2626'}">${formatINR(Math.abs(gIT-gCo))}</td><td></td></tr>`;
-                assets.forEach(a => {
-                    const diff = a.itDep - a.coDep;
-                    const srcBadge = a.source === 'tally' ? '<span style="font-size:.5rem;font-weight:700;padding:1px 5px;border-radius:3px;background:#dbeafe;color:#1e3a8a;margin-left:.35rem">TALLY</span>' : '';
-                    html += `<tr>
-                        <td><div class="dep-asset-name">${a.name}${srcBadge}</div></td>
-                        <td style="font-size:.75rem;color:#64748b">${a.date ? new Date(a.date+'T00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}) : '—'}</td>
-                        <td style="text-align:right;font-weight:600;font-family:'Outfit',sans-serif">${formatINR(a.cost)}</td>
-                        <td><span class="dep-rate-pill it">${a.itRate}% ${a.itMethod}</span></td>
-                        <td><span class="dep-rate-pill co">${a.coLife} yrs ${a.coMethod}</span></td>
-                        <td style="text-align:right;font-weight:700;color:#5b21b6;font-family:'Outfit',sans-serif">${formatINR(a.itDep)}</td>
-                        <td style="text-align:right;font-weight:700;color:#065f46;font-family:'Outfit',sans-serif">${formatINR(a.coDep)}</td>
-                        <td style="text-align:right" class="${diff>=0?'dep-diff-positive':'dep-diff-negative'}">${diff>=0?'+':''}${formatINR(diff)}</td>
-                        <td style="white-space:nowrap">
-                            <button class="sr-btn sr-btn-secondary" style="font-size:.62rem;padding:.2rem .45rem" onclick="depShowDetail(${a.id})" title="Compare">📊</button>
-                            <button class="sr-btn sr-btn-secondary" style="font-size:.62rem;padding:.2rem .45rem;color:#dc2626;border-color:#fecaca" onclick="depDeleteAsset(${a.id})" title="Delete">✕</button>
-                        </td>
-                    </tr>`;
-                });
-            }
-
-            // Grand total row
-            const totCost = list.reduce((s,a) => s+a.cost, 0);
-            const totIT = list.reduce((s,a) => s+a.itDep, 0);
-            const totCo = list.reduce((s,a) => s+a.coDep, 0);
-            const totDiff = totIT - totCo;
-            html += `<tr class="sr-row-total"><td colspan="2" style="font-weight:800">GRAND TOTAL</td><td style="text-align:right;font-weight:800;font-family:'Outfit',sans-serif">${formatINR(totCost)}</td><td></td><td></td><td style="text-align:right;font-weight:800;color:#5b21b6;font-family:'Outfit',sans-serif">${formatINR(totIT)}</td><td style="text-align:right;font-weight:800;color:#065f46;font-family:'Outfit',sans-serif">${formatINR(totCo)}</td><td style="text-align:right;font-weight:800;color:${totDiff>=0?'#059669':'#dc2626'};font-family:'Outfit',sans-serif">${totDiff>=0?'+':''}${formatINR(totDiff)}</td><td></td></tr>`;
-
-            tbody.innerHTML = html;
-        }
-
-        // ── Detail View (year-wise comparison for single asset) ──
-        function depShowDetail(assetId) {
-            const a = depAssets.find(x => x.id === assetId);
-            if (!a) return;
-
-            const years = Math.min(a.coLife, 20);
-            let itRows = [], coRows = [];
-            let itWDV = a.cost, coWDV = a.cost;
-            const coDepAmt = a.coMethod === 'SLM' ? (a.cost - a.residual) / a.coLife : 0;
-
-            for (let y = 1; y <= years; y++) {
-                let itDep = a.itMethod === 'WDV' ? itWDV * (a.itRate / 100) : a.cost * (a.itRate / 100);
-                itDep = Math.min(itDep, itWDV); itWDV -= itDep;
-                itRows.push({ year: y, dep: itDep, closing: itWDV });
-
-                let coDep;
-                if (a.coMethod === 'SLM') { coDep = coDepAmt; }
-                else { const coRate = (1 - Math.pow(a.residual / a.cost, 1 / a.coLife)) * 100; coDep = coWDV * (coRate / 100); }
-                coDep = Math.min(coDep, Math.max(0, coWDV - a.residual));
-                if (coDep < 0) coDep = 0;
-                coWDV -= coDep;
-                coRows.push({ year: y, dep: coDep, closing: coWDV });
-            }
-
-            const totalIT = itRows.reduce((s, r) => s + r.dep, 0);
-            const totalCo = coRows.reduce((s, r) => s + r.dep, 0);
-            const diff = totalIT - totalCo;
-
-            document.getElementById('dep-detail-summary').innerHTML = `
-                <div class="sr-panel-title">📊 ${a.name} — Year-wise Comparison</div>
-                <div class="sr-form-grid cols-3">
-                    <div style="text-align:center"><div style="font-size:1.3rem;font-weight:800;color:#5b21b6">${formatINR(totalIT)}</div><div style="font-size:.68rem;color:#64748b;font-weight:600;margin-top:.15rem">IT Act Total Dep.</div></div>
-                    <div style="text-align:center"><div style="font-size:1.3rem;font-weight:800;color:#059669">${formatINR(totalCo)}</div><div style="font-size:.68rem;color:#64748b;font-weight:600;margin-top:.15rem">Co. Act Total Dep.</div></div>
-                    <div style="text-align:center"><div style="font-size:1.3rem;font-weight:800;color:${diff>0?'#d97706':'#dc2626'}">${formatINR(Math.abs(diff))}</div><div style="font-size:.68rem;color:#64748b;font-weight:600;margin-top:.15rem">${diff>0?'IT Act Higher':'Co. Act Higher'}</div></div>
-                </div>`;
-
-            const makeTable = (rows, title, hdr) => {
-                let t = `<div class="sr-comparison-panel"><div class="sr-comparison-header ${hdr}">${title}</div><div class="sr-comparison-body"><div class="sr-table-wrap"><table class="sr-table"><thead><tr><th>Year</th><th style="text-align:right">Depreciation</th><th style="text-align:right">Closing WDV</th></tr></thead><tbody>`;
-                rows.forEach(r => { t += `<tr><td>Year ${r.year}</td><td style="text-align:right;font-weight:600;font-family:'Outfit',sans-serif">${formatINR(r.dep)}</td><td style="text-align:right;font-family:'Outfit',sans-serif">${formatINR(r.closing)}</td></tr>`; });
-                t += '</tbody></table></div></div></div>';
-                return t;
-            };
-
-            document.getElementById('dep-detail-tables').innerHTML =
-                makeTable(itRows, `Income Tax Act — ${a.itMethod} @ ${a.itRate}%`, 'it-act') +
-                makeTable(coRows, `Companies Act — ${a.coMethod} (${a.coLife} yrs)`, 'co-act');
-
-            document.getElementById('dep-detail-panel').style.display = 'block';
-            document.getElementById('dep-detail-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-
-        // Load Tally companies on init
-        async function depLoadCompanies() {
-            try {
-                const res = await authFetch('/tally/companies');
-                if (res && res.ok) {
-                    const companies = await res.json();
-                    const sel = document.getElementById('dep-company-select');
-                    companies.forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = c; sel.appendChild(o); });
-                }
-            } catch(e) {}
-        }
-        function depLoadAssets() { /* Will call backend when ready */ }
-        depLoadCompanies();
+        document.getElementById('sr-card-fs').onclick = () => { window.location.href = `service-financial-statements.html${cq}`; };
     </script>
 </body>
 </html>
