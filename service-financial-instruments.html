@@ -244,15 +244,7 @@
                                 <div class="fi-tds-val" id="fi-tds-111a">₹ 0</div>
                             </div>
                         </div>
-                        <div style="padding-top:.65rem;border-top:1px solid #f1f3f9;margin-top:.65rem">
-                            <div class="fi-dc-header" style="margin-bottom:.5rem"><span class="fi-dc-label">QUICK JOURNAL ENTRY</span></div>
-                            <div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem">
-                                <button class="fi-btn" style="justify-content:center;font-size:.72rem" onclick="fiNav('new-entry',document.querySelector('[onclick*=new-entry]'));selectTxnType('purchase')"><span style="color:#059669;margin-right:.25rem">Dr</span> Purchase</button>
-                                <button class="fi-btn" style="justify-content:center;font-size:.72rem" onclick="fiNav('new-entry',document.querySelector('[onclick*=new-entry]'));selectTxnType('sale')"><span style="color:#dc2626;margin-right:.25rem">Cr</span> Sale</button>
-                                <button class="fi-btn" style="justify-content:center;font-size:.72rem" onclick="fiNav('new-entry',document.querySelector('[onclick*=new-entry]'));selectTxnType('dividend')"><span style="color:#059669;margin-right:.25rem">Cr</span> Dividend</button>
-                                <button class="fi-btn" style="justify-content:center;font-size:.72rem" onclick="fiNav('new-entry',document.querySelector('[onclick*=new-entry]'));selectTxnType('charges')"><span style="color:#dc2626;margin-right:.25rem">Dr</span> Charges</button>
-                            </div>
-                        </div>
+
                     </div>
                 </div>
 
@@ -435,7 +427,24 @@
 
                     <!-- 26AS / AIS Cross-Match -->
                     <div class="fi-dash-card">
-                        <div class="fi-dc-header"><span class="fi-dc-label">🔄 26AS / AIS CROSS-MATCH</span><span class="fi-dc-ay" style="font-size:.55rem">TDS Reconciliation</span></div>
+                        <div class="fi-dc-header">
+                            <span class="fi-dc-label">🔄 26AS / AIS CROSS-MATCH</span>
+                            <span class="fi-dc-ay" id="fi-26as-status-badge" style="font-size:.55rem;background:#fef3c7;color:#d97706;padding:2px 8px;border-radius:6px">Not Uploaded</span>
+                        </div>
+                        <div style="display:flex;gap:.5rem;margin-bottom:.65rem" id="fi-26as-counters">
+                            <div style="flex:1;text-align:center;padding:.4rem;background:#f0fdf4;border-radius:8px">
+                                <div style="font-family:'Outfit',sans-serif;font-size:1rem;font-weight:800;color:#059669" id="fi-26as-matched-count">0</div>
+                                <div style="font-size:.5rem;font-weight:700;color:#94a3b8;text-transform:uppercase">Matched</div>
+                            </div>
+                            <div style="flex:1;text-align:center;padding:.4rem;background:#fef2f2;border-radius:8px">
+                                <div style="font-family:'Outfit',sans-serif;font-size:1rem;font-weight:800;color:#dc2626" id="fi-26as-unmatched-count">0</div>
+                                <div style="font-size:.5rem;font-weight:700;color:#94a3b8;text-transform:uppercase">Unmatched</div>
+                            </div>
+                            <div style="flex:1;text-align:center;padding:.4rem;background:#fff7ed;border-radius:8px">
+                                <div style="font-family:'Outfit',sans-serif;font-size:1rem;font-weight:800;color:#d97706" id="fi-26as-mismatch-count">0</div>
+                                <div style="font-size:.5rem;font-weight:700;color:#94a3b8;text-transform:uppercase">Mismatch</div>
+                            </div>
+                        </div>
                         <div style="border-radius:10px;overflow:hidden;border:1px solid #e8ecf1">
                             <table style="width:100%;border-collapse:collapse;font-size:.72rem">
                                 <thead><tr style="background:#f8fafc">
@@ -445,16 +454,20 @@
                                     <th style="padding:.45rem .65rem;text-align:center;font-weight:700;color:#64748b;font-size:.6rem;text-transform:uppercase">Match</th>
                                 </tr></thead>
                                 <tbody id="fi-26as-tbody">
-                                    <tr><td style="padding:.45rem .65rem;font-weight:600">194 — Dividend</td><td style="padding:.45rem .65rem;text-align:right;font-family:'Outfit',sans-serif;font-weight:700" id="fi-26as-194-stmt">₹ 0</td><td style="padding:.45rem .65rem;text-align:right;font-family:'Outfit',sans-serif;color:#94a3b8">—</td><td style="padding:.45rem .65rem;text-align:center"><span style="font-size:.55rem;font-weight:700;padding:1px 6px;border-radius:4px;background:#fef3c7;color:#d97706">PENDING</span></td></tr>
-                                    <tr style="border-top:1px solid #f1f5f9"><td style="padding:.45rem .65rem;font-weight:600">194K — MF Income</td><td style="padding:.45rem .65rem;text-align:right;font-family:'Outfit',sans-serif;font-weight:700" id="fi-26as-194k-stmt">₹ 0</td><td style="padding:.45rem .65rem;text-align:right;font-family:'Outfit',sans-serif;color:#94a3b8">—</td><td style="padding:.45rem .65rem;text-align:center"><span style="font-size:.55rem;font-weight:700;padding:1px 6px;border-radius:4px;background:#fef3c7;color:#d97706">PENDING</span></td></tr>
-                                    <tr style="border-top:1px solid #f1f5f9"><td style="padding:.45rem .65rem;font-weight:600">Sec 112A — LTCG</td><td style="padding:.45rem .65rem;text-align:right;font-family:'Outfit',sans-serif;font-weight:700" id="fi-26as-ltcg-stmt">₹ 0</td><td style="padding:.45rem .65rem;text-align:right;font-family:'Outfit',sans-serif;color:#94a3b8">—</td><td style="padding:.45rem .65rem;text-align:center"><span style="font-size:.55rem;font-weight:700;padding:1px 6px;border-radius:4px;background:#f1f5f9;color:#64748b">N/A</span></td></tr>
-                                    <tr style="border-top:1px solid #f1f5f9"><td style="padding:.45rem .65rem;font-weight:600">Sec 111A — STCG</td><td style="padding:.45rem .65rem;text-align:right;font-family:'Outfit',sans-serif;font-weight:700" id="fi-26as-stcg-stmt">₹ 0</td><td style="padding:.45rem .65rem;text-align:right;font-family:'Outfit',sans-serif;color:#94a3b8">—</td><td style="padding:.45rem .65rem;text-align:center"><span style="font-size:.55rem;font-weight:700;padding:1px 6px;border-radius:4px;background:#f1f5f9;color:#64748b">N/A</span></td></tr>
+                                    <tr><td style="padding:.45rem .65rem;font-weight:600">194 — Dividend</td><td style="padding:.45rem .65rem;text-align:right;font-family:'Outfit',sans-serif;font-weight:700" id="fi-26as-194-stmt">₹ 0</td><td style="padding:.45rem .65rem;text-align:right;font-family:'Outfit',sans-serif;color:#94a3b8" id="fi-26as-194-26as">—</td><td style="padding:.45rem .65rem;text-align:center" id="fi-26as-194-match"><span style="font-size:.55rem;font-weight:700;padding:1px 6px;border-radius:4px;background:#fef3c7;color:#d97706">PENDING</span></td></tr>
+                                    <tr style="border-top:1px solid #f1f5f9"><td style="padding:.45rem .65rem;font-weight:600">194K — MF Income</td><td style="padding:.45rem .65rem;text-align:right;font-family:'Outfit',sans-serif;font-weight:700" id="fi-26as-194k-stmt">₹ 0</td><td style="padding:.45rem .65rem;text-align:right;font-family:'Outfit',sans-serif;color:#94a3b8" id="fi-26as-194k-26as">—</td><td style="padding:.45rem .65rem;text-align:center" id="fi-26as-194k-match"><span style="font-size:.55rem;font-weight:700;padding:1px 6px;border-radius:4px;background:#fef3c7;color:#d97706">PENDING</span></td></tr>
+                                    <tr style="border-top:1px solid #f1f5f9"><td style="padding:.45rem .65rem;font-weight:600">194A — Interest</td><td style="padding:.45rem .65rem;text-align:right;font-family:'Outfit',sans-serif;font-weight:700" id="fi-26as-194a-stmt">₹ 0</td><td style="padding:.45rem .65rem;text-align:right;font-family:'Outfit',sans-serif;color:#94a3b8" id="fi-26as-194a-26as">—</td><td style="padding:.45rem .65rem;text-align:center" id="fi-26as-194a-match"><span style="font-size:.55rem;font-weight:700;padding:1px 6px;border-radius:4px;background:#f1f5f9;color:#64748b">N/A</span></td></tr>
+                                    <tr style="border-top:1px solid #f1f5f9"><td style="padding:.45rem .65rem;font-weight:600">Others</td><td style="padding:.45rem .65rem;text-align:right;font-family:'Outfit',sans-serif;font-weight:700" id="fi-26as-other-stmt">₹ 0</td><td style="padding:.45rem .65rem;text-align:right;font-family:'Outfit',sans-serif;color:#94a3b8" id="fi-26as-other-26as">—</td><td style="padding:.45rem .65rem;text-align:center" id="fi-26as-other-match"><span style="font-size:.55rem;font-weight:700;padding:1px 6px;border-radius:4px;background:#f1f5f9;color:#64748b">N/A</span></td></tr>
                                 </tbody>
                             </table>
                         </div>
-                        <div style="margin-top:.5rem;display:flex;align-items:center;gap:.35rem;padding:.55rem .75rem;background:#ede9fe;border-radius:8px">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#5b21b6" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                            <span style="font-size:.62rem;color:#5b21b6;font-weight:600">Upload 26AS/AIS PDF to enable auto-matching (coming soon)</span>
+                        <div style="margin-top:.5rem;display:flex;align-items:center;gap:.5rem">
+                            <label style="flex:1;display:flex;align-items:center;gap:.35rem;padding:.55rem .75rem;background:#ede9fe;border-radius:8px;cursor:pointer;transition:all .2s" onmouseover="this.style.background='#ddd6fe'" onmouseout="this.style.background='#ede9fe'">
+                                <input type="file" id="fi-26as-upload-input" accept=".pdf,.xlsx,.xls,.csv" onchange="handle26ASUpload(this)" hidden>
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#5b21b6" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                                <span style="font-size:.62rem;color:#5b21b6;font-weight:700" id="fi-26as-upload-label">📤 Upload 26AS / AIS PDF</span>
+                            </label>
+                            <button class="fi-btn" style="font-size:.6rem;padding:.35rem .5rem;display:none" id="fi-26as-detail-btn" onclick="show26ASDetails()">View Details →</button>
                         </div>
                     </div>
                 </div>
@@ -489,13 +502,13 @@
                     const dash = document.getElementById('sec-dashboard');
                     // Desired order: Overview → Div+Alerts → Unreal+26AS → Timeline → Alloc+TDS → Sector+Cap → Recent
                     const order = [
-                        'fi-row-overview',       // 1. Portfolio + CG + Pipeline
-                        'fi-row-div-alerts',     // 2. Dividend + Compliance Alerts
-                        'fi-row-unreal-26as',    // 3. Unrealized + 26AS Cross-Match
-                        'fi-row-timeline',       // 4. Transaction Timeline
-                        'fi-row-alloc-tds',      // 5. Instrument Allocation + TDS
-                        'fi-portfolio-analysis-row', // 6. Sector + Market Cap
-                        'fi-row-recent',         // 7. Recent Statements
+                        'fi-row-overview',           // 1. Portfolio + CG + Pipeline
+                        'fi-portfolio-analysis-row', // 2. Sector + Market Cap
+                        'fi-row-div-alerts',         // 3. Dividend + Compliance Alerts
+                        'fi-row-unreal-26as',        // 4. Unrealized + 26AS Cross-Match
+                        'fi-row-timeline',           // 5. Transaction Timeline
+                        'fi-row-alloc-tds',          // 6. Instrument Allocation + TDS
+                        'fi-row-recent',             // 7. Recent Statements
                     ];
                     order.forEach(id => {
                         const el = document.getElementById(id);
@@ -663,8 +676,9 @@
                         <button class="fi-pill fi-pill-s" data-fy="all" onclick="setFY('all')">All</button>
                     </div>
                     <button class="fi-btn" onclick="recomputeFIFO()" id="fi-sr-fifo-btn" style="display:none;font-size:.68rem;padding:.25rem .6rem">🔄 FIFO</button>
+                    <button class="fi-btn" onclick="showOpeningBalanceModal()" id="fi-sr-ob-btn" style="display:none;font-size:.68rem;padding:.25rem .6rem;border-color:#6366f1;color:#6366f1">📋 Opening Balance</button>
                 </div>
-                <select id="fi-sr-source-select" style="display:none"><option value="all">All</option></select>
+                <select id="fi-sr-source-select" style="display:none"><option value="all">All</option><option value="demat">Demat</option><option value="pms">PMS</option><option value="mf">MF</option></select>
                 <div class="fi-dash-grid-3" style="margin-bottom:1rem" id="fi-sr-summary">
                     <div class="fi-dash-card" style="padding:.75rem 1rem">
                         <div class="fi-dc-label" style="font-size:.6rem">TOTAL HOLDINGS</div>
@@ -704,7 +718,7 @@
                         <button class="fi-pill" data-cg-cat="ltcg" onclick="setCGCat('ltcg')"><span class="fi-pill-dot" style="background:#6366f1"></span>LTCG</button>
                     </div>
                 </div>
-                <select id="fi-cg-source-select" style="display:none"><option value="all">All</option></select>
+                <select id="fi-cg-source-select" style="display:none"><option value="all">All</option><option value="demat">Demat</option><option value="pms">PMS</option><option value="mf">MF</option></select>
                 <select id="fi-cg-category" style="display:none"><option value="all">All</option></select>
                 <!-- CG Summary -->
                 <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-bottom:1rem" id="fi-cg-summary">
@@ -806,7 +820,7 @@
             pagePath: 'service-financial-instruments.html',
         });
     </script>
-    <script src="fi-pms.js"></script>
-    <script src="fi-tally-entry.js"></script>
+    <script src="fi-pms.js?v=20260406i"></script>
+    <script src="fi-tally-entry.js?v=20260406i"></script>
 </body>
 </html>

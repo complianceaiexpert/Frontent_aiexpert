@@ -170,11 +170,13 @@ async function handleFIUpload(input, instrumentType) {
 
         // Show processing row in history table with live timer
         addProcessingRow(data.id, file.name, instrumentType);
+        fiToast('Upload started — processing in background', 'success');
 
-        // Brief delay so user sees the row, then redirect
-        setTimeout(() => {
-            window.location.href = `fi-review.html?id=${data.id}&clientId=${clientId}&type=${instrumentType}`;
-        }, 1200);
+        // Restore card state
+        if (card) { card.style.pointerEvents = ''; card.style.opacity = ''; if (nameEl) nameEl.textContent = origName; }
+
+        // Poll for completion, then refresh the table
+        pollUploadStatus(data.id, instrumentType);
     } catch (e) {
         fiToast(e.message, 'error');
         if (card) { card.style.pointerEvents = ''; card.style.opacity = ''; if (nameEl) nameEl.textContent = origName; }
@@ -214,6 +216,32 @@ function addProcessingRow(uploadId, filename, type) {
     setInterval(timer, 1000);
 }
 
+// Poll upload status and refresh table when done
+function pollUploadStatus(uploadId, instrumentType) {
+    const poll = setInterval(async () => {
+        try {
+            const res = await authFetch(`/financial-instruments/data/${uploadId}`);
+            if (!res || !res.ok) return;
+            const data = await res.json();
+            const status = data.status || 'processing';
+            if (status === 'completed' || status === 'failed') {
+                clearInterval(poll);
+                // Remove processing row
+                const procRow = document.getElementById('fi-proc-' + uploadId);
+                if (procRow) procRow.remove();
+                // Refresh the statements table
+                if (typeof loadStatements === 'function') loadStatements();
+                // Refresh dashboard stats
+                if (typeof loadDashboardStats === 'function') loadDashboardStats();
+                if (status === 'completed') {
+                    fiToast(`✅ ${typeLabel(instrumentType)} processed — ${data.journal_entry_count || 0} entries generated`, 'success');
+                } else {
+                    fiToast('Processing failed — please try again', 'error');
+                }
+            }
+        } catch(e) { /* continue polling */ }
+    }, 5000);
+}
 
 // ═══ DEMAT 3-FILE UPLOAD ═══
 const DEMAT_FILE_TYPES = [
@@ -987,14 +1015,33 @@ async function loadDashboardStats() {
     setEl('fi-pipe-synced', syncedCount);
 
     if(!clientId) return;
-    try {
-        const res = await authFetch(`/financial-instruments/?client_id=${clientId}`);
-        if(!res || !res.ok) return;
-        const uploads = await res.json();
-        if(uploads.length > 0) setEl('fi-stat-uploads', uploads.length);
+    let uploads = null;
+    // Retry up to 3 times with 2s back-off
+    for (let attempt = 1; attempt <= 3; attempt++) {
+        try {
+            const res = await authFetch(`/financial-instruments/?client_id=${clientId}`);
+            if(!res || !res.ok) {
+                console.warn(`Dashboard: FI list fetch attempt ${attempt} failed (${res?.status})`);
+                if (attempt < 3) { await new Promise(r => setTimeout(r, 2000)); continue; }
+                return;
+            }
+            uploads = await res.json();
+            break;
+        } catch(e) {
+            console.warn(`Dashboard: FI list fetch attempt ${attempt} error:`, e.message);
+            if (attempt < 3) { await new Promise(r => setTimeout(r, 2000)); continue; }
+            // Show retry button instead of silent zeros
+            const overviewCard = document.getElementById('fi-stat-uploads');
+            if (overviewCard) overviewCard.innerHTML = '<span style="color:#d97706;cursor:pointer" onclick="loadDashboardStats()">⚠ Retry</span>';
+            return;
+        }
+    }
+    if (!uploads) return;
+    if(uploads.length > 0) setEl('fi-stat-uploads', uploads.length);
 
-        // Pipeline from server
-        const completed = uploads.filter(u=>u.status==='completed');
+    try {
+        // Pipeline from server — exclude 26as from holdings data
+        const completed = uploads.filter(u=>u.status==='completed' && u.instrument_type !== '26as');
         const processing = uploads.filter(u=>u.status!=='completed'&&u.status!=='failed');
         const failed = uploads.filter(u=>u.status==='failed');
         const totalJE = uploads.reduce((s,u)=>s+(u.journal_entry_count||0),0);
@@ -1015,12 +1062,20 @@ async function loadDashboardStats() {
         let cgSources = [];
         let detectedFY = null;
 
-        const dataPromises = completed.map(u =>
-            authFetch(`/financial-instruments/data/${u.id}`)
-                .then(r => r.ok ? r.json() : null)
-                .catch(() => null)
-        );
-        const allData = await Promise.all(dataPromises);
+        // Fetch data in small batches to avoid exhausting backend connection pool
+        const allData = [];
+        const BATCH_SIZE = 3;
+        for (let i = 0; i < completed.length; i += BATCH_SIZE) {
+            const batch = completed.slice(i, i + BATCH_SIZE);
+            const batchResults = await Promise.all(
+                batch.map(u =>
+                    authFetch(`/financial-instruments/data/${u.id}`)
+                        .then(r => (r && r.ok) ? r.json() : null)
+                        .catch(e => { console.warn('Dashboard data fetch error:', u.id, e.message); return null; })
+                )
+            );
+            allData.push(...batchResults);
+        }
 
         allData.forEach((resp, idx) => {
             if(!resp || !resp.structured_data) return;
@@ -1267,8 +1322,9 @@ async function loadDashboardStats() {
         let divRows = [];
         allData.forEach((resp, idx) => {
             if(!resp || !completed[idx]) return;
-            const d = resp; const fn = completed[idx].filename || 'Unknown';
-            const divs = d.dividends || [];
+            const sd = resp.structured_data || {};
+            const fn = completed[idx].filename || 'Unknown';
+            const divs = sd.dividends || [];
             if(!divs.length) return;
             divs.forEach(dv => {
                 divRows.push({ name: dv.company || dv.fund_name || dv.scrip || fn, amount: Number(dv.amount||0), tds: Number(dv.tds_deducted||dv.tds||0) });
@@ -1383,29 +1439,66 @@ async function loadDashboardStats() {
         // Collect monthly buy/sell from all data
         let monthlyBuy = new Array(12).fill(0);
         let monthlySell = new Array(12).fill(0);
+
+        // Helper to bucket a transaction into monthly buy/sell
+        function _bucketTxn(t) {
+            let dateStr = t.date || t.trade_date || t.transaction_date || '';
+            if(!dateStr) return;
+            // Parse date — could be DD/MM/YYYY, YYYY-MM-DD, DD-MMM-YYYY, etc.
+            let dt;
+            if(dateStr.includes('/')) { const p=dateStr.split('/'); dt=new Date(p[2],p[1]-1,p[0]); }
+            else { dt = new Date(dateStr); }
+            if(isNaN(dt.getTime())) return;
+            // FY month index: Apr=0, Mar=11
+            let m = dt.getMonth() - 3; // Apr=0
+            if(m < 0) m += 12;
+            const amt = Math.abs(Number(t.amount || t.total_amount || t.value || t.net_amount || 0));
+            const txType = (t.type || t.transaction_type || t.trade_type || '').toLowerCase();
+            if(txType.includes('buy') || txType.includes('purchase') || txType.includes('invest') || txType.includes('sip')) {
+                monthlyBuy[m] += amt;
+            } else if(txType.includes('sell') || txType.includes('redeem') || txType.includes('sale')) {
+                monthlySell[m] += amt;
+            }
+        }
+
+        // A. From FI uploads (Demat/MF) — transactions live under structured_data
         allData.forEach((resp, idx) => {
             if(!resp || !completed[idx]) return;
-            const txns = resp.transactions || resp.trade_details || [];
-            txns.forEach(t => {
-                let dateStr = t.date || t.trade_date || '';
-                if(!dateStr) return;
-                // Parse date — could be DD/MM/YYYY, YYYY-MM-DD, DD-MMM-YYYY, etc.
-                let dt;
-                if(dateStr.includes('/')) { const p=dateStr.split('/'); dt=new Date(p[2],p[1]-1,p[0]); }
-                else { dt = new Date(dateStr); }
-                if(isNaN(dt.getTime())) return;
-                // FY month index: Apr=0, Mar=11
-                let m = dt.getMonth() - 3; // Apr=0
-                if(m < 0) m += 12;
-                const amt = Math.abs(Number(t.amount || t.total_amount || t.value || 0));
-                const txType = (t.type || t.transaction_type || '').toLowerCase();
-                if(txType.includes('buy') || txType.includes('purchase') || txType.includes('invest') || txType.includes('sip')) {
-                    monthlyBuy[m] += amt;
-                } else if(txType.includes('sell') || txType.includes('redeem') || txType.includes('sale')) {
-                    monthlySell[m] += amt;
-                }
-            });
+            const sd = resp.structured_data || {};
+            const txns = sd.transactions || sd.trade_details || [];
+            txns.forEach(_bucketTxn);
         });
+
+        // B. From PMS stock register (buy/sell lots data)
+        try {
+            const PMS_TL = API_BASE_URL.replace('/api/v1', '/api/v1/pms');
+            const tlToken = localStorage.getItem('access_token');
+            const tlAccts = await fetch(`${PMS_TL}/accounts?client_id=${clientId}`, {
+                headers: { 'Authorization': `Bearer ${tlToken}` },
+            });
+            if (tlAccts.ok) {
+                const accts = await tlAccts.json();
+                for (const acct of accts) {
+                    try {
+                        const srRes = await fetch(`${PMS_TL}/stock-register?pms_account_id=${acct.id}`, {
+                            headers: { 'Authorization': `Bearer ${tlToken}` },
+                        });
+                        if (srRes.ok) {
+                            const sr = await srRes.json();
+                            (sr.securities || []).forEach(sec => {
+                                (sec.lots || []).forEach(lot => {
+                                    if (lot.buy_date) _bucketTxn({ date: lot.buy_date, type: 'buy', amount: lot.buy_value || (lot.qty * (lot.buy_price || 0)) });
+                                    if (lot.sell_date) _bucketTxn({ date: lot.sell_date, type: 'sell', amount: lot.sell_value || (lot.qty * (lot.sell_price || 0)) });
+                                });
+                                // Also check buy_transactions / sell_transactions arrays
+                                (sec.buy_transactions || []).forEach(bt => _bucketTxn({ ...bt, type: bt.type || 'buy' }));
+                                (sec.sell_transactions || []).forEach(st => _bucketTxn({ ...st, type: st.type || 'sell' }));
+                            });
+                        }
+                    } catch(e) {}
+                }
+            }
+        } catch(e) { console.warn('PMS timeline fetch error:', e); }
         const maxBar = Math.max(...monthlyBuy, ...monthlySell, 1);
         for(let i = 0; i < 12; i++) {
             const buyBar = document.getElementById('fi-tl-buy-'+i);
@@ -1872,5 +1965,289 @@ async function deleteUpload(uploadId, filename) {
     }
 }
 
+// ═══════════════════════════════════════════════════════
+// 26AS / AIS — Upload + Auto-Match Frontend
+// ═══════════════════════════════════════════════════════
+
+async function handle26ASUpload(input) {
+    const file = input.files?.[0];
+    if (!file) return;
+    input.value = '';
+
+    const clientId = new URLSearchParams(location.search).get('clientId') || localStorage.getItem('selectedClientId');
+    if (!clientId) { fiToast('No client selected', 'error'); return; }
+
+    const label = document.getElementById('fi-26as-upload-label');
+    const badge = document.getElementById('fi-26as-status-badge');
+    if (label) label.textContent = '⏳ Uploading...';
+    if (badge) { badge.textContent = 'Uploading'; badge.style.background = '#dbeafe'; badge.style.color = '#1d4ed8'; }
+
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('client_id', clientId);
+
+    try {
+        const token = localStorage.getItem('access_token');
+        const res = await fetch(`${API_BASE_URL}/financial-instruments/26as-upload`, {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${token}` },
+            body: formData,
+        });
+
+        if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            throw new Error(err.detail || 'Upload failed');
+        }
+
+        const data = await res.json();
+        if (label) label.textContent = '🔄 Processing — AI extracting TDS entries...';
+        if (badge) { badge.textContent = 'Processing'; badge.style.background = '#fef3c7'; badge.style.color = '#d97706'; }
+        fiToast(`26AS uploaded: ${file.name}. Processing...`, 'success');
+
+        // Poll for completion
+        const uploadId = data.id;
+        let attempts = 0;
+        const poll = setInterval(async () => {
+            attempts++;
+            try {
+                const sr = await authFetch(`/financial-instruments/status/${uploadId}`);
+                if (!sr || !sr.ok) return;
+                const status = await sr.json();
+
+                if (status.status === 'completed') {
+                    clearInterval(poll);
+                    if (label) label.textContent = '📤 Upload 26AS / AIS PDF';
+                    fiToast('✅ 26AS processed — auto-matching complete!', 'success');
+                    load26ASMatch();
+                } else if (status.status === 'failed') {
+                    clearInterval(poll);
+                    if (label) label.textContent = '📤 Upload 26AS / AIS PDF';
+                    if (badge) { badge.textContent = 'Failed'; badge.style.background = '#fef2f2'; badge.style.color = '#dc2626'; }
+                    fiToast(`26AS processing failed: ${status.error || 'Unknown error'}`, 'error');
+                } else {
+                    const stepMsg = status.status === 'extracting' ? '📄 Extracting text...' :
+                                    status.status === 'structuring' ? '🤖 AI structuring...' :
+                                    status.status === 'generating_entries' ? '🔗 Auto-matching...' : '⏳ Processing...';
+                    if (label) label.textContent = stepMsg;
+                }
+            } catch(e) { /* continue polling */ }
+
+            if (attempts > 60) {
+                clearInterval(poll);
+                if (label) label.textContent = '📤 Upload 26AS / AIS PDF';
+                fiToast('26AS processing timed out — check back later', 'error');
+            }
+        }, 3000);
+
+    } catch (e) {
+        if (label) label.textContent = '📤 Upload 26AS / AIS PDF';
+        fiToast(e.message || '26AS upload failed', 'error');
+    }
+}
+
+async function load26ASMatch() {
+    const clientId = new URLSearchParams(location.search).get('clientId') || localStorage.getItem('selectedClientId');
+    if (!clientId) return;
+
+    try {
+        const res = await authFetch(`/financial-instruments/26as-match?client_id=${clientId}`);
+        if (!res || !res.ok) return;
+        const data = await res.json();
+
+        const badge = document.getElementById('fi-26as-status-badge');
+        const detailBtn = document.getElementById('fi-26as-detail-btn');
+
+        if (data.status === 'not_uploaded') {
+            if (badge) { badge.textContent = 'Not Uploaded'; badge.style.background = '#fef3c7'; badge.style.color = '#d97706'; }
+            return;
+        }
+        if (data.status !== 'completed') {
+            if (badge) { badge.textContent = data.status; badge.style.background = '#dbeafe'; badge.style.color = '#1d4ed8'; }
+            return;
+        }
+
+        // ── Render match results ──
+        const mr = data.match_results || {};
+        const ss = data.section_summary || {};
+        const fmt = v => '₹' + Math.abs(v).toLocaleString('en-IN', { maximumFractionDigits: 0 });
+
+        if (badge) {
+            const total = (mr.matched_count || 0) + (mr.unmatched_count || 0) + (mr.mismatch_count || 0);
+            badge.textContent = `${data.tds_entries_count || 0} Entries · ${data.financial_year || ''}`;
+            badge.style.background = mr.mismatch_count > 0 ? '#fef2f2' : '#f0fdf4';
+            badge.style.color = mr.mismatch_count > 0 ? '#dc2626' : '#059669';
+        }
+
+        // Counters
+        setEl('fi-26as-matched-count', mr.matched_count || 0);
+        setEl('fi-26as-unmatched-count', mr.unmatched_count || 0);
+        setEl('fi-26as-mismatch-count', mr.mismatch_count || 0);
+
+        // Section table — populate 26AS column
+        const sectionMap = {
+            '194': { el26as: 'fi-26as-194-26as', elMatch: 'fi-26as-194-match' },
+            '194K': { el26as: 'fi-26as-194k-26as', elMatch: 'fi-26as-194k-match' },
+            '194A': { el26as: 'fi-26as-194a-26as', elMatch: 'fi-26as-194a-match' },
+        };
+
+        let otherTds = 0;
+        for (const [sec, info] of Object.entries(ss)) {
+            const mapped = sectionMap[sec];
+            if (mapped) {
+                const el26 = document.getElementById(mapped.el26as);
+                const elM = document.getElementById(mapped.elMatch);
+                if (el26) { el26.textContent = fmt(info.total_tds); el26.style.color = '#0f172a'; el26.style.fontWeight = '700'; }
+
+                // Determine match status for this section
+                const sectionMatched = (mr.matched || []).filter(m => m.section === sec);
+                const sectionMismatch = (mr.mismatched || []).filter(m => m.section === sec);
+                const sectionUnmatched = (mr.unmatched_26as || []).filter(m => m.section === sec);
+
+                if (elM) {
+                    if (sectionMismatch.length > 0) {
+                        elM.innerHTML = '<span style="font-size:.55rem;font-weight:700;padding:1px 6px;border-radius:4px;background:#fef2f2;color:#dc2626">⚠️ MISMATCH</span>';
+                    } else if (sectionMatched.length > 0 && sectionUnmatched.length === 0) {
+                        elM.innerHTML = '<span style="font-size:.55rem;font-weight:700;padding:1px 6px;border-radius:4px;background:#f0fdf4;color:#059669">✅ MATCHED</span>';
+                    } else if (sectionUnmatched.length > 0) {
+                        elM.innerHTML = '<span style="font-size:.55rem;font-weight:700;padding:1px 6px;border-radius:4px;background:#fef3c7;color:#d97706">PARTIAL</span>';
+                    } else if (info.count > 0) {
+                        elM.innerHTML = '<span style="font-size:.55rem;font-weight:700;padding:1px 6px;border-radius:4px;background:#f1f5f9;color:#64748b">REVIEW</span>';
+                    }
+                }
+            } else {
+                otherTds += info.total_tds || 0;
+            }
+        }
+
+        // Others row
+        const elO26 = document.getElementById('fi-26as-other-26as');
+        const elOM = document.getElementById('fi-26as-other-match');
+        if (elO26 && otherTds > 0) { elO26.textContent = fmt(otherTds); elO26.style.color = '#0f172a'; elO26.style.fontWeight = '700'; }
+        if (elOM && otherTds > 0) {
+            elOM.innerHTML = '<span style="font-size:.55rem;font-weight:700;padding:1px 6px;border-radius:4px;background:#f1f5f9;color:#64748b">REVIEW</span>';
+        }
+
+        if (detailBtn) detailBtn.style.display = '';
+
+        // Store for detail modal
+        window._26asMatchData = data;
+
+    } catch (e) {
+        console.warn('26AS match load error:', e);
+    }
+}
+
+function show26ASDetails() {
+    const data = window._26asMatchData;
+    if (!data || !data.match_results) return;
+
+    const mr = data.match_results;
+    const fmt = v => '₹' + Math.abs(v).toLocaleString('en-IN', { maximumFractionDigits: 2 });
+
+    const existing = document.getElementById('fi-26as-modal');
+    if (existing) existing.remove();
+
+    let rows = '';
+    // Matched
+    (mr.matched || []).forEach(m => {
+        rows += `<tr style="background:#f0fdf4">
+            <td style="padding:.4rem .5rem;font-weight:600">${m.section}</td>
+            <td style="padding:.4rem .5rem">${m.deductor || m.stmt_name}</td>
+            <td style="padding:.4rem .5rem;text-align:right">${fmt(m.amount_26as)}</td>
+            <td style="padding:.4rem .5rem;text-align:right">${fmt(m.tds_26as)}</td>
+            <td style="padding:.4rem .5rem;text-align:right">${fmt(m.amount_stmt)}</td>
+            <td style="padding:.4rem .5rem;text-align:right">${fmt(m.tds_stmt)}</td>
+            <td style="padding:.4rem .5rem;text-align:center"><span style="background:#dcfce7;color:#059669;padding:1px 6px;border-radius:4px;font-size:.55rem;font-weight:700">✅ MATCHED</span></td>
+        </tr>`;
+    });
+    // Mismatched
+    (mr.mismatched || []).forEach(m => {
+        rows += `<tr style="background:#fef2f2">
+            <td style="padding:.4rem .5rem;font-weight:600">${m.section}</td>
+            <td style="padding:.4rem .5rem">${m.deductor || m.stmt_name}</td>
+            <td style="padding:.4rem .5rem;text-align:right">${fmt(m.amount_26as)}</td>
+            <td style="padding:.4rem .5rem;text-align:right;color:#dc2626;font-weight:700">${fmt(m.tds_26as)}</td>
+            <td style="padding:.4rem .5rem;text-align:right">${fmt(m.amount_stmt)}</td>
+            <td style="padding:.4rem .5rem;text-align:right;color:#dc2626;font-weight:700">${fmt(m.tds_stmt)}</td>
+            <td style="padding:.4rem .5rem;text-align:center"><span style="background:#fef2f2;color:#dc2626;padding:1px 6px;border-radius:4px;font-size:.55rem;font-weight:700">⚠️ TDS DIFF</span></td>
+        </tr>`;
+    });
+    // Unmatched 26AS
+    (mr.unmatched_26as || []).forEach(m => {
+        rows += `<tr style="background:#fff7ed">
+            <td style="padding:.4rem .5rem;font-weight:600">${m.section}</td>
+            <td style="padding:.4rem .5rem">${m.deductor}</td>
+            <td style="padding:.4rem .5rem;text-align:right">${fmt(m.amount_26as)}</td>
+            <td style="padding:.4rem .5rem;text-align:right">${fmt(m.tds_26as)}</td>
+            <td style="padding:.4rem .5rem;text-align:right;color:#94a3b8">—</td>
+            <td style="padding:.4rem .5rem;text-align:right;color:#94a3b8">—</td>
+            <td style="padding:.4rem .5rem;text-align:center"><span style="background:#fef3c7;color:#d97706;padding:1px 6px;border-radius:4px;font-size:.55rem;font-weight:700">❌ NO MATCH</span></td>
+        </tr>`;
+    });
+    // Unmatched Statements
+    (mr.unmatched_stmts || []).forEach(m => {
+        rows += `<tr style="background:#ede9fe">
+            <td style="padding:.4rem .5rem;font-weight:600">—</td>
+            <td style="padding:.4rem .5rem">${m.name} (${m.source})</td>
+            <td style="padding:.4rem .5rem;text-align:right;color:#94a3b8">—</td>
+            <td style="padding:.4rem .5rem;text-align:right;color:#94a3b8">—</td>
+            <td style="padding:.4rem .5rem;text-align:right">${fmt(m.amount)}</td>
+            <td style="padding:.4rem .5rem;text-align:right">${fmt(m.tds)}</td>
+            <td style="padding:.4rem .5rem;text-align:center"><span style="background:#ede9fe;color:#5b21b6;padding:1px 6px;border-radius:4px;font-size:.55rem;font-weight:700">NOT IN 26AS</span></td>
+        </tr>`;
+    });
+
+    if (!rows) rows = '<tr><td colspan="7" style="text-align:center;padding:1.5rem;color:#94a3b8">No entries to display</td></tr>';
+
+    const modal = document.createElement('div');
+    modal.id = 'fi-26as-modal';
+    modal.className = 'fi-modal-overlay';
+    modal.innerHTML = `
+        <div class="fi-modal" style="max-width:950px;max-height:80vh;display:flex;flex-direction:column">
+            <div class="fi-modal-header" style="background:linear-gradient(135deg,#ede9fe,#faf5ff);border-radius:12px 12px 0 0">
+                <div>
+                    <h3 style="margin:0;font-size:.95rem;font-weight:700;color:#1e293b">🔄 26AS / AIS Reconciliation Details</h3>
+                    <p style="margin:2px 0 0;font-size:.68rem;color:#64748b">${data.filename || ''} · PAN: ${data.pan || '—'} · ${data.financial_year || ''}</p>
+                </div>
+                <button class="fi-modal-close" onclick="document.getElementById('fi-26as-modal').remove()">&times;</button>
+            </div>
+            <div style="display:flex;gap:.75rem;padding:.75rem 1.25rem;background:#f8fafc;border-bottom:1px solid #e5e7eb">
+                <div style="flex:1;text-align:center;padding:.4rem;background:#f0fdf4;border-radius:8px">
+                    <div style="font-weight:800;font-size:1rem;color:#059669">${mr.matched_count || 0}</div>
+                    <div style="font-size:.55rem;font-weight:700;color:#94a3b8">MATCHED</div>
+                </div>
+                <div style="flex:1;text-align:center;padding:.4rem;background:#fef2f2;border-radius:8px">
+                    <div style="font-weight:800;font-size:1rem;color:#dc2626">${mr.unmatched_count || 0}</div>
+                    <div style="font-size:.55rem;font-weight:700;color:#94a3b8">UNMATCHED</div>
+                </div>
+                <div style="flex:1;text-align:center;padding:.4rem;background:#fff7ed;border-radius:8px">
+                    <div style="font-weight:800;font-size:1rem;color:#d97706">${mr.mismatch_count || 0}</div>
+                    <div style="font-size:.55rem;font-weight:700;color:#94a3b8">TDS MISMATCH</div>
+                </div>
+            </div>
+            <div style="flex:1;overflow-y:auto;padding:0">
+                <table style="width:100%;border-collapse:collapse;font-size:.72rem">
+                    <thead style="position:sticky;top:0;background:#f8fafc;z-index:1">
+                        <tr>
+                            <th style="padding:.45rem .5rem;text-align:left;font-weight:700;color:#64748b;font-size:.58rem;text-transform:uppercase">Sec</th>
+                            <th style="padding:.45rem .5rem;text-align:left;font-weight:700;color:#64748b;font-size:.58rem;text-transform:uppercase">Deductor / Security</th>
+                            <th style="padding:.45rem .5rem;text-align:right;font-weight:700;color:#64748b;font-size:.58rem;text-transform:uppercase">26AS Amt</th>
+                            <th style="padding:.45rem .5rem;text-align:right;font-weight:700;color:#64748b;font-size:.58rem;text-transform:uppercase">26AS TDS</th>
+                            <th style="padding:.45rem .5rem;text-align:right;font-weight:700;color:#64748b;font-size:.58rem;text-transform:uppercase">Stmt Amt</th>
+                            <th style="padding:.45rem .5rem;text-align:right;font-weight:700;color:#64748b;font-size:.58rem;text-transform:uppercase">Stmt TDS</th>
+                            <th style="padding:.45rem .5rem;text-align:center;font-weight:700;color:#64748b;font-size:.58rem;text-transform:uppercase">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>${rows}</tbody>
+                </table>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+}
+
 // ═══ INIT ═══
 loadDashboardStats();
+// Load 26AS match results if available
+setTimeout(() => load26ASMatch(), 1500);
+

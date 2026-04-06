@@ -115,13 +115,21 @@
             <div class="app-client-dd-list" id="app-client-dd-list">
               <div class="app-client-dd-loading">Loading clients…</div>
             </div>
-            <a href="clients.html" class="app-client-dd-footer">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/>
-                <rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>
-              </svg>
-              All Clients Dashboard
-            </a>
+            <div class="app-client-dd-actions">
+              <a href="#" onclick="localStorage.removeItem('selectedClient');window.location.href='clients.html'" class="app-client-dd-footer" style="flex:1">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/>
+                  <rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>
+                </svg>
+                All Clients
+              </a>
+              <a href="#" onclick="localStorage.removeItem('selectedClient');window.location.href='clients.html#add-client'" class="app-client-dd-footer app-client-dd-add" style="flex:1">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <circle cx="12" cy="12" r="10"/><path d="M12 8v8"/><path d="M8 12h8"/>
+                </svg>
+                Add Client
+              </a>
+            </div>
           </div>
         </div>
         `}
@@ -288,6 +296,21 @@
       text-decoration: none; transition: background 0.15s;
     }
     .app-client-dd-footer:hover { background: #F8FAFC; }
+
+    .app-client-dd-actions {
+      display: flex; border-top: 1px solid #F1F5F9;
+    }
+    .app-client-dd-actions .app-client-dd-footer {
+      border-top: none; border-radius: 0;
+    }
+    .app-client-dd-actions .app-client-dd-footer:first-child {
+      border-right: 1px solid #F1F5F9; border-radius: 0 0 0 14px;
+    }
+    .app-client-dd-actions .app-client-dd-footer:last-child {
+      border-radius: 0 0 14px 0;
+    }
+    .app-client-dd-add { color: #059669 !important; font-weight: 600 !important; }
+    .app-client-dd-add:hover { background: #ecfdf5 !important; }
 
     /* Corporate badge (replaces client selector) */
     .app-corp-badge {

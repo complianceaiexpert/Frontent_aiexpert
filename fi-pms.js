@@ -270,11 +270,13 @@ function setSRSource(val) {
     document.querySelectorAll('[data-sr-source]').forEach(b => b.classList.toggle('active', b.dataset.srSource === val));
     const hid = document.getElementById('fi-sr-source-select');
     if(hid) hid.value = val;
-    // Show PMS account dropdown when PMS selected
+    // Show PMS account dropdown only when PMS selected
     const pm = document.getElementById('fi-sr-pms-select');
     if(pm) pm.style.display = (val === 'pms') ? '' : 'none';
     const fb = document.getElementById('fi-sr-fifo-btn');
     if(fb) fb.style.display = (val === 'pms') ? '' : 'none';
+    const ob = document.getElementById('fi-sr-ob-btn');
+    if(ob) ob.style.display = (val === 'pms') ? '' : 'none';
     loadStockRegister();
 }
 
@@ -282,6 +284,7 @@ function setCGSource(val) {
     document.querySelectorAll('[data-cg-source]').forEach(b => b.classList.toggle('active', b.dataset.cgSource === val));
     const hid = document.getElementById('fi-cg-source-select');
     if(hid) hid.value = val;
+    // Show PMS account dropdown only when PMS selected
     const pm = document.getElementById('fi-cg-pms-select');
     if(pm) pm.style.display = (val === 'pms') ? '' : 'none';
     loadCapitalGains();
@@ -335,7 +338,11 @@ async function _fetchFIData(typePrefix) {
     } catch(e) { return []; }
 }
 
+let _srDebounce = null;
 async function loadStockRegister() {
+    // Debounce to avoid multiple rapid calls
+    clearTimeout(_srDebounce);
+    await new Promise(resolve => { _srDebounce = setTimeout(resolve, 200); });
     const sourceSelect = document.getElementById('fi-sr-source-select');
     const pmsSelect = document.getElementById('fi-sr-pms-select');
     const tbody = document.getElementById('fi-sr-tbody');
@@ -344,9 +351,16 @@ async function loadStockRegister() {
     if(!tbody) return;
 
     const source = sourceSelect?.value || 'all';
-    // Show/hide PMS account selector
-    if(pmsSelect) pmsSelect.style.display = (source === 'pms' || source === 'all') ? '' : 'none';
+    // Show/hide PMS account selector — only for PMS source
+    if(pmsSelect) pmsSelect.style.display = (source === 'pms') ? '' : 'none';
     if(fifoBtn) fifoBtn.style.display = source === 'pms' ? '' : 'none';
+    const obBtn = document.getElementById('fi-sr-ob-btn');
+    if(obBtn) obBtn.style.display = source === 'pms' ? '' : 'none';
+
+    // Auto-select first PMS account if none selected and accounts are loaded
+    if(pmsSelect && !pmsSelect.value && pmsAccounts.length > 0 && source === 'pms') {
+        pmsSelect.value = pmsAccounts[0].id;
+    }
 
     tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:2rem;color:#94a3b8">Loading holdings...</td></tr>';
     if(tfoot) tfoot.style.display = 'none';
@@ -542,8 +556,13 @@ async function loadCapitalGains() {
 
     const source = sourceSelect?.value || 'all';
     const category = categorySelect?.value || 'all';
-    // Show/hide PMS selector
+    // Show/hide PMS selector — only for PMS source
     if(pmsSelect) pmsSelect.style.display = (source === 'pms') ? '' : 'none';
+
+    // Auto-select first PMS account if none selected
+    if(pmsSelect && !pmsSelect.value && pmsAccounts.length > 0 && source === 'pms') {
+        pmsSelect.value = pmsAccounts[0].id;
+    }
 
     tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:2rem;color:#94a3b8">Loading capital gains...</td></tr>';
 
@@ -733,3 +752,156 @@ async function loadCapitalGains() {
     `;
     document.head.appendChild(style);
 })();
+
+
+// ─── Opening Balance Modal ───────────────────────────
+
+let _obRowCounter = 0;
+
+function _obAddRow(name, isin, qty, cost, date) {
+    _obRowCounter++;
+    const i = _obRowCounter;
+    return `<tr id="ob-row-${i}">
+        <td><input class="fi-form-input" id="ob-name-${i}" value="${name||''}" placeholder="e.g. HDFC Bank" style="font-size:.72rem;padding:.3rem .5rem;min-width:150px" /></td>
+        <td><input class="fi-form-input" id="ob-isin-${i}" value="${isin||''}" placeholder="INE001A01036" style="font-size:.72rem;padding:.3rem .5rem;width:120px" /></td>
+        <td><input class="fi-form-input" id="ob-qty-${i}" type="number" step="any" value="${qty||''}" placeholder="100" style="font-size:.72rem;padding:.3rem .5rem;width:80px;text-align:right" /></td>
+        <td><input class="fi-form-input" id="ob-cost-${i}" type="number" step="any" value="${cost||''}" placeholder="1500.00" style="font-size:.72rem;padding:.3rem .5rem;width:100px;text-align:right" /></td>
+        <td><input class="fi-form-input" id="ob-date-${i}" type="date" value="${date||''}" style="font-size:.72rem;padding:.3rem .5rem;width:130px" /></td>
+        <td style="text-align:center"><button class="fi-btn" style="font-size:.62rem;padding:.15rem .35rem;color:#dc2626;border-color:#fecaca" onclick="document.getElementById('ob-row-${i}').remove()">✕</button></td>
+    </tr>`;
+}
+
+async function showOpeningBalanceModal() {
+    const pmsSelect = document.getElementById('fi-sr-pms-select');
+    const accountId = pmsSelect?.value;
+
+    if (!accountId) {
+        if (typeof showToast === 'function') showToast('Select a PMS account first to manage opening balances', 'error');
+        else if (typeof fiToast === 'function') fiToast('Select a PMS account first to manage opening balances', 'error');
+        return;
+    }
+
+    const acct = pmsAccounts.find(a => a.id === accountId);
+    const acctLabel = acct ? (acct.strategy_name ? `${acct.provider_name} — ${acct.strategy_name}` : acct.provider_name) : 'PMS Account';
+
+    // Remove existing modal
+    const existing = document.getElementById('ob-modal');
+    if (existing) existing.remove();
+
+    _obRowCounter = 0;
+
+    // Fetch existing opening balances
+    let existingBalances = [];
+    try {
+        const token = localStorage.getItem('access_token');
+        const res = await fetch(`${PMS_API}/opening-balances?pms_account_id=${accountId}`, {
+            headers: { 'Authorization': `Bearer ${token}` },
+        });
+        if (res.ok) existingBalances = await res.json();
+    } catch (e) { console.warn('OB fetch error:', e); }
+
+    // Build rows — existing + 3 empty
+    let rows = '';
+    existingBalances.forEach(b => {
+        rows += _obAddRow(b.security_name, '', b.quantity, b.cost_per_unit, b.purchase_date);
+    });
+    // Add 3 empty rows for new entries
+    for (let i = 0; i < 3; i++) rows += _obAddRow('', '', '', '', '');
+
+    const modal = document.createElement('div');
+    modal.id = 'ob-modal';
+    modal.className = 'fi-modal-overlay';
+    modal.innerHTML = `
+        <div class="fi-modal" style="max-width:820px">
+            <div class="fi-modal-header" style="background:linear-gradient(135deg,#eef2ff,#faf5ff);border-radius:12px 12px 0 0">
+                <div>
+                    <h3 style="margin:0;font-size:.95rem;font-weight:700;color:#1e293b">📋 Opening Balances</h3>
+                    <p style="margin:2px 0 0;font-size:.68rem;color:#64748b">${acctLabel} · Securities held at start of FY</p>
+                </div>
+                <button class="fi-modal-close" onclick="document.getElementById('ob-modal').remove()">&times;</button>
+            </div>
+            <div class="fi-modal-body" style="padding:1rem 1.25rem;max-height:55vh;overflow-y:auto">
+                <div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:8px;padding:.6rem .8rem;margin-bottom:.85rem;font-size:.7rem;color:#0369a1;display:flex;align-items:flex-start;gap:.5rem">
+                    <span style="font-size:.9rem;flex-shrink:0">ℹ️</span>
+                    <div><strong>Why opening balances matter:</strong> Securities held before FY start need cost basis and purchase date for correct FIFO matching, holding period calculation (STCG vs LTCG), and Section 112A grandfathering (pre-31 Jan 2018 purchases).</div>
+                </div>
+                ${existingBalances.length > 0 ? `<div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:.5rem .8rem;margin-bottom:.85rem;font-size:.68rem;color:#15803d;font-weight:600">✅ ${existingBalances.length} existing opening balance${existingBalances.length > 1 ? 's' : ''} loaded — edit or add more below</div>` : ''}
+                <table style="width:100%;border-collapse:collapse;font-size:.72rem">
+                    <thead>
+                        <tr style="background:#f8fafc;border-bottom:2px solid #e2e8f0">
+                            <th style="padding:.4rem .5rem;text-align:left;font-size:.6rem;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.5px">Security Name *</th>
+                            <th style="padding:.4rem .5rem;text-align:left;font-size:.6rem;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.5px">ISIN</th>
+                            <th style="padding:.4rem .5rem;text-align:right;font-size:.6rem;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.5px">Qty *</th>
+                            <th style="padding:.4rem .5rem;text-align:right;font-size:.6rem;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.5px">Cost/Unit *</th>
+                            <th style="padding:.4rem .5rem;text-align:left;font-size:.6rem;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.5px">Purchase Date *</th>
+                            <th style="padding:.4rem .5rem;text-align:center;font-size:.6rem;font-weight:700;color:#64748b"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="ob-tbody">${rows}</tbody>
+                </table>
+                <button class="fi-btn" style="margin-top:.6rem;font-size:.68rem;color:#6366f1;border-color:#c7d2fe" onclick="document.getElementById('ob-tbody').insertAdjacentHTML('beforeend', _obAddRow('','','','',''))">+ Add Row</button>
+            </div>
+            <div class="fi-modal-footer" style="padding:.75rem 1.25rem;display:flex;gap:.5rem;justify-content:flex-end;border-top:1px solid #e5e7eb;background:#f8fafc;border-radius:0 0 12px 12px">
+                <button class="fi-btn" onclick="document.getElementById('ob-modal').remove()">Cancel</button>
+                <button class="fi-btn success" onclick="saveOpeningBalances('${accountId}')" style="background:#6366f1;color:#fff;border:none;font-weight:700">💾 Save Opening Balances</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+}
+
+async function saveOpeningBalances(accountId) {
+    const tbody = document.getElementById('ob-tbody');
+    if (!tbody) return;
+
+    const rows = tbody.querySelectorAll('tr');
+    const balances = [];
+
+    rows.forEach(tr => {
+        const id = tr.id.replace('ob-row-', '');
+        const name = document.getElementById(`ob-name-${id}`)?.value?.trim();
+        const isin = document.getElementById(`ob-isin-${id}`)?.value?.trim() || null;
+        const qty = parseFloat(document.getElementById(`ob-qty-${id}`)?.value);
+        const cost = parseFloat(document.getElementById(`ob-cost-${id}`)?.value);
+        const date = document.getElementById(`ob-date-${id}`)?.value;
+
+        if (name && qty > 0 && cost > 0 && date) {
+            balances.push({ security_name: name, isin, quantity: qty, cost_per_unit: cost, purchase_date: date });
+        }
+    });
+
+    if (balances.length === 0) {
+        if (typeof showToast === 'function') showToast('Add at least one valid security (name, qty, cost, date required)', 'error');
+        else if (typeof fiToast === 'function') fiToast('Add at least one valid security', 'error');
+        return;
+    }
+
+    try {
+        const token = localStorage.getItem('access_token');
+        const res = await fetch(`${PMS_API}/opening-balances`, {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ pms_account_id: accountId, balances }),
+        });
+
+        if (res.ok) {
+            const data = await res.json();
+            const msg = `✅ ${data.count || balances.length} opening balance lots saved`;
+            if (typeof showToast === 'function') showToast(msg, 'success');
+            else if (typeof fiToast === 'function') fiToast(msg, 'success');
+            document.getElementById('ob-modal')?.remove();
+            // Refresh stock register
+            if (typeof loadStockRegister === 'function') loadStockRegister();
+        } else {
+            const err = await res.json();
+            const msg = err.detail || 'Failed to save opening balances';
+            if (typeof showToast === 'function') showToast(msg, 'error');
+            else if (typeof fiToast === 'function') fiToast(msg, 'error');
+        }
+    } catch (e) {
+        const msg = 'Network error saving opening balances';
+        if (typeof showToast === 'function') showToast(msg, 'error');
+        else if (typeof fiToast === 'function') fiToast(msg, 'error');
+    }
+}
+
