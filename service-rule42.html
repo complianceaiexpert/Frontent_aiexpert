@@ -33,11 +33,7 @@
                     <select class="dep-select" id="r42-company-select">
                         <option value="">— Select Tally Company —</option>
                     </select>
-                    <select class="dep-select" id="r42-fy-select">
-                        <option value="2025-26">FY 2025-26</option>
-                        <option value="2024-25">FY 2024-25</option>
-                        <option value="2023-24">FY 2023-24</option>
-                    </select>
+                    <div id="r42-fy-container" style="display:inline-block;min-width:180px"></div>
                 </div>
                 <div class="dep-toolbar-right">
                     <button class="sr-btn sr-btn-secondary" onclick="r42SyncFromTally()" id="r42-sync-btn">
@@ -145,6 +141,7 @@
 
     <div class="sr-toast-ct" id="sr-toast-ct"></div>
 
+    <script src="fy-utils.js"></script>
     <script src="api_config.js"></script>
     <script>
         const user = JSON.parse(localStorage.getItem('user'));
@@ -175,7 +172,13 @@
 
         // ═══ INIT ═══
         async function r42Init() {
-            r42FY = document.getElementById('r42-fy-select').value;
+            FYPeriod.mount('#r42-fy-container', {
+                type: 'yearly', label: 'Financial Year',
+                selectId: 'r42-fy-select', selectClass: 'dep-select',
+                pastYears: 3, showNext: true,
+                onChange: (p) => { r42FY = p ? p.value : FYPeriod.getCurrentFY(); r42LoadHistory(); },
+            });
+            r42FY = document.getElementById('r42-fy-select')?.value || FYPeriod.getCurrentFY();
             await r42LoadCompanies();
             await r42LoadHistory();
         }
@@ -541,8 +544,7 @@
             try { const res = await authFetch('/tally/companies'); if (res?.ok) { const c = await res.json(); const sel = document.getElementById('r42-company-select'); c.forEach(x => { const o=document.createElement('option'); o.value=x; o.textContent=x; sel.appendChild(o); }); } } catch(e) {}
         }
 
-        // FY change handler
-        document.getElementById('r42-fy-select').addEventListener('change', () => { r42FY = document.getElementById('r42-fy-select').value; r42LoadHistory(); });
+        // FY change handled by FYPeriod onChange callback
 
         r42Init();
     </script>

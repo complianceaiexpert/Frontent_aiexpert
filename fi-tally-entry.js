@@ -503,17 +503,105 @@ function collectData(status) {
     tbody.querySelectorAll('tr').forEach(r=>{const i=r.querySelectorAll('input');const l=i[0]?.value?.trim(),g=i[1]?.value?.trim(),d=parseFloat(i[2]?.value)||0,c=parseFloat(i[3]?.value)||0;if(l&&(d||c))entries.push({ledger_name:l,group:g,amount:d||c,side:d>0?'Dr':'Cr'});});
     return{id:'FI-'+Date.now(),type:selectedTxnType,date:document.getElementById('fi-entry-date')?.value||'',scrip:document.getElementById('fi-entry-scrip')?.value||'',narration:document.getElementById('fi-entry-narration')?.value||'',voucher_type:TALLY_DEFAULTS[selectedTxnType]?.vt||'Journal',status,entries,total_amount:parseFloat(document.getElementById('fi-entry-amount')?.value)||0,created_at:new Date().toISOString()};
 }
-function saveVoucher(status) {
+
+async function saveVoucher(status) {
     if(!selectedTxnType){fiToast('Select a transaction type','warning');return;}
-    const v=collectData(status); if(!v.scrip){fiToast('Scrip/Fund name required','warning');return;} if(v.entries.length<2){fiToast('Need at least 2 ledger entries','warning');return;}
-    fiVouchers.push(v); fiToast(`Voucher ${v.id} saved (${status})`,'success'); resetEntry(); loadDashboardStats();
+    const v=collectData(status);
+    if(!v.scrip){fiToast('Scrip/Fund name required','warning');return;}
+    if(v.entries.length<2){fiToast('Need at least 2 ledger entries','warning');return;}
+
+    try {
+        const res = await authFetch('/financial-instruments/manual-entry', {
+            method: 'POST',
+            body: JSON.stringify({
+                client_id: clientId,
+                txn_type: v.type,
+                date: v.date,
+                scrip: v.scrip,
+                narration: v.narration,
+                voucher_type: v.voucher_type,
+                status: status,
+                total_amount: v.total_amount,
+                entries: v.entries,
+            }),
+        });
+        if (!res || !res.ok) {
+            const err = await res?.json().catch(() => ({}));
+            throw new Error(err.detail || 'Save failed');
+        }
+        const data = await res.json();
+        v.id = data.id; // use server-assigned ID
+        fiVouchers.push(v);
+        fiToast(`Voucher saved (${status}) — ${v.scrip}`, 'success');
+        resetEntry();
+        loadDashboardStats();
+    } catch(e) {
+        fiToast(`Save failed: ${e.message}`, 'error');
+    }
 }
-function saveAndSync() {
+
+async function saveAndSync() {
     if(!selectedTxnType){fiToast('Select a transaction type','warning');return;}
-    const v=collectData('synced'); if(!v.scrip){fiToast('Scrip required','warning');return;}
-    fiVouchers.push(v); fiToast(`Voucher ${v.id} synced to Tally`,'success'); resetEntry(); loadDashboardStats();
+    const v=collectData('synced');
+    if(!v.scrip){fiToast('Scrip required','warning');return;}
+
+    try {
+        const res = await authFetch('/financial-instruments/manual-entry', {
+            method: 'POST',
+            body: JSON.stringify({
+                client_id: clientId,
+                txn_type: v.type,
+                date: v.date,
+                scrip: v.scrip,
+                narration: v.narration,
+                voucher_type: v.voucher_type,
+                status: 'synced',
+                total_amount: v.total_amount,
+                entries: v.entries,
+            }),
+        });
+        if (!res || !res.ok) {
+            const err = await res?.json().catch(() => ({}));
+            throw new Error(err.detail || 'Sync failed');
+        }
+        const data = await res.json();
+        v.id = data.id;
+        fiVouchers.push(v);
+        fiToast(`Voucher synced to Tally — ${v.scrip}`, 'success');
+        resetEntry();
+        loadDashboardStats();
+    } catch(e) {
+        fiToast(`Sync failed: ${e.message}`, 'error');
+    }
 }
+
 function resetEntry() { selectedTxnType=null; document.querySelectorAll('.fi-txn-type-card').forEach(c=>c.classList.remove('selected')); document.getElementById('fi-entry-form-container').innerHTML=''; }
+
+// ═══ LOAD MANUAL ENTRIES FROM BACKEND ═══
+async function loadManualEntries() {
+    if (!clientId) return;
+    try {
+        const res = await authFetch(`/financial-instruments/manual-entries?client_id=${clientId}`);
+        if (!res || !res.ok) return;
+        const data = await res.json();
+        // Hydrate fiVouchers from persisted manual entries
+        fiVouchers = data.map(e => ({
+            id: e.id,
+            type: e.txn_type,
+            date: e.date,
+            scrip: e.scrip,
+            narration: e.narration,
+            voucher_type: e.voucher_type,
+            status: e.status,
+            total_amount: e.total_amount,
+            entries: e.entries,
+            created_at: e.created_at,
+        }));
+    } catch(e) {
+        console.warn('Failed to load manual entries:', e);
+    }
+}
+
 
 
 // ══════════════════════════════════════════════════
@@ -523,17 +611,34 @@ function resetEntry() { selectedTxnType=null; document.querySelectorAll('.fi-txn
 function renderVouchersList() { loadPendingEntries(); }
 function filterVouchers(){}
 function filterVoucherType(){}
-function approveAllPending() {
-    fiVouchers.forEach(v => { if(v.status==='draft') v.status='approved'; });
-    // Also approve all auto-generated
+async function approveAllPending() {
+    const promises = [];
+    fiVouchers.forEach(v => {
+        if(v.status==='draft') {
+            v.status='approved';
+            promises.push(authFetch(`/financial-instruments/manual-entry/${v.id}/status`, {
+                method: 'PATCH', body: JSON.stringify({ status: 'approved' }),
+            }).catch(e => console.warn('Approve persist failed:', e)));
+        }
+    });
     (window._autoEntries || []).forEach(e => { if(e.status==='draft') e.status='approved'; });
+    await Promise.all(promises);
     loadPendingEntries();
     fiToast('All entries approved','success');
     loadDashboardStats();
 }
-function syncAllPending() {
-    fiVouchers.forEach(v => { if(v.status==='approved'||v.status==='draft') v.status='synced'; });
+async function syncAllPending() {
+    const promises = [];
+    fiVouchers.forEach(v => {
+        if(v.status==='approved'||v.status==='draft') {
+            v.status='synced';
+            promises.push(authFetch(`/financial-instruments/manual-entry/${v.id}/status`, {
+                method: 'PATCH', body: JSON.stringify({ status: 'synced' }),
+            }).catch(e => console.warn('Sync persist failed:', e)));
+        }
+    });
     (window._autoEntries || []).forEach(e => { if(e.status==='approved'||e.status==='draft') e.status='synced'; });
+    await Promise.all(promises);
     loadPendingEntries();
     fiToast('All entries synced to Tally','success');
     loadDashboardStats();
@@ -911,11 +1016,20 @@ function toggleFileGroup(idx) {
     if(arrow) arrow.style.transform = isOpen ? '' : 'rotate(90deg)';
 }
 
-function approveEntry(id) {
+async function approveEntry(id) {
     const auto = (window._autoEntries || []).find(e => e.id === id);
     if(auto) { auto.status = 'approved'; }
     const manual = fiVouchers.find(v => v.id === id);
-    if(manual) { manual.status = 'approved'; }
+    if(manual) {
+        manual.status = 'approved';
+        // Persist to backend
+        try {
+            await authFetch(`/financial-instruments/manual-entry/${id}/status`, {
+                method: 'PATCH',
+                body: JSON.stringify({ status: 'approved' }),
+            });
+        } catch(e) { console.warn('Failed to persist approval:', e); }
+    }
     loadPendingEntries();
     loadDashboardStats();
 }
@@ -963,10 +1077,19 @@ function updatePendingLedger(el) {
     }
 }
 
-function removePendingEntry(id, source) {
+async function removePendingEntry(id, source) {
     if (source === 'manual') {
         const idx = fiVouchers.findIndex(v => v.id === id);
-        if (idx !== -1) { fiVouchers.splice(idx, 1); fiToast('Entry removed', 'success'); }
+        if (idx !== -1) {
+            fiVouchers.splice(idx, 1);
+            // Delete from backend
+            try {
+                await authFetch(`/financial-instruments/manual-entry/${id}`, { method: 'DELETE' });
+                fiToast('Entry removed', 'success');
+            } catch(e) {
+                fiToast('Entry removed locally (backend error)', 'warning');
+            }
+        }
     } else {
         fiToast('AI entry hidden from pending view', 'info');
     }
@@ -1950,7 +2073,15 @@ async function syncSingleToTally(uploadId) {
 }
 
 async function deleteUpload(uploadId, filename) {
-    if (!confirm(`Delete "${filename}"?\n\nThis will remove the statement and all its extracted data. This cannot be undone.`)) return;
+    const ok = await showConfirm({
+        title: 'Delete Statement?',
+        message: `This will permanently remove <strong>"${filename}"</strong> and all its extracted data. This action cannot be undone.`,
+        type: 'danger',
+        icon: '🗑️',
+        confirmText: 'Delete',
+        cancelText: 'Cancel',
+    });
+    if (!ok) return;
     try {
         const res = await authFetch(`/financial-instruments/${uploadId}`, { method: 'DELETE' });
         if (!res.ok) {
@@ -2247,7 +2378,8 @@ function show26ASDetails() {
 }
 
 // ═══ INIT ═══
-loadDashboardStats();
+// Load persisted manual entries first, then dashboard stats
+loadManualEntries().then(() => loadDashboardStats());
 // Load 26AS match results if available
 setTimeout(() => load26ASMatch(), 1500);
 

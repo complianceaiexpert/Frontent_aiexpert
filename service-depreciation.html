@@ -35,11 +35,7 @@
                     <select class="dep-select" id="dep-company-select" onchange="depLoadAssets()">
                         <option value="">— Select Company —</option>
                     </select>
-                    <select class="dep-select" id="dep-fy-select">
-                        <option value="2025-26">FY 2025-26</option>
-                        <option value="2024-25">FY 2024-25</option>
-                        <option value="2023-24">FY 2023-24</option>
-                    </select>
+                    <div id="dep-fy-container" style="display:inline-block;min-width:180px"></div>
                 </div>
                 <div class="dep-toolbar-right">
                     <button class="sr-btn sr-btn-secondary" onclick="depSyncFromTally()" id="dep-sync-btn">
@@ -203,6 +199,7 @@
     <!-- Toast container -->
     <div class="sr-toast-ct" id="sr-toast-ct"></div>
 
+    <script src="fy-utils.js"></script>
     <script src="api_config.js"></script>
     <script>
         const user = JSON.parse(localStorage.getItem('user'));
@@ -242,7 +239,19 @@
 
         // ═══ INIT ═══
         async function depInit() {
-            depFY = document.getElementById('dep-fy-select').value;
+            FYPeriod.mount('#dep-fy-container', {
+                type: 'yearly',
+                label: 'Financial Year',
+                selectId: 'dep-fy-select',
+                selectClass: 'dep-select',
+                pastYears: 3,
+                showNext: true,
+                onChange: (period) => {
+                    depFY = period ? period.value : FYPeriod.getCurrentFY();
+                    depLoadAssets();
+                },
+            });
+            depFY = document.getElementById('dep-fy-select')?.value || FYPeriod.getCurrentFY();
             await depLoadCompanies();
             await depLoadAssets();
         }
@@ -605,7 +614,7 @@
             try { const res = await authFetch('/tally/companies'); if (res?.ok) { const c = await res.json(); const sel = document.getElementById('dep-company-select'); c.forEach(x => { const o=document.createElement('option'); o.value=x; o.textContent=x; sel.appendChild(o); }); } } catch(e) {}
         }
 
-        document.getElementById('dep-fy-select').addEventListener('change', () => { depFY = document.getElementById('dep-fy-select').value; depLoadAssets(); });
+        // FY change is handled by FYPeriod.mount onChange callback above
 
         depInit();
     </script>

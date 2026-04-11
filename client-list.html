@@ -747,6 +747,7 @@
     </div>
 
     <script src="app-toast.js"></script>
+    <script src="app-confirm.js"></script>
     <script src="api_config.js"></script>
     <script>
         // ── Auth ──
@@ -975,7 +976,12 @@
                 }
                 const invalid = gstins.filter(g => gstinValidationResults[g] && !gstinValidationResults[g].valid);
                 if (invalid.length > 0) {
-                    alert(`Cannot save: ${invalid.length} GSTIN(s) failed validation.\n\n${invalid.map(g => `• ${g} — ${gstinValidationResults[g].name}`).join('\n')}\n\nPlease correct or remove invalid GSTINs.`);
+                    showAlert({
+                        title: 'GSTIN Validation Failed',
+                        message: `<strong>${invalid.length} GSTIN(s)</strong> failed verification:<br><br>${invalid.map(g => `• <code>${g}</code> — ${gstinValidationResults[g].name}`).join('<br>')}<br><br>Please correct or remove invalid GSTINs.`,
+                        type: 'warning',
+                        icon: '⚠️'
+                    });
                     return;
                 }
             }
@@ -1004,7 +1010,7 @@
                 gstinValidationResults = {};
                 await loadClients();
             } catch(err) {
-                alert(err.message || 'Something went wrong. Please try again.');
+                showAlert({ title: 'Client Creation Failed', message: err.message || 'Something went wrong. Please try again.', type: 'danger', icon: '❌' });
             } finally {
                 btn.disabled = false;
                 btn.textContent = 'Create Client Profile';

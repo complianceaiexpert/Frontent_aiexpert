@@ -623,6 +623,7 @@
 
     <div class="toast" id="toast"></div>
 
+    <script src="fy-utils.js"></script>
     <script src="api_config.js"></script>
     <script src="session-manager.js?v=2"></script>
     <script>
@@ -707,7 +708,7 @@
             // Set up fields based on standard GST CA Cert schema
             fieldValues = {
                 client_name: 'The Client',
-                period: 'FY 2023-24',
+                period: FYPeriod.getCurrentFY() ? 'FY ' + FYPeriod.getCurrentFY() : 'FY 2026-27',
                 export_turnover: '0',
                 eligible_itc: '0',
                 refund_amount: '0',
@@ -733,7 +734,7 @@
 
             const fields = [
                 { name: 'client_name', label: 'Client Name', type: 'text', placeholder: 'e.g. Rahul Enterprises', required: true },
-                { name: 'period', label: 'Period', type: 'select', options: ['FY 2023-24', 'FY 2024-25', 'FY 2022-23', 'April 2023 to Sept 2023', 'Oct 2023 to March 2024'], required: true },
+                { name: 'period', label: 'Period', type: 'select', options: FYPeriod.getFYOptions(3, true).map(o => o.label).concat(['H1 (Apr-Sep)', 'H2 (Oct-Mar)']), required: true },
                 { name: 'export_turnover', label: 'Export Turnover (₹)', type: 'number', required: true },
                 { name: 'eligible_itc', label: 'Eligible ITC (₹)', type: 'number', required: true },
                 { name: 'refund_amount', label: 'Refund Amount (₹)', type: 'number', required: true },

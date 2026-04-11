@@ -5,7 +5,7 @@
  * opening balances. Runs alongside fi-tally-entry.js.
  */
 
-const PMS_API = (typeof API_BASE !== 'undefined' ? API_BASE : 'http://localhost:8000/api/v1') + '/pms';
+const PMS_API = (typeof API_BASE_URL !== 'undefined' ? API_BASE_URL : 'http://localhost:8000/api/v1') + '/pms';
 
 // ─── State ───
 let pmsAccounts = [];
@@ -231,7 +231,7 @@ async function handlePMSUpload(input, statementType) {
 
 async function pollUploadStatus(uploadId, statementType) {
     const token = localStorage.getItem('access_token');
-    const FI_API = (typeof API_BASE !== 'undefined' ? API_BASE : 'http://localhost:8000/api/v1') + '/financial-instruments';
+    const FI_API = (typeof API_BASE_URL !== 'undefined' ? API_BASE_URL : 'http://localhost:8000/api/v1') + '/financial-instruments';
 
     const poll = async () => {
         try {
@@ -269,31 +269,31 @@ async function pollUploadStatus(uploadId, statementType) {
 function setSRSource(val) {
     document.querySelectorAll('[data-sr-source]').forEach(b => b.classList.toggle('active', b.dataset.srSource === val));
     const hid = document.getElementById('fi-sr-source-select');
-    if(hid) hid.value = val;
+    if (hid) hid.value = val;
     // Show PMS account dropdown only when PMS selected
     const pm = document.getElementById('fi-sr-pms-select');
-    if(pm) pm.style.display = (val === 'pms') ? '' : 'none';
+    if (pm) pm.style.display = (val === 'pms') ? '' : 'none';
     const fb = document.getElementById('fi-sr-fifo-btn');
-    if(fb) fb.style.display = (val === 'pms') ? '' : 'none';
+    if (fb) fb.style.display = (val === 'pms') ? '' : 'none';
     const ob = document.getElementById('fi-sr-ob-btn');
-    if(ob) ob.style.display = (val === 'pms') ? '' : 'none';
+    if (ob) ob.style.display = (val === 'pms') ? '' : 'none';
     loadStockRegister();
 }
 
 function setCGSource(val) {
     document.querySelectorAll('[data-cg-source]').forEach(b => b.classList.toggle('active', b.dataset.cgSource === val));
     const hid = document.getElementById('fi-cg-source-select');
-    if(hid) hid.value = val;
+    if (hid) hid.value = val;
     // Show PMS account dropdown only when PMS selected
     const pm = document.getElementById('fi-cg-pms-select');
-    if(pm) pm.style.display = (val === 'pms') ? '' : 'none';
+    if (pm) pm.style.display = (val === 'pms') ? '' : 'none';
     loadCapitalGains();
 }
 
 function setCGCat(val) {
     document.querySelectorAll('[data-cg-cat]').forEach(b => b.classList.toggle('active', b.dataset.cgCat === val));
     const hid = document.getElementById('fi-cg-category');
-    if(hid) hid.value = val;
+    if (hid) hid.value = val;
     loadCapitalGains();
 }
 
@@ -318,24 +318,24 @@ function _fyParams() {
 // Helper: fetch all completed FI uploads with structured_data for given type
 async function _fetchFIData(typePrefix) {
     const clientId = new URLSearchParams(location.search).get('clientId') || localStorage.getItem('selectedClientId');
-    if(!clientId) return [];
+    if (!clientId) return [];
     try {
         const res = await authFetch(`/financial-instruments/?client_id=${clientId}`);
-        if(!res.ok) return [];
+        if (!res.ok) return [];
         const uploads = await res.json();
         const completed = uploads.filter(u => u.status === 'completed' && u.instrument_type?.startsWith(typePrefix));
         const results = [];
-        for(const u of completed) {
+        for (const u of completed) {
             try {
                 const dr = await authFetch(`/financial-instruments/data/${u.id}`);
-                if(dr.ok) {
+                if (dr.ok) {
                     const d = await dr.json();
                     results.push({ upload: u, data: d.structured_data || {} });
                 }
-            } catch(e) {}
+            } catch (e) { }
         }
         return results;
-    } catch(e) { return []; }
+    } catch (e) { return []; }
 }
 
 let _srDebounce = null;
@@ -348,37 +348,37 @@ async function loadStockRegister() {
     const tbody = document.getElementById('fi-sr-tbody');
     const tfoot = document.getElementById('fi-sr-tfoot');
     const fifoBtn = document.getElementById('fi-sr-fifo-btn');
-    if(!tbody) return;
+    if (!tbody) return;
 
     const source = sourceSelect?.value || 'all';
     // Show/hide PMS account selector — only for PMS source
-    if(pmsSelect) pmsSelect.style.display = (source === 'pms') ? '' : 'none';
-    if(fifoBtn) fifoBtn.style.display = source === 'pms' ? '' : 'none';
+    if (pmsSelect) pmsSelect.style.display = (source === 'pms') ? '' : 'none';
+    if (fifoBtn) fifoBtn.style.display = source === 'pms' ? '' : 'none';
     const obBtn = document.getElementById('fi-sr-ob-btn');
-    if(obBtn) obBtn.style.display = source === 'pms' ? '' : 'none';
+    if (obBtn) obBtn.style.display = source === 'pms' ? '' : 'none';
 
     // Auto-select first PMS account if none selected and accounts are loaded
-    if(pmsSelect && !pmsSelect.value && pmsAccounts.length > 0 && source === 'pms') {
+    if (pmsSelect && !pmsSelect.value && pmsAccounts.length > 0 && source === 'pms') {
         pmsSelect.value = pmsAccounts[0].id;
     }
 
     tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:2rem;color:#94a3b8">Loading holdings...</td></tr>';
-    if(tfoot) tfoot.style.display = 'none';
+    if (tfoot) tfoot.style.display = 'none';
 
     const fmt = v => '₹' + Math.abs(v).toLocaleString('en-IN', { maximumFractionDigits: 2 });
     let allRows = [];
 
     // ── PMS Holdings ──
-    if(source === 'all' || source === 'pms') {
+    if (source === 'all' || source === 'pms') {
         const accountId = pmsSelect?.value;
-        if(accountId) {
+        if (accountId) {
             try {
                 const token = localStorage.getItem('access_token');
                 const fyQ = _fyParams();
                 const res = await fetch(`${PMS_API}/stock-register?pms_account_id=${accountId}${fyQ}`, {
                     headers: { 'Authorization': `Bearer ${token}` },
                 });
-                if(res.ok) {
+                if (res.ok) {
                     const data = await res.json();
                     const acct = pmsAccounts.find(a => a.id == accountId);
                     const label = acct?.account_name || acct?.provider_name || 'PMS';
@@ -397,12 +397,12 @@ async function loadStockRegister() {
                         });
                     });
                 }
-            } catch(e) {}
+            } catch (e) { }
         }
     }
 
     // ── Demat Holdings ──
-    if(source === 'all' || source === 'demat') {
+    if (source === 'all' || source === 'demat') {
         const dematData = await _fetchFIData('demat_holdings');
         dematData.forEach(({ upload, data }) => {
             const broker = data.broker || 'Zerodha';
@@ -428,7 +428,7 @@ async function loadStockRegister() {
     }
 
     // ── Mutual Fund Holdings ──
-    if(source === 'all' || source === 'mf') {
+    if (source === 'all' || source === 'mf') {
         const mfData = await _fetchFIData('mutual_fund');
         mfData.forEach(({ upload, data }) => {
             (data.holdings || data.funds || []).forEach(h => {
@@ -452,7 +452,7 @@ async function loadStockRegister() {
     // Sort by current value descending
     allRows.sort((a, b) => b.current - a.current);
 
-    if(!allRows.length) {
+    if (!allRows.length) {
         tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:2rem;color:#9ca3af">No holdings found. Upload statements or select a PMS account.</td></tr>';
         return;
     }
@@ -460,7 +460,7 @@ async function loadStockRegister() {
     const sourceBadge = (type) => {
         const colors = { pms: '#d97706', demat: '#4338ca', mf: '#059669' };
         const labels = { pms: 'PMS', demat: 'Demat', mf: 'MF' };
-        return `<span style="background:${colors[type]||'#94a3b8'}15;color:${colors[type]||'#94a3b8'};padding:1px 6px;border-radius:4px;font-size:.6rem;font-weight:600">${labels[type]||type}</span>`;
+        return `<span style="background:${colors[type] || '#94a3b8'}15;color:${colors[type] || '#94a3b8'};padding:1px 6px;border-radius:4px;font-size:.6rem;font-weight:600">${labels[type] || type}</span>`;
     };
 
     tbody.innerHTML = allRows.map(r => {
@@ -482,15 +482,15 @@ async function loadStockRegister() {
     const totalInvested = allRows.reduce((s, r) => s + r.invested, 0);
     const totalCurrent = allRows.reduce((s, r) => s + r.current, 0);
     const el = id => document.getElementById(id);
-    if(el('fi-sr-total-count')) el('fi-sr-total-count').textContent = allRows.length + ' securities';
-    if(el('fi-sr-invested')) el('fi-sr-invested').textContent = fmt(totalInvested);
-    if(el('fi-sr-current')) {
+    if (el('fi-sr-total-count')) el('fi-sr-total-count').textContent = allRows.length + ' securities';
+    if (el('fi-sr-invested')) el('fi-sr-invested').textContent = fmt(totalInvested);
+    if (el('fi-sr-current')) {
         el('fi-sr-current').textContent = fmt(totalCurrent);
         el('fi-sr-current').style.color = totalCurrent >= totalInvested ? '#059669' : '#dc2626';
     }
 
     // Total footer
-    if(tfoot) {
+    if (tfoot) {
         const totalPnl = totalCurrent - totalInvested;
         tfoot.style.display = '';
         tfoot.innerHTML = `<tr style="font-weight:700;background:#f1f5f9;border-top:2px solid #e2e8f0">
@@ -498,7 +498,7 @@ async function loadStockRegister() {
             <td></td><td></td><td></td><td></td>
             <td style="padding:.6rem .75rem">${fmt(totalInvested)}</td>
             <td style="padding:.6rem .75rem">${fmt(totalCurrent)}</td>
-            <td style="padding:.6rem .75rem;color:${totalPnl>=0?'#059669':'#dc2626'}">${totalPnl>=0?'+':''}${fmt(totalPnl)}</td>
+            <td style="padding:.6rem .75rem;color:${totalPnl >= 0 ? '#059669' : '#dc2626'}">${totalPnl >= 0 ? '+' : ''}${fmt(totalPnl)}</td>
         </tr>`;
     }
 }
@@ -552,15 +552,15 @@ async function loadCapitalGains() {
     const pmsSelect = document.getElementById('fi-cg-pms-select');
     const categorySelect = document.getElementById('fi-cg-category');
     const tbody = document.getElementById('fi-cg-tbody');
-    if(!tbody) return;
+    if (!tbody) return;
 
     const source = sourceSelect?.value || 'all';
     const category = categorySelect?.value || 'all';
     // Show/hide PMS selector — only for PMS source
-    if(pmsSelect) pmsSelect.style.display = (source === 'pms') ? '' : 'none';
+    if (pmsSelect) pmsSelect.style.display = (source === 'pms') ? '' : 'none';
 
     // Auto-select first PMS account if none selected
-    if(pmsSelect && !pmsSelect.value && pmsAccounts.length > 0 && source === 'pms') {
+    if (pmsSelect && !pmsSelect.value && pmsAccounts.length > 0 && source === 'pms') {
         pmsSelect.value = pmsAccounts[0].id;
     }
 
@@ -570,15 +570,15 @@ async function loadCapitalGains() {
     let allEntries = [];
 
     // ── PMS Capital Gains ──
-    if(source === 'all' || source === 'pms') {
+    if (source === 'all' || source === 'pms') {
         const accountId = pmsSelect?.value;
-        if(accountId) {
+        if (accountId) {
             try {
                 const token = localStorage.getItem('access_token');
                 const res = await fetch(`${PMS_API}/capital-gains?pms_account_id=${accountId}`, {
                     headers: { 'Authorization': `Bearer ${token}` },
                 });
-                if(res.ok) {
+                if (res.ok) {
                     const data = await res.json();
                     const acct = pmsAccounts.find(a => a.id == accountId);
                     const label = acct?.account_name || acct?.provider_name || 'PMS';
@@ -599,12 +599,12 @@ async function loadCapitalGains() {
                         });
                     });
                 }
-            } catch(e) {}
+            } catch (e) { }
         }
     }
 
     // ── Demat Capital Gains (from Tax P&L) ──
-    if(source === 'all' || source === 'demat') {
+    if (source === 'all' || source === 'demat') {
         const dematData = await _fetchFIData('demat_taxpnl');
         dematData.forEach(({ upload, data }) => {
             const broker = data.broker || 'Zerodha';
@@ -616,10 +616,10 @@ async function loadCapitalGains() {
                 // Determine type from trade_type or holding period
                 let type = 'STCG';
                 const tt = String(t.trade_type || t.type || '').toLowerCase();
-                if(tt.includes('long') || tt === 'ltcg') type = 'LTCG';
-                else if(tt.includes('intraday') || tt.includes('speculative')) type = 'Intraday';
-                else if(tt.includes('short') || tt === 'stcg') type = 'STCG';
-                else if(t.holding_days && t.holding_days > 365) type = 'LTCG';
+                if (tt.includes('long') || tt === 'ltcg') type = 'LTCG';
+                else if (tt.includes('intraday') || tt.includes('speculative')) type = 'Intraday';
+                else if (tt.includes('short') || tt === 'stcg') type = 'STCG';
+                else if (t.holding_days && t.holding_days > 365) type = 'LTCG';
 
                 allEntries.push({
                     name: t.scrip_name || t.security_name || t.symbol || 'Unknown',
@@ -640,19 +640,19 @@ async function loadCapitalGains() {
     }
 
     // ── Apply Category Filter ──
-    if(category !== 'all') {
+    if (category !== 'all') {
         allEntries = allEntries.filter(e => {
-            if(category === 'intraday') return e.type === 'Intraday';
-            if(category === 'stcg') return e.type === 'STCG';
-            if(category === 'ltcg') return e.type === 'LTCG';
+            if (category === 'intraday') return e.type === 'Intraday';
+            if (category === 'stcg') return e.type === 'STCG';
+            if (category === 'ltcg') return e.type === 'LTCG';
             return true;
         });
     }
 
     // Sort by sell date (most recent first)
     allEntries.sort((a, b) => {
-        if(a.sellDate === '—') return 1;
-        if(b.sellDate === '—') return -1;
+        if (a.sellDate === '—') return 1;
+        if (b.sellDate === '—') return -1;
         return b.sellDate.localeCompare(a.sellDate);
     });
 
@@ -666,18 +666,18 @@ async function loadCapitalGains() {
 
     const el = id => document.getElementById(id);
     const fmtSigned = v => (v >= 0 ? '' : '(') + fmt(v) + (v < 0 ? ')' : '');
-    if(el('fi-cg-summary-spec')) el('fi-cg-summary-spec').textContent = fmtSigned(specTotal);
-    if(el('fi-cg-summary-stcg')) el('fi-cg-summary-stcg').textContent = fmtSigned(stcgTotal);
-    if(el('fi-cg-summary-ltcg')) el('fi-cg-summary-ltcg').textContent = fmtSigned(ltcgTotal);
-    if(el('fi-cg-summary-net')) {
+    if (el('fi-cg-summary-spec')) el('fi-cg-summary-spec').textContent = fmtSigned(specTotal);
+    if (el('fi-cg-summary-stcg')) el('fi-cg-summary-stcg').textContent = fmtSigned(stcgTotal);
+    if (el('fi-cg-summary-ltcg')) el('fi-cg-summary-ltcg').textContent = fmtSigned(ltcgTotal);
+    if (el('fi-cg-summary-net')) {
         el('fi-cg-summary-net').textContent = fmtSigned(netTotal);
         el('fi-cg-summary-net').style.color = netTotal >= 0 ? '#059669' : '#dc2626';
     }
-    if(el('fi-cg-summary-stcg-tax')) el('fi-cg-summary-stcg-tax').textContent = fmt(stcgTax);
-    if(el('fi-cg-summary-ltcg-tax')) el('fi-cg-summary-ltcg-tax').textContent = fmt(Math.max(0, ltcgTax));
-    if(el('fi-cg-summary-count')) el('fi-cg-summary-count').textContent = allEntries.length;
+    if (el('fi-cg-summary-stcg-tax')) el('fi-cg-summary-stcg-tax').textContent = fmt(stcgTax);
+    if (el('fi-cg-summary-ltcg-tax')) el('fi-cg-summary-ltcg-tax').textContent = fmt(Math.max(0, ltcgTax));
+    if (el('fi-cg-summary-count')) el('fi-cg-summary-count').textContent = allEntries.length;
 
-    if(!allEntries.length) {
+    if (!allEntries.length) {
         tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:2rem;color:#9ca3af">No capital gains data found. Upload Tax P&L or transactions.</td></tr>';
         return;
     }
@@ -685,12 +685,12 @@ async function loadCapitalGains() {
     const sourceBadge = (type) => {
         const colors = { pms: '#d97706', demat: '#4338ca', mf: '#059669' };
         const labels = { pms: 'PMS', demat: 'Demat', mf: 'MF' };
-        return `<span style="background:${colors[type]||'#94a3b8'}15;color:${colors[type]||'#94a3b8'};padding:1px 6px;border-radius:4px;font-size:.6rem;font-weight:600">${labels[type]||type}</span>`;
+        return `<span style="background:${colors[type] || '#94a3b8'}15;color:${colors[type] || '#94a3b8'};padding:1px 6px;border-radius:4px;font-size:.6rem;font-weight:600">${labels[type] || type}</span>`;
     };
 
     const typeBadge = (type) => {
-        if(type === 'LTCG') return '<span style="background:#ede9fe;color:#6366f1;padding:2px 6px;border-radius:4px;font-size:.6rem;font-weight:600">LTCG</span>';
-        if(type === 'Intraday') return '<span style="background:#fff7ed;color:#d97706;padding:2px 6px;border-radius:4px;font-size:.6rem;font-weight:600">Speculative</span>';
+        if (type === 'LTCG') return '<span style="background:#ede9fe;color:#6366f1;padding:2px 6px;border-radius:4px;font-size:.6rem;font-weight:600">LTCG</span>';
+        if (type === 'Intraday') return '<span style="background:#fff7ed;color:#d97706;padding:2px 6px;border-radius:4px;font-size:.6rem;font-weight:600">Speculative</span>';
         return '<span style="background:#dcfce7;color:#059669;padding:2px 6px;border-radius:4px;font-size:.6rem;font-weight:600">STCG</span>';
     };
 
@@ -713,7 +713,7 @@ async function loadCapitalGains() {
         </tr>`;
     }).join('');
 
-    if(allEntries.length > 500) {
+    if (allEntries.length > 500) {
         tbody.innerHTML += `<tr><td colspan="10" style="text-align:center;padding:.75rem;color:#94a3b8;font-size:.72rem">Showing 500 of ${allEntries.length} entries</td></tr>`;
     }
 }
@@ -762,11 +762,11 @@ function _obAddRow(name, isin, qty, cost, date) {
     _obRowCounter++;
     const i = _obRowCounter;
     return `<tr id="ob-row-${i}">
-        <td><input class="fi-form-input" id="ob-name-${i}" value="${name||''}" placeholder="e.g. HDFC Bank" style="font-size:.72rem;padding:.3rem .5rem;min-width:150px" /></td>
-        <td><input class="fi-form-input" id="ob-isin-${i}" value="${isin||''}" placeholder="INE001A01036" style="font-size:.72rem;padding:.3rem .5rem;width:120px" /></td>
-        <td><input class="fi-form-input" id="ob-qty-${i}" type="number" step="any" value="${qty||''}" placeholder="100" style="font-size:.72rem;padding:.3rem .5rem;width:80px;text-align:right" /></td>
-        <td><input class="fi-form-input" id="ob-cost-${i}" type="number" step="any" value="${cost||''}" placeholder="1500.00" style="font-size:.72rem;padding:.3rem .5rem;width:100px;text-align:right" /></td>
-        <td><input class="fi-form-input" id="ob-date-${i}" type="date" value="${date||''}" style="font-size:.72rem;padding:.3rem .5rem;width:130px" /></td>
+        <td><input class="fi-form-input" id="ob-name-${i}" value="${name || ''}" placeholder="e.g. HDFC Bank" style="font-size:.72rem;padding:.3rem .5rem;min-width:150px" /></td>
+        <td><input class="fi-form-input" id="ob-isin-${i}" value="${isin || ''}" placeholder="INE001A01036" style="font-size:.72rem;padding:.3rem .5rem;width:120px" /></td>
+        <td><input class="fi-form-input" id="ob-qty-${i}" type="number" step="any" value="${qty || ''}" placeholder="100" style="font-size:.72rem;padding:.3rem .5rem;width:80px;text-align:right" /></td>
+        <td><input class="fi-form-input" id="ob-cost-${i}" type="number" step="any" value="${cost || ''}" placeholder="1500.00" style="font-size:.72rem;padding:.3rem .5rem;width:100px;text-align:right" /></td>
+        <td><input class="fi-form-input" id="ob-date-${i}" type="date" value="${date || ''}" style="font-size:.72rem;padding:.3rem .5rem;width:130px" /></td>
         <td style="text-align:center"><button class="fi-btn" style="font-size:.62rem;padding:.15rem .35rem;color:#dc2626;border-color:#fecaca" onclick="document.getElementById('ob-row-${i}').remove()">✕</button></td>
     </tr>`;
 }

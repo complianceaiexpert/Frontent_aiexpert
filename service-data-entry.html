@@ -26,6 +26,8 @@
             <script src="app-client-nav.js"></script>
 
             <div class="de-sb-section">
+                <div class="de-sb-label" style="padding:0.35rem 0.75rem;font-size:0.6rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:#94a3b8;margin-top:0.25rem">Data Entry</div>
+
                 <div class="de-sb-item active" onclick="deNav('dashboard',this)">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="3" y="3" width="7" height="7" rx="1" />
@@ -33,17 +35,15 @@
                         <rect x="3" y="14" width="7" height="7" rx="1" />
                         <rect x="14" y="14" width="7" height="7" rx="1" />
                     </svg>
-                    Dashboard
+                    Overview
                 </div>
-
-
 
                 <div class="de-sb-item" onclick="goToTransactions()">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <line x1="12" y1="1" x2="12" y2="23" />
                         <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
                     </svg>
-                    Transactions
+                    Add Transactions
                 </div>
 
                 <div class="de-sb-item" onclick="deNav('master',this)">
@@ -56,30 +56,25 @@
 
                 <div class="de-sb-divider"></div>
 
+                <div class="de-sb-label" style="padding:0.35rem 0.75rem;font-size:0.6rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:#94a3b8">Tally</div>
+
                 <div class="de-sb-item" onclick="deNav('reports',this)">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M21.21 15.89A10 10 0 1 1 8 2.83" />
                         <path d="M22 12A10 10 0 0 0 12 2v10z" />
                     </svg>
-                    Reports
-                    <span class="de-sb-badge beta" title="This feature is in beta — results may vary">BETA</span>
+                    Tally Reports
                 </div>
 
-                <div class="de-sb-item" onclick="deNav('analysis',this)">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <line x1="18" y1="20" x2="18" y2="10" />
-                        <line x1="12" y1="20" x2="12" y2="4" />
-                        <line x1="6" y1="20" x2="6" y2="14" />
-                    </svg>
-                    Analysis
-                    <span class="de-sb-badge beta" title="This feature is in beta — results may vary">BETA</span>
-                </div>
             </div>
 
-            <a href="integrations.html" style="display:flex;align-items:center;justify-content:center;gap:0.4rem;padding:0.5rem 0.85rem;margin:0.75rem 0.5rem;background:#1e3a8a;color:#fff;border-radius:8px;font-size:0.78rem;font-weight:600;text-decoration:none;transition:all .15s;font-family:inherit" onmouseover="this.style.background='#1e40af'" onmouseout="this.style.background='#1e3a8a'">
+            <a href="integrations.html"
+                style="display:flex;align-items:center;justify-content:center;gap:0.4rem;padding:0.5rem 0.85rem;margin:0.75rem 0.5rem;background:#1e3a8a;color:#fff;border-radius:8px;font-size:0.78rem;font-weight:600;text-decoration:none;transition:all .15s;font-family:inherit"
+                onmouseover="this.style.background='#1e40af'" onmouseout="this.style.background='#1e3a8a'">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M23 4v6h-6"/><path d="M1 20v-6h6"/>
-                    <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+                    <path d="M23 4v6h-6" />
+                    <path d="M1 20v-6h6" />
+                    <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
                 </svg>
                 Sync Tally
             </a>
@@ -98,183 +93,236 @@
 
             <!-- ═══ DASHBOARD ═══ -->
             <div class="de-section active" id="sec-dashboard">
-                <!-- ISS-039: Hero description (TC-106) -->
-                <div style="background:linear-gradient(135deg,#0f172a,#1e3a8a);border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:.75rem;position:relative;overflow:hidden">
-                    <div style="position:absolute;top:-20px;right:-20px;width:120px;height:120px;background:rgba(59,130,246,.15);border-radius:50%"></div>
-                    <h2 style="margin:0 0 .3rem;font-family:'Outfit',sans-serif;font-size:1.1rem;font-weight:800;color:#fff">Data Entry Workspace</h2>
-                    <p style="margin:0;font-size:.78rem;color:rgba(255,255,255,.65);line-height:1.5;max-width:600px">Upload invoices, bills, and bank statements. AI extracts data automatically, then review, approve, and push entries to Tally in one click.</p>
-                    <div style="display:flex;gap:.5rem;margin-top:.75rem">
-                        <div style="display:flex;align-items:center;gap:.3rem;padding:.25rem .65rem;background:rgba(255,255,255,.1);border-radius:6px;font-size:.68rem;font-weight:600;color:#93c5fd">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                            Upload
+
+                <!-- ── Tally Connection Status ── -->
+                <div id="de-tally-banner" class="dash-tally-banner warn">
+                    <div class="dash-tally-dot" id="de-tally-dot"></div>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        style="flex-shrink:0">
+                        <path d="M23 4v6h-6" />
+                        <path d="M1 20v-6h6" />
+                        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
+                    </svg>
+                    <div class="dash-tally-info">
+                        <span class="dash-tally-text" id="de-tally-text">Tally not connected</span>
+                        <span class="dash-tally-sub" id="de-tally-sub">Connect via the Tally Connector to sync your
+                            books</span>
+                    </div>
+                    <a href="integrations.html" class="dash-tally-action" id="de-tally-action">Connect Tally →</a>
+                </div>
+
+                <!-- ── Company Snapshot ── -->
+                <div class="dash-company-card" id="dash-company-card">
+                    <div class="dash-company-avatar" id="dash-company-avatar">—</div>
+                    <div class="dash-company-info">
+                        <h2 class="dash-company-name" id="dash-company-name">Loading company…</h2>
+                        <div class="dash-company-meta">
+                            <span class="dash-meta-pill" id="dash-fy-label">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" />
+                                    <line x1="16" y1="2" x2="16" y2="6" />
+                                    <line x1="8" y1="2" x2="8" y2="6" />
+                                    <line x1="3" y1="10" x2="21" y2="10" />
+                                </svg>
+                                FY —
+                            </span>
+                            <span class="dash-meta-pill" id="dash-last-sync">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <circle cx="12" cy="12" r="10" />
+                                    <polyline points="12 6 12 12 16 14" />
+                                </svg>
+                                Last sync: —
+                            </span>
                         </div>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.3)" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
-                        <div style="display:flex;align-items:center;gap:.3rem;padding:.25rem .65rem;background:rgba(255,255,255,.1);border-radius:6px;font-size:.68rem;font-weight:600;color:#93c5fd">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                            Review
+                    </div>
+                    <div class="dash-company-actions">
+                        <a href="integrations.html" class="dash-action-btn"><svg width="14" height="14"
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M23 4v6h-6" />
+                                <path d="M1 20v-6h6" />
+                                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
+                            </svg> Sync Now</a>
+                    </div>
+                </div>
+
+                <!-- ── Financial Snapshot Cards ── -->
+                <div class="dash-metrics-grid">
+                    <div class="dash-metric-card">
+                        <div class="dash-metric-icon" style="background:#eff6ff;color:#3b82f6">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                            </svg>
                         </div>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.3)" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
-                        <div style="display:flex;align-items:center;gap:.3rem;padding:.25rem .65rem;background:rgba(255,255,255,.1);border-radius:6px;font-size:.68rem;font-weight:600;color:#93c5fd">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-                            Approve
+                        <div class="dash-metric-body">
+                            <div class="dash-metric-value" id="stat-master-ledgers">—</div>
+                            <div class="dash-metric-label">Ledgers</div>
                         </div>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.3)" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
-                        <div style="display:flex;align-items:center;gap:.3rem;padding:.25rem .65rem;background:rgba(16,185,129,.2);border:1px solid rgba(16,185,129,.3);border-radius:6px;font-size:.68rem;font-weight:600;color:#6ee7b7">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-                            Push to Tally
+                    </div>
+                    <div class="dash-metric-card">
+                        <div class="dash-metric-icon" style="background:#f5f3ff;color:#7c3aed">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
+                            </svg>
+                        </div>
+                        <div class="dash-metric-body">
+                            <div class="dash-metric-value" id="stat-master-groups">—</div>
+                            <div class="dash-metric-label">Groups</div>
+                        </div>
+                    </div>
+                    <div class="dash-metric-card">
+                        <div class="dash-metric-icon" style="background:#ecfdf5;color:#059669">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <rect x="1" y="4" width="22" height="16" rx="2" />
+                                <line x1="1" y1="10" x2="23" y2="10" />
+                            </svg>
+                        </div>
+                        <div class="dash-metric-body">
+                            <div class="dash-metric-value" id="stat-total">—</div>
+                            <div class="dash-metric-label">Total Vouchers</div>
+                        </div>
+                    </div>
+                    <div class="dash-metric-card">
+                        <div class="dash-metric-icon" style="background:#fff7ed;color:#ea580c">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <rect x="2" y="7" width="20" height="14" rx="2" />
+                                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+                            </svg>
+                        </div>
+                        <div class="dash-metric-body">
+                            <div class="dash-metric-value" id="stat-master-items">—</div>
+                            <div class="dash-metric-label">Stock Items</div>
+                        </div>
+                    </div>
+                    <div class="dash-metric-card">
+                        <div class="dash-metric-icon" style="background:#fdf4ff;color:#c026d3">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <circle cx="12" cy="12" r="10" />
+                                <line x1="2" y1="12" x2="22" y2="12" />
+                                <path
+                                    d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                            </svg>
+                        </div>
+                        <div class="dash-metric-body">
+                            <div class="dash-metric-value" id="stat-master-costcentres">—</div>
+                            <div class="dash-metric-label">Cost Centres</div>
                         </div>
                     </div>
                 </div>
 
-                <!-- ISS-039: Tally connection status banner (TC-107) -->
-                <div id="de-tally-banner" style="display:flex;align-items:center;gap:.75rem;padding:.65rem 1rem;background:#fef3c7;border:1px solid #fde68a;border-radius:10px;margin-bottom:.75rem">
-                    <div style="width:8px;height:8px;border-radius:50%;background:#d97706;flex-shrink:0" id="de-tally-dot"></div>
-                    <span style="font-size:.78rem;font-weight:600;color:#92400e;flex:1" id="de-tally-text">Tally not connected — sync your data by connecting the Tally Connector</span>
-                    <a href="integrations.html" style="font-size:.72rem;font-weight:700;color:#1e3a8a;background:#fff;border:1px solid #e2e8f0;padding:.3rem .75rem;border-radius:6px;text-decoration:none;white-space:nowrap;transition:all .15s" onmouseover="this.style.background='#eff6ff'" onmouseout="this.style.background='#fff'">Connect Tally →</a>
-                </div>
-
-                <!-- Invoice Stats Overview -->
-                <div class="de-panel" style="padding:1rem 1.25rem">
-                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem">
-                        <h3 class="de-panel-title" style="margin:0">Data Entry Overview</h3>
-                        <span style="font-size:.68rem;font-weight:600;color:#9ca3af" id="dash-loading">Loading...</span>
+                <!-- ── Voucher Breakdown ── -->
+                <div class="dash-voucher-strip">
+                    <div class="dash-voucher-chip sales">
+                        <span class="dash-vc-label">Sales</span>
+                        <span class="dash-vc-value" id="stat-sales">—</span>
                     </div>
-                    <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:.75rem">
-                        <div style="background:#f8fafc;border-radius:10px;padding:.65rem .85rem;border:1px solid #e2e8f0;text-align:center">
-                            <div style="font-size:1.35rem;font-weight:800;font-family:'Outfit',sans-serif;color:#1e293b" id="stat-inv-total">0</div>
-                            <div style="font-size:.58rem;font-weight:600;color:#9ca3af;text-transform:uppercase;letter-spacing:.04em">Total Invoices</div>
-                        </div>
-                        <div style="background:#fef3c7;border-radius:10px;padding:.65rem .85rem;border:1px solid #fde68a;text-align:center">
-                            <div style="font-size:1.35rem;font-weight:800;font-family:'Outfit',sans-serif;color:#d97706" id="stat-inv-pending">0</div>
-                            <div style="font-size:.58rem;font-weight:600;color:#92400e;text-transform:uppercase;letter-spacing:.04em">Pending Review</div>
-                        </div>
-                        <div style="background:#ecfdf5;border-radius:10px;padding:.65rem .85rem;border:1px solid #a7f3d0;text-align:center">
-                            <div style="font-size:1.35rem;font-weight:800;font-family:'Outfit',sans-serif;color:#059669" id="stat-inv-synced">0</div>
-                            <div style="font-size:.58rem;font-weight:600;color:#065f46;text-transform:uppercase;letter-spacing:.04em">Synced to Tally</div>
-                        </div>
-                        <div style="background:#eff6ff;border-radius:10px;padding:.65rem .85rem;border:1px solid #bfdbfe;text-align:center">
-                            <div style="font-size:1.35rem;font-weight:800;font-family:'Outfit',sans-serif;color:#2563eb" id="stat-inv-docs">0</div>
-                            <div style="font-size:.58rem;font-weight:600;color:#1e40af;text-transform:uppercase;letter-spacing:.04em">With Documents</div>
-                        </div>
-                        <div style="background:#faf5ff;border-radius:10px;padding:.65rem .85rem;border:1px solid #e9d5ff;text-align:center">
-                            <div style="font-size:1.35rem;font-weight:800;font-family:'Outfit',sans-serif;color:#7c3aed" id="stat-inv-vendors">0</div>
-                            <div style="font-size:.58rem;font-weight:600;color:#5b21b6;text-transform:uppercase;letter-spacing:.04em">Unique Vendors</div>
-                        </div>
-                        <div style="background:linear-gradient(135deg,#1e3a8a,#3b82f6);border-radius:10px;padding:.65rem .85rem;text-align:center">
-                            <div style="font-size:1.05rem;font-weight:800;font-family:'Outfit',sans-serif;color:#fff" id="stat-inv-amount">₹ 0</div>
-                            <div style="font-size:.58rem;font-weight:600;color:rgba(255,255,255,.7);text-transform:uppercase;letter-spacing:.04em">Total Amount</div>
-                        </div>
+                    <div class="dash-voucher-chip purchase">
+                        <span class="dash-vc-label">Purchase</span>
+                        <span class="dash-vc-value" id="stat-purchase">—</span>
+                    </div>
+                    <div class="dash-voucher-chip banking">
+                        <span class="dash-vc-label">Banking</span>
+                        <span class="dash-vc-value" id="stat-banking">—</span>
+                    </div>
+                    <div class="dash-voucher-chip journal">
+                        <span class="dash-vc-label">Journal</span>
+                        <span class="dash-vc-value" id="stat-journal">—</span>
+                    </div>
+                    <div class="dash-voucher-chip upload">
+                        <span class="dash-vc-label">Uploaded</span>
+                        <span class="dash-vc-value" id="stat-inv-total">—</span>
+                    </div>
+                    <div class="dash-voucher-chip pending">
+                        <span class="dash-vc-label">Pending</span>
+                        <span class="dash-vc-value" id="stat-inv-pending">—</span>
+                    </div>
+                    <div class="dash-voucher-chip synced-chip">
+                        <span class="dash-vc-label">Synced</span>
+                        <span class="dash-vc-value" id="stat-inv-synced">—</span>
                     </div>
                 </div>
 
-                <!-- Tally Sync Overview -->
-                <div class="de-panel" style="padding:1rem 1.25rem">
-                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem">
-                        <h3 class="de-panel-title" style="margin:0">🔄 Tally Sync Overview</h3>
-                    </div>
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">
-                        <!-- Masters -->
-                        <div style="background:#f8fafc;border-radius:10px;padding:.65rem .85rem;border:1px solid #e2e8f0">
-                            <div style="display:flex;align-items:center;gap:.35rem;margin-bottom:.5rem">
-                                <div style="width:3px;height:14px;background:#3b82f6;border-radius:2px"></div>
-                                <span style="font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#1e3a8a">Masters</span>
-                            </div>
-                            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem">
-                                <div style="text-align:center">
-                                    <div style="font-size:1.15rem;font-weight:800;font-family:'Outfit',sans-serif;color:#1e293b" id="stat-master-ledgers">—</div>
-                                    <div style="font-size:.58rem;font-weight:600;color:#9ca3af;text-transform:uppercase;letter-spacing:.04em">Ledgers</div>
-                                </div>
-                                <div style="text-align:center">
-                                    <div style="font-size:1.15rem;font-weight:800;font-family:'Outfit',sans-serif;color:#1e293b" id="stat-master-items">—</div>
-                                    <div style="font-size:.58rem;font-weight:600;color:#9ca3af;text-transform:uppercase;letter-spacing:.04em">Items</div>
-                                </div>
-                                <div style="text-align:center">
-                                    <div style="font-size:1.15rem;font-weight:800;font-family:'Outfit',sans-serif;color:#1e293b" id="stat-master-groups">—</div>
-                                    <div style="font-size:.58rem;font-weight:600;color:#9ca3af;text-transform:uppercase;letter-spacing:.04em">Groups</div>
-                                </div>
-                                <div style="text-align:center">
-                                    <div style="font-size:1.15rem;font-weight:800;font-family:'Outfit',sans-serif;color:#1e293b" id="stat-master-costcentres">—</div>
-                                    <div style="font-size:.58rem;font-weight:600;color:#9ca3af;text-transform:uppercase;letter-spacing:.04em">Cost Centres</div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Vouchers -->
-                        <div style="background:#f8fafc;border-radius:10px;padding:.65rem .85rem;border:1px solid #e2e8f0">
-                            <div style="display:flex;align-items:center;gap:.35rem;margin-bottom:.5rem">
-                                <div style="width:3px;height:14px;background:#059669;border-radius:2px"></div>
-                                <span style="font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#065f46">Vouchers</span>
-                            </div>
-                            <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:.5rem">
-                                <div style="text-align:center">
-                                    <div style="font-size:1.15rem;font-weight:800;font-family:'Outfit',sans-serif;color:#1e293b" id="stat-total">—</div>
-                                    <div style="font-size:.58rem;font-weight:600;color:#9ca3af;text-transform:uppercase;letter-spacing:.04em">Total</div>
-                                </div>
-                                <div style="text-align:center">
-                                    <div style="font-size:1.15rem;font-weight:800;font-family:'Outfit',sans-serif;color:#1e293b" id="stat-banking">—</div>
-                                    <div style="font-size:.58rem;font-weight:600;color:#9ca3af;text-transform:uppercase;letter-spacing:.04em">Banking</div>
-                                </div>
-                                <div style="text-align:center">
-                                    <div style="font-size:1.15rem;font-weight:800;font-family:'Outfit',sans-serif;color:#1e293b" id="stat-sales">—</div>
-                                    <div style="font-size:.58rem;font-weight:600;color:#9ca3af;text-transform:uppercase;letter-spacing:.04em">Sales</div>
-                                </div>
-                                <div style="text-align:center">
-                                    <div style="font-size:1.15rem;font-weight:800;font-family:'Outfit',sans-serif;color:#1e293b" id="stat-purchase">—</div>
-                                    <div style="font-size:.58rem;font-weight:600;color:#9ca3af;text-transform:uppercase;letter-spacing:.04em">Purchase</div>
-                                </div>
-                                <div style="text-align:center">
-                                    <div style="font-size:1.15rem;font-weight:800;font-family:'Outfit',sans-serif;color:#1e293b" id="stat-journal">—</div>
-                                    <div style="font-size:.58rem;font-weight:600;color:#9ca3af;text-transform:uppercase;letter-spacing:.04em">Journal</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
-                <!-- Quick Create — compact inline -->
-                <div class="de-panel" style="padding:.75rem 1.25rem">
-                    <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap">
-                        <h3 class="de-panel-title green" style="margin:0;font-size:.78rem">Quick Create</h3>
-                        <div class="qc-grid" style="display:flex;gap:.4rem;flex-wrap:wrap;flex:1">
-                            <div class="qc-pill" style="padding:.35rem .7rem;font-size:.72rem"
-                                onclick="deNav('transactions',document.querySelector('[onclick*=transactions]'))"><em>+</em> Banking</div>
-                            <div class="qc-pill" style="padding:.35rem .7rem;font-size:.72rem"
-                                onclick="deNav('transactions',document.querySelector('[onclick*=transactions]'))"><em>+</em> Sales</div>
-                            <div class="qc-pill" style="padding:.35rem .7rem;font-size:.72rem"
-                                onclick="deNav('transactions',document.querySelector('[onclick*=transactions]'))"><em>+</em> Purchase</div>
-                            <div class="qc-pill" style="padding:.35rem .7rem;font-size:.72rem"
-                                onclick="deNav('transactions',document.querySelector('[onclick*=transactions]'))"><em>+</em> Journal</div>
-                            <div class="qc-pill" style="padding:.35rem .7rem;font-size:.72rem"
-                                onclick="deNav('master',document.querySelector('[onclick*=master]'))"><em>+</em> Ledger</div>
-                            <div class="qc-pill" style="padding:.35rem .7rem;font-size:.72rem"
-                                onclick="deNav('master',document.querySelector('[onclick*=master]'))"><em>+</em> Item</div>
-                        </div>
-                    </div>
-                </div>
 
-                <!-- Top Vendors & Suppliers from real data -->
-                <div class="de-top5-grid" style="grid-template-columns:1fr 1fr">
-                    <div class="de-top5">
-                        <div class="de-top5-header">
-                            <h4 class="de-top5-title">Top Vendors (Uploaded)</h4>
+                <!-- ── Debtors & Creditors ── -->
+                <div class="dash-dc-grid">
+                    <div class="dash-dc-panel">
+                        <div class="dash-dc-header">
+                            <div class="dash-dc-indicator debtors"></div>
+                            <h4 class="dash-dc-title">Top Sundry Debtors</h4>
+                            <span class="dash-dc-badge" id="debtors-total-badge">—</span>
                         </div>
-                        <table class="de-table" style="min-width:auto">
-                            <thead><tr><th>Sr.</th><th>Vendor Name</th><th>Invoices</th></tr></thead>
-                            <tbody id="top5-customers">
-                                <tr><td colspan="3" style="text-align:center;color:#9ca3af;padding:1.5rem"><div style="font-size:1.5rem;margin-bottom:.3rem">📋</div>Loading...</td></tr>
+                        <table class="dash-dc-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Party Name</th>
+                                    <th style="text-align:right">Balance</th>
+                                </tr>
+                            </thead>
+                            <tbody id="top5-debtors">
+                                <tr>
+                                    <td colspan="3" class="dash-dc-empty">
+                                        <div class="dash-dc-empty-icon">📋</div>Loading…
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
-                    <div class="de-top5">
-                        <div class="de-top5-header">
-                            <h4 class="de-top5-title green">Top 5 Supplier (Tally)</h4>
+                    <div class="dash-dc-panel">
+                        <div class="dash-dc-header">
+                            <div class="dash-dc-indicator creditors"></div>
+                            <h4 class="dash-dc-title">Top Sundry Creditors</h4>
+                            <span class="dash-dc-badge" id="creditors-total-badge">—</span>
                         </div>
-                        <table class="de-table" style="min-width:auto">
-                            <thead><tr><th>Sr.</th><th>Supplier Name</th><th>Total Amount</th></tr></thead>
+                        <table class="dash-dc-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Party Name</th>
+                                    <th style="text-align:right">Balance</th>
+                                </tr>
+                            </thead>
                             <tbody id="top5-suppliers">
-                                <tr><td colspan="3" style="text-align:center;color:#9ca3af;padding:1.5rem"><div style="font-size:1.5rem;margin-bottom:.3rem">📋</div>Loading...</td></tr>
+                                <tr>
+                                    <td colspan="3" class="dash-dc-empty">
+                                        <div class="dash-dc-empty-icon">📋</div>Loading…
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
+                </div>
+
+                <!-- ── Recent Voucher Activity ── -->
+                <div class="dash-recent-panel">
+                    <div class="dash-recent-header">
+                        <h4 class="dash-recent-title">Recent Voucher Activity</h4>
+                        <button class="dash-see-all"
+                            onclick="deNav('master',document.querySelector('[onclick*=master]'));setTimeout(()=>switchMasterTab('vouchers',document.querySelector('[onclick*=vouchers]')),100)">View
+                            All →</button>
+                    </div>
+                    <div id="dash-recent-vouchers" class="dash-recent-body">
+                        <div class="dash-dc-empty" style="padding:2rem">
+                            <div class="dash-dc-empty-icon">📋</div>Loading recent vouchers…
+                        </div>
+                    </div>
+                </div>
+
+                <!-- hidden elements for legacy JS compatibility -->
+                <div style="display:none">
+                    <span id="stat-inv-docs">0</span>
+                    <span id="stat-inv-vendors">0</span>
+                    <span id="stat-inv-amount">₹ 0</span>
+                    <span id="dash-loading">Loading...</span>
+                    <tbody id="top5-customers"></tbody>
                 </div>
             </div>
 
@@ -418,84 +466,134 @@
 
             <!-- ═══ REPORTS ═══ -->
             <div class="de-section" id="sec-reports">
-                <div class="de-sh">
-                    <h1>📊 Reports</h1>
-                    <p>Generate and view financial reports</p>
+                <!-- Report Type Tabs -->
+                <div class="rpt-tab-bar">
+                    <button class="rpt-tab active" onclick="switchReportTab('daybook',this)">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <rect x="3" y="4" width="18" height="18" rx="2" />
+                            <line x1="16" y1="2" x2="16" y2="6" />
+                            <line x1="8" y1="2" x2="8" y2="6" />
+                            <line x1="3" y1="10" x2="21" y2="10" />
+                        </svg>
+                        Day Book
+                    </button>
+                    <button class="rpt-tab" onclick="switchReportTab('Sales',this)">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <line x1="12" y1="1" x2="12" y2="23" />
+                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                        </svg>
+                        Sales
+                    </button>
+                    <button class="rpt-tab" onclick="switchReportTab('Purchase',this)">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <rect x="2" y="7" width="20" height="14" rx="2" />
+                            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+                        </svg>
+                        Purchase
+                    </button>
+                    <button class="rpt-tab" onclick="switchReportTab('Payment',this)">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <rect x="1" y="4" width="22" height="16" rx="2" />
+                            <line x1="1" y1="10" x2="23" y2="10" />
+                        </svg>
+                        Payment
+                    </button>
+                    <button class="rpt-tab" onclick="switchReportTab('Receipt',this)">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                            <polyline points="14 2 14 8 20 8" />
+                        </svg>
+                        Receipt
+                    </button>
+                    <button class="rpt-tab" onclick="switchReportTab('Journal',this)">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                        </svg>
+                        Journal
+                    </button>
+                    <button class="rpt-tab" onclick="switchReportTab('Contra',this)">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <polyline points="17 1 21 5 17 9" />
+                            <path d="M3 11V9a4 4 0 0 1 4-4h14" />
+                            <polyline points="7 23 3 19 7 15" />
+                            <path d="M21 13v2a4 4 0 0 1-4 4H3" />
+                        </svg>
+                        Contra
+                    </button>
+                    <button class="rpt-tab" onclick="switchReportTab('ledger',this)">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                            <circle cx="9" cy="7" r="4" />
+                        </svg>
+                        Ledger
+                    </button>
                 </div>
-                <div class="de-panel">
-                    <div class="de-report-grid">
-                        <div class="de-report-col">
-                            <div class="de-report-item" onclick="openReport('sales-credit')">
-                                <span class="ri-icon">📄</span><span>Sales · Credit Note</span>
-                            </div>
-                            <div class="de-report-item" onclick="openReport('payment-receipt')">
-                                <span class="ri-icon">💳</span><span>Payment · Receipt</span>
-                            </div>
-                            <div class="de-report-item" onclick="openReport('sp-order')">
-                                <span class="ri-icon">📦</span><span>S/P Order</span>
-                            </div>
-                            <div class="de-report-item" onclick="openReport('items')">
-                                <span class="ri-icon">📋</span><span>Items</span>
-                            </div>
-                            <div class="de-report-item" onclick="openReport('bank-cash')">
-                                <span class="ri-icon">🏦</span><span>Bank / Cash</span>
-                            </div>
-                            <div class="de-report-item" onclick="openReport('expenses')">
-                                <span class="ri-icon">💸</span><span>Expenses</span>
-                            </div>
-                            <div class="de-report-item" onclick="openReport('ledger-report')">
-                                <span class="ri-icon">📓</span><span>Ledger Report</span>
-                            </div>
-                            <div class="de-report-item" onclick="openReport('day-book')">
-                                <span class="ri-icon">📅</span><span>Day Book</span>
-                            </div>
-                        </div>
-                        <div class="de-report-col">
-                            <div class="de-report-item" onclick="openReport('purchase-debit')">
-                                <span class="ri-icon">🧾</span><span>Purchase · Debit Note</span>
-                            </div>
-                            <div class="de-report-item" onclick="openReport('outstanding')">
-                                <span class="ri-icon">📊</span><span>Outstanding</span>
-                            </div>
-                            <div class="de-report-item" onclick="openReport('delivery-note')">
-                                <span class="ri-icon">🚚</span><span>Delivery Note</span>
-                            </div>
-                            <div class="de-report-item" onclick="openReport('party')">
-                                <span class="ri-icon">👤</span><span>Party</span>
-                            </div>
-                            <div class="de-report-item" onclick="openReport('profit-loss')">
-                                <span class="ri-icon">📈</span><span>Profit & Loss</span>
-                            </div>
-                            <div class="de-report-item" onclick="openReport('balance-sheet')">
-                                <span class="ri-icon">📑</span><span>Balance Sheet</span>
-                            </div>
-                            <div class="de-report-item" onclick="openReport('map')">
-                                <span class="ri-icon">🗺️</span><span>Map</span>
-                            </div>
-                        </div>
+
+                <!-- Search & Stats Bar -->
+                <div class="rpt-toolbar">
+                    <input type="text" class="rpt-search" id="rpt-search-input"
+                        placeholder="Search by party name, voucher no…" oninput="handleReportSearch(this.value)">
+                    <div class="rpt-stats" id="rpt-stats-bar">
+                        <span class="rpt-stat-chip" id="rpt-stat-count">— entries</span>
+                        <span class="rpt-stat-chip dr" id="rpt-stat-dr">Dr: —</span>
+                        <span class="rpt-stat-chip cr" id="rpt-stat-cr">Cr: —</span>
                     </div>
                 </div>
+
+                <!-- Ledger Selector (hidden by default, shown on Ledger tab) -->
+                <div class="rpt-ledger-bar" id="rpt-ledger-bar" style="display:none">
+                    <label class="rpt-ledger-label">Select Ledger</label>
+                    <select id="rpt-ledger-select" class="rpt-ledger-select" onchange="loadLedgerReport()">
+                        <option value="">— Choose a Ledger —</option>
+                    </select>
+                    <div class="rpt-ledger-balance" id="rpt-ledger-balance"></div>
+                </div>
+
+                <!-- Report Table -->
+                <div class="rpt-table-wrap">
+                    <table class="rpt-table" id="rpt-table">
+                        <thead id="rpt-thead">
+                            <tr>
+                                <th style="width:40px">#</th>
+                                <th style="width:90px">Date</th>
+                                <th>Type</th>
+                                <th>Vch No.</th>
+                                <th>Party / Particulars</th>
+                                <th style="text-align:right">Debit (Dr)</th>
+                                <th style="text-align:right">Credit (Cr)</th>
+                                <th style="width:30px"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="rpt-tbody">
+                            <tr>
+                                <td colspan="8" class="rpt-loading">Loading report data…</td>
+                            </tr>
+                        </tbody>
+                        <tfoot id="rpt-tfoot" style="display:none">
+                            <tr class="rpt-total-row">
+                                <td colspan="5" style="text-align:right;font-weight:700">TOTAL</td>
+                                <td style="text-align:right;font-weight:800;color:#dc2626" id="rpt-total-dr">₹ 0.00</td>
+                                <td style="text-align:right;font-weight:800;color:#059669" id="rpt-total-cr">₹ 0.00</td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <div class="rpt-pagination" id="rpt-pagination"></div>
             </div>
 
-            <!-- ═══ ANALYSIS ═══ -->
-            <div class="de-section" id="sec-analysis">
-                <div class="de-sh">
-                    <h1>📈 Analysis</h1>
-                    <p>Financial insights and trends</p>
-                </div>
-                <div class="de-tabs">
-                    <div class="de-tab active" onclick="switchAnalysisTab('financial',this)">Financial Overview</div>
-                    <div class="de-tab" onclick="switchAnalysisTab('transaction',this)">Transaction Analysis</div>
-                    <div class="de-tab" onclick="switchAnalysisTab('accounting',this)">Accounting Details</div>
-                    <div class="de-tab" onclick="switchAnalysisTab('performers',this)">Top Performers</div>
-                    <div class="de-tab" onclick="switchAnalysisTab('trends',this)">Trends and Analysis</div>
-                </div>
-                <div class="de-empty">
-                    <div class="de-empty-icon">📊</div>
-                    <h3>No Data available for selected time period</h3>
-                    <p>Please select another time period or sync data from Tally</p>
-                </div>
-            </div>
+
 
         </main>
     </div>
@@ -626,6 +724,7 @@
     </div>
 
     <script src="app-toast.js"></script>
+    <script src="app-confirm.js"></script>
     <script src="api_config.js?v=2"></script>
     <script src="drive-picker.js"></script>
     <script>
@@ -646,6 +745,18 @@
                     const client = await res.json();
                     clientCompanyName = client.name || '';
                     console.log('Client company name:', clientCompanyName);
+
+                    // Populate company card
+                    const nameEl = document.getElementById('dash-company-name');
+                    const avatarEl = document.getElementById('dash-company-avatar');
+                    if (nameEl) nameEl.textContent = clientCompanyName || 'Unnamed Company';
+                    if (avatarEl) avatarEl.textContent = (clientCompanyName || '?').charAt(0).toUpperCase();
+
+                    // FY label — derive from current date
+                    const now = new Date();
+                    const fyStart = now.getMonth() >= 3 ? now.getFullYear() : now.getFullYear() - 1;
+                    const fyLabel = document.getElementById('dash-fy-label');
+                    if (fyLabel) fyLabel.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> FY ${fyStart}-${String(fyStart + 1).slice(-2)}`;
                 }
             } catch (e) { console.error('Load client name error:', e); }
         }
@@ -664,7 +775,7 @@
         }
 
         function pickFromDriveDE() {
-            if (!clientId) { alert('No client context'); return; }
+            if (!clientId) { showToast('No client context — open from client workspace', 'warning'); return; }
             openDrivePicker({
                 clientId,
                 accept: ['.pdf', '.xlsx', '.xls', '.csv', '.jpg', '.jpeg', '.png'],
@@ -700,6 +811,7 @@
             if (el) el.classList.add('active');
             if (sectionId === 'master') loadLedgerData();
             if (sectionId === 'transactions') renderTransactions();
+            if (sectionId === 'reports') loadReportData();
         }
 
         // ═══ DASHBOARD — INVOICE STATS (REAL DATA) ═══
@@ -760,25 +872,85 @@
             } catch (e) { console.error('Tally stats error:', e); }
         }
 
-        // ═══ DASHBOARD — TOP 5 SUPPLIER (TALLY) ═══
+        // ═══ DASHBOARD — TOP DEBTORS & CREDITORS (TALLY) ═══
         async function loadTop5() {
+            // Load Top Sundry Creditors
             try {
                 const sRes = await authFetch(withCompany('/tally/ledgers?parent=Sundry+Creditors&per_page=5&page=1'));
                 if (sRes.ok) {
                     const sd = await sRes.json();
                     const tbody = document.getElementById('top5-suppliers');
+                    const badge = document.getElementById('creditors-total-badge');
+                    if (badge) badge.textContent = (sd.total || sd.data?.length || 0) + ' total';
                     if (sd.data && sd.data.length > 0) {
                         const sorted = sd.data.sort((a, b) => Math.abs(b.closing_balance) - Math.abs(a.closing_balance));
                         tbody.innerHTML = sorted.map((l, i) => `<tr>
-                            <td style="text-align:center">${i + 1}</td>
-                            <td style="font-weight:500">${l.name}</td>
-                            <td style="font-weight:600">${formatINR(l.closing_balance)}</td>
+                            <td style="text-align:center;color:#94a3b8;font-size:.78rem">${i + 1}</td>
+                            <td><span style="font-weight:600;color:#0f172a">${l.name}</span></td>
+                            <td style="text-align:right;font-weight:700;color:#dc2626">${formatINR(l.closing_balance)}</td>
                         </tr>`).join('');
                     } else {
-                        tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:#9ca3af;padding:1.5rem"><div style="font-size:1.5rem;margin-bottom:.3rem">📋</div>No Tally data synced</td></tr>';
+                        tbody.innerHTML = '<tr><td colspan="3" class="dash-dc-empty"><div class="dash-dc-empty-icon">📋</div>No creditors synced</td></tr>';
                     }
                 }
-            } catch (e) { console.error('Top5 error:', e); }
+            } catch (e) { console.error('Creditors error:', e); }
+
+            // Load Top Sundry Debtors
+            try {
+                const dRes = await authFetch(withCompany('/tally/ledgers?parent=Sundry+Debtors&per_page=5&page=1'));
+                if (dRes.ok) {
+                    const dd = await dRes.json();
+                    const tbody = document.getElementById('top5-debtors');
+                    const badge = document.getElementById('debtors-total-badge');
+                    if (badge) badge.textContent = (dd.total || dd.data?.length || 0) + ' total';
+                    if (dd.data && dd.data.length > 0) {
+                        const sorted = dd.data.sort((a, b) => Math.abs(b.closing_balance) - Math.abs(a.closing_balance));
+                        tbody.innerHTML = sorted.map((l, i) => `<tr>
+                            <td style="text-align:center;color:#94a3b8;font-size:.78rem">${i + 1}</td>
+                            <td><span style="font-weight:600;color:#0f172a">${l.name}</span></td>
+                            <td style="text-align:right;font-weight:700;color:#2563eb">${formatINR(l.closing_balance)}</td>
+                        </tr>`).join('');
+                    } else {
+                        tbody.innerHTML = '<tr><td colspan="3" class="dash-dc-empty"><div class="dash-dc-empty-icon">📋</div>No debtors synced</td></tr>';
+                    }
+                }
+            } catch (e) { console.error('Debtors error:', e); }
+        }
+
+        // ═══ DASHBOARD — RECENT VOUCHERS ═══
+        async function loadRecentVouchers() {
+            const container = document.getElementById('dash-recent-vouchers');
+            if (!container) return;
+            try {
+                const res = await authFetch(withCompany('/tally/vouchers?page=1&per_page=8'));
+                if (!res.ok) throw new Error('Failed');
+                const result = await res.json();
+                const vouchers = result.data || [];
+                if (vouchers.length === 0) {
+                    container.innerHTML = '<div class="dash-dc-empty" style="padding:2rem"><div class="dash-dc-empty-icon">📋</div>No vouchers synced from Tally yet</div>';
+                    return;
+                }
+                container.innerHTML = vouchers.map(v => {
+                    const dateStr = v.date ? formatTallyDate(v.date) : '';
+                    const amt = v.amount ? formatINR(v.amount) : '—';
+                    const narr = v.narration ? (v.narration.length > 50 ? v.narration.substring(0, 50) + '…' : v.narration) : '';
+                    const typeClass = v.voucher_type || '';
+                    return `<div class="dash-rv-item">
+                        <span class="dash-rv-type ${typeClass}">${v.voucher_type || '—'}</span>
+                        <div class="dash-rv-info">
+                            <div class="dash-rv-party">${v.party_name || v.voucher_number || '—'}</div>
+                            ${narr ? `<div class="dash-rv-narr">${narr}</div>` : ''}
+                        </div>
+                        <div class="dash-rv-right">
+                            <div class="dash-rv-amount">${amt}</div>
+                            <div class="dash-rv-date">${dateStr}</div>
+                        </div>
+                    </div>`;
+                }).join('');
+            } catch (e) {
+                console.error('Recent vouchers error:', e);
+                container.innerHTML = '<div class="dash-dc-empty" style="padding:2rem"><div class="dash-dc-empty-icon">⚠️</div>Could not load recent vouchers</div>';
+            }
         }
 
         // ═══ MASTER / LEDGER — LIVE FROM SUPABASE ═══
@@ -883,7 +1055,7 @@
         });
 
         function viewLedgerDetail(name) {
-            alert(`Ledger: ${name}\n\nDetailed view coming soon — will show all voucher entries for this ledger.`);
+            showAlert({ title: name, message: 'Detailed ledger view coming soon — will show all voucher entries for this ledger.', type: 'info', icon: '📓' });
         }
 
         function switchMasterTab(tab, el) {
@@ -980,17 +1152,17 @@
 
         function formatTallyDate(d) {
             if (!d || d.length !== 8) return d || '-';
-            return `${d.substring(6,8)}-${d.substring(4,6)}-${d.substring(0,4)}`;
+            return `${d.substring(6, 8)}-${d.substring(4, 6)}-${d.substring(0, 4)}`;
         }
 
         function getVoucherTypeBg(type) {
             const map = {
-                'Sales':    { bg: '#ecfdf5', color: '#059669' },
+                'Sales': { bg: '#ecfdf5', color: '#059669' },
                 'Purchase': { bg: '#fef2f2', color: '#dc2626' },
-                'Payment':  { bg: '#fff7ed', color: '#d97706' },
-                'Receipt':  { bg: '#eff6ff', color: '#2563eb' },
-                'Journal':  { bg: '#f5f3ff', color: '#7c3aed' },
-                'Contra':   { bg: '#fdf4ff', color: '#c026d3' },
+                'Payment': { bg: '#fff7ed', color: '#d97706' },
+                'Receipt': { bg: '#eff6ff', color: '#2563eb' },
+                'Journal': { bg: '#f5f3ff', color: '#7c3aed' },
+                'Contra': { bg: '#fdf4ff', color: '#c026d3' },
             };
             return map[type] || { bg: '#f1f5f9', color: '#475569' };
         }
@@ -1360,21 +1532,27 @@
             if (!tallyConnected) {
                 // Show toast with link to integrations
                 showToast('⚠️ Tally is not connected. Please connect Tally first via the Integrations page.', 'error');
-                setTimeout(() => {
-                    if (confirm('Tally connector is not running.\n\nWould you like to go to the Integrations page to set up the Tally connection?')) {
-                        window.location.href = 'integrations.html';
-                    }
-                }, 300);
+                const goToIntegrations = await showConfirm({
+                    title: 'Tally Not Connected',
+                    message: 'The Tally connector is not running. Would you like to go to the <strong>Integrations</strong> page to set up the connection?',
+                    type: 'warning',
+                    icon: '🔗',
+                    confirmText: 'Go to Integrations',
+                    cancelText: 'Cancel',
+                });
+                if (goToIntegrations) window.location.href = 'integrations.html';
                 return;
             }
 
-            // Step 2: Confirm sync
-            const msg = `Ready to sync this voucher to Tally?\n\n` +
-                `Invoice: ${tx.invoiceNo}\n` +
-                `Vendor: ${tx.vendor}\n` +
-                `Amount: ₹${(tx.totalAmount || 0).toLocaleString('en-IN')}\n` +
-                `Type: ${tx.type}`;
-            if (!confirm(msg)) return;
+            const syncOk = await showConfirm({
+                title: 'Sync to Tally?',
+                message: `<div style="text-align:left;line-height:1.8">Invoice: <strong>${tx.invoiceNo}</strong><br>Vendor: <strong>${tx.vendor}</strong><br>Amount: <strong>₹${(tx.totalAmount || 0).toLocaleString('en-IN')}</strong><br>Type: <strong>${tx.type}</strong></div>`,
+                type: 'confirm',
+                icon: '🔄',
+                confirmText: 'Push to Tally',
+                cancelText: 'Cancel',
+            });
+            if (!syncOk) return;
 
             // Step 3: Build payload and push
             const company = tallyCompanies[0] || '';
@@ -1535,13 +1713,13 @@
 
                 // ISS-036: File type validation (TC-093, TC-094)
                 if (!ALLOWED_EXTS.includes(ext)) {
-                    alert(`⚠️ Wrong file type: "${f.name}"\n\nPlease upload one of: ${ALLOWED_EXTS.join(', ')}\n\nThis file was skipped.`);
+                    showAlert({ title: 'Unsupported File Type', message: `<strong>"${f.name}"</strong> is not a supported format.<br><br>Please upload one of: ${ALLOWED_EXTS.join(', ')}`, type: 'warning', icon: '⚠️' });
                     return; // skip this file
                 }
 
                 // ISS-036: File size validation
                 if (f.size > MAX_SIZE_MB * 1024 * 1024) {
-                    alert(`⚠️ File too large: "${f.name}" (${(f.size / 1048576).toFixed(1)} MB)\n\nMaximum file size is ${MAX_SIZE_MB} MB.`);
+                    showAlert({ title: 'File Too Large', message: `<strong>"${f.name}"</strong> is ${(f.size / 1048576).toFixed(1)} MB.<br><br>Maximum file size is ${MAX_SIZE_MB} MB.`, type: 'warning', icon: '📏' });
                     return; // skip this file
                 }
 
@@ -1596,8 +1774,356 @@
             uploadZone.addEventListener('drop', e => { e.preventDefault(); uploadZone.classList.remove('drag-over'); });
         }
 
-        // ═══ REPORTS & ANALYSIS ═══
-        function openReport(type) { alert('Report: ' + type + ' — Coming soon!'); }
+        // ═══ REPORTS — TALLY REGISTER VIEW ═══
+        let rptCurrentTab = 'daybook';
+        let rptPage = 1;
+        let rptTotalPages = 1;
+        let rptTotal = 0;
+        let rptSearchVal = '';
+        let rptSearchDebounce = null;
+        const RPT_PER_PAGE = 25;
+        let rptExpandedGuid = null;
+
+        function switchReportTab(tab, el) {
+            document.querySelectorAll('.rpt-tab').forEach(t => t.classList.remove('active'));
+            if (el) el.classList.add('active');
+            rptCurrentTab = tab;
+            rptPage = 1;
+            rptSearchVal = '';
+            const searchInput = document.getElementById('rpt-search-input');
+            if (searchInput) searchInput.value = '';
+
+            // Toggle ledger selector
+            const ledgerBar = document.getElementById('rpt-ledger-bar');
+            if (tab === 'ledger') {
+                ledgerBar.style.display = 'flex';
+                loadLedgerList();
+            } else {
+                ledgerBar.style.display = 'none';
+                loadReportData();
+            }
+        }
+
+        function handleReportSearch(val) {
+            clearTimeout(rptSearchDebounce);
+            rptSearchDebounce = setTimeout(() => {
+                rptSearchVal = val;
+                rptPage = 1;
+                if (rptCurrentTab === 'ledger') {
+                    loadLedgerReport();
+                } else {
+                    loadReportData();
+                }
+            }, 300);
+        }
+
+        async function loadReportData(page) {
+            if (page) rptPage = page;
+            const tbody = document.getElementById('rpt-tbody');
+            const tfoot = document.getElementById('rpt-tfoot');
+            tbody.innerHTML = '<tr><td colspan="8" class="rpt-loading">Loading report data…</td></tr>';
+            tfoot.style.display = 'none';
+            rptExpandedGuid = null;
+
+            try {
+                let url = withCompany(`/tally/vouchers?page=${rptPage}&per_page=${RPT_PER_PAGE}`);
+                if (rptCurrentTab !== 'daybook') {
+                    url += `&voucher_type=${encodeURIComponent(rptCurrentTab)}`;
+                }
+                if (rptSearchVal) url += `&search=${encodeURIComponent(rptSearchVal)}`;
+
+                const res = await authFetch(url);
+                if (!res.ok) throw new Error('Failed');
+                const result = await res.json();
+
+                rptTotal = result.total;
+                rptTotalPages = result.total_pages;
+                const vouchers = result.data || [];
+
+                // Update stats bar
+                document.getElementById('rpt-stat-count').textContent = `${rptTotal} entries`;
+
+                if (vouchers.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="8" class="rpt-loading">
+                        <div style="font-size:1.5rem;margin-bottom:.3rem">📋</div>
+                        No ${rptCurrentTab === 'daybook' ? '' : rptCurrentTab + ' '}vouchers found
+                    </td></tr>`;
+                    document.getElementById('rpt-stat-dr').textContent = 'Dr: ₹ 0';
+                    document.getElementById('rpt-stat-cr').textContent = 'Cr: ₹ 0';
+                    renderReportPagination();
+                    return;
+                }
+
+                let pageDr = 0, pageCr = 0;
+
+                tbody.innerHTML = vouchers.map((v, i) => {
+                    const srNo = (rptPage - 1) * RPT_PER_PAGE + i + 1;
+                    const dateStr = v.date ? formatTallyDate(v.date) : '—';
+                    const amt = Math.abs(v.amount || 0);
+                    // For Sales/Receipt: amount is credit; for Purchase/Payment: debit
+                    const isDr = ['Purchase', 'Payment', 'Debit Note'].includes(v.voucher_type);
+                    const drAmt = isDr ? amt : 0;
+                    const crAmt = isDr ? 0 : amt;
+                    pageDr += drAmt;
+                    pageCr += crAmt;
+
+                    return `<tr class="rpt-voucher-row" id="rpt-row-${v.guid}">
+                        <td style="text-align:center;color:#94a3b8;font-size:.78rem">${srNo}</td>
+                        <td style="font-weight:500">${dateStr}</td>
+                        <td><span class="rpt-vtype ${v.voucher_type}">${v.voucher_type}</span></td>
+                        <td style="color:#3b82f6;font-weight:500;font-size:.8rem">${v.voucher_number || '—'}</td>
+                        <td>
+                            <div style="font-weight:600;color:#0f172a">${v.party_name || '—'}</div>
+                            ${v.narration ? `<div style="font-size:.68rem;color:#94a3b8;white-space:normal;max-width:250px;overflow:hidden;text-overflow:ellipsis">${v.narration.substring(0, 60)}${v.narration.length > 60 ? '…' : ''}</div>` : ''}
+                        </td>
+                        <td style="text-align:right;font-weight:700;color:${drAmt > 0 ? '#dc2626' : '#d1d5db'}">${drAmt > 0 ? formatINR(drAmt) : '—'}</td>
+                        <td style="text-align:right;font-weight:700;color:${crAmt > 0 ? '#059669' : '#d1d5db'}">${crAmt > 0 ? formatINR(crAmt) : '—'}</td>
+                        <td><button class="rpt-expand-btn" id="rpt-exp-${v.guid}" onclick="toggleReportDetail('${v.guid}')">▶</button></td>
+                    </tr>
+                    <tr id="rpt-detail-${v.guid}" style="display:none">
+                        <td colspan="8" class="rpt-detail-cell">
+                            <div class="rpt-detail-inner" id="rpt-detail-content-${v.guid}">Loading entries…</div>
+                        </td>
+                    </tr>`;
+                }).join('');
+
+                // Totals
+                document.getElementById('rpt-stat-dr').textContent = `Dr: ${formatINR(pageDr)}`;
+                document.getElementById('rpt-stat-cr').textContent = `Cr: ${formatINR(pageCr)}`;
+                document.getElementById('rpt-total-dr').textContent = formatINR(pageDr);
+                document.getElementById('rpt-total-cr').textContent = formatINR(pageCr);
+                tfoot.style.display = '';
+
+                renderReportPagination();
+            } catch (e) {
+                console.error('Report load error:', e);
+                tbody.innerHTML = '<tr><td colspan="8" class="rpt-loading" style="color:#dc2626">⚠️ Failed to load report data</td></tr>';
+            }
+        }
+
+        async function toggleReportDetail(guid) {
+            const detailRow = document.getElementById('rpt-detail-' + guid);
+            const btn = document.getElementById('rpt-exp-' + guid);
+            const mainRow = document.getElementById('rpt-row-' + guid);
+
+            if (rptExpandedGuid === guid) {
+                detailRow.style.display = 'none';
+                btn.textContent = '▶';
+                btn.classList.remove('open');
+                mainRow.classList.remove('rpt-expanded');
+                rptExpandedGuid = null;
+                return;
+            }
+
+            // Collapse previous
+            if (rptExpandedGuid) {
+                const prev = document.getElementById('rpt-detail-' + rptExpandedGuid);
+                const prevBtn = document.getElementById('rpt-exp-' + rptExpandedGuid);
+                const prevRow = document.getElementById('rpt-row-' + rptExpandedGuid);
+                if (prev) prev.style.display = 'none';
+                if (prevBtn) { prevBtn.textContent = '▶'; prevBtn.classList.remove('open'); }
+                if (prevRow) prevRow.classList.remove('rpt-expanded');
+            }
+
+            detailRow.style.display = '';
+            btn.textContent = '▼';
+            btn.classList.add('open');
+            mainRow.classList.add('rpt-expanded');
+            rptExpandedGuid = guid;
+
+            const contentEl = document.getElementById('rpt-detail-content-' + guid);
+            contentEl.innerHTML = '<div style="text-align:center;padding:.75rem;color:#94a3b8">⏳ Loading entries…</div>';
+
+            try {
+                const res = await authFetch(`/tally/vouchers/${guid}`);
+                if (!res.ok) throw new Error('Failed');
+                const data = await res.json();
+
+                let html = '';
+                if (data.ledger_entries && data.ledger_entries.length > 0) {
+                    let totalDr = 0, totalCr = 0;
+                    html += `<table class="rpt-detail-table">
+                        <thead><tr>
+                            <th>Particulars (Ledger)</th>
+                            <th style="text-align:right;width:130px">Debit (Dr)</th>
+                            <th style="text-align:right;width:130px">Credit (Cr)</th>
+                        </tr></thead><tbody>`;
+
+                    data.ledger_entries.forEach(e => {
+                        const amt = Math.abs(e.amount);
+                        if (e.is_debit) totalDr += amt; else totalCr += amt;
+                        html += `<tr>
+                            <td style="font-weight:500">${e.ledger_name}</td>
+                            <td style="text-align:right;color:#dc2626;font-weight:600">${e.is_debit ? formatINR(amt) : ''}</td>
+                            <td style="text-align:right;color:#059669;font-weight:600">${!e.is_debit ? formatINR(amt) : ''}</td>
+                        </tr>`;
+                    });
+
+                    html += `<tr class="rpt-detail-total">
+                        <td style="font-size:.75rem">TOTAL</td>
+                        <td style="text-align:right;color:#dc2626">${formatINR(totalDr)}</td>
+                        <td style="text-align:right;color:#059669">${formatINR(totalCr)}</td>
+                    </tr></tbody></table>`;
+                }
+
+                if (data.inventory_entries && data.inventory_entries.length > 0) {
+                    html += `<div style="margin-top:.6rem">
+                        <div style="font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#059669;margin-bottom:.4rem">📦 Inventory (${data.inventory_entries.length})</div>
+                        <table class="rpt-detail-table">
+                            <thead><tr><th>Item</th><th>HSN</th><th style="text-align:right">Qty</th><th>UOM</th><th style="text-align:right">Rate</th><th style="text-align:right">Amount</th></tr></thead><tbody>`;
+                    data.inventory_entries.forEach(e => {
+                        html += `<tr>
+                            <td style="font-weight:500">${e.stock_item_name}</td>
+                            <td style="font-family:monospace;font-size:.75rem;color:#6b7280">${e.hsn_code || '—'}</td>
+                            <td style="text-align:right;font-weight:600">${e.quantity}</td>
+                            <td style="color:#6b7280">${e.uom || '—'}</td>
+                            <td style="text-align:right">${formatINR(e.rate)}</td>
+                            <td style="text-align:right;font-weight:600">${formatINR(e.amount)}</td>
+                        </tr>`;
+                    });
+                    html += '</tbody></table></div>';
+                }
+
+                if (!html) html = '<div style="text-align:center;padding:.75rem;color:#94a3b8">No entries for this voucher</div>';
+                contentEl.innerHTML = html;
+            } catch (e) {
+                console.error('Detail error:', e);
+                contentEl.innerHTML = '<div style="text-align:center;padding:.75rem;color:#dc2626">⚠️ Failed to load entries</div>';
+            }
+        }
+
+        function renderReportPagination() {
+            const pagEl = document.getElementById('rpt-pagination');
+            if (rptTotalPages <= 1) {
+                pagEl.innerHTML = `<div class="de-page-info">${rptTotal} voucher(s)</div><div></div><div></div>`;
+                return;
+            }
+            const startItem = (rptPage - 1) * RPT_PER_PAGE + 1;
+            const endItem = Math.min(rptPage * RPT_PER_PAGE, rptTotal);
+
+            let h = `<div class="de-page-info">Showing ${startItem}–${endItem} of ${rptTotal}</div><div class="de-page-btns">`;
+            h += `<button class="de-page-btn" ${rptPage === 1 ? 'disabled' : ''} onclick="loadReportData(${rptPage - 1})">‹</button>`;
+
+            let startP = Math.max(1, rptPage - 2);
+            let endP = Math.min(rptTotalPages, startP + 4);
+            if (endP - startP < 4) startP = Math.max(1, endP - 4);
+
+            if (startP > 1) h += `<button class="de-page-btn" onclick="loadReportData(1)">1</button><button class="de-page-btn" disabled>…</button>`;
+            for (let p = startP; p <= endP; p++) {
+                h += `<button class="de-page-btn ${p === rptPage ? 'active' : ''}" onclick="loadReportData(${p})">${p}</button>`;
+            }
+            if (endP < rptTotalPages) h += `<button class="de-page-btn" disabled>…</button><button class="de-page-btn" onclick="loadReportData(${rptTotalPages})">${rptTotalPages}</button>`;
+
+            h += `<button class="de-page-btn" ${rptPage === rptTotalPages ? 'disabled' : ''} onclick="loadReportData(${rptPage + 1})">›</button>`;
+            h += `</div><div style="font-size:.78rem;color:#9ca3af">${RPT_PER_PAGE} / page</div>`;
+            pagEl.innerHTML = h;
+        }
+
+        // ═══ LEDGER-WISE REPORT ═══
+        let rptLedgerNames = [];
+
+        async function loadLedgerList() {
+            const sel = document.getElementById('rpt-ledger-select');
+            try {
+                const res = await authFetch(withCompany('/tally/ledgers?per_page=200'));
+                if (res.ok) {
+                    const d = await res.json();
+                    rptLedgerNames = d.data || [];
+                    sel.innerHTML = '<option value="">— Choose a Ledger —</option>' +
+                        rptLedgerNames.map(l => `<option value="${l.name}" data-ob="${l.opening_balance}" data-cb="${l.closing_balance}">${l.name} (${l.parent})</option>`).join('');
+                }
+            } catch (e) { console.error('Ledger list error:', e); }
+
+            // Clear table
+            document.getElementById('rpt-tbody').innerHTML = '<tr><td colspan="8" class="rpt-loading">Select a ledger to view its entries</td></tr>';
+            document.getElementById('rpt-tfoot').style.display = 'none';
+            document.getElementById('rpt-pagination').innerHTML = '';
+        }
+
+        async function loadLedgerReport(page) {
+            if (page) rptPage = page; else rptPage = 1;
+            const ledgerName = document.getElementById('rpt-ledger-select').value;
+            if (!ledgerName) {
+                document.getElementById('rpt-tbody').innerHTML = '<tr><td colspan="8" class="rpt-loading">Select a ledger to view its entries</td></tr>';
+                document.getElementById('rpt-tfoot').style.display = 'none';
+                document.getElementById('rpt-ledger-balance').innerHTML = '';
+                return;
+            }
+
+            const tbody = document.getElementById('rpt-tbody');
+            const tfoot = document.getElementById('rpt-tfoot');
+            tbody.innerHTML = '<tr><td colspan="8" class="rpt-loading">Loading ledger entries…</td></tr>';
+            tfoot.style.display = 'none';
+
+            // Show balance from selected option
+            const selOpt = document.getElementById('rpt-ledger-select').selectedOptions[0];
+            const ob = parseFloat(selOpt?.dataset.ob) || 0;
+            const cb = parseFloat(selOpt?.dataset.cb) || 0;
+            const balEl = document.getElementById('rpt-ledger-balance');
+            balEl.innerHTML = `<span style="color:#6b7280;font-weight:500">Op: </span><span style="color:${ob < 0 ? '#dc2626' : '#059669'}">${formatINR(ob)} ${ob < 0 ? 'Dr' : 'Cr'}</span>
+                <span style="margin:0 .5rem;color:#d1d5db">|</span>
+                <span style="color:#6b7280;font-weight:500">Cl: </span><span style="color:${cb < 0 ? '#dc2626' : '#059669'}">${formatINR(cb)} ${cb < 0 ? 'Dr' : 'Cr'}</span>`;
+
+            try {
+                let url = withCompany(`/tally/vouchers?page=${rptPage}&per_page=${RPT_PER_PAGE}&search=${encodeURIComponent(ledgerName)}`);
+                const res = await authFetch(url);
+                if (!res.ok) throw new Error('Failed');
+                const result = await res.json();
+                rptTotal = result.total;
+                rptTotalPages = result.total_pages;
+                const vouchers = result.data || [];
+
+                document.getElementById('rpt-stat-count').textContent = `${rptTotal} entries`;
+
+                if (vouchers.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="8" class="rpt-loading"><div style="font-size:1.5rem;margin-bottom:.3rem">📋</div>No vouchers found for this ledger</td></tr>';
+                    return;
+                }
+
+                let pageDr = 0, pageCr = 0;
+                tbody.innerHTML = vouchers.map((v, i) => {
+                    const srNo = (rptPage - 1) * RPT_PER_PAGE + i + 1;
+                    const dateStr = v.date ? formatTallyDate(v.date) : '—';
+                    const amt = Math.abs(v.amount || 0);
+                    const isDr = ['Purchase', 'Payment', 'Debit Note'].includes(v.voucher_type);
+                    const drAmt = isDr ? amt : 0;
+                    const crAmt = isDr ? 0 : amt;
+                    pageDr += drAmt;
+                    pageCr += crAmt;
+
+                    return `<tr class="rpt-voucher-row" id="rpt-row-${v.guid}">
+                        <td style="text-align:center;color:#94a3b8;font-size:.78rem">${srNo}</td>
+                        <td style="font-weight:500">${dateStr}</td>
+                        <td><span class="rpt-vtype ${v.voucher_type}">${v.voucher_type}</span></td>
+                        <td style="color:#3b82f6;font-weight:500;font-size:.8rem">${v.voucher_number || '—'}</td>
+                        <td><div style="font-weight:600;color:#0f172a">${v.party_name || '—'}</div></td>
+                        <td style="text-align:right;font-weight:700;color:${drAmt > 0 ? '#dc2626' : '#d1d5db'}">${drAmt > 0 ? formatINR(drAmt) : '—'}</td>
+                        <td style="text-align:right;font-weight:700;color:${crAmt > 0 ? '#059669' : '#d1d5db'}">${crAmt > 0 ? formatINR(crAmt) : '—'}</td>
+                        <td><button class="rpt-expand-btn" id="rpt-exp-${v.guid}" onclick="toggleReportDetail('${v.guid}')">▶</button></td>
+                    </tr>
+                    <tr id="rpt-detail-${v.guid}" style="display:none">
+                        <td colspan="8" class="rpt-detail-cell">
+                            <div class="rpt-detail-inner" id="rpt-detail-content-${v.guid}">Loading entries…</div>
+                        </td>
+                    </tr>`;
+                }).join('');
+
+                document.getElementById('rpt-stat-dr').textContent = `Dr: ${formatINR(pageDr)}`;
+                document.getElementById('rpt-stat-cr').textContent = `Cr: ${formatINR(pageCr)}`;
+                document.getElementById('rpt-total-dr').textContent = formatINR(pageDr);
+                document.getElementById('rpt-total-cr').textContent = formatINR(pageCr);
+                tfoot.style.display = '';
+
+                renderReportPagination();
+            } catch (e) {
+                console.error('Ledger report error:', e);
+                tbody.innerHTML = '<tr><td colspan="8" class="rpt-loading" style="color:#dc2626">⚠️ Failed to load ledger data</td></tr>';
+            }
+        }
+
+        // Keep old openReport for any remaining references
+        function openReport(type) { showAlert({ title: type.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()), message: 'This report is coming soon!', type: 'info', icon: '📊' }); }
+
         function switchAnalysisTab(tab, el) {
             document.querySelectorAll('.de-tab').forEach(t => t.classList.remove('active'));
             el.classList.add('active');
@@ -1613,31 +2139,34 @@
                 loadInvoiceStats(),
                 loadDashboardStats(),
                 loadTop5(),
+                loadRecentVouchers(),
                 loadInvoices(),
                 loadTallyCompanies()
             ]);
 
-            // ISS-039 TC-107: Check Tally connection and update banner
+            // Check Tally connection and update banner
             try {
                 const tRes = await fetch('http://localhost:9000/tally/companies');
                 if (tRes.ok) {
                     const companies = await tRes.json();
                     if (Array.isArray(companies) && companies.length > 0) {
                         const banner = document.getElementById('de-tally-banner');
-                        const dot = document.getElementById('de-tally-dot');
-                        const text = document.getElementById('de-tally-text');
+                        const textEl = document.getElementById('de-tally-text');
+                        const subEl = document.getElementById('de-tally-sub');
+                        const actionEl = document.getElementById('de-tally-action');
+                        const syncLabel = document.getElementById('dash-last-sync');
+
                         if (banner) {
-                            banner.style.background = '#ecfdf5';
-                            banner.style.borderColor = '#a7f3d0';
+                            banner.classList.remove('warn');
+                            banner.classList.add('connected');
                         }
-                        if (dot) dot.style.background = '#059669';
-                        if (text) {
-                            text.style.color = '#065f46';
-                            text.textContent = `Tally connected — ${companies.length} company${companies.length > 1 ? 'ies' : ''} detected`;
-                        }
+                        if (textEl) textEl.textContent = `Tally connected — ${companies.length} company${companies.length > 1 ? 'ies' : ''} detected`;
+                        if (subEl) subEl.textContent = companies.join(', ');
+                        if (actionEl) { actionEl.textContent = 'Manage →'; }
+                        if (syncLabel) syncLabel.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Last sync: ${new Date().toLocaleDateString('en-IN')}`;
                     }
                 }
-            } catch(_) { /* Tally not reachable — keep warning banner */ }
+            } catch (_) { /* Tally not reachable — keep warning banner */ }
 
             const section = urlParams.get('section');
             if (section) {
@@ -1653,18 +2182,23 @@
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,.5);
+            background: rgba(0, 0, 0, .5);
             z-index: 20000;
             align-items: stretch;
             justify-content: center;
         }
-        .rv-overlay.open { display: flex }
+
+        .rv-overlay.open {
+            display: flex
+        }
+
         .rv-modal {
             display: flex;
             width: 100%;
             height: 100%;
             background: #f8fafc;
         }
+
         /* Left Panel — Source Document */
         .rv-left {
             width: 42%;
@@ -1673,13 +2207,15 @@
             flex-direction: column;
             overflow: hidden;
         }
+
         .rv-left-header {
             padding: 1.25rem 1.5rem;
-            border-bottom: 1px solid rgba(255,255,255,.08);
+            border-bottom: 1px solid rgba(255, 255, 255, .08);
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
+
         .rv-left-header h3 {
             margin: 0;
             font-family: 'Outfit', sans-serif;
@@ -1690,37 +2226,43 @@
             align-items: center;
             gap: .5rem;
         }
+
         .rv-left-body {
             flex: 1;
             overflow-y: auto;
             padding: 1.5rem;
         }
+
         .rv-source-card {
-            background: rgba(255,255,255,.06);
-            border: 1px solid rgba(255,255,255,.08);
+            background: rgba(255, 255, 255, .06);
+            border: 1px solid rgba(255, 255, 255, .08);
             border-radius: 12px;
             padding: 1.25rem;
             margin-bottom: 1rem;
         }
+
         .rv-source-label {
             font-size: .62rem;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: .06em;
-            color: rgba(255,255,255,.4);
+            color: rgba(255, 255, 255, .4);
             margin-bottom: .35rem;
         }
+
         .rv-source-value {
             font-size: .88rem;
             font-weight: 600;
             color: #e2e8f0;
             line-height: 1.6;
         }
+
         .rv-source-meta {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: .75rem;
         }
+
         .rv-source-tag {
             display: inline-flex;
             align-items: center;
@@ -1729,9 +2271,10 @@
             font-weight: 600;
             padding: .25rem .65rem;
             border-radius: 6px;
-            background: rgba(59,130,246,.15);
+            background: rgba(59, 130, 246, .15);
             color: #93c5fd;
         }
+
         /* Right Panel — Editable Fields */
         .rv-right {
             flex: 1;
@@ -1739,6 +2282,7 @@
             flex-direction: column;
             overflow: hidden;
         }
+
         .rv-right-header {
             padding: 1rem 1.5rem;
             background: #fff;
@@ -1747,6 +2291,7 @@
             align-items: center;
             justify-content: space-between;
         }
+
         .rv-right-header h3 {
             margin: 0;
             font-family: 'Outfit', sans-serif;
@@ -1754,6 +2299,7 @@
             font-weight: 800;
             color: #0f172a;
         }
+
         .rv-close-btn {
             width: 32px;
             height: 32px;
@@ -1768,15 +2314,23 @@
             color: #64748b;
             transition: all .15s;
         }
-        .rv-close-btn:hover { background: #fee2e2; color: #dc2626; border-color: #fecaca }
+
+        .rv-close-btn:hover {
+            background: #fee2e2;
+            color: #dc2626;
+            border-color: #fecaca
+        }
+
         .rv-right-body {
             flex: 1;
             overflow-y: auto;
             padding: 1.5rem;
         }
+
         .rv-field-group {
             margin-bottom: 1.5rem;
         }
+
         .rv-field-group-title {
             font-size: .68rem;
             font-weight: 700;
@@ -1788,17 +2342,23 @@
             align-items: center;
             gap: .4rem;
         }
+
         .rv-field-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: .75rem;
         }
+
         .rv-field {
             display: flex;
             flex-direction: column;
             gap: .25rem;
         }
-        .rv-field.full-width { grid-column: 1 / -1 }
+
+        .rv-field.full-width {
+            grid-column: 1 / -1
+        }
+
         .rv-field label {
             font-size: .68rem;
             font-weight: 700;
@@ -1806,7 +2366,9 @@
             letter-spacing: .04em;
             color: #6b7280;
         }
-        .rv-field input, .rv-field select {
+
+        .rv-field input,
+        .rv-field select {
             width: 100%;
             padding: .55rem .75rem;
             border: 1px solid #e2e8f0;
@@ -1818,26 +2380,32 @@
             transition: all .15s;
             background: #fff;
         }
-        .rv-field input:focus, .rv-field select:focus {
+
+        .rv-field input:focus,
+        .rv-field select:focus {
             border-color: #3b82f6;
             outline: none;
-            box-shadow: 0 0 0 3px rgba(59,130,246,.1);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, .1);
         }
+
         .rv-field input.ai-detected {
             background: #f0fdf4;
             border-color: #86efac;
         }
+
         .rv-field .rv-hint {
             font-size: .62rem;
             color: #94a3b8;
             font-weight: 500;
         }
+
         .rv-amount-summary {
             background: #fff;
             border: 1px solid #e2e8f0;
             border-radius: 12px;
             padding: 1rem 1.25rem;
         }
+
         .rv-amount-row {
             display: flex;
             align-items: center;
@@ -1845,6 +2413,7 @@
             padding: .4rem 0;
             font-size: .85rem;
         }
+
         .rv-amount-row.total {
             border-top: 2px solid #e2e8f0;
             margin-top: .4rem;
@@ -1854,7 +2423,12 @@
             font-size: 1.05rem;
             color: #0f172a;
         }
-        .rv-amount-row span:first-child { color: #6b7280; font-weight: 500 }
+
+        .rv-amount-row span:first-child {
+            color: #6b7280;
+            font-weight: 500
+        }
+
         /* Footer Actions */
         .rv-footer {
             padding: 1rem 1.5rem;
@@ -1864,15 +2438,18 @@
             align-items: center;
             justify-content: space-between;
         }
+
         .rv-footer-left {
             display: flex;
             align-items: center;
             gap: .5rem;
         }
+
         .rv-footer-right {
             display: flex;
             gap: .5rem;
         }
+
         .rv-btn {
             padding: .55rem 1.15rem;
             border-radius: 8px;
@@ -1885,24 +2462,41 @@
             color: #374151;
             transition: all .15s;
         }
-        .rv-btn:hover { border-color: #1e3a8a; color: #1e3a8a }
+
+        .rv-btn:hover {
+            border-color: #1e3a8a;
+            color: #1e3a8a
+        }
+
         .rv-btn.approve {
             background: #059669;
             color: #fff;
             border-color: #059669;
         }
-        .rv-btn.approve:hover { background: #047857 }
+
+        .rv-btn.approve:hover {
+            background: #047857
+        }
+
         .rv-btn.push {
             background: linear-gradient(135deg, #1e3a8a, #3b82f6);
             color: #fff;
             border-color: transparent;
         }
-        .rv-btn.push:hover { box-shadow: 0 4px 14px rgba(30,58,138,.3) }
+
+        .rv-btn.push:hover {
+            box-shadow: 0 4px 14px rgba(30, 58, 138, .3)
+        }
+
         .rv-btn.reject {
             color: #dc2626;
             border-color: #fecaca;
         }
-        .rv-btn.reject:hover { background: #fef2f2 }
+
+        .rv-btn.reject:hover {
+            background: #fef2f2
+        }
+
         .rv-status-badge {
             display: inline-flex;
             align-items: center;
@@ -1912,12 +2506,26 @@
             padding: .3rem .75rem;
             border-radius: 8px;
         }
-        .rv-status-badge.pending { background: #fef3c7; color: #d97706 }
-        .rv-status-badge.synced { background: #ecfdf5; color: #059669 }
+
+        .rv-status-badge.pending {
+            background: #fef3c7;
+            color: #d97706
+        }
+
+        .rv-status-badge.synced {
+            background: #ecfdf5;
+            color: #059669
+        }
 
         @media (max-width: 900px) {
-            .rv-modal { flex-direction: column }
-            .rv-left { width: 100%; max-height: 40vh }
+            .rv-modal {
+                flex-direction: column
+            }
+
+            .rv-left {
+                width: 100%;
+                max-height: 40vh
+            }
         }
     </style>
 
@@ -1948,8 +2556,10 @@
                     </div>
                     <div class="rv-footer-right">
                         <button class="rv-btn reject" onclick="closeReviewModal()">✕ Cancel</button>
-                        <button class="rv-btn approve" id="rv-approve-btn" onclick="approveFromReview()">✅ Approve</button>
-                        <button class="rv-btn push" id="rv-push-btn" onclick="pushFromReview()">🔄 Approve & Push to Tally</button>
+                        <button class="rv-btn approve" id="rv-approve-btn" onclick="approveFromReview()">✅
+                            Approve</button>
+                        <button class="rv-btn push" id="rv-push-btn" onclick="pushFromReview()">🔄 Approve & Push to
+                            Tally</button>
                     </div>
                 </div>
             </div>
@@ -1984,7 +2594,7 @@
                     <div class="rv-source-meta">
                         <div>
                             <div class="rv-source-label">Date</div>
-                            <div class="rv-source-value">${tx.date ? new Date(tx.date).toLocaleDateString('en-IN', {day:'numeric',month:'long',year:'numeric'}) : 'N/A'}</div>
+                            <div class="rv-source-value">${tx.date ? new Date(tx.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }) : 'N/A'}</div>
                         </div>
                         <div>
                             <div class="rv-source-label">Type</div>
@@ -2063,8 +2673,8 @@
                             <label>Expense / Category Type</label>
                             <select id="rv-type">
                                 <option value="">— Select —</option>
-                                ${['Banking','Sales','Purchase','Journal','Advertising','Audit Fees','Commission','Communication','Conveyance','Depreciation','Electricity','Food & Beverages','Freight','Insurance','Interest','Legal','Miscellaneous','Office Supplies','Postal','Printing','Professional Fees','Provision','Rent','Repairs','Salaries','Staff Welfare','Stationery','Subscription','Telephone','Transport','Travel','Uncategorized']
-                                    .map(t => `<option value="${t}" ${tx.type === t ? 'selected' : ''}>${t}</option>`).join('')}
+                                ${['Banking', 'Sales', 'Purchase', 'Journal', 'Advertising', 'Audit Fees', 'Commission', 'Communication', 'Conveyance', 'Depreciation', 'Electricity', 'Food & Beverages', 'Freight', 'Insurance', 'Interest', 'Legal', 'Miscellaneous', 'Office Supplies', 'Postal', 'Printing', 'Professional Fees', 'Provision', 'Rent', 'Repairs', 'Salaries', 'Staff Welfare', 'Stationery', 'Subscription', 'Telephone', 'Transport', 'Travel', 'Uncategorized']
+                    .map(t => `<option value="${t}" ${tx.type === t ? 'selected' : ''}>${t}</option>`).join('')}
                             </select>
                         </div>
                         <div class="rv-field">

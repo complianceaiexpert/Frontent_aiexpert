@@ -65,11 +65,7 @@
                     <select class="dep-select" id="caro-company-select">
                         <option value="">— Select Company —</option>
                     </select>
-                    <select class="dep-select" id="caro-fy-select">
-                        <option value="2025-26">FY 2025-26</option>
-                        <option value="2024-25">FY 2024-25</option>
-                        <option value="2023-24">FY 2023-24</option>
-                    </select>
+                    <div id="caro-fy-container" style="display:inline-block;min-width:180px"></div>
                 </div>
                 <div class="dep-toolbar-right">
                     <button class="sr-btn sr-btn-secondary" onclick="caroLoadSyncedData()" id="caro-sync-btn">
@@ -130,6 +126,7 @@
 
     <div class="sr-toast-ct" id="sr-toast-ct"></div>
 
+    <script src="fy-utils.js"></script>
     <script src="api_config.js"></script>
     <script>
         const user = JSON.parse(localStorage.getItem('user'));
@@ -199,7 +196,13 @@
 
         // ═══ INIT ═══
         async function caroInit() {
-            caroFY = document.getElementById('caro-fy-select').value;
+            FYPeriod.mount('#caro-fy-container', {
+                type: 'yearly', label: 'Financial Year',
+                selectId: 'caro-fy-select', selectClass: 'dep-select',
+                pastYears: 3, showNext: true,
+                onChange: (p) => { caroFY = p ? p.value : FYPeriod.getCurrentFY(); },
+            });
+            caroFY = document.getElementById('caro-fy-select')?.value || FYPeriod.getCurrentFY();
             await caroLoadCompanies();
         }
 
@@ -452,10 +455,7 @@
             });
         }
 
-        // ═══ FY CHANGE ═══
-        document.getElementById('caro-fy-select').addEventListener('change', () => {
-            caroFY = document.getElementById('caro-fy-select').value;
-        });
+        // FY change handled by FYPeriod onChange callback
 
         caroInit();
     </script>

@@ -119,24 +119,8 @@
                             <option value="excess_cash">💵 Excess Cash Ledger Balance</option>
                         </select>
                     </div>
-                    <div class="rc-config-group">
-                        <label for="rc-period">Tax Period</label>
-                        <select id="rc-period" class="rc-select">
-                            <option value="">— Select Period —</option>
-                            <option value="2025-04">April 2025</option>
-                            <option value="2025-03">March 2025</option>
-                            <option value="2025-02">February 2025</option>
-                            <option value="2025-01">January 2025</option>
-                            <option value="2024-12">December 2024</option>
-                            <option value="2024-11">November 2024</option>
-                            <option value="2024-10">October 2024</option>
-                            <option value="2024-09">September 2024</option>
-                            <option value="2024-08">August 2024</option>
-                            <option value="2024-07">July 2024</option>
-                            <option value="2024-06">June 2024</option>
-                            <option value="2024-05">May 2024</option>
-                            <option value="2024-04">April 2024</option>
-                        </select>
+                    <div class="rc-config-group" id="rc-period-container">
+                        <!-- FYPeriod module mounts here -->
                     </div>
                 </div>
 
@@ -309,6 +293,7 @@
         </main>
     </div>
 
+    <script src="fy-utils.js"></script>
     <script src="api_config.js?v=2"></script>
     <script src="session-manager.js"></script>
     <script>
@@ -768,7 +753,8 @@
                 // Build multipart FormData with all files + params
                 const formData = new FormData();
                 formData.append('refund_type', currentGstType);
-                formData.append('period', document.getElementById('rc-period').value || '');
+                const periodSel = FYPeriod.getSelected();
+                formData.append('period', periodSel ? periodSel.value : '');
                 for (const file of uploadedFiles) {
                     formData.append('files', file);
                 }
@@ -966,6 +952,14 @@
         //  INIT — Deep-link support
         // ═══════════════════════════════════════════════════════
         (function init() {
+            // Mount the period selector (monthly for GST)
+            FYPeriod.mount('#rc-period-container', {
+                type: 'monthly',
+                label: 'Tax Period',
+                pastYears: 3,
+                showNext: true,
+            });
+
             const urlParams = new URLSearchParams(window.location.search);
 
             // Auto-select refund type if passed

@@ -649,6 +649,7 @@
     </div>
 
     <script src="api_config.js"></script>
+    <script src="app-confirm.js"></script>
     <script>
         // ══ AUTH ══
         const user = JSON.parse(localStorage.getItem('user'));
@@ -778,13 +779,13 @@
         }
         async function saveClient() {
             const name = document.getElementById('add-name').value.trim();
-            if (!name) { alert('Client name is required'); return; }
+            if (!name) { showAlert({ title: 'Name Required', message: 'Please enter the client/company name.', type: 'warning', icon: '✏️' }); return; }
             const pan = document.getElementById('add-pan').value.trim().toUpperCase();
             const gstin = document.getElementById('add-gstin').value.trim().toUpperCase();
             const email = document.getElementById('add-email').value.trim();
 
             if (gstin && gstinVerified === null) { await verifyGSTIN(); }
-            if (gstin && gstinVerified === false) { alert('GSTIN verification failed. Please correct or remove the GSTIN.'); return; }
+            if (gstin && gstinVerified === false) { showAlert({ title: 'GSTIN Verification Failed', message: 'The GSTIN could not be verified. Please correct or remove it before saving.', type: 'warning', icon: '⚠️' }); return; }
 
             const btn = document.getElementById('add-save-btn');
             btn.textContent = 'Saving…';
@@ -813,7 +814,7 @@
                 gstinVerified = null;
                 await loadClients();
             } catch (e) {
-                alert(e.message);
+                showAlert({ title: 'Could Not Save', message: e.message, type: 'danger', icon: '❌' });
             } finally {
                 btn.textContent = 'Add Client';
                 btn.disabled = false;

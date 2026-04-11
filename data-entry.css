@@ -820,3 +820,714 @@ body {
     background: #fef2f2;
     color: #dc2626
 }
+
+/* ══════════════════════════════════════════════
+   Dashboard — Redesigned for CA Tally Overview
+   ══════════════════════════════════════════════ */
+
+/* ── Tally Connection Banner ── */
+.dash-tally-banner {
+    display: flex;
+    align-items: center;
+    gap: .65rem;
+    padding: .65rem 1rem;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    transition: all .3s ease;
+    border: 1px solid transparent
+}
+.dash-tally-banner.warn {
+    background: #fffbeb;
+    border-color: #fde68a;
+    color: #92400e
+}
+.dash-tally-banner.connected {
+    background: #ecfdf5;
+    border-color: #a7f3d0;
+    color: #065f46
+}
+.dash-tally-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    transition: background .3s
+}
+.dash-tally-banner.warn .dash-tally-dot { background: #d97706 }
+.dash-tally-banner.connected .dash-tally-dot { background: #059669; box-shadow: 0 0 0 3px rgba(5,150,105,.2) }
+.dash-tally-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1px
+}
+.dash-tally-text {
+    font-size: .8rem;
+    font-weight: 600
+}
+.dash-tally-sub {
+    font-size: .68rem;
+    opacity: .7
+}
+.dash-tally-action {
+    font-size: .72rem;
+    font-weight: 700;
+    color: #1e3a8a;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    padding: .3rem .85rem;
+    border-radius: 7px;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: all .15s
+}
+.dash-tally-action:hover {
+    background: #eff6ff;
+    border-color: #3b82f6
+}
+
+/* ── Company Snapshot Card ── */
+.dash-company-card {
+    background: #fff;
+    border: 1px solid #f1f5f9;
+    border-radius: 14px;
+    padding: 1.15rem 1.35rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,.03);
+    transition: box-shadow .2s
+}
+.dash-company-card:hover {
+    box-shadow: 0 4px 14px rgba(0,0,0,.05)
+}
+.dash-company-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.15rem;
+    font-weight: 800;
+    font-family: 'Outfit', sans-serif;
+    color: #fff;
+    flex-shrink: 0
+}
+.dash-company-info {
+    flex: 1;
+    min-width: 0
+}
+.dash-company-name {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #111827;
+    margin: 0 0 .3rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis
+}
+.dash-company-meta {
+    display: flex;
+    gap: .65rem;
+    flex-wrap: wrap
+}
+.dash-meta-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: .3rem;
+    font-size: .68rem;
+    font-weight: 600;
+    color: #6b7280;
+    background: #f8fafc;
+    border: 1px solid #f1f5f9;
+    padding: .2rem .55rem;
+    border-radius: 6px
+}
+.dash-action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    padding: .45rem .85rem;
+    background: #1e3a8a;
+    color: #fff;
+    border-radius: 8px;
+    font-size: .78rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all .15s;
+    white-space: nowrap;
+    border: none
+}
+.dash-action-btn:hover {
+    background: #1e40af;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(30,58,138,.2)
+}
+
+/* ── Financial Snapshot Metrics ── */
+.dash-metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: .75rem;
+    margin-bottom: 1rem
+}
+.dash-metric-card {
+    background: #fff;
+    border: 1px solid #f1f5f9;
+    border-radius: 12px;
+    padding: .85rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    transition: all .2s
+}
+.dash-metric-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0,0,0,.06)
+}
+.dash-metric-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0
+}
+.dash-metric-body {
+    flex: 1;
+    min-width: 0
+}
+.dash-metric-value {
+    font-size: 1.25rem;
+    font-weight: 800;
+    font-family: 'Outfit', sans-serif;
+    color: #111827;
+    line-height: 1
+}
+.dash-metric-label {
+    font-size: .62rem;
+    font-weight: 600;
+    color: #9ca3af;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    margin-top: .15rem
+}
+
+/* ── Voucher Breakdown Strip ── */
+.dash-voucher-strip {
+    display: flex;
+    gap: .5rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap
+}
+.dash-voucher-chip {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    padding: .45rem .85rem;
+    border-radius: 8px;
+    flex: 1;
+    min-width: 100px;
+    border: 1px solid #e2e8f0;
+    background: #fff;
+    transition: all .2s
+}
+.dash-voucher-chip:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0,0,0,.05)
+}
+.dash-vc-label {
+    font-size: .68rem;
+    font-weight: 600;
+    color: #6b7280
+}
+.dash-vc-value {
+    font-size: .95rem;
+    font-weight: 800;
+    font-family: 'Outfit', sans-serif;
+    margin-left: auto
+}
+.dash-voucher-chip.sales { border-left: 3px solid #059669 }
+.dash-voucher-chip.sales .dash-vc-value { color: #059669 }
+.dash-voucher-chip.purchase { border-left: 3px solid #dc2626 }
+.dash-voucher-chip.purchase .dash-vc-value { color: #dc2626 }
+.dash-voucher-chip.banking { border-left: 3px solid #2563eb }
+.dash-voucher-chip.banking .dash-vc-value { color: #2563eb }
+.dash-voucher-chip.journal { border-left: 3px solid #7c3aed }
+.dash-voucher-chip.journal .dash-vc-value { color: #7c3aed }
+.dash-voucher-chip.upload { border-left: 3px solid #ea580c }
+.dash-voucher-chip.upload .dash-vc-value { color: #ea580c }
+.dash-voucher-chip.pending { border-left: 3px solid #d97706 }
+.dash-voucher-chip.pending .dash-vc-value { color: #d97706 }
+.dash-voucher-chip.synced-chip { border-left: 3px solid #0d9488 }
+.dash-voucher-chip.synced-chip .dash-vc-value { color: #0d9488 }
+
+/* ── Quick Actions ── */
+.dash-quick-bar {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: .65rem 1.15rem;
+    background: #fff;
+    border: 1px solid #f1f5f9;
+    border-radius: 12px;
+    margin-bottom: 1rem
+}
+.dash-quick-title {
+    font-size: .72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: #9ca3af;
+    white-space: nowrap
+}
+.dash-quick-actions {
+    display: flex;
+    gap: .4rem;
+    flex-wrap: wrap;
+    flex: 1
+}
+.dash-qa-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    padding: .35rem .75rem;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 7px;
+    background: #fff;
+    cursor: pointer;
+    transition: all .2s;
+    font-size: .78rem;
+    font-weight: 600;
+    color: #374151;
+    font-family: inherit
+}
+.dash-qa-btn:hover {
+    border-color: #3b82f6;
+    color: #1e3a8a;
+    background: #f0f5ff;
+    transform: translateY(-1px)
+}
+
+/* ── Debtors & Creditors Grid ── */
+.dash-dc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem
+}
+.dash-dc-panel {
+    background: #fff;
+    border: 1px solid #f1f5f9;
+    border-radius: 12px;
+    overflow: hidden
+}
+.dash-dc-header {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    padding: .85rem 1rem;
+    border-bottom: 1px solid #f1f5f9
+}
+.dash-dc-indicator {
+    width: 3px;
+    height: 16px;
+    border-radius: 2px
+}
+.dash-dc-indicator.debtors { background: #2563eb }
+.dash-dc-indicator.creditors { background: #dc2626 }
+.dash-dc-title {
+    font-size: .85rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+    flex: 1
+}
+.dash-dc-badge {
+    font-size: .62rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: #f1f5f9;
+    color: #64748b
+}
+.dash-dc-table {
+    width: 100%;
+    border-collapse: collapse
+}
+.dash-dc-table th {
+    text-align: left;
+    padding: .5rem 1rem;
+    font-size: .65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    color: #94a3b8;
+    background: #fafbfc
+}
+.dash-dc-table td {
+    padding: .55rem 1rem;
+    font-size: .82rem;
+    color: #334155;
+    border-bottom: 1px solid #f8fafc
+}
+.dash-dc-table tbody tr {
+    transition: background .15s
+}
+.dash-dc-table tbody tr:hover {
+    background: #f8fafc
+}
+.dash-dc-empty {
+    text-align: center;
+    color: #94a3b8;
+    padding: 1.5rem;
+    font-size: .82rem
+}
+.dash-dc-empty-icon {
+    font-size: 1.25rem;
+    margin-bottom: .25rem
+}
+
+/* ── Recent Voucher Activity ── */
+.dash-recent-panel {
+    background: #fff;
+    border: 1px solid #f1f5f9;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 1rem
+}
+.dash-recent-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: .85rem 1rem;
+    border-bottom: 1px solid #f1f5f9
+}
+.dash-recent-title {
+    font-size: .88rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0
+}
+.dash-see-all {
+    font-size: .75rem;
+    font-weight: 600;
+    color: #3b82f6;
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-family: inherit;
+    transition: color .15s
+}
+.dash-see-all:hover { color: #1e3a8a }
+
+.dash-recent-body {
+    max-height: 320px;
+    overflow-y: auto
+}
+.dash-rv-item {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    padding: .65rem 1rem;
+    border-bottom: 1px solid #f8fafc;
+    transition: background .15s
+}
+.dash-rv-item:hover { background: #f8fafc }
+.dash-rv-item:last-child { border-bottom: none }
+.dash-rv-type {
+    display: inline-block;
+    padding: .2rem .5rem;
+    border-radius: 5px;
+    font-size: .65rem;
+    font-weight: 700;
+    min-width: 60px;
+    text-align: center
+}
+.dash-rv-type.Sales   { background: #ecfdf5; color: #059669 }
+.dash-rv-type.Purchase { background: #fef2f2; color: #dc2626 }
+.dash-rv-type.Payment  { background: #fff7ed; color: #d97706 }
+.dash-rv-type.Receipt  { background: #eff6ff; color: #2563eb }
+.dash-rv-type.Journal  { background: #f5f3ff; color: #7c3aed }
+.dash-rv-type.Contra   { background: #fdf4ff; color: #c026d3 }
+.dash-rv-info {
+    flex: 1;
+    min-width: 0
+}
+.dash-rv-party {
+    font-size: .82rem;
+    font-weight: 600;
+    color: #0f172a;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis
+}
+.dash-rv-narr {
+    font-size: .68rem;
+    color: #94a3b8;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 1px
+}
+.dash-rv-right {
+    text-align: right;
+    flex-shrink: 0
+}
+.dash-rv-amount {
+    font-size: .85rem;
+    font-weight: 700;
+    color: #0f172a;
+    font-family: 'Outfit', sans-serif
+}
+.dash-rv-date {
+    font-size: .65rem;
+    color: #94a3b8;
+    margin-top: 1px
+}
+
+/* ══════════════════════════════════════════════
+   Reports — Tally Register View
+   ══════════════════════════════════════════════ */
+
+/* ── Tab Bar ── */
+.rpt-tab-bar {
+    display: flex;
+    gap: 0;
+    background: #fff;
+    border: 1px solid #f1f5f9;
+    border-radius: 12px 12px 0 0;
+    padding: .25rem .25rem 0;
+    overflow-x: auto
+}
+.rpt-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    padding: .6rem 1rem;
+    font-size: .78rem;
+    font-weight: 600;
+    color: #6b7280;
+    cursor: pointer;
+    border: none;
+    background: none;
+    border-bottom: 2px solid transparent;
+    transition: all .2s;
+    white-space: nowrap;
+    font-family: inherit
+}
+.rpt-tab:hover { color: #1e3a8a; background: #f8fafc }
+.rpt-tab.active {
+    color: #1e3a8a;
+    border-bottom-color: #3b82f6;
+    background: #eff6ff;
+    border-radius: 8px 8px 0 0
+}
+.rpt-tab svg { flex-shrink: 0 }
+
+/* ── Toolbar ── */
+.rpt-toolbar {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    padding: .65rem 1rem;
+    background: #fff;
+    border-left: 1px solid #f1f5f9;
+    border-right: 1px solid #f1f5f9
+}
+.rpt-search {
+    padding: .45rem .85rem;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: .82rem;
+    min-width: 260px;
+    outline: none;
+    transition: border .2s;
+    font-family: inherit
+}
+.rpt-search:focus { border-color: #3b82f6 }
+.rpt-stats {
+    display: flex;
+    gap: .4rem;
+    margin-left: auto
+}
+.rpt-stat-chip {
+    font-size: .68rem;
+    font-weight: 700;
+    padding: .25rem .65rem;
+    border-radius: 6px;
+    background: #f1f5f9;
+    color: #64748b
+}
+.rpt-stat-chip.dr { background: #fef2f2; color: #dc2626 }
+.rpt-stat-chip.cr { background: #ecfdf5; color: #059669 }
+
+/* ── Ledger Selector ── */
+.rpt-ledger-bar {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    padding: .55rem 1rem;
+    background: #fafbff;
+    border-left: 1px solid #f1f5f9;
+    border-right: 1px solid #f1f5f9;
+    border-bottom: 1px solid #f1f5f9
+}
+.rpt-ledger-label {
+    font-size: .7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    color: #9ca3af;
+    white-space: nowrap
+}
+.rpt-ledger-select {
+    padding: .4rem .7rem;
+    border: 1px solid #d1d5db;
+    border-radius: 7px;
+    font-size: .82rem;
+    background: #fff;
+    color: #1e293b;
+    font-family: inherit;
+    min-width: 250px;
+    cursor: pointer
+}
+.rpt-ledger-balance {
+    margin-left: auto;
+    font-size: .78rem;
+    font-weight: 700
+}
+
+/* ── Table ── */
+.rpt-table-wrap {
+    background: #fff;
+    border-left: 1px solid #f1f5f9;
+    border-right: 1px solid #f1f5f9;
+    overflow-x: auto
+}
+.rpt-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 780px
+}
+.rpt-table thead th {
+    text-align: left;
+    padding: .6rem .75rem;
+    color: #475569;
+    font-weight: 700;
+    font-size: .7rem;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    border-bottom: 2px solid #e2e8f0;
+    background: #f8fafc;
+    white-space: nowrap;
+    position: sticky;
+    top: 0;
+    z-index: 1
+}
+.rpt-table tbody td {
+    padding: .55rem .75rem;
+    border-bottom: 1px solid #f1f5f9;
+    color: #334155;
+    font-size: .82rem;
+    white-space: nowrap
+}
+.rpt-table tbody tr { transition: background .12s }
+.rpt-table tbody tr:hover { background: #f8fafc }
+.rpt-table tbody tr.rpt-expanded { background: #eff6ff }
+
+.rpt-loading {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: #94a3b8;
+    font-size: .85rem
+}
+
+/* Voucher Type Badge in table */
+.rpt-vtype {
+    display: inline-block;
+    padding: .15rem .45rem;
+    border-radius: 5px;
+    font-size: .68rem;
+    font-weight: 700
+}
+.rpt-vtype.Sales   { background: #ecfdf5; color: #059669 }
+.rpt-vtype.Purchase { background: #fef2f2; color: #dc2626 }
+.rpt-vtype.Payment  { background: #fff7ed; color: #d97706 }
+.rpt-vtype.Receipt  { background: #eff6ff; color: #2563eb }
+.rpt-vtype.Journal  { background: #f5f3ff; color: #7c3aed }
+.rpt-vtype.Contra   { background: #fdf4ff; color: #c026d3 }
+
+/* Expand toggle */
+.rpt-expand-btn {
+    width: 22px;
+    height: 22px;
+    border-radius: 5px;
+    border: 1px solid #e2e8f0;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: .7rem;
+    color: #94a3b8;
+    transition: all .15s
+}
+.rpt-expand-btn:hover { border-color: #3b82f6; color: #3b82f6 }
+.rpt-expand-btn.open { background: #eff6ff; border-color: #3b82f6; color: #3b82f6 }
+
+/* Detail entries row */
+.rpt-detail-cell {
+    padding: 0 !important;
+    background: #f8fafc
+}
+.rpt-detail-inner {
+    padding: .6rem 1rem .6rem 3rem
+}
+.rpt-detail-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: .8rem
+}
+.rpt-detail-table th {
+    text-align: left;
+    padding: .35rem .5rem;
+    font-size: .62rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: #6366f1;
+    background: #eef2ff
+}
+.rpt-detail-table td {
+    padding: .35rem .5rem;
+    border-bottom: 1px solid #f1f5f9
+}
+.rpt-detail-total td {
+    font-weight: 700;
+    border-top: 2px solid #d1d5db;
+    background: #f0fdf4
+}
+
+/* Totals Footer */
+.rpt-total-row td {
+    padding: .65rem .75rem;
+    background: #f8fafc;
+    border-top: 2px solid #e2e8f0
+}
+
+/* ── Pagination ── */
+.rpt-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: .75rem 1rem;
+    background: #fff;
+    border: 1px solid #f1f5f9;
+    border-radius: 0 0 12px 12px
+}

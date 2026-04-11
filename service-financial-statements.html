@@ -47,11 +47,7 @@
                     <select class="dep-select" id="fs-company-select">
                         <option value="">— Select Tally Company —</option>
                     </select>
-                    <select class="dep-select" id="fs-fy-select">
-                        <option value="2025-26">FY 2025-26</option>
-                        <option value="2024-25">FY 2024-25</option>
-                        <option value="2023-24">FY 2023-24</option>
-                    </select>
+                    <div id="fs-fy-container" style="display:inline-block;min-width:180px"></div>
                 </div>
                 <div class="dep-toolbar-right">
                     <button class="sr-btn sr-btn-secondary" onclick="fsLoadTallyTB()" id="fs-load-btn">
@@ -209,6 +205,7 @@
 
     <div class="sr-toast-ct" id="sr-toast-ct"></div>
 
+    <script src="fy-utils.js"></script>
     <script src="api_config.js"></script>
     <script src="app-toast.js"></script>
     <script src="client-picker-overlay.js"></script>
@@ -275,6 +272,11 @@
 
         // ═══ INIT ═══
         async function fsInit() {
+            FYPeriod.mount('#fs-fy-container', {
+                type: 'yearly', label: 'Financial Year',
+                selectId: 'fs-fy-select', selectClass: 'dep-select',
+                pastYears: 3, showNext: true,
+            });
             await fsLoadCompanies();
             fsLoadHistory();
         }

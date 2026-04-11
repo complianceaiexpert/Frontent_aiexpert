@@ -33,11 +33,7 @@
                     <select class="dep-select" id="f3cd-company-select">
                         <option value="">— Select Tally Company —</option>
                     </select>
-                    <select class="dep-select" id="f3cd-ay-select">
-                        <option value="2026-27">AY 2026-27</option>
-                        <option value="2025-26">AY 2025-26</option>
-                        <option value="2024-25">AY 2024-25</option>
-                    </select>
+                    <div id="f3cd-ay-container" style="display:inline-block;min-width:180px"></div>
                     <select class="dep-select" id="f3cd-type-select">
                         <option value="44AB(a)">Sec 44AB(a) — Business (Turnover > ₹1Cr)</option>
                         <option value="44AB(b)">Sec 44AB(b) — Profession (Receipts > ₹50L)</option>
@@ -150,6 +146,7 @@
 
     <div class="sr-toast-ct" id="sr-toast-ct"></div>
 
+    <script src="fy-utils.js"></script>
     <script src="api_config.js"></script>
     <script>
         const user = JSON.parse(localStorage.getItem('user'));
@@ -186,6 +183,15 @@
         // ═══════════════════════════════════════════════════
 
         async function f3cdInit() {
+            FYPeriod.mount('#f3cd-ay-container', {
+                type: 'yearly',
+                format: 'AY',
+                label: 'Assessment Year',
+                selectId: 'f3cd-ay-select',
+                selectClass: 'dep-select',
+                pastYears: 3,
+                showNext: true,
+            });
             await f3cdLoadCompanies();
         }
 

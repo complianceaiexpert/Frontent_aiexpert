@@ -74,13 +74,7 @@
                     <p>Provide basic details for the GSTR-9 annual return.</p>
                     <div class="form-row">
                         <div class="form-field">
-                            <label>Financial Year</label>
-                            <select id="fy-select">
-                                <option value="2024-25">2024-25</option>
-                                <option value="2023-24" selected>2023-24</option>
-                                <option value="2022-23">2022-23</option>
-                                <option value="2021-22">2021-22</option>
-                            </select>
+                            <div id="gstr9-fy-container"></div>
                         </div>
                         <div class="form-field">
                             <label>GSTIN</label>
@@ -121,11 +115,19 @@
     </div>
 
     <script src="tool-sidebar.js"></script>
+    <script src="fy-utils.js"></script>
     <script src="api_config.js?v=2"></script>
     <script src="session-manager.js"></script>
     <script src="drive-picker.js"></script>
     <script>
         renderToolSidebar('gstr9-json');
+
+        // Mount FY period selector
+        FYPeriod.mount('#gstr9-fy-container', {
+            type: 'yearly', label: 'Financial Year',
+            selectId: 'fy-select',
+            pastYears: 3, showNext: true,
+        });
 
         let uploadedFile = null;
         function pickFromDrive() {

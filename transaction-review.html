@@ -402,6 +402,29 @@
         .rv-form-panel.form-disabled .rv-item-action,
         .rv-form-panel.form-disabled .gst-detail-btn { pointer-events: none; opacity: .4 }
 
+        /* ═══ VALIDATION ERROR STYLES ═══ */
+        .rv-fg input.rv-field-error,
+        .rv-fg select.rv-field-error,
+        .rv-input-cell.rv-field-error,
+        .rv-tax-select.rv-field-error,
+        .rv-tax-desc.rv-field-error {
+            border-color: #ef4444 !important;
+            background: #fef2f2 !important;
+            box-shadow: 0 0 0 3px rgba(239,68,68,.1) !important;
+            animation: rv-shake .4s ease;
+        }
+        @keyframes rv-shake {
+            0%,100% { transform: translateX(0) }
+            20% { transform: translateX(-4px) }
+            40% { transform: translateX(4px) }
+            60% { transform: translateX(-3px) }
+            80% { transform: translateX(2px) }
+        }
+        .rv-field-error-label {
+            color: #ef4444 !important;
+            font-weight: 800 !important;
+        }
+
         /* Toast */
         #toast-container {
             position: fixed; top: 1rem; right: 1rem; z-index: 30000;
@@ -616,6 +639,7 @@
                 </div>
                 <div class="rv-bottom-right">
                     <button class="rv-action-btn" onclick="goBack()">Cancel</button>
+                    <button class="rv-action-btn" id="btn-review-again" onclick="handleReviewAgain()" style="display:none;color:#d97706;border-color:#fde68a">↻ Review Again</button>
                     <button class="rv-action-btn save-btn" id="btn-save" onclick="handleSave()">💾 Save</button>
                     <button class="rv-action-btn approve-btn" id="btn-approve" onclick="handleApprove()">✅ Approve</button>
                 </div>
@@ -628,6 +652,7 @@
 
     <script src="api_config.js"></script>
     <script src="session-manager.js?v=2"></script>
+    <script src="app-confirm.js"></script>
     <script>
         if (!requireAuth()) { }
 
@@ -731,12 +756,13 @@
             document.getElementById('rv-inv-label').textContent = inv.invoice_number || 'N/A';
             document.getElementById('rv-vendor-label').textContent = inv.vendor_name || 'Unknown';
 
-            // If approved, lock the form
+            // If approved, lock the form but show Review Again
             if (status === 'approved') {
                 document.querySelector('.rv-form-panel').classList.add('form-disabled');
                 document.getElementById('btn-save').disabled = true;
                 document.getElementById('btn-approve').disabled = true;
                 document.getElementById('btn-approve').textContent = '✅ Approved';
+                document.getElementById('btn-review-again').style.display = '';
             }
         }
 
@@ -1199,9 +1225,154 @@
             }
         }
 
+        // ═══ VALIDATION ═══
+        function clearAllValidationErrors() {
+            document.querySelectorAll('.rv-field-error').forEach(el => el.classList.remove('rv-field-error'));
+            document.querySelectorAll('.rv-field-error-label').forEach(el => el.classList.remove('rv-field-error-label'));
+        }
+
+        function markFieldError(inputEl) {
+            if (!inputEl) return;
+            inputEl.classList.add('rv-field-error');
+            // Also highlight the label
+            const fg = inputEl.closest('.rv-fg');
+            if (fg) {
+                const label = fg.querySelector('label');
+                if (label) label.classList.add('rv-field-error-label');
+            }
+        }
+
+        /**
+         * Validates all mandatory fields before approval.
+         * Returns { valid: boolean, errors: string[], firstErrorEl: HTMLElement|null }
+         */
+        function validateForApproval() {
+            clearAllValidationErrors();
+            const errors = [];
+            let firstErrorEl = null;
+
+            // 1. Voucher Type
+            const voucherType = document.getElementById('rv-voucher-type');
+            if (!voucherType.value || voucherType.value === 'Uncategorized') {
+                errors.push('Voucher Type is required');
+                markFieldError(voucherType);
+                if (!firstErrorEl) firstErrorEl = voucherType;
+            }
+
+            // 2. Voucher Number
+            const voucherNo = document.getElementById('rv-voucher-no');
+            if (!voucherNo.value.trim()) {
+                errors.push('Voucher Number is required');
+                markFieldError(voucherNo);
+                if (!firstErrorEl) firstErrorEl = voucherNo;
+            }
+
+            // 3. Voucher Date
+            const voucherDate = document.getElementById('rv-voucher-date');
+            if (!voucherDate.value) {
+                errors.push('Voucher Date is required');
+                markFieldError(voucherDate);
+                if (!firstErrorEl) firstErrorEl = voucherDate;
+            }
+
+            // 4. Party Name
+            const partyName = document.getElementById('rv-party-name');
+            if (!partyName.value.trim()) {
+                errors.push('Party Name is required');
+                markFieldError(partyName);
+                if (!firstErrorEl) firstErrorEl = partyName;
+            }
+
+            // 5. Ledger Category
+            const ledgerType = document.getElementById('rv-ledger-type');
+            if (!ledgerType.value) {
+                errors.push('Expense / Ledger Category is required');
+                markFieldError(ledgerType);
+                if (!firstErrorEl) firstErrorEl = ledgerType;
+            }
+
+            // 6. At least one line item
+            const itemRows = document.querySelectorAll('#rv-items-tbody [data-item-row]');
+            if (itemRows.length === 0) {
+                errors.push('At least one line item is required');
+            } else {
+                // Validate each line item
+                let itemIdx = 0;
+                itemRows.forEach(row => {
+                    itemIdx++;
+                    const nameInput = row.querySelector('.item-name-input');
+                    const ledgerInput = row.querySelector('.item-ledger-input');
+                    const amountInput = row.querySelector('.item-amount-input');
+
+                    if (!nameInput?.value.trim()) {
+                        errors.push(`Item #${itemIdx}: Description is missing`);
+                        if (nameInput) { markFieldError(nameInput); if (!firstErrorEl) firstErrorEl = nameInput; }
+                    }
+                    if (!ledgerInput?.value.trim()) {
+                        errors.push(`Item #${itemIdx}: Ledger / HSN code is missing`);
+                        if (ledgerInput) { markFieldError(ledgerInput); if (!firstErrorEl) firstErrorEl = ledgerInput; }
+                    }
+                    const amt = Number(amountInput?.value) || 0;
+                    if (amt <= 0) {
+                        errors.push(`Item #${itemIdx}: Amount must be greater than zero`);
+                        if (amountInput) { markFieldError(amountInput); if (!firstErrorEl) firstErrorEl = amountInput; }
+                    }
+                });
+            }
+
+            // 7. Grand Total must be > 0
+            const grandTotalText = document.getElementById('rv-grand-total').textContent.replace(/[^\d.]/g, '');
+            if (Number(grandTotalText) <= 0) {
+                errors.push('Grand Total must be greater than zero');
+            }
+
+            return { valid: errors.length === 0, errors, firstErrorEl };
+        }
+
+        // Auto-clear error styling when user edits a field
+        document.addEventListener('input', function(e) {
+            if (e.target.classList.contains('rv-field-error')) {
+                e.target.classList.remove('rv-field-error');
+                const fg = e.target.closest('.rv-fg');
+                if (fg) {
+                    const label = fg.querySelector('label');
+                    if (label) label.classList.remove('rv-field-error-label');
+                }
+            }
+        });
+        document.addEventListener('change', function(e) {
+            if (e.target.classList.contains('rv-field-error')) {
+                e.target.classList.remove('rv-field-error');
+                const fg = e.target.closest('.rv-fg');
+                if (fg) {
+                    const label = fg.querySelector('label');
+                    if (label) label.classList.remove('rv-field-error-label');
+                }
+            }
+        });
+
         // ═══ APPROVE ═══
         async function handleApprove() {
-            // Custom confirm instead of browser dialog
+            // Step 1: Validate all mandatory fields
+            const validation = validateForApproval();
+            if (!validation.valid) {
+                // Scroll to first error
+                if (validation.firstErrorEl) {
+                    validation.firstErrorEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    validation.firstErrorEl.focus();
+                }
+                // Show premium alert with all errors
+                const errorList = validation.errors.map(e => `<li style="margin-bottom:4px">${e}</li>`).join('');
+                showAlert({
+                    title: 'Cannot Approve — Missing Fields',
+                    message: `<p style="margin-bottom:8px">Please fill in all mandatory fields before approving:</p><ul style="text-align:left;padding-left:1.2rem;margin:0;line-height:1.7;font-size:0.82rem">${errorList}</ul>`,
+                    type: 'warning',
+                    icon: '⚠️',
+                });
+                return;
+            }
+
+            // Step 2: Confirm approval
             const btn = document.getElementById('btn-approve');
             if (btn.dataset.confirming !== 'true') {
                 btn.dataset.confirming = 'true';
@@ -1255,6 +1426,51 @@
                 btn.disabled = false;
                 btn.textContent = '✅ Approve';
                 btn.style.background = 'linear-gradient(135deg, #059669, #10b981)';
+            }
+        }
+
+        // ═══ REVIEW AGAIN (revert to Pending) ═══
+        async function handleReviewAgain() {
+            const ok = await showConfirm({
+                title: 'Review Again?',
+                message: 'This will reset the invoice to <strong>Pending</strong> status. The form will unlock so you can re-edit and re-approve.',
+                type: 'warning',
+                icon: '↻',
+                confirmText: 'Reset to Pending',
+                cancelText: 'Keep Approved',
+            });
+            if (!ok) return;
+
+            const btn = document.getElementById('btn-review-again');
+            btn.disabled = true;
+            btn.textContent = '⏳ Resetting...';
+
+            try {
+                const res = await authFetch(`/invoices/${invoiceId}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: 'pending', synced_to_tally: false })
+                });
+                if (!res || (!res.ok && res.status < 500)) throw new Error('Failed to reset');
+
+                showToast('↻ Invoice reset to Pending — you can now edit and re-approve', 'success');
+
+                // Unlock the form
+                document.querySelector('.rv-form-panel').classList.remove('form-disabled');
+                document.getElementById('btn-save').disabled = false;
+                document.getElementById('btn-approve').disabled = false;
+                document.getElementById('btn-approve').textContent = '✅ Approve';
+                document.getElementById('btn-approve').style.background = 'linear-gradient(135deg, #059669, #10b981)';
+                btn.style.display = 'none';
+
+                // Update badge
+                const badge = document.getElementById('rv-status-badge');
+                badge.textContent = 'Pending';
+                badge.className = 'rv-topbar-badge pending';
+            } catch (e) {
+                showToast('❌ Failed to reset: ' + e.message, 'error');
+                btn.disabled = false;
+                btn.textContent = '↻ Review Again';
             }
         }
 

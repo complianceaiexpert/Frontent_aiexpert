@@ -218,7 +218,7 @@ function _renderToolJobs(jobs) {
 async function downloadJobFile(jobId) {
     try {
         const response = await authFetch(`/jobs/${jobId}/download`);
-        if (!response || !response.ok) { alert('Download failed'); return; }
+        if (!response || !response.ok) { showToast('Download failed', 'error'); return; }
 
         // Try to extract filename from Content-Disposition header
         const cd = response.headers.get('Content-Disposition');
@@ -239,7 +239,7 @@ async function downloadJobFile(jobId) {
         document.body.removeChild(a);
     } catch (e) {
         console.error('Download error:', e);
-        alert('Error downloading file');
+        showToast('Error downloading file', 'error');
     }
 }
 
@@ -251,12 +251,12 @@ async function downloadJobFile(jobId) {
  */
 function exportTableToExcel(selector, filename) {
     if (!window.XLSX) {
-        alert('Excel library is loading. Please try again in a moment.');
+        showToast('Excel library is loading. Please try again in a moment.', 'warning');
         return;
     }
     const tables = document.querySelectorAll(selector);
     if (!tables.length) {
-        alert('No data to export.');
+        showToast('No data to export.', 'warning');
         return;
     }
     const wb = XLSX.utils.book_new();
@@ -277,11 +277,11 @@ function exportTableToExcel(selector, filename) {
  */
 function exportDataToExcel(data, sheetName, filename) {
     if (!window.XLSX) {
-        alert('Excel library is loading. Please try again in a moment.');
+        showToast('Excel library is loading. Please try again in a moment.', 'warning');
         return;
     }
     if (!data || !data.length) {
-        alert('No data to export.');
+        showToast('No data to export.', 'warning');
         return;
     }
     const wb = XLSX.utils.book_new();

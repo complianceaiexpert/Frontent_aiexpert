@@ -203,31 +203,53 @@
         .tx-stat {
             background: #fff;
             border: 1px solid #e5e7eb;
-            border-radius: 10px;
-            padding: .6rem 1rem;
+            border-radius: 12px;
+            padding: .7rem 1rem;
             display: flex;
             align-items: center;
-            gap: .6rem;
+            gap: .7rem;
             flex: 1;
+            transition: all .2s;
+        }
+        .tx-stat:hover {
+            border-color: #c7d2fe;
+            box-shadow: 0 2px 12px rgba(15,23,42,.04);
         }
 
         .tx-stat-icon {
-            font-size: 1.1rem
+            width: 36px;
+            height: 36px;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
         }
+        .tx-stat-icon svg {
+            width: 18px;
+            height: 18px;
+        }
+        .tx-stat-icon.icon-total { background: #f1f5f9; color: #475569 }
+        .tx-stat-icon.icon-pending { background: #fef3c7; color: #d97706 }
+        .tx-stat-icon.icon-approved { background: #dcfce7; color: #16a34a }
+        .tx-stat-icon.icon-synced { background: #dbeafe; color: #2563eb }
+        .tx-stat-icon.icon-uncat { background: #fee2e2; color: #dc2626 }
 
         .tx-stat-num {
             font-family: 'Outfit', sans-serif;
-            font-size: 1.15rem;
+            font-size: 1.2rem;
             font-weight: 800;
             color: #0f172a;
+            line-height: 1;
         }
 
         .tx-stat-label {
-            font-size: .65rem;
+            font-size: .62rem;
             font-weight: 600;
-            color: #9ca3af;
+            color: #94a3b8;
             text-transform: uppercase;
-            letter-spacing: .04em
+            letter-spacing: .05em;
+            margin-top: 1px;
         }
 
         /* Filter bar */
@@ -710,6 +732,47 @@
                 <h3>💰 Transactions</h3>
                 <p>Review & approve uploaded entries</p>
             </div>
+
+            <!-- Data Entry Module Navigation -->
+            <div class="tx-sb-section">
+                <div class="tx-sb-label">Data Entry</div>
+                <a class="tx-sb-item" id="de-nav-dashboard" style="text-decoration:none">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="9" rx="1"/>
+                        <rect x="14" y="3" width="7" height="5" rx="1"/>
+                        <rect x="14" y="12" width="7" height="9" rx="1"/>
+                        <rect x="3" y="16" width="7" height="5" rx="1"/>
+                    </svg>
+                    Overview
+                </a>
+                <div class="tx-sb-item active" style="pointer-events:none">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="8" y1="6" x2="21" y2="6"/>
+                        <line x1="8" y1="12" x2="21" y2="12"/>
+                        <line x1="8" y1="18" x2="21" y2="18"/>
+                        <line x1="3" y1="6" x2="3.01" y2="6"/>
+                        <line x1="3" y1="12" x2="3.01" y2="12"/>
+                        <line x1="3" y1="18" x2="3.01" y2="18"/>
+                    </svg>
+                    Add Transactions ✓
+                </div>
+                <a class="tx-sb-item" id="de-nav-master" style="text-decoration:none">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                    </svg>
+                    Master
+                </a>
+                <a class="tx-sb-item" id="de-nav-reports" style="text-decoration:none">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21.21 15.89A10 10 0 1 1 8 2.83"/>
+                        <path d="M22 12A10 10 0 0 0 12 2v10z"/>
+                    </svg>
+                    Tally Reports
+                </a>
+            </div>
+            <div class="tx-sb-divider"></div>
+
             <div class="tx-sb-section">
                 <div class="tx-sb-label">Filter by Type</div>
                 <div class="tx-sb-item active" onclick="filterByType('all',this)">
@@ -736,13 +799,6 @@
                     </svg>
                     Purchase
                 </div>
-                <div class="tx-sb-item" onclick="filterByType('Banking',this)">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="2" y="5" width="20" height="14" rx="2" />
-                        <line x1="2" y1="10" x2="22" y2="10" />
-                    </svg>
-                    Banking
-                </div>
                 <div class="tx-sb-item" onclick="filterByType('Journal',this)">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
@@ -764,6 +820,14 @@
                         <path d="M21 13v2a4 4 0 0 1-4 4H3" />
                     </svg>
                     Contra
+                </div>
+                <div class="tx-sb-divider"></div>
+                <div class="tx-sb-item" onclick="filterByType('Banking',this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="2" y="5" width="20" height="14" rx="2" />
+                        <line x1="2" y1="10" x2="22" y2="10" />
+                    </svg>
+                    Banking
                 </div>
             </div>
             <div class="tx-sb-divider"></div>
@@ -811,7 +875,7 @@
 
             <div class="tx-header">
                 <div>
-                    <h1>💰 <span>Transactions</span></h1>
+                    <h1><span>Transactions</span></h1>
                     <p class="tx-header-sub">Upload any invoice, receipt, bank statement or bill — <strong>Suvidha AI
                             reads the document</strong>, automatically extracts vendor details, amounts, GST info and
                         assigns the right category. Just review and approve to push directly to Tally.</p>
@@ -827,7 +891,8 @@
                         Refresh
                     </button>
                     <label class="tx-upload-btn">
-                        📤 Upload Document
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                        Upload Document
                         <input type="file" multiple accept=".pdf,.xlsx,.xls,.csv,.jpg,.jpeg,.png"
                             onchange="handleUpload(this)">
                     </label>
@@ -837,28 +902,36 @@
             <!-- Stats -->
             <div class="tx-stats">
                 <div class="tx-stat">
-                    <div class="tx-stat-icon">📋</div>
+                    <div class="tx-stat-icon icon-total">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                    </div>
                     <div>
                         <div class="tx-stat-num" id="stat-total">0</div>
                         <div class="tx-stat-label">Total</div>
                     </div>
                 </div>
                 <div class="tx-stat" style="cursor:pointer" onclick="filterByStatus('Pending',findSbItem('Pending'))">
-                    <div class="tx-stat-icon">⏳</div>
+                    <div class="tx-stat-icon icon-pending">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    </div>
                     <div>
                         <div class="tx-stat-num" id="stat-pending">0</div>
                         <div class="tx-stat-label">Pending</div>
                     </div>
                 </div>
                 <div class="tx-stat" style="cursor:pointer" onclick="filterByStatus('Approved',findSbItem('Approved'))">
-                    <div class="tx-stat-icon">✅</div>
+                    <div class="tx-stat-icon icon-approved">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    </div>
                     <div>
                         <div class="tx-stat-num" id="stat-approved">0</div>
                         <div class="tx-stat-label">Approved</div>
                     </div>
                 </div>
                 <div class="tx-stat" style="cursor:pointer" onclick="filterByStatus('Synced',findSbItem('Synced'))">
-                    <div class="tx-stat-icon">📊</div>
+                    <div class="tx-stat-icon icon-synced">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                    </div>
                     <div>
                         <div class="tx-stat-num" id="stat-synced">0</div>
                         <div class="tx-stat-label">Synced</div>
@@ -866,7 +939,9 @@
                 </div>
                 <div class="tx-stat" style="cursor:pointer"
                     onclick="filterByStatus('Uncategorised',findSbItem('Uncategorised'))">
-                    <div class="tx-stat-icon">❓</div>
+                    <div class="tx-stat-icon icon-uncat">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                    </div>
                     <div>
                         <div class="tx-stat-num" id="stat-uncat">0</div>
                         <div class="tx-stat-label">Uncategorised</div>
@@ -1018,6 +1093,7 @@
 
     <script src="api_config.js"></script>
     <script src="session-manager.js?v=2"></script>
+    <script src="app-confirm.js"></script>
     <script>
         if (!requireAuth()) { }
 
@@ -1028,6 +1104,12 @@
         // Fix back link
         document.getElementById('back-link').href = `service-data-entry.html?clientId=${clientId}&service=${encodeURIComponent(serviceName)}`;
         document.getElementById('bc-de-link').href = `service-data-entry.html?clientId=${clientId}&service=${encodeURIComponent(serviceName)}`;
+
+        // Wire up Data Entry module nav links
+        const deBase = `service-data-entry.html?clientId=${clientId}&service=${encodeURIComponent(serviceName)}`;
+        document.getElementById('de-nav-dashboard').href = deBase;
+        document.getElementById('de-nav-master').href = deBase + '&section=master';
+        document.getElementById('de-nav-reports').href = deBase + '&section=reports';
 
         // ═══ HELPERS ═══
         function parseAmount(val) {
@@ -1085,25 +1167,33 @@
             }
         }
 
-        function updateStats() {
-            const pending = allInvoices.filter(t => t.status === 'Pending').length;
-            const approved = allInvoices.filter(t => t.status === 'Approved').length;
-            const synced = allInvoices.filter(t => t.status === 'Synced').length;
-            const pendingSync = allInvoices.filter(t => t.status === 'Approved' && !t.raw.synced_to_tally).length;
-            const uncat = allInvoices.filter(t => t.type === 'Uncategorized').length;
+        function updateStats(filtered) {
+            // Stats cards show counts for the currently visible tab/filter
+            const dataset = filtered || allInvoices;
+            const pending = dataset.filter(t => t.status === 'Pending').length;
+            const approved = dataset.filter(t => t.status === 'Approved').length;
+            const synced = dataset.filter(t => t.status === 'Synced').length;
+            const uncat = dataset.filter(t => t.type === 'Uncategorized').length;
 
-            document.getElementById('stat-total').textContent = allInvoices.length;
+            document.getElementById('stat-total').textContent = dataset.length;
             document.getElementById('stat-pending').textContent = pending;
             document.getElementById('stat-approved').textContent = approved;
             document.getElementById('stat-synced').textContent = synced;
             document.getElementById('stat-uncat').textContent = uncat;
 
+            // Sidebar counts always show global totals for navigation
+            const gPending = allInvoices.filter(t => t.status === 'Pending').length;
+            const gApproved = allInvoices.filter(t => t.status === 'Approved').length;
+            const gSynced = allInvoices.filter(t => t.status === 'Synced').length;
+            const gPendingSync = allInvoices.filter(t => t.status === 'Approved' && !t.raw.synced_to_tally).length;
+            const gUncat = allInvoices.filter(t => t.type === 'Uncategorized').length;
+
             document.getElementById('sb-count-all').textContent = allInvoices.length;
-            document.getElementById('sb-count-pending').textContent = pending;
-            document.getElementById('sb-count-approved').textContent = approved;
-            document.getElementById('sb-count-pendingsync').textContent = pendingSync;
-            document.getElementById('sb-count-synced').textContent = synced;
-            document.getElementById('sb-count-uncat').textContent = uncat;
+            document.getElementById('sb-count-pending').textContent = gPending;
+            document.getElementById('sb-count-approved').textContent = gApproved;
+            document.getElementById('sb-count-pendingsync').textContent = gPendingSync;
+            document.getElementById('sb-count-synced').textContent = gSynced;
+            document.getElementById('sb-count-uncat').textContent = gUncat;
         }
 
         function applyFilters() {
@@ -1111,15 +1201,18 @@
             const search = document.getElementById('tx-search').value.toLowerCase();
             const sort = document.getElementById('tx-sort').value;
 
-            // Type filter from sidebar
+            // Type filter from sidebar (Sales, Purchase, etc.)
             if (currentFilter !== 'all') {
                 data = data.filter(t => t.type === currentFilter);
             }
 
+            // Update stat cards based on the type-filtered dataset
+            // (before status/search filters so stats reflect the full tab)
+            updateStats(data);
+
             // Status filter from sidebar or dropdown
             if (currentStatus) {
                 if (currentStatus === 'PendingSync') {
-                    // Approved but not yet synced to Tally
                     data = data.filter(t => t.status === 'Approved' && !t.raw.synced_to_tally);
                 } else if (currentStatus === 'Uncategorised') {
                     data = data.filter(t => t.type === 'Uncategorized');
@@ -1154,13 +1247,27 @@
             tbody.innerHTML = data.map((tx, i) => {
                 const typeCls = (tx.type || '').toLowerCase().replace(/[^a-z]/g, '');
                 const statusCls = tx.status === 'Approved' ? 'approved' : (tx.status === 'Synced' ? 'synced' : 'pending');
-                const hasFile = tx.filePath ? '📄' : '<span style="color:#d1d5db">—</span>';
                 const isApproved = tx.status === 'Approved';
                 const isSynced = tx.status === 'Synced';
-                const reviewLabel = isApproved ? '↻ Review Again' : '✓ Review';
+                const isPending = tx.status === 'Pending';
                 const invDate = tx.date ? new Date(tx.date).toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric'}) : '—';
                 const recDate = tx.receivedAt ? new Date(tx.receivedAt).toLocaleDateString('en-GB', {day:'2-digit',month:'short'}) : '';
                 const srcIcon = tx.source === 'email' ? '✉️' : tx.source === 'web' ? '🌐' : '📤';
+                // Action buttons based on status
+                let actionBtns = '';
+                if (isApproved) {
+                    actionBtns = `<button class="tx-btn" onclick="reviewAgain(${tx.id})" title="Reset to Pending for re-review" style="color:#d97706;border-color:#fde68a">↻ Review Again</button>`
+                        + `<button class="tx-btn primary" onclick="doSyncToTally(${tx.id})" style="margin-left:3px" title="Send to Tally">⟳ Tally</button>`;
+                } else if (isSynced) {
+                    actionBtns = `<button class="tx-btn" onclick="reviewAgain(${tx.id})" title="Reset to Pending for re-review" style="color:#d97706;border-color:#fde68a">↻ Review Again</button>`
+                        + `<button class="tx-btn primary" disabled style="margin-left:3px;opacity:.5">✓ Synced</button>`;
+                } else {
+                    actionBtns = `<button class="tx-btn success" onclick="openReview(${tx.id})" title="Review and approve">✓ Review</button>`
+                        + `<button class="tx-btn primary" onclick="doSyncToTally(${tx.id})" style="margin-left:3px" title="Send to Tally">⟳ Tally</button>`;
+                }
+                // Delete button always available
+                actionBtns += `<button class="tx-btn" onclick="deleteInvoice(${tx.id},'${escHtml(tx.vendor)}')" style="margin-left:3px;color:#dc2626;border-color:#fecaca" title="Delete this transaction">🗑</button>`;
+
                 return `<tr onclick="openReview(${tx.id})">
                     <td style="color:#b0b8c4;font-size:.72rem;text-align:center">${i + 1}</td>
                     <td>
@@ -1183,8 +1290,7 @@
                     <td class="tx-amt-cell total">${formatINR(tx.totalAmount)}</td>
                     <td><span class="tx-badge ${statusCls}">${tx.status}</span></td>
                     <td style="text-align:right;white-space:nowrap" onclick="event.stopPropagation()">
-                        <button class="tx-btn success" onclick="openReview(${tx.id})" title="${reviewLabel}">${isApproved ? '↻' : '✓'} Review</button>
-                        <button class="tx-btn primary" onclick="doSyncToTally(${tx.id})" ${isSynced ? 'disabled' : ''} style="margin-left:3px" title="${isSynced ? 'Already synced' : 'Send to Tally'}">⟳ ${isSynced ? 'Synced' : 'Tally'}</button>
+                        ${actionBtns}
                     </td>
                 </tr>`;
             }).join('');
@@ -1199,7 +1305,10 @@
             const uploadLabel = document.querySelector('.tx-upload-btn');
             if (uploadLabel) {
                 const typeLabel = type !== 'all' ? ` (${type})` : '';
-                uploadLabel.childNodes[0].textContent = `📤 Upload Document${typeLabel} `;
+                // Update the text node AFTER the SVG icon
+                const textNodes = Array.from(uploadLabel.childNodes).filter(n => n.nodeType === 3 && n.textContent.trim());
+                const targetNode = textNodes[textNodes.length - 1]; // last text node = the visible label
+                if (targetNode) targetNode.textContent = ` Upload Document${typeLabel} `;
             }
             // Banking tab: toggle section visibility
             if (type === 'Banking') {
@@ -1268,7 +1377,6 @@
         }
 
         // ═══ UPLOAD HANDLER ═══
-        const AI_PROCESSING_TIME = 50; // seconds
         const MAX_FILE_SIZE_MB = 20;
         const MAX_RETRIES = 2;
         const RETRY_INTERVAL = 15; // seconds between retries
@@ -1350,7 +1458,8 @@
             const tbody = document.getElementById('tx-tbody');
             const rowId = 'proc-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5);
             const prevCount = allInvoices.length;
-            processingFiles.push({ rowId, fileName, prevCount });
+            const startTime = Date.now();
+            processingFiles.push({ rowId, fileName, prevCount, startTime });
 
             const tr = document.createElement('tr');
             tr.className = 'tx-processing-row';
@@ -1370,28 +1479,44 @@
                 </td>
                 <td colspan="3" style="text-align:right;vertical-align:middle">
                     <div class="ai-timer">
-                        ⏱ <span class="ai-timer-seconds">${AI_PROCESSING_TIME}</span>s
-                        <div class="ai-timer-progress"><div class="ai-timer-bar" style="width:100%"></div></div>
+                        ⏱ <span class="ai-timer-seconds">0</span>s
                     </div>
                 </td>
             `;
 
             tbody.insertBefore(tr, tbody.firstChild);
 
-            let remaining = AI_PROCESSING_TIME;
             const timerEl = tr.querySelector('.ai-timer-seconds');
-            const barEl = tr.querySelector('.ai-timer-bar');
 
+            // Count UP showing real elapsed time
             const interval = setInterval(() => {
-                remaining--;
-                if (timerEl) timerEl.textContent = Math.max(0, remaining);
-                if (barEl) barEl.style.width = Math.max(0, (remaining / AI_PROCESSING_TIME) * 100) + '%';
-
-                if (remaining <= 0) {
-                    clearInterval(interval);
-                    verifyAndFinishRow(rowId, fileName, 0);
-                }
+                const elapsed = Math.floor((Date.now() - startTime) / 1000);
+                if (timerEl) timerEl.textContent = elapsed;
             }, 1000);
+
+            // Poll the backend to check if the invoice has appeared
+            const pollForCompletion = async (retryCount) => {
+                await loadInvoices();
+                const procFile = processingFiles.find(p => p.rowId === rowId);
+                if (!procFile) { clearInterval(interval); return; }
+
+                if (allInvoices.length > procFile.prevCount) {
+                    // ✅ Found — invoice appeared
+                    clearInterval(interval);
+                    const elapsed = Math.floor((Date.now() - startTime) / 1000);
+                    verifyAndFinishRow(rowId, fileName, 0, elapsed);
+                } else if (retryCount < 20) {
+                    // Still processing — poll again in 5 seconds
+                    setTimeout(() => pollForCompletion(retryCount + 1), 5000);
+                } else {
+                    // Timed out
+                    clearInterval(interval);
+                    const elapsed = Math.floor((Date.now() - startTime) / 1000);
+                    verifyAndFinishRow(rowId, fileName, MAX_RETRIES + 1, elapsed);
+                }
+            };
+            // Start polling after 8 seconds (give AI time to process)
+            setTimeout(() => pollForCompletion(0), 8000);
         }
 
         // Immediate error row for failed uploads
@@ -1417,39 +1542,25 @@
             tbody.insertBefore(tr, tbody.firstChild);
         }
 
-        // After countdown, verify the invoice actually appeared in the backend
-        async function verifyAndFinishRow(rowId, fileName, retryCount) {
+        // After polling detects completion, update the processing row
+        async function verifyAndFinishRow(rowId, fileName, retryCount, elapsedSec) {
             const row = document.getElementById(rowId);
             if (!row) return;
-            const procFile = processingFiles.find(p => p.rowId === rowId);
 
-            row.querySelector('.ai-processing-status').innerHTML = '<span style="color:#3b82f6;font-weight:600">🔍 Verifying processed result...</span>';
+            const fmtTime = (s) => s >= 60 ? `${Math.floor(s/60)}m ${s%60}s` : `${s}s`;
 
-            const prevCount = procFile ? procFile.prevCount : 0;
-            await loadInvoices();
-
-            if (allInvoices.length > prevCount) {
+            if (retryCount <= MAX_RETRIES) {
                 // ✅ Success — invoice appeared
-                row.querySelector('.ai-processing-status').innerHTML = '<span style="color:#059669;font-weight:600">✅ Processing complete!</span>';
+                row.querySelector('.ai-processing-status').innerHTML = `<span style="color:#059669;font-weight:600">✅ Processed in ${fmtTime(elapsedSec || 0)}</span>`;
                 row.querySelector('.ai-brain-icon').textContent = '✅';
                 row.querySelector('.ai-brain-icon').style.background = 'linear-gradient(135deg, #059669, #10b981)';
                 row.querySelector('.ai-brain-icon').style.animation = 'none';
                 const timerDiv = row.querySelector('.ai-timer');
-                if (timerDiv) { timerDiv.textContent = '✅ Done'; timerDiv.style.background = 'linear-gradient(135deg, #059669, #10b981)'; }
+                if (timerDiv) { timerDiv.textContent = `✅ ${fmtTime(elapsedSec || 0)}`; timerDiv.style.background = 'linear-gradient(135deg, #059669, #10b981)'; }
 
                 processingFiles = processingFiles.filter(p => p.rowId !== rowId);
-                showToast(`🎉 ${fileName} — AI processing complete!`, 'success');
+                showToast(`🎉 ${fileName} — AI processing complete in ${fmtTime(elapsedSec || 0)}!`, 'success');
                 setTimeout(() => { const r = document.getElementById(rowId); if (r) r.remove(); }, 3000);
-            } else if (retryCount < MAX_RETRIES) {
-                // ⏳ Not found yet — retry
-                const next = retryCount + 1;
-                row.querySelector('.ai-processing-status').innerHTML = `<span style="color:#d97706;font-weight:600">⏳ Still processing... retrying in ${RETRY_INTERVAL}s (attempt ${next + 1}/${MAX_RETRIES + 1})</span>`;
-                const timerDiv = row.querySelector('.ai-timer');
-                if (timerDiv) {
-                    timerDiv.innerHTML = `⏳ Retry ${next}/${MAX_RETRIES}`;
-                    timerDiv.style.background = 'linear-gradient(135deg, #d97706, #f59e0b)';
-                }
-                setTimeout(() => verifyAndFinishRow(rowId, fileName, next), RETRY_INTERVAL * 1000);
             } else {
                 // ❌ All retries exhausted — show error
                 processingFiles = processingFiles.filter(p => p.rowId !== rowId);
@@ -1462,7 +1573,7 @@
                             <div>
                                 <div style="font-weight:700;color:#dc2626;font-size:.85rem">${escHtml(fileName)}</div>
                                 <div style="font-size:.75rem;color:#6b7280;margin-top:2px">
-                                    AI could not process this file. It may be too large, corrupted, or in an unsupported format.
+                                    AI could not process this file after ${fmtTime(elapsedSec || 0)}. It may be too large, corrupted, or in an unsupported format.
                                 </div>
                             </div>
                         </div>
@@ -1472,12 +1583,70 @@
                         <button onclick="this.closest('tr').remove()" style="padding:.35rem .65rem;border:1px solid #fecaca;background:#fff;color:#ef4444;border-radius:6px;font-size:.72rem;font-weight:600;cursor:pointer;font-family:inherit">✕ Dismiss</button>
                     </td>
                 `;
-                showToast(`⚠️ ${fileName} — processing may have failed. Try re-uploading a smaller file.`, 'error');
+                showToast(`⚠️ ${fileName} — processing may have failed after ${fmtTime(elapsedSec || 0)}. Try re-uploading.`, 'error');
             }
         }
 
         function escHtml(s) {
             return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+
+        // ═══ REVIEW AGAIN (revert to Pending) ═══
+        async function reviewAgain(invoiceId) {
+            const ok = await showConfirm({
+                title: 'Review Again?',
+                message: 'This will reset the transaction to <strong>Pending</strong> status. You can then re-edit and re-approve it.',
+                type: 'warning',
+                icon: '↻',
+                confirmText: 'Reset to Pending',
+                cancelText: 'Keep Current',
+            });
+            if (!ok) return;
+            try {
+                const token = localStorage.getItem('access_token');
+                const res = await fetch(`${API_BASE_URL}/invoices/${invoiceId}`, {
+                    method: 'PATCH',
+                    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: 'pending', synced_to_tally: false })
+                });
+                if (res.ok) {
+                    showToast('↻ Transaction reset to Pending — ready for re-review', 'success');
+                    await loadInvoices();
+                } else {
+                    showToast('Failed to reset status', 'error');
+                }
+            } catch (e) {
+                showToast('Network error', 'error');
+            }
+        }
+
+        // ═══ DELETE INVOICE ═══
+        async function deleteInvoice(invoiceId, vendorName) {
+            const ok = await showConfirm({
+                title: 'Delete Transaction?',
+                message: `This will permanently remove the transaction from <strong>"${vendorName}"</strong> and all its extracted data. This action cannot be undone.`,
+                type: 'danger',
+                icon: '🗑️',
+                confirmText: 'Delete',
+                cancelText: 'Cancel',
+            });
+            if (!ok) return;
+            try {
+                const token = localStorage.getItem('access_token');
+                const res = await fetch(`${API_BASE_URL}/invoices/${invoiceId}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (res.ok) {
+                    showToast('🗑 Transaction deleted', 'success');
+                    await loadInvoices();
+                } else {
+                    const err = await res.json().catch(() => ({}));
+                    showToast(err.detail || 'Delete failed', 'error');
+                }
+            } catch (e) {
+                showToast('Network error — could not delete', 'error');
+            }
         }
 
         // ═══ DIRECT SYNC TO TALLY ═══
@@ -1528,7 +1697,6 @@
                     });
                     tx.status = 'Synced';
                     applyFilters();
-                    updateStats();
                 } else {
                     showToast('❌ Tally error: ' + (result.details || result.error || 'Unknown'), 'error');
                 }
@@ -1621,23 +1789,44 @@
                     const period = s.period_start && s.period_end
                         ? `${new Date(s.period_start).toLocaleDateString('en-GB', {day:'2-digit',month:'short'})} – ${new Date(s.period_end).toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric'})}`
                         : s.original_filename || '—';
-                    const statusCls = s.status === 'completed' ? 'approved' : s.status === 'failed' ? 'synced' : 'pending';
-                    const statusLabel = s.status === 'completed' ? '✅ Ready' : s.status === 'failed' ? '❌ Failed' : '⏳ Processing';
                     const isReady = s.status === 'completed';
+                    const isFailed = s.status === 'failed';
+                    const isProcessing = s.status === 'processing';
                     const reviewUrl = `bank-review.html?id=${s.id}&clientId=${clientId}&service=${encodeURIComponent(serviceName)}`;
+                    const uploadDate = s.created_at ? new Date(s.created_at).toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}) : '';
+
+                    // Status badge — consistent with Sales invoice pattern
+                    let statusBadge = '';
+                    if (isProcessing) statusBadge = '<span class="tx-badge pending">⏳ Processing</span>';
+                    else if (isFailed) statusBadge = '<span class="tx-badge" style="background:#fee2e2;color:#dc2626">❌ Failed</span>';
+                    else if (isReady) statusBadge = '<span class="tx-badge approved">✅ Ready</span>';
+
+                    // Action buttons — match Sales invoice pattern
+                    let actionBtns = '';
+                    if (isReady) {
+                        actionBtns = `<button class="tx-btn success" onclick="event.stopPropagation();window.location.href='${reviewUrl}'" title="Review bank transactions">✓ Review</button>`;
+                        actionBtns += `<button class="tx-btn" onclick="event.stopPropagation();window.location.href='${reviewUrl}'" title="Re-review this statement" style="margin-left:3px;color:#d97706;border-color:#fde68a">↻ Again</button>`;
+                        actionBtns += `<button class="tx-btn primary" onclick="event.stopPropagation();showToast('Tally sync for banking coming soon','info')" style="margin-left:3px" title="Sync to Tally">⟳ Tally</button>`;
+                    } else if (isProcessing) {
+                        actionBtns = `<button class="tx-btn" disabled style="opacity:.5">⏳ Processing…</button>`;
+                    } else if (isFailed) {
+                        actionBtns = `<button class="tx-btn" onclick="event.stopPropagation();showToast('${(s.error_message || 'Unknown error').replace(/'/g, "\\'")}','error')" style="color:#dc2626;border-color:#fecaca">View Error</button>`;
+                    }
+                    // Delete — always available
+                    actionBtns += `<button class="tx-btn" onclick="event.stopPropagation();deleteBankStatement('${s.id}')" style="margin-left:3px;color:#dc2626;border-color:#fecaca" title="Delete this statement">🗑</button>`;
+
                     return `<tr style="cursor:${isReady ? 'pointer' : 'default'}" onclick="${isReady ? `window.location.href='${reviewUrl}'` : ''}">
                         <td style="color:#b0b8c4;font-size:.72rem;text-align:center">${i + 1}</td>
-                        <td style="font-weight:600;color:#0f172a">${s.bank_name || '<span style=color:#94a3b8>Extracting...</span>'}<div style="font-size:.65rem;color:#94a3b8;font-weight:400;margin-top:1px;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${s.original_filename || ''}">${s.original_filename || ''}</div></td>
+                        <td style="font-weight:600;color:#0f172a">${s.bank_name || '<span style=color:#94a3b8>Extracting…</span>'}<div style="font-size:.65rem;color:#94a3b8;font-weight:400;margin-top:1px;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${s.original_filename || ''}">${s.original_filename || ''}</div></td>
                         <td style="font-family:monospace;font-size:.78rem;color:#64748b">${s.account_number || '—'}</td>
-                        <td style="font-size:.82rem">${period}<div style="font-size:.62rem;color:#b0b8c4;margin-top:1px">${s.created_at ? new Date(s.created_at).toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}) : ''}</div></td>
+                        <td style="font-size:.82rem">${period}<div style="font-size:.62rem;color:#b0b8c4;margin-top:1px">${uploadDate}</div></td>
                         <td class="tx-amt-cell" style="color:#059669">${s.total_credits ? formatINR(s.total_credits) : '—'}</td>
                         <td class="tx-amt-cell" style="color:#dc2626">${s.total_debits ? formatINR(s.total_debits) : '—'}</td>
                         <td class="tx-amt-cell total">${s.closing_balance != null ? formatINR(s.closing_balance) : '—'}</td>
                         <td style="text-align:center;font-weight:600">${s.transaction_count || 0}</td>
-                        <td><span class="tx-badge ${statusCls}">${statusLabel}</span></td>
+                        <td>${statusBadge}</td>
                         <td style="text-align:right;white-space:nowrap" onclick="event.stopPropagation()">
-                            ${isReady ? `<button class="tx-btn success" onclick="window.location.href='${reviewUrl}'">✓ Review</button>` : ''}
-                            <button class="tx-btn" style="background:#fee2e2;color:#dc2626;margin-left:3px" onclick="deleteBankStatement('${s.id}')">🗑</button>
+                            ${actionBtns}
                         </td>
                     </tr>`;
                 }).join('');
@@ -1683,7 +1872,7 @@
                 }
 
                 const data = await res.json();
-                showToast(`✅ ${file.name} uploaded! Processing will take 15-30 seconds...`, 'success');
+                showToast(`✅ ${file.name} uploaded — AI processing started`, 'success');
 
                 // Poll for completion
                 pollStatementStatus(data.id, file.name);
@@ -1872,7 +2061,15 @@
         }
 
         async function deleteBankStatement(stmtId) {
-            if (!confirm('Delete this bank statement and all its transactions?')) return;
+            const ok = await showConfirm({
+                title: 'Delete Bank Statement?',
+                message: 'This will permanently delete this bank statement and <strong>all extracted transactions</strong>. This action cannot be undone.',
+                type: 'danger',
+                icon: '🗑️',
+                confirmText: 'Delete Statement',
+                cancelText: 'Cancel',
+            });
+            if (!ok) return;
             try {
                 const res = await authFetch(`/bank-statements/${stmtId}`, { method: 'DELETE' });
                 if (res && res.ok) {
