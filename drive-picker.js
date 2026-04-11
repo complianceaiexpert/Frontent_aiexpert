@@ -107,7 +107,7 @@
         try {
             const token = localStorage.getItem('access_token');
             const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-            const BASE = isLocal ? 'http://localhost:8000/api/v1' : 'https://ca-copilot-api.onrender.com/api/v1';
+            const BASE = isLocal ? 'http://localhost:8000/api/v1' : 'https://ca-copilot-mrwj.onrender.com/api/v1';
 
             let url;
             if (parentId) {
@@ -195,7 +195,7 @@
         try {
             const token = localStorage.getItem('access_token');
             const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-            const BASE = isLocal ? 'http://localhost:8000/api/v1' : 'https://ca-copilot-api.onrender.com/api/v1';
+            const BASE = isLocal ? 'http://localhost:8000/api/v1' : 'https://ca-copilot-mrwj.onrender.com/api/v1';
 
             const r = await fetch(`${BASE}/drive/${_clientId}/folders/${folderId}/files`, {
                 headers: { 'Authorization': `Bearer ${token}` }
@@ -243,7 +243,7 @@
         try {
             const token = localStorage.getItem('access_token');
             const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-            const BASE = isLocal ? 'http://localhost:8000/api/v1' : 'https://ca-copilot-api.onrender.com/api/v1';
+            const BASE = isLocal ? 'http://localhost:8000/api/v1' : 'https://ca-copilot-mrwj.onrender.com/api/v1';
 
             const r = await fetch(`${BASE}/drive/${_clientId}/files/${fileId}/download`, {
                 headers: { 'Authorization': `Bearer ${token}` }

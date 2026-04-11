@@ -1,5 +1,5 @@
 const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:' || window.location.hostname === '';
-const API_BASE_URL = isLocal ? 'http://localhost:8000/api/v1' : 'https://ca-copilot-api.onrender.com/api/v1';
+const API_BASE_URL = isLocal ? 'http://localhost:8000/api/v1' : 'https://ca-copilot-mrwj.onrender.com/api/v1';
 const STATEMENT3_WEBHOOK_URL = 'https://rahul250192.app.n8n.cloud/webhook/Statement3-Generated';
 
 async function authFetch(endpoint, options = {}) {
