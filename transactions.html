@@ -1299,6 +1299,10 @@
         function filterByType(type, el) {
             currentFilter = type;
             currentStatus = '';
+            // Persist active tab in URL for reload support
+            const u = new URL(window.location);
+            if (type === 'all') { u.searchParams.delete('tab'); } else { u.searchParams.set('tab', type); }
+            window.history.replaceState({}, '', u);
             document.querySelectorAll('.tx-sb-item').forEach(i => i.classList.remove('active'));
             if (el) el.classList.add('active');
             // Update upload button label to reflect active type
@@ -2082,7 +2086,20 @@
         }
 
         // ═══ INIT ═══
-        loadInvoices();
+        (function initTab() {
+            const tab = urlParams.get('tab');
+            if (tab && tab !== 'all') {
+                // Find and click the matching sidebar item
+                const items = document.querySelectorAll('.tx-sb-item');
+                for (const el of items) {
+                    if (el.textContent.trim().replace(/\d+/g, '').trim() === tab) {
+                        filterByType(tab, el);
+                        return;
+                    }
+                }
+            }
+            loadInvoices();
+        })();
     </script>
 </body>
 

@@ -61,8 +61,12 @@ function onPMSAccountChange() {
     selectedPMSAccountId = sel ? sel.value : '';
     const cards = document.getElementById('fi-pms-upload-cards');
     const badge = document.getElementById('fi-pms-accrual-badge');
+    const deleteBtn = document.getElementById('fi-pms-delete-btn');
 
     if (cards) cards.style.display = selectedPMSAccountId ? 'grid' : 'none';
+    
+    // Show/hide delete button
+    if (deleteBtn) deleteBtn.style.display = selectedPMSAccountId ? '' : 'none';
 
     if (badge && selectedPMSAccountId) {
         const acct = pmsAccounts.find(a => a.id === selectedPMSAccountId);
@@ -77,6 +81,53 @@ function onPMSAccountChange() {
 
     // Refresh PMS uploads table filtered by selected account
     if (typeof loadStatementsTabbed === 'function') loadStatementsTabbed();
+}
+
+
+async function deletePMSAccount() {
+    if (!selectedPMSAccountId) {
+        if (typeof showToast === 'function') showToast('No PMS account selected', 'error');
+        return;
+    }
+
+    const acct = pmsAccounts.find(a => a.id === selectedPMSAccountId);
+    const acctLabel = acct
+        ? (acct.strategy_name ? `${acct.provider_name} — ${acct.strategy_name}` : acct.provider_name)
+        : 'this PMS account';
+
+    // Confirmation
+    const confirmed = typeof showDangerConfirm === 'function'
+        ? await showDangerConfirm(`Delete "${acctLabel}"?`, 'This will permanently delete the PMS account and all its data — transactions, dividends, expenses, FIFO lots, and capital gain matches. This action cannot be undone.')
+        : confirm(`Are you sure you want to delete "${acctLabel}"?\n\nThis will permanently remove all data (transactions, dividends, expenses, lots). This cannot be undone.`);
+
+    if (!confirmed) return;
+
+    const token = localStorage.getItem('access_token');
+    try {
+        const res = await fetch(`${PMS_API}/accounts/${selectedPMSAccountId}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` },
+        });
+        if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            throw new Error(err.detail || `Failed to delete (${res.status})`);
+        }
+
+        if (typeof showToast === 'function') showToast(`PMS Account "${acctLabel}" deleted`, 'success');
+
+        // Reset selection and refresh
+        selectedPMSAccountId = '';
+        const deleteBtn = document.getElementById('fi-pms-delete-btn');
+        if (deleteBtn) deleteBtn.style.display = 'none';
+        const cards = document.getElementById('fi-pms-upload-cards');
+        if (cards) cards.style.display = 'none';
+
+        await loadPMSAccounts();
+        if (typeof loadStatementsTabbed === 'function') loadStatementsTabbed();
+    } catch (e) {
+        console.error('Delete PMS account error:', e);
+        if (typeof showToast === 'function') showToast(`Delete failed: ${e.message}`, 'error');
+    }
 }
 
 
@@ -218,8 +269,10 @@ async function handlePMSUpload(input, statementType) {
             if (typeof showToast === 'function') showToast(`Processing ${labels[statementType]} statement... This may take 30-60s.`, 'success');
             // Poll status
             pollUploadStatus(data.id, statementType);
-            // Refresh statements list
-            if (typeof loadStatements === 'function') loadStatements();
+            // Refresh statements list + auto-switch to Statements section
+            if (typeof loadStatementsTabbed === 'function') loadStatementsTabbed();
+            const stmtNav = document.querySelector('.fi-sb-item[onclick*="statements"]');
+            if (stmtNav && typeof fiNav === 'function') fiNav('statements', stmtNav);
         } else {
             const err = await res.json();
             if (typeof showToast === 'function') showToast(err.detail || `Upload failed`, 'error');

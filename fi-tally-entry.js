@@ -33,6 +33,10 @@ function fiNav(sectionId, el) {
     if (target) target.classList.add('active');
     document.querySelectorAll('.fi-sb-item').forEach(l => l.classList.remove('active'));
     if (el) el.classList.add('active');
+    // Persist active section in URL for reload support
+    const u = new URL(window.location);
+    if (sectionId === 'dashboard') { u.searchParams.delete('section'); } else { u.searchParams.set('section', sectionId); }
+    window.history.replaceState({}, '', u);
     if (sectionId === 'statements') loadStatements();
     if (sectionId === 'journal-entries') loadAllJournalEntries();
     if (sectionId === 'pending') loadPendingEntries();
@@ -168,8 +172,11 @@ async function handleFIUpload(input, instrumentType) {
         if (!res.ok) { const err = await res.json().catch(() => ({})); throw new Error(err.detail || 'Upload failed'); }
         const data = await res.json();
 
-        // Show processing row in history table with live timer
-        addProcessingRow(data.id, file.name, instrumentType);
+        // Refresh statements table immediately + auto-switch to Statements section
+        loadStatementsTabbed();
+        // Auto-switch to the Statements section so user sees the upload
+        const stmtNav = document.querySelector('.fi-sb-item[onclick*="statements"]');
+        if (stmtNav) fiNav('statements', stmtNav);
         fiToast('Upload started — processing in background', 'success');
 
         // Restore card state
@@ -185,7 +192,11 @@ async function handleFIUpload(input, instrumentType) {
 }
 
 function addProcessingRow(uploadId, filename, type) {
-    const tbody = document.getElementById('fi-history-tbody');
+    // Determine correct tbody based on instrument type
+    let tbodyId = 'fi-demat-tbody';
+    if (type === 'mutual_fund') tbodyId = 'fi-mf-tbody';
+    else if (type && type.startsWith('pms')) tbodyId = 'fi-pms-tbody';
+    const tbody = document.getElementById(tbodyId);
     if (!tbody) return;
     // Remove "no uploads" placeholder row
     const emptyRow = tbody.querySelector('td[colspan]');
@@ -2383,3 +2394,20 @@ loadManualEntries().then(() => loadDashboardStats());
 // Load 26AS match results if available
 setTimeout(() => load26ASMatch(), 1500);
 
+// Restore active section from URL on page load
+(function restoreSection() {
+    const section = new URLSearchParams(window.location.search).get('section');
+    if (section && section !== 'dashboard') {
+        // Find the matching sidebar item and activate it
+        const items = document.querySelectorAll('.fi-sb-item');
+        for (const el of items) {
+            const onclick = el.getAttribute('onclick') || '';
+            if (onclick.includes("'" + section + "'")) {
+                fiNav(section, el);
+                return;
+            }
+        }
+        // Fallback: just navigate without sidebar highlight
+        fiNav(section, null);
+    }
+})();

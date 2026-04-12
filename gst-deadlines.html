@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GST Deadlines Configuration — Suvidha AI</title>
+    <meta name="description" content="Configure GST filing deadlines, payment due dates, and compliance timelines. Edit and persist custom deadlines for your firm.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', -apple-system, sans-serif; background: #f1f5f9; min-height: 100vh; color: #1e293b; }
+
+        .gd-container { max-width: 900px; margin: 0 auto; padding: 5.5rem 1.5rem 4rem; }
+
+        /* Header */
+        .gd-header { margin-bottom: 1.5rem; }
+        .gd-header-row { display: flex; align-items: center; gap: 1rem; margin-bottom: .35rem; }
+        .gd-header-icon { width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, #4338ca, #6366f1); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 1.2rem; flex-shrink: 0; }
+        .gd-header h1 { font-size: 1.35rem; font-weight: 800; color: #0f172a; font-family: 'Outfit', sans-serif; }
+        .gd-header p { font-size: .78rem; color: #64748b; margin-left: 56px; }
+
+        /* Action bar */
+        .gd-actions { display: flex; gap: .5rem; margin-left: auto; }
+        .gd-btn { padding: .45rem .85rem; border-radius: 8px; font-size: .72rem; font-weight: 700; font-family: inherit; cursor: pointer; border: 1.5px solid #e2e8f0; background: #fff; color: #374151; transition: all .15s; display: flex; align-items: center; gap: .35rem; }
+        .gd-btn:hover { border-color: #6366f1; color: #4338ca; }
+        .gd-btn.primary { background: linear-gradient(135deg, #4338ca, #6366f1); border-color: transparent; color: #fff; }
+        .gd-btn.primary:hover { box-shadow: 0 4px 14px rgba(99,102,241,.3); transform: translateY(-1px); }
+        .gd-btn.danger { color: #dc2626; border-color: #fca5a5; }
+        .gd-btn.danger:hover { background: #fef2f2; }
+        .gd-btn:disabled { opacity: .5; cursor: not-allowed; pointer-events: none; }
+
+        /* Status badge */
+        .gd-status { font-size: .62rem; font-weight: 700; padding: .15rem .55rem; border-radius: 6px; text-transform: uppercase; letter-spacing: .04em; margin-left: .5rem; }
+        .gd-status.saved { background: #ecfdf5; color: #059669; }
+        .gd-status.unsaved { background: #fef3c7; color: #d97706; }
+        .gd-status.default { background: #ede9fe; color: #6d28d9; }
+
+        /* Section */
+        .gd-section { background: #fff; border-radius: 14px; border: 1px solid #e8ecf1; margin-bottom: 1rem; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,.04); }
+        .gd-section-header { display: flex; align-items: center; gap: .55rem; padding: .75rem 1.15rem; background: #f8fafc; border-bottom: 1px solid #e8ecf1; cursor: pointer; user-select: none; transition: background .15s; }
+        .gd-section-header:hover { background: #f1f5f9; }
+        .gd-section-icon { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: .85rem; flex-shrink: 0; }
+        .gd-section-icon.monthly { background: #ede9fe; }
+        .gd-section-icon.quarterly { background: #dbeafe; }
+        .gd-section-icon.annual { background: #fef3c7; }
+        .gd-section-icon.other { background: #e0e7ff; }
+        .gd-section-icon.fees { background: #fce7f3; }
+        .gd-section-title { font-size: .78rem; font-weight: 700; color: #0f172a; }
+        .gd-section-count { font-size: .58rem; font-weight: 700; color: #94a3b8; margin-left: auto; }
+        .gd-section-arrow { transition: transform .2s; color: #94a3b8; flex-shrink: 0; }
+        .gd-section.collapsed .gd-section-arrow { transform: rotate(-90deg); }
+        .gd-section.collapsed .gd-section-body { display: none; }
+
+        /* Deadline row */
+        .gd-row { display: grid; grid-template-columns: 40px 1fr 70px 90px 60px; align-items: center; gap: .5rem; padding: .65rem 1.15rem; border-bottom: 1px solid #f1f5f9; transition: background .1s; }
+        .gd-row:last-child { border-bottom: none; }
+        .gd-row:hover { background: #fafbff; }
+        .gd-row-sr { font-size: .62rem; font-weight: 700; color: #94a3b8; text-align: center; }
+        .gd-row-info {}
+        .gd-row-name { font-size: .76rem; font-weight: 700; color: #1e293b; }
+        .gd-row-desc { font-size: .64rem; color: #64748b; margin-top: 1px; }
+        .gd-row-note { font-size: .58rem; color: #d97706; font-weight: 600; margin-top: 2px; display: flex; align-items: center; gap: 3px; }
+
+        /* Due day input */
+        .gd-due-input { width: 52px; padding: .3rem .4rem; border: 1.5px solid #e2e8f0; border-radius: 6px; font-size: .74rem; font-weight: 700; font-family: 'Outfit', sans-serif; text-align: center; color: #4338ca; background: #fafaff; transition: border .15s; }
+        .gd-due-input:focus { outline: none; border-color: #6366f1; box-shadow: 0 0 0 2px rgba(99,102,241,.1); }
+        .gd-due-label { font-size: .54rem; font-weight: 600; color: #94a3b8; text-transform: uppercase; text-align: center; margin-top: 2px; }
+
+        /* Category badge */
+        .gd-cat { font-size: .54rem; font-weight: 700; padding: .15rem .4rem; border-radius: 4px; text-transform: uppercase; letter-spacing: .03em; text-align: center; display: inline-block; }
+        .gd-cat.filing { background: #ede9fe; color: #6d28d9; }
+        .gd-cat.payment { background: #fce7f3; color: #be185d; }
+        .gd-cat.compliance { background: #dbeafe; color: #1d4ed8; }
+        .gd-cat.reference { background: #f1f5f9; color: #64748b; }
+
+        /* Toggle */
+        .gd-toggle { position: relative; width: 36px; height: 20px; background: #e2e8f0; border-radius: 10px; cursor: pointer; transition: background .2s; flex-shrink: 0; }
+        .gd-toggle.active { background: #6366f1; }
+        .gd-toggle::after { content: ''; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; background: #fff; border-radius: 50%; transition: transform .2s; box-shadow: 0 1px 3px rgba(0,0,0,.15); }
+        .gd-toggle.active::after { transform: translateX(16px); }
+
+        /* Late fees section */
+        .gd-fees-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; padding: 1rem 1.15rem; }
+        .gd-fee-item { display: flex; flex-direction: column; gap: .25rem; }
+        .gd-fee-label { font-size: .62rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: .04em; }
+        .gd-fee-input { padding: .35rem .5rem; border: 1.5px solid #e2e8f0; border-radius: 6px; font-size: .76rem; font-weight: 600; font-family: inherit; color: #dc2626; background: #fff; width: 100%; }
+        .gd-fee-input:focus { outline: none; border-color: #6366f1; }
+        .gd-fee-unit { font-size: .54rem; color: #94a3b8; font-weight: 600; }
+
+        /* Toast */
+        .gd-toast { position: fixed; top: 80px; right: 1.5rem; padding: .65rem 1rem; border-radius: 10px; font-size: .74rem; font-weight: 600; color: #fff; background: #059669; box-shadow: 0 8px 24px rgba(0,0,0,.15); z-index: 9999; animation: gdSlide .3s ease; }
+        .gd-toast.error { background: #dc2626; }
+        @keyframes gdSlide { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .gd-container { padding: 1rem .75rem 3rem; }
+            .gd-row { grid-template-columns: 28px 1fr 60px 70px 50px; gap: .3rem; padding: .5rem .75rem; }
+            .gd-fees-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div id="app-topbar" data-active=""></div>
+
+    <div class="gd-container">
+        <!-- Header -->
+        <div class="gd-header">
+            <div class="gd-header-row">
+                <div class="gd-header-icon">📅</div>
+                <h1>GST Deadline Configuration</h1>
+                <span class="gd-status default" id="gd-status">Loading...</span>
+                <div class="gd-actions">
+                    <button class="gd-btn danger" id="gd-reset-btn" onclick="resetDefaults()" disabled>↺ Reset Defaults</button>
+                    <button class="gd-btn primary" id="gd-save-btn" onclick="saveConfig()" disabled>💾 Save Changes</button>
+                </div>
+            </div>
+            <p>Pre-filled with Government of India / CBIC values. Customize due dates, toggle active/inactive, and save. Changes apply to your entire firm.</p>
+        </div>
+
+        <!-- Sections loaded by JS -->
+        <div id="gd-sections"></div>
+    </div>
+
+    <script src="app-toast.js"></script>
+    <script src="api_config.js?v=2"></script>
+    <script src="app-topbar.js"></script>
+    <script>
+    const API = typeof API_BASE !== 'undefined' ? API_BASE : 'http://localhost:8000/api/v1';
+    let configData = null;
+    let isDirty = false;
+
+    // ═══ Load Config ═══
+    async function loadConfig() {
+        const token = localStorage.getItem('access_token');
+        try {
+            const res = await fetch(`${API}/config/gst-deadlines`, {
+                headers: { 'Authorization': `Bearer ${token}` },
+            });
+            if (!res.ok) throw new Error('Failed to load');
+            const data = await res.json();
+            configData = data.config_data;
+            renderSections();
+            updateStatus(data.is_default ? 'default' : 'saved');
+            document.getElementById('gd-reset-btn').disabled = false;
+        } catch (e) {
+            document.getElementById('gd-sections').innerHTML = `<div style="text-align:center;padding:3rem;color:#dc2626;font-size:.82rem">❌ Failed to load config: ${e.message}</div>`;
+        }
+    }
+
+    // ═══ Render Sections ═══
+    function renderSections() {
+        const container = document.getElementById('gd-sections');
+        const sections = [
+            { key: 'monthly_returns', title: 'Monthly Returns', icon: '📋', iconClass: 'monthly' },
+            { key: 'quarterly_returns', title: 'Quarterly Returns', icon: '📊', iconClass: 'quarterly' },
+            { key: 'annual_returns', title: 'Annual Returns', icon: '📅', iconClass: 'annual' },
+            { key: 'other_deadlines', title: 'Other Compliance Deadlines', icon: '⚖️', iconClass: 'other' },
+        ];
+
+        let html = '';
+        sections.forEach(sec => {
+            const items = configData[sec.key] || [];
+            html += `
+            <div class="gd-section" id="sec-${sec.key}">
+                <div class="gd-section-header" onclick="toggleSection('${sec.key}')">
+                    <div class="gd-section-icon ${sec.iconClass}">${sec.icon}</div>
+                    <div class="gd-section-title">${sec.title}</div>
+                    <div class="gd-section-count">${items.length} items</div>
+                    <svg class="gd-section-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+                </div>
+                <div class="gd-section-body">
+                    ${items.map((item, i) => renderRow(sec.key, item, i)).join('')}
+                </div>
+            </div>`;
+        });
+
+        // Late Fees section
+        const fees = configData.late_fees || {};
+        html += `
+        <div class="gd-section" id="sec-late_fees">
+            <div class="gd-section-header" onclick="toggleSection('late_fees')">
+                <div class="gd-section-icon fees">💸</div>
+                <div class="gd-section-title">Late Fees & Interest</div>
+                <div class="gd-section-count">Penalties</div>
+                <svg class="gd-section-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+            </div>
+            <div class="gd-section-body">
+                <div class="gd-fees-grid">
+                    <div class="gd-fee-item">
+                        <div class="gd-fee-label">GSTR-1 Late Fee (per day)</div>
+                        <div style="display:flex;align-items:center;gap:.35rem">
+                            <span style="font-size:.72rem;color:#64748b">₹</span>
+                            <input class="gd-fee-input" type="number" value="${fees.gstr1_per_day || 50}" data-fee="gstr1_per_day" onchange="onFeeChange(this)">
+                            <span class="gd-fee-unit">/day</span>
+                        </div>
+                    </div>
+                    <div class="gd-fee-item">
+                        <div class="gd-fee-label">GSTR-1 Nil Return Late Fee (per day)</div>
+                        <div style="display:flex;align-items:center;gap:.35rem">
+                            <span style="font-size:.72rem;color:#64748b">₹</span>
+                            <input class="gd-fee-input" type="number" value="${fees.gstr1_nil_per_day || 20}" data-fee="gstr1_nil_per_day" onchange="onFeeChange(this)">
+                            <span class="gd-fee-unit">/day</span>
+                        </div>
+                    </div>
+                    <div class="gd-fee-item">
+                        <div class="gd-fee-label">GSTR-3B Late Fee (per day)</div>
+                        <div style="display:flex;align-items:center;gap:.35rem">
+                            <span style="font-size:.72rem;color:#64748b">₹</span>
+                            <input class="gd-fee-input" type="number" value="${fees.gstr3b_per_day || 50}" data-fee="gstr3b_per_day" onchange="onFeeChange(this)">
+                            <span class="gd-fee-unit">/day</span>
+                        </div>
+                    </div>
+                    <div class="gd-fee-item">
+                        <div class="gd-fee-label">GSTR-3B Nil Return Late Fee (per day)</div>
+                        <div style="display:flex;align-items:center;gap:.35rem">
+                            <span style="font-size:.72rem;color:#64748b">₹</span>
+                            <input class="gd-fee-input" type="number" value="${fees.gstr3b_nil_per_day || 20}" data-fee="gstr3b_nil_per_day" onchange="onFeeChange(this)">
+                            <span class="gd-fee-unit">/day</span>
+                        </div>
+                    </div>
+                    <div class="gd-fee-item">
+                        <div class="gd-fee-label">Interest Rate on Late Payment</div>
+                        <div style="display:flex;align-items:center;gap:.35rem">
+                            <input class="gd-fee-input" type="number" value="${fees.interest_rate_pct || 18}" data-fee="interest_rate_pct" onchange="onFeeChange(this)" style="color:#d97706">
+                            <span class="gd-fee-unit">% p.a.</span>
+                        </div>
+                    </div>
+                    <div class="gd-fee-item">
+                        <div class="gd-fee-label">GSTR-3B Max Cap Range</div>
+                        <div style="display:flex;align-items:center;gap:.35rem">
+                            <span style="font-size:.72rem;color:#64748b">₹</span>
+                            <input class="gd-fee-input" type="text" value="${fees.gstr3b_max_cap_range || '2000-10000'}" data-fee="gstr3b_max_cap_range" onchange="onFeeChange(this)" style="color:#374151;width:90px">
+                        </div>
+                    </div>
+                </div>
+                <div style="padding:.5rem 1.15rem .75rem;font-size:.62rem;color:#64748b;font-style:italic">
+                    ⓘ ${fees.interest_note || 'Interest calculated on net tax liability from due date'}
+                </div>
+            </div>
+        </div>`;
+
+        container.innerHTML = html;
+    }
+
+    function renderRow(sectionKey, item, index) {
+        const hasDueDay = item.due_day != null;
+        const hasDueDate = item.due_date != null;
+        const dueVal = hasDueDay ? item.due_day : (item.due_date || '');
+        const dueLabel = hasDueDay ? 'of month' : (item.frequency === 'annual' ? 'DD-MM' : '');
+
+        return `
+        <div class="gd-row">
+            <div class="gd-row-sr">${index + 1}</div>
+            <div class="gd-row-info">
+                <div class="gd-row-name">${item.return_name}</div>
+                <div class="gd-row-desc">${item.description || ''}</div>
+                ${item.note ? `<div class="gd-row-note">⚠ ${item.note}</div>` : ''}
+            </div>
+            <div style="text-align:center">
+                <input class="gd-due-input" type="${hasDueDay ? 'number' : 'text'}" 
+                       value="${dueVal}" 
+                       ${hasDueDay ? 'min="1" max="31"' : 'maxlength="5"'}
+                       data-section="${sectionKey}" data-index="${index}" data-field="${hasDueDay ? 'due_day' : 'due_date'}"
+                       onchange="onDueChange(this)">
+                <div class="gd-due-label">${dueLabel}</div>
+            </div>
+            <div style="text-align:center">
+                <span class="gd-cat ${item.category || 'filing'}">${item.category || 'filing'}</span>
+                <div style="font-size:.5rem;color:#94a3b8;font-weight:600;margin-top:3px">${item.frequency || ''}</div>
+            </div>
+            <div style="display:flex;justify-content:center">
+                <div class="gd-toggle ${item.is_active ? 'active' : ''}" 
+                     data-section="${sectionKey}" data-index="${index}"
+                     onclick="onToggle(this)"></div>
+            </div>
+        </div>`;
+    }
+
+    // ═══ Event Handlers ═══
+    function onDueChange(el) {
+        const section = el.dataset.section;
+        const index = parseInt(el.dataset.index);
+        const field = el.dataset.field;
+        const val = field === 'due_day' ? parseInt(el.value) : el.value;
+        configData[section][index][field] = val;
+        markDirty();
+    }
+
+    function onToggle(el) {
+        const section = el.dataset.section;
+        const index = parseInt(el.dataset.index);
+        configData[section][index].is_active = !configData[section][index].is_active;
+        el.classList.toggle('active');
+        markDirty();
+    }
+
+    function onFeeChange(el) {
+        const key = el.dataset.fee;
+        const val = el.type === 'number' ? parseFloat(el.value) : el.value;
+        configData.late_fees[key] = val;
+        markDirty();
+    }
+
+    function toggleSection(key) {
+        document.getElementById(`sec-${key}`).classList.toggle('collapsed');
+    }
+
+    function markDirty() {
+        isDirty = true;
+        updateStatus('unsaved');
+        document.getElementById('gd-save-btn').disabled = false;
+    }
+
+    function updateStatus(state) {
+        const el = document.getElementById('gd-status');
+        el.className = 'gd-status ' + state;
+        if (state === 'saved') el.textContent = '✓ Saved';
+        else if (state === 'unsaved') el.textContent = '● Unsaved';
+        else if (state === 'default') el.textContent = '● Defaults';
+    }
+
+    // ═══ Save ═══
+    async function saveConfig() {
+        const btn = document.getElementById('gd-save-btn');
+        btn.disabled = true;
+        btn.textContent = '⏳ Saving...';
+
+        const token = localStorage.getItem('access_token');
+        try {
+            const res = await fetch(`${API}/config/gst-deadlines`, {
+                method: 'PUT',
+                headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ config_data: configData }),
+            });
+            if (!res.ok) throw new Error('Save failed');
+            isDirty = false;
+            updateStatus('saved');
+            gdToast('GST deadlines saved successfully', false);
+        } catch (e) {
+            gdToast('Failed to save: ' + e.message, true);
+            btn.disabled = false;
+        }
+        btn.textContent = '💾 Save Changes';
+    }
+
+    // ═══ Reset ═══
+    async function resetDefaults() {
+        if (!confirm('Reset all GST deadlines to government defaults? Your custom changes will be lost.')) return;
+
+        const token = localStorage.getItem('access_token');
+        try {
+            const res = await fetch(`${API}/config/gst-deadlines/reset`, {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}` },
+            });
+            if (!res.ok) throw new Error('Reset failed');
+            const data = await res.json();
+            configData = data.config_data;
+            renderSections();
+            isDirty = false;
+            updateStatus('default');
+            gdToast('Reset to government defaults', false);
+        } catch (e) {
+            gdToast('Reset failed: ' + e.message, true);
+        }
+    }
+
+    // ═══ Toast ═══
+    function gdToast(msg, isError) {
+        const el = document.createElement('div');
+        el.className = 'gd-toast' + (isError ? ' error' : '');
+        el.textContent = msg;
+        document.body.appendChild(el);
+        setTimeout(() => { el.style.opacity = '0'; el.style.transition = 'opacity .3s'; setTimeout(() => el.remove(), 300); }, 2500);
+    }
+
+    // ═══ Unsaved warning ═══
+    window.addEventListener('beforeunload', e => {
+        if (isDirty) { e.preventDefault(); e.returnValue = ''; }
+    });
+
+    // ═══ Init ═══
+    loadConfig();
+    </script>
+</body>
+</html>

@@ -33,7 +33,7 @@
         .rv-layout { display: flex; height: calc(100vh - 54px) }
 
         /* LEFT: PDF */
-        .rv-pdf-panel { width: 42%; min-width: 320px; background: #1e293b; display: flex; flex-direction: column; border-right: 1px solid #334155 }
+        .rv-pdf-panel { width: 42%; min-width: 320px; background: #1e293b; display: flex; flex-direction: column; border-right: 1px solid #334155; flex-shrink: 0 }
         .rv-pdf-toolbar { display: flex; align-items: center; padding: .5rem .75rem; background: #0f172a; border-bottom: 1px solid #334155; gap: .5rem; flex-shrink: 0 }
         .rv-pdf-page-info { font-size: .72rem; font-weight: 600; color: #94a3b8; display: flex; align-items: center; gap: .35rem }
         .rv-pdf-page-info input { width: 28px; text-align: center; background: #1e293b; border: 1px solid #475569; border-radius: 4px; color: #e2e8f0; font-size: .72rem; font-weight: 600; padding: 2px }
@@ -41,14 +41,14 @@
         .rv-pdf-btn:hover { background: #334155; color: #e2e8f0 }
         .rv-pdf-sep { width: 1px; height: 20px; background: #334155 }
         .rv-pdf-toolbar-right { margin-left: auto; display: flex; gap: .25rem }
-        .rv-pdf-body { flex: 1; overflow: auto; display: flex; flex-direction: column; align-items: center; background: #334155; padding: .5rem; gap: .5rem }
+        .rv-pdf-body { flex: 1; overflow: auto; display: flex; flex-direction: column; align-items: flex-start; background: #334155; padding: .5rem; gap: .5rem }
         .rv-pdf-placeholder { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .75rem; color: rgba(255,255,255,.35); padding: 2rem; text-align: center; flex: 1 }
         .rv-pdf-placeholder h3 { font-family: 'Outfit', sans-serif; font-size: .95rem; font-weight: 700; color: rgba(255,255,255,.5) }
         .rv-pdf-placeholder p { font-size: .78rem; color: rgba(255,255,255,.3); line-height: 1.5 }
 
         /* RIGHT: DATA PANEL */
-        .rv-form-panel { flex: 1; display: flex; flex-direction: column; background: #fff; overflow: hidden }
-        .rv-form-scroll { flex: 1; overflow-y: auto; padding: 1.25rem 1.5rem 2rem }
+        .rv-form-panel { flex: 1; display: flex; flex-direction: column; background: #fff; overflow: hidden; min-width: 0 }
+        .rv-form-scroll { flex: 1; overflow: auto; padding: 1.25rem 1.5rem 2rem }
 
         /* Section titles */
         .rv-section-title { font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: #94a3b8; margin: .75rem 0 .6rem; display: flex; align-items: center; gap: .5rem; padding-bottom: .4rem; border-bottom: 1px solid #f1f5f9 }
@@ -68,7 +68,7 @@
 
         /* Table */
         .rv-items-card { border: 1px solid #d1d5db; border-radius: 10px; overflow: hidden; margin-top: .5rem; box-shadow: 0 1px 4px rgba(0,0,0,.04) }
-        .rv-items-table { width: 100%; border-collapse: collapse }
+        .rv-items-table { width: 100%; border-collapse: collapse; min-width: 700px }
         .rv-items-table thead th { font-size: .66rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: #374151; padding: .65rem .65rem; text-align: left; background: #f8faff; border-bottom: 2px solid #e5e7eb; position: sticky; top: 0; z-index: 2; white-space: nowrap }
         .rv-items-table thead th.right { text-align: right }
         .rv-items-table tbody td { padding: .45rem .5rem; font-size: .82rem; color: #1e293b; border-bottom: 1px solid #f1f5f9; vertical-align: middle }
@@ -83,6 +83,18 @@
         .rv-select-cell { padding: .3rem .4rem; border: 1px solid #e2e8f0; border-radius: 6px; font-size: .68rem; font-family: inherit; background: #fff; color: #374151; font-weight: 600; width: 100% }
         .debit-input { color: #dc2626 !important }
         .credit-input { color: #059669 !important }
+
+        /* Filter bar */
+        .rv-filter-bar { display: flex; align-items: center; gap: .6rem; padding: .5rem .65rem; background: #f8fafc; border-bottom: 1px solid #e5e7eb; flex-wrap: wrap }
+        .rv-filter-bar .rv-filter-search { flex: 1; min-width: 120px; max-width: 220px; padding: .35rem .55rem .35rem 1.8rem; border: 1px solid #e2e8f0; border-radius: 6px; font-size: .72rem; font-family: inherit; background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E") no-repeat 6px center; transition: border .15s }
+        .rv-filter-bar .rv-filter-search:focus { outline: none; border-color: #6366f1; box-shadow: 0 0 0 2px rgba(99,102,241,.08) }
+        .rv-filter-pills { display: flex; gap: .3rem }
+        .rv-filter-pill { padding: .22rem .55rem; border-radius: 5px; font-size: .62rem; font-weight: 700; border: 1px solid #e2e8f0; background: #fff; color: #64748b; cursor: pointer; transition: all .12s; text-transform: uppercase; letter-spacing: .03em }
+        .rv-filter-pill:hover { border-color: #6366f1; color: #4338ca }
+        .rv-filter-pill.active { background: #4338ca; color: #fff; border-color: #4338ca }
+        .rv-filter-pill.buy.active { background: #2563eb; border-color: #2563eb }
+        .rv-filter-pill.sell.active { background: #dc2626; border-color: #dc2626 }
+        .rv-filter-count { font-size: .64rem; font-weight: 600; color: #94a3b8; margin-left: auto }
 
         /* Summary */
         .rv-summary-bar { display: flex; align-items: center; justify-content: flex-end; gap: 1.5rem; margin-top: .75rem; padding: .65rem 1rem; background: linear-gradient(135deg, #1e1b4b, #312e81); border-radius: 10px; color: #fff }
@@ -201,23 +213,31 @@
 
                 <!-- Holdings -->
                 <div class="rv-section-title">Holdings / Funds <span class="rv-section-count" id="rv-holdings-count">0</span></div>
-                <div class="rv-items-card"><div style="max-height:260px;overflow-y:auto">
-                    <table class="rv-items-table"><thead id="rv-holdings-thead"><tr><th style="width:32px;text-align:center">Sr.</th><th>Scrip / Fund</th><th>ISIN / Folio</th><th class="right">Qty / Units</th><th class="right">Value</th></tr></thead>
+                <div class="rv-items-card"><div style="max-height:260px;overflow:auto">
+                    <table class="rv-items-table"><thead id="rv-holdings-thead"><tr><th style="width:28px;text-align:center">Sr.</th><th style="min-width:160px">Scrip / Fund</th><th style="min-width:100px">ISIN / Folio</th><th class="right" style="width:80px">Qty / Units</th><th class="right" style="min-width:120px">Value</th></tr></thead>
                     <tbody id="rv-holdings-tbody"><tr><td colspan="5" style="text-align:center;padding:1.5rem;color:#94a3b8">Waiting for AI...</td></tr></tbody></table>
                 </div></div>
 
                 <!-- Transactions -->
                 <div class="rv-section-title">Transactions <span class="rv-section-count" id="rv-txn-count">0</span></div>
-                <div class="rv-items-card"><div style="max-height:calc(100vh - 520px);overflow-y:auto">
-                    <table class="rv-items-table" style="table-layout:fixed;width:100%"><thead><tr>
-                        <th style="width:36px;text-align:center">Sr.</th>
+                <div class="rv-items-card"><div id="rv-txn-filter-bar" class="rv-filter-bar" style="display:none">
+                    <input type="text" class="rv-filter-search" id="rv-txn-search" placeholder="Search scrip..." oninput="filterTxns()">
+                    <div class="rv-filter-pills" id="rv-type-pills">
+                        <span class="rv-filter-pill active" data-type="all" onclick="setTxnFilter(this,'all')">All</span>
+                        <span class="rv-filter-pill buy" data-type="buy" onclick="setTxnFilter(this,'buy')">Buy</span>
+                        <span class="rv-filter-pill sell" data-type="sell" onclick="setTxnFilter(this,'sell')">Sell</span>
+                    </div>
+                    <span class="rv-filter-count" id="rv-filter-count"></span>
+                </div><div style="max-height:calc(100vh - 520px);overflow:auto">
+                    <table class="rv-items-table"><thead><tr>
+                        <th style="width:28px;text-align:center">Sr.</th>
                         <th style="width:100px">Date</th>
-                        <th style="width:auto">Scrip / Fund</th>
-                        <th style="width:70px">Type</th>
-                        <th class="right" style="width:80px">Qty</th>
-                        <th class="right" style="width:100px">Rate (₹)</th>
-                        <th class="right" style="width:120px">Amount (₹)</th>
-                        <th style="width:130px">Tally Entry</th>
+                        <th style="min-width:140px">Scrip / Fund</th>
+                        <th style="width:90px">Type</th>
+                        <th class="right" style="width:70px">Qty</th>
+                        <th class="right" style="width:80px">Rate (₹)</th>
+                        <th class="right" style="width:100px">Amount (₹)</th>
+                        <th style="width:150px">Tally Entry</th>
                     </tr></thead>
                     <tbody id="rv-txn-tbody"><tr><td colspan="8" style="text-align:center;padding:1.5rem;color:#94a3b8">Waiting for AI...</td></tr></tbody></table>
                 </div></div>
@@ -296,6 +316,27 @@
         const TALLY_ENTRIES = ['Investment Dr / Bank Cr','Bank Dr / Investment Cr','Dividend Income Cr','TDS Dr','Charges Dr / Bank Cr','Memo Only','—'];
 
         function formatINR(v) { return '₹ ' + Math.abs(Number(v)||0).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+
+        // Convert various date formats to YYYY-MM-DD for <input type="date">
+        function toISODate(d) {
+            if (!d) return '';
+            // Already YYYY-MM-DD
+            if (/^\d{4}-\d{2}-\d{2}$/.test(d)) return d;
+            // DD-Mon-YYYY or D-Mon-YYYY (e.g. 28-Aug-2025)
+            const m = d.match(/^(\d{1,2})-(\w{3})-(\d{4})$/);
+            if (m) {
+                const months = {jan:'01',feb:'02',mar:'03',apr:'04',may:'05',jun:'06',jul:'07',aug:'08',sep:'09',oct:'10',nov:'11',dec:'12'};
+                const mm = months[m[2].toLowerCase()];
+                if (mm) return `${m[3]}-${mm}-${m[1].padStart(2,'0')}`;
+            }
+            // DD/MM/YYYY
+            const m2 = d.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+            if (m2) return `${m2[3]}-${m2[2]}-${m2[1]}`;
+            // Try native parse
+            const parsed = new Date(d);
+            if (!isNaN(parsed)) return parsed.toISOString().slice(0, 10);
+            return '';
+        }
         function showToast(msg,type='info') { const tc=document.getElementById('toast-container'); const bg=type==='success'?'#059669':type==='error'?'#dc2626':'#4338ca'; const t=document.createElement('div'); t.style.cssText=`background:${bg};color:#fff;padding:.6rem 1.1rem;border-radius:8px;font-size:.82rem;font-weight:600;box-shadow:0 4px 14px rgba(0,0,0,.15);font-family:inherit`; t.textContent=msg; tc.appendChild(t); setTimeout(()=>{t.style.opacity='0';t.style.transition='opacity .3s';setTimeout(()=>t.remove(),300)},3500); }
         function goBack() { window.location.href = backUrl; }
         function typeLabel(t) { return {demat:'Demat Statement',mutual_fund:'Mutual Fund CAS',pms:'PMS Statement'}[t]||t; }
@@ -388,10 +429,36 @@
             if (!data) return;
 
             // Header fields
-            document.getElementById('rv-investor').value = data.investor_name || data.client_name || data.portfolio_name || data.dp_id || '-';
-            document.getElementById('rv-period-start').value = data.statement_period_start || data.statement_date || '';
-            document.getElementById('rv-period-end').value = data.statement_period_end || '';
-            document.getElementById('rv-source').value = data.depository || data.pms_provider || '';
+            document.getElementById('rv-investor').value = data.investor_name || data.client_name || data.client_id || data.portfolio_name || data.dp_id || '-';
+            
+            // Period — use explicit values or derive from transaction date range
+            let periodStart = data.statement_period_start || data.period_start || data.statement_date || '';
+            let periodEnd = data.statement_period_end || data.period_end || '';
+            
+            if (!periodStart && data.transactions && data.transactions.length > 0) {
+                // Derive from min/max transaction dates
+                const dates = data.transactions
+                    .map(t => t.date || '')
+                    .filter(d => d)
+                    .sort();
+                if (dates.length) {
+                    periodStart = dates[0];
+                    periodEnd = dates[dates.length - 1];
+                }
+            }
+            
+            document.getElementById('rv-period-start').value = toISODate(periodStart);
+            document.getElementById('rv-period-end').value = toISODate(periodEnd);
+            
+            // Depository — use broker_display, then explicit fields, then filename heuristic
+            let source = data.broker_display || data.depository || data.pms_provider || data.source || '';
+            if (!source) {
+                const fname = (document.getElementById('rv-filename').value || '').toLowerCase();
+                if (fname.includes('tradebook') || fname.includes('zerodha')) source = 'Zerodha';
+                else if (fname.includes('groww')) source = 'Groww';
+                else if (fname.includes('angel') || fname.includes('motilal')) source = 'Angel One';
+            }
+            document.getElementById('rv-source').value = source;
             document.getElementById('rv-pan').value = data.pan || '';
 
             // Holdings
@@ -405,10 +472,10 @@
             } else {
                 htbody.innerHTML = holdings.map((h, i) => `<tr>
                     <td class="item-sr">${i+1}</td>
-                    <td><input type="text" class="rv-input-cell" value="${(h.scrip_name||h.fund_name||'').replace(/"/g,'&quot;')}" style="font-weight:600"></td>
-                    <td><input type="text" class="rv-input-cell" value="${h.isin||h.folio_number||''}" style="font-family:monospace;font-size:.72rem;color:#64748b"></td>
+                    <td><input type="text" class="rv-input-cell" value="${(h.scrip_name||h.fund_name||h.name||h.scheme_name||'').replace(/"/g,'&quot;')}" style="font-weight:600"></td>
+                    <td><input type="text" class="rv-input-cell" value="${h.isin||h.folio_number||h.folio_no||''}" style="font-family:monospace;font-size:.72rem;color:#64748b"></td>
                     <td><input type="number" class="rv-input-cell num-input" value="${h.quantity||h.units||''}" step="0.001"></td>
-                    <td><input type="text" class="rv-input-cell num-input" value="${h.market_value?formatINR(h.market_value):''}" readonly style="font-weight:700"></td>
+                    <td><input type="text" class="rv-input-cell num-input" value="${h.market_value?formatINR(h.market_value):(h.current_value?formatINR(h.current_value):'')}" readonly style="font-weight:700"></td>
                 </tr>`).join('');
             }
 
@@ -424,13 +491,15 @@
                 const tallyOpts = TALLY_ENTRIES.map(t => `<option value="${t}">${t}</option>`).join('');
                 tbody.innerHTML = txns.map((tx, i) => {
                     const typeVal = tx.type || '';
-                    const isSell = typeVal.toLowerCase().includes('sell') || typeVal.toLowerCase().includes('redemption');
+                    const isSell = typeVal.toLowerCase().includes('sell') || typeVal.toLowerCase().includes('redemption') || typeVal.toLowerCase().includes('switch out');
                     const fmtAmt = tx.amount ? Number(tx.amount).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2}) : '';
                     const fmtRate = tx.price ? Number(tx.price).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2}) : (tx.nav || '');
+                    const txDate = toISODate(tx.date);
+                    const txName = (tx.scrip_name || tx.fund_name || tx.scheme_name || tx.fund_house || tx.description || '').replace(/"/g,'&quot;');
                     return `<tr>
                         <td class="item-sr">${i+1}</td>
-                        <td><input type="date" class="rv-input-cell" value="${tx.date||''}" style="font-size:.72rem"></td>
-                        <td title="${(tx.scrip_name||tx.fund_name||'').replace(/"/g,'&quot;')}"><input type="text" class="rv-input-cell" value="${(tx.scrip_name||tx.fund_name||'').replace(/"/g,'&quot;')}" style="font-weight:600;font-size:.74rem;overflow:hidden;text-overflow:ellipsis"></td>
+                        <td><input type="date" class="rv-input-cell" value="${txDate}" style="font-size:.72rem"></td>
+                        <td title="${txName}"><input type="text" class="rv-input-cell" value="${txName}" style="font-weight:600;font-size:.74rem;overflow:hidden;text-overflow:ellipsis"></td>
                         <td><select class="rv-select-cell" style="font-size:.7rem;padding:.25rem">${TXN_TYPES.map(t=>`<option value="${t}" ${t===typeVal?'selected':''}>${t}</option>`).join('')}</select></td>
                         <td><input type="number" class="rv-input-cell num-input" value="${tx.quantity||tx.units||''}" step="0.001" style="font-size:.76rem"></td>
                         <td><input type="text" class="rv-input-cell num-input" value="${fmtRate}" style="font-size:.74rem" readonly></td>
@@ -438,6 +507,22 @@
                         <td><select class="rv-select-cell" style="font-size:.58rem;padding:.2rem .25rem">${TALLY_ENTRIES.map((t,idx)=>`<option value="${t}" ${idx===0&&!isSell||idx===1&&isSell?'selected':''}>${t}</option>`).join('')}</select></td>
                     </tr>`;
                 }).join('');
+            }
+
+            // Show filter bar if enough transactions
+            if (txns.length >= 10) {
+                document.getElementById('rv-txn-filter-bar').style.display = 'flex';
+                document.getElementById('rv-filter-count').textContent = `${txns.length} transactions`;
+                // Customize pills for MF/CAS
+                if (instrumentType === 'mutual_fund') {
+                    document.getElementById('rv-type-pills').innerHTML = `
+                        <span class="rv-filter-pill active" data-type="all" onclick="setTxnFilter(this,'all')">All</span>
+                        <span class="rv-filter-pill buy" data-type="purchase" onclick="setTxnFilter(this,'purchase')">Purchase</span>
+                        <span class="rv-filter-pill sell" data-type="redemption" onclick="setTxnFilter(this,'redemption')">Redemption</span>
+                        <span class="rv-filter-pill" data-type="switch" onclick="setTxnFilter(this,'switch')">Switch</span>
+                        <span class="rv-filter-pill" data-type="stp" onclick="setTxnFilter(this,'stp')">STP</span>
+                    `;
+                }
             }
 
             // Dividends
@@ -466,6 +551,50 @@
             }
         }
 
+        // ═══ TRANSACTION FILTERS ═══
+        let activeTypeFilter = 'all';
+
+        function setTxnFilter(el, type) {
+            activeTypeFilter = type;
+            document.querySelectorAll('#rv-type-pills .rv-filter-pill').forEach(p => p.classList.remove('active'));
+            el.classList.add('active');
+            filterTxns();
+        }
+
+        function filterTxns() {
+            const search = (document.getElementById('rv-txn-search').value || '').toLowerCase();
+            const rows = document.querySelectorAll('#rv-txn-tbody tr');
+            let visible = 0;
+
+            rows.forEach(row => {
+                const scrip = (row.querySelector('td:nth-child(3) input')?.value || '').toLowerCase();
+                const typeSelect = row.querySelector('td:nth-child(4) select');
+                const type = (typeSelect?.value || '').toLowerCase();
+
+                let show = true;
+
+                // Search filter
+                if (search && !scrip.includes(search)) {
+                    show = false;
+                }
+
+                // Type filter
+                if (activeTypeFilter !== 'all') {
+                    if (activeTypeFilter === 'buy' && !type.includes('buy') && !type.includes('purchase')) show = false;
+                    else if (activeTypeFilter === 'sell' && !type.includes('sell') && !type.includes('sale')) show = false;
+                    else if (activeTypeFilter === 'purchase' && !type.includes('purchase')) show = false;
+                    else if (activeTypeFilter === 'redemption' && !type.includes('redemption')) show = false;
+                    else if (activeTypeFilter === 'switch' && !type.includes('switch')) show = false;
+                    else if (activeTypeFilter === 'stp' && !type.includes('stp') && !type.includes('s t p')) show = false;
+                }
+
+                row.style.display = show ? '' : 'none';
+                if (show) visible++;
+            });
+
+            document.getElementById('rv-filter-count').textContent = `${visible} of ${rows.length} shown`;
+        }
+
         // ═══ PDF VIEWER ═══
         async function loadPdf() {
             try {
@@ -476,6 +605,24 @@
                 }
                 const data = await res.json();
                 pdfUrl = data.url;
+
+                // Check if user uploaded an Excel/CSV — can't render as PDF
+                const fname = (document.getElementById('rv-filename').value || '').toLowerCase();
+                const isNonPdf = fname.endsWith('.xlsx') || fname.endsWith('.xls') || fname.endsWith('.csv');
+                if (isNonPdf) {
+                    const ext = fname.split('.').pop().toUpperCase();
+                    document.getElementById('rv-pdf-body').innerHTML = `<div class="rv-pdf-placeholder">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".5">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+                            <line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/>
+                        </svg>
+                        <h3>${ext} File Uploaded</h3>
+                        <p style="color:rgba(255,255,255,.45)">Excel/CSV files are parsed directly — no preview available</p>
+                        <a href="${pdfUrl}" target="_blank" style="margin-top:.5rem;padding:.4rem .8rem;background:#4338ca;color:#fff;border-radius:6px;font-size:.72rem;font-weight:700;text-decoration:none">⬇ Download Original</a>
+                    </div>`;
+                    return;
+                }
+
                 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
                 pdfDoc = await pdfjsLib.getDocument(pdfUrl).promise;
                 totalPages = pdfDoc.numPages;
@@ -497,12 +644,12 @@
             body.innerHTML = '';
             const canvas = document.createElement('canvas');
             canvas.width = viewport.width; canvas.height = viewport.height;
-            canvas.style.cssText = 'border-radius:4px;box-shadow:0 2px 12px rgba(0,0,0,.2)';
+            canvas.style.cssText = 'display:block;border-radius:4px;box-shadow:0 2px 12px rgba(0,0,0,.2);flex-shrink:0';
             body.appendChild(canvas);
             await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
         }
         function changePage(d) { const n=currentPage+d; if(n>=1&&n<=totalPages)renderPage(n); }
-        function zoomPdf(d) { if(d===0){pdfScale=document.querySelector('.rv-pdf-body').clientWidth/620;}else{pdfScale=Math.max(0.4,Math.min(3,pdfScale+d));} renderPage(currentPage); }
+        function zoomPdf(d) { const body=document.getElementById('rv-pdf-body'); if(d===0){pdfScale=(body.clientWidth-16)/620;}else{pdfScale=Math.max(0.4,Math.min(3,pdfScale+d));} renderPage(currentPage); }
         function openPdfNewTab() { if(pdfUrl)window.open(pdfUrl,'_blank'); }
 
         // ═══ JOURNAL ENTRY CARDS ═══
