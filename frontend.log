@@ -1,92 +1,49 @@
-INFO:     Started server process [48042]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
-INFO:     Uvicorn running on http://127.0.0.1:3000 (Press CTRL+C to quit)
-Starting Python Frontend Server on port 3000...
-INFO:     127.0.0.1:53884 - "GET / HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53893 - "GET / HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53895 - "GET /styles.css HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:53893 - "GET /assets/aiview_refined.png HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53901 - "GET /clients.html HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53901 - "GET /app-topbar.js HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:53905 - "GET /app-sidebar.js?v=2 HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:53903 - "GET /session-manager.js?v=2 HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:53909 - "GET /client-list.html HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:53909 - "GET /app-sidebar.js HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:53911 - "GET /services-dashboard.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53911 - "GET /app-client-nav.js HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53911 - "GET /service-gst-refund-webview.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53911 - "GET /app-topbar.js?v=3 HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:53916 - "GET /api_config.js?v=2 HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:53916 - "GET /gst-refund.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53916 - "GET /service-gst-refund-webview.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&section=reports HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53916 - "GET /ca-certificates.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53926 - "GET /service-gst-overview.html HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:53954 - "GET /service-gst-refund-webview.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=GST%20Filing HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:53954 - "GET /gst-refund.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=GST+Filing HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53954 - "GET /refund-calculator.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=GST+Filing HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53954 - "GET /refund-calculator.css HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53954 - "GET /service-gst-refund-webview.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=GST+Filing&section=reconciliation HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53978 - "GET /tool-ims-vs-pr.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=GST+Filing&section=reconciliation HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53978 - "GET /tool-layout.css HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:53979 - "GET /tool-sidebar.js HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53983 - "GET /tool-jobs.js HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:53982 - "GET /drive-picker.js HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:53992 - "GET /tool-rule42-itc.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=GST+Filing&section=reconciliation HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54060 - "GET /tool-rule42-itc.html HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54064 - "GET /tool-rule42-itc.html HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54078 - "GET /clients.html HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:54078 - "GET /clients.html HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:54078 - "GET /clients.html HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:54081 - "GET /clients.html HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:54081 - "GET /clients.html HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:54103 - "GET / HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54103 - "GET /styles.css HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54107 - "GET /assets/aiview_refined.png HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54106 - "GET /assets/webview_refined.png HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54106 - "GET /sign-in.html HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54106 - "GET /api_config.js HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54107 - "GET /session-manager.js HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54120 - "GET /clients.html HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54123 - "GET /app-sidebar.js?v=2 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54120 - "GET /app-topbar.js HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54124 - "GET /session-manager.js?v=2 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54133 - "GET /clients.html HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:54133 - "GET /clients.html HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:54193 - "GET / HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54193 - "GET /favicon.ico HTTP/1.1" 404 Not Found
-INFO:     127.0.0.1:54195 - "GET /clients.html HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54202 - "GET /clients.html HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:54204 - "GET / HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:54212 - "GET /service-gst-overview.html HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:54212 - "GET /app-sidebar.js HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:54218 - "GET /service-gst-refund-webview.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=GST%20Filing HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:54218 - "GET /app-client-nav.js HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54225 - "GET /app-topbar.js?v=3 HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:54227 - "GET /api_config.js?v=2 HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:54218 - "GET /tool-statement3.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=GST+Filing HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54218 - "GET /tool-layout.css?v=3 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54225 - "GET /drive-picker.js HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:54227 - "GET /tool-sidebar.js HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54236 - "GET /tool-jobs.js HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:54227 - "GET /tool-rule42-itc.html?clientId=f12c6989-72a1-4fa8-b7a2-f3dc22efbd87&service=GST+Filing HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54227 - "GET /tool-layout.css HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:54252 - "GET /service-financial-instruments.html HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54254 - "GET /service-financial-statements.html HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54256 - "GET /client-picker-overlay.js HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54260 - "GET /client-picker-overlay.js HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54278 - "GET /clients.html HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:54280 - "GET /clients.html HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:54280 - "GET /clients.html HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:54283 - "GET /clients.html HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:54288 - "GET / HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54288 - "GET /styles.css HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54292 - "GET /assets/aiview_refined.png HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54291 - "GET /assets/webview_refined.png HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54292 - "GET /sign-in.html HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54292 - "GET /api_config.js HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54291 - "GET /session-manager.js HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54304 - "GET /clients.html HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54304 - "GET /app-topbar.js HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54307 - "GET /app-sidebar.js?v=2 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54308 - "GET /session-manager.js?v=2 HTTP/1.1" 200 OK
+Serving "/Users/rahulgupta/Frontent_aiexpert" at http://127.0.0.1:5500
+Ready for changes
+[0mGET /$%7Bdata.url%7D [33m404[0m 1.990 ms - 154[0m
+[0mGET /$%7Bdata.url%7D [33m404[0m 0.545 ms - 154[0m
+[0mGET /favicon.ico [33m404[0m 4.760 ms - 150[0m
+[0mGET /favicon.ico [33m404[0m 3.414 ms - 150[0m
+[0mGET /favicon.ico [33m404[0m 2.068 ms - 150[0m
+[0mGET /$%7Bdata.url%7D [33m404[0m 0.496 ms - 154[0m
+[0mGET /$%7Bdata.url%7D [33m404[0m 0.752 ms - 154[0m
+[0mGET /$%7Bdata.url%7D [33m404[0m 0.495 ms - 154[0m
+[0mGET /favicon.ico [33m404[0m 0.512 ms - 150[0m
+[0mGET /favicon.ico [33m404[0m 1.060 ms - 150[0m
+Change detected /Users/rahulgupta/Frontent_aiexpert/service-data-entry.html
+[0mGET /favicon.ico [33m404[0m 2.082 ms - 150[0m
+Change detected /Users/rahulgupta/Frontent_aiexpert/service-data-entry.html
+[0mGET /favicon.ico [33m404[0m 1.018 ms - 150[0m
+[0mGET /$%7Bdata.url%7D [33m404[0m 5.562 ms - 154[0m
+[0mGET /favicon.ico [33m404[0m 3.975 ms - 150[0m
+Change detected /Users/rahulgupta/Frontent_aiexpert/fi-review.html
+Change detected /Users/rahulgupta/Frontent_aiexpert/fi-review.html
+Change detected /Users/rahulgupta/Frontent_aiexpert/fi-tally-entry.js
+[0mGET /favicon.ico [33m404[0m 18.424 ms - 150[0m
+[0mGET /favicon.ico [33m404[0m 0.533 ms - 150[0m
+Change detected /Users/rahulgupta/Frontent_aiexpert/fi-review.html
+Change detected /Users/rahulgupta/Frontent_aiexpert/fi-review.html
+Change detected /Users/rahulgupta/Frontent_aiexpert/fi-review.html
+[0mGET /favicon.ico [33m404[0m 14.328 ms - 150[0m
+Change detected /Users/rahulgupta/Frontent_aiexpert/fi-review.html
+[0mGET /favicon.ico [33m404[0m 1.510 ms - 150[0m
+Change detected /Users/rahulgupta/Frontent_aiexpert/fi-tally-entry.js
+[0mGET /favicon.ico [33m404[0m 2.168 ms - 150[0m
+[0mGET /favicon.ico [33m404[0m 0.567 ms - 150[0m
+Change detected /Users/rahulgupta/Frontent_aiexpert/service-financial-instruments.html
+[0mGET /favicon.ico [33m404[0m 1.958 ms - 150[0m
+Change detected /Users/rahulgupta/Frontent_aiexpert/fi-tally-entry.js
+[0mGET /$%7Bdata.url%7D [33m404[0m 3.407 ms - 154[0m
+Change detected /Users/rahulgupta/Frontent_aiexpert/fi-tally-entry.js
+[0mGET /$%7Bdata.url%7D [33m404[0m 8.716 ms - 154[0m
+[0mGET /$%7Bdata.url%7D [33m404[0m 2.740 ms - 154[0m
+Change detected /Users/rahulgupta/Frontent_aiexpert/fi-tally-entry.js
+Change detected /Users/rahulgupta/Frontent_aiexpert/fi-tally-entry.js
+Change detected /Users/rahulgupta/Frontent_aiexpert/service-financial-instruments.html
+[0mGET /favicon.ico [33m404[0m 5.169 ms - 150[0m
+[0mGET /$%7Bdata.url%7D [33m404[0m 2.717 ms - 154[0m
+Change detected /Users/rahulgupta/Frontent_aiexpert/fi-tally-entry.js
+Change detected /Users/rahulgupta/Frontent_aiexpert/index.html
+Change detected /Users/rahulgupta/Frontent_aiexpert/sign-in.html
+Change detected /Users/rahulgupta/Frontent_aiexpert/clients.html
+Change detected /Users/rahulgupta/Frontent_aiexpert/clients.html

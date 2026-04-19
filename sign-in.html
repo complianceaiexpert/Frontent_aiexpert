@@ -51,14 +51,15 @@
            ═══════════════════════════════════ */
         .auth-split {
             display: flex;
-            min-height: 100vh;
+            height: 100vh;
+            overflow: hidden;
         }
 
         /* ── Left Panel ── */
         .auth-left {
             flex: 1;
             background: linear-gradient(160deg, #f0f4ff 0%, #e8ecf8 40%, #f5f0eb 100%);
-            padding: 3rem 3.5rem;
+            padding: 2rem 3rem;
             display: flex;
             flex-direction: column;
             position: relative;
@@ -92,7 +93,7 @@
             align-items: center;
             gap: 0.6rem;
             text-decoration: none;
-            margin-bottom: 3rem;
+            margin-bottom: 1.5rem;
             position: relative;
             z-index: 1;
         }
@@ -120,12 +121,12 @@
         .left-hero {
             position: relative;
             z-index: 1;
-            margin-bottom: 2.5rem;
+            margin-bottom: 1.5rem;
         }
 
         .left-hero h1 {
             font-family: 'Outfit', sans-serif;
-            font-size: 2.2rem;
+            font-size: 1.8rem;
             font-weight: 800;
             line-height: 1.2;
             color: var(--gray-900);
@@ -154,8 +155,8 @@
             backdrop-filter: blur(6px);
             -webkit-backdrop-filter: blur(6px);
             border: 1px solid rgba(255, 255, 255, 0.6);
-            border-radius: 14px;
-            padding: 1.25rem 1.15rem;
+            border-radius: 12px;
+            padding: 0.85rem 1rem;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: default;
         }
@@ -167,14 +168,14 @@
         }
 
         .feature-tile .ft-icon {
-            width: 42px;
-            height: 42px;
-            border-radius: 10px;
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.35rem;
-            margin-bottom: 0.75rem;
+            font-size: 1.1rem;
+            margin-bottom: 0.4rem;
         }
 
         .ft-icon.blue-bg {
@@ -203,33 +204,34 @@
 
         .feature-tile .ft-name {
             font-weight: 700;
-            font-size: 0.92rem;
+            font-size: 0.82rem;
             color: var(--gray-900);
-            margin-bottom: 0.3rem;
+            margin-bottom: 0.15rem;
         }
 
         .feature-tile .ft-desc {
-            font-size: 0.78rem;
+            font-size: 0.7rem;
             color: var(--gray-500);
-            line-height: 1.5;
+            line-height: 1.4;
         }
 
         /* ── Right Panel ── */
         .auth-right {
-            width: 540px;
-            min-width: 440px;
+            width: 480px;
+            min-width: 400px;
             display: flex;
             flex-direction: column;
-            padding: 2rem 3.5rem;
+            padding: 1.5rem 3rem;
             background: #fff;
             border-left: 1px solid var(--gray-100);
+            overflow-y: auto;
         }
 
         .right-top-link {
             text-align: right;
             font-size: 0.88rem;
             color: var(--gray-500);
-            margin-bottom: 2rem;
+            margin-bottom: 1rem;
         }
 
         .right-top-link a {

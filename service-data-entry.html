@@ -1099,6 +1099,11 @@
             const tbody = document.getElementById('vouchers-tbody');
             tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:2rem;color:#9ca3af">Loading vouchers from Tally...</td></tr>';
 
+            // Ensure client company name is loaded before fetching vouchers
+            if (!clientCompanyName && clientId) {
+                await loadClientCompanyName();
+            }
+
             try {
                 let url = withCompany(`/tally/vouchers?page=${voucherPage}&per_page=${VOUCHER_PER_PAGE}`);
                 if (voucherSearchVal) url += `&search=${encodeURIComponent(voucherSearchVal)}`;

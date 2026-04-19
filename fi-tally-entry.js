@@ -1853,89 +1853,95 @@ async function loadAllJournalEntries() {
     c.innerHTML = '<div style="text-align:center;padding:2rem;color:#94a3b8;font-size:.78rem">Loading journal history...</div>';
 
     const fmt = v => '₹' + Math.abs(v).toLocaleString('en-IN', { maximumFractionDigits: 0 });
-    let allEntries = [];
+    let allGroups = []; // { uploadId, file, type, je_status, entries[] }
 
-    // 1. Synced/Approved auto-generated entries
-    const autoEntries = window._autoEntries || [];
-    autoEntries.filter(e => e.status === 'approved' || e.status === 'synced').forEach(e => {
-        allEntries.push({ ...e, origin: 'auto' });
-    });
-
-    // 2. Synced/Approved manual entries
-    fiVouchers.filter(v => v.status === 'approved' || v.status === 'synced').forEach(v => {
-        allEntries.push({ ...v, origin: 'manual', sourceFile: 'Manual Entry' });
-    });
-
-    // 3. Backend AI journal entries
+    // Fetch all completed uploads with approved/synced je_status
     try {
         const r = await authFetch(`/financial-instruments/?client_id=${clientId}`);
         if(r.ok) {
             const ups = await r.json();
-            const done = ups.filter(u => u.status === 'completed' && u.journal_entry_count > 0);
-            for(const u of done) {
+            const relevant = ups.filter(u => u.status === 'completed' && u.journal_entry_count > 0 && (u.je_status === 'approved' || u.je_status === 'synced'));
+            for(const u of relevant) {
                 try {
                     const jr = await authFetch(`/financial-instruments/journal-entries/${u.id}`);
                     if(jr.ok) {
                         const d = await jr.json();
-                        (d.journal_entries || []).forEach((je, i) => {
-                            allEntries.push({
-                                id: `BE-${u.id}-${i}`,
-                                origin: 'backend',
-                                source: 'ai',
-                                sourceFile: u.filename,
-                                sourceType: u.instrument_type,
-                                date: je.date || '',
-                                narration: je.narration || '',
-                                voucher_type: je.voucher_type || 'Journal',
-                                status: 'synced',
-                                entries: (je.ledger_entries || []).map(le => ({
-                                    ledger_name: le.ledger_name,
-                                    amount: Number(le.amount) || 0,
-                                    side: (le.side || '').includes('Dr') ? 'Dr' : 'Cr',
-                                })),
-                                total_amount: (je.ledger_entries || []).reduce((s, le) => s + (Number(le.amount) || 0), 0) / 2,
+                        const entries = (d.journal_entries || []).map((je, i) => ({
+                            id: `BE-${u.id}-${i}`,
+                            date: je.date || '',
+                            narration: je.narration || '',
+                            voucher_type: je.voucher_type || 'Journal',
+                            entries: (je.ledger_entries || []).map(le => ({
+                                ledger_name: le.ledger_name,
+                                amount: Number(le.amount) || 0,
+                                side: (le.side || '').includes('Dr') ? 'Dr' : 'Cr',
+                            })),
+                            total_amount: (je.ledger_entries || []).reduce((s, le) => s + (Number(le.amount) || 0), 0) / 2,
+                        }));
+                        if (entries.length > 0) {
+                            allGroups.push({
+                                uploadId: u.id,
+                                file: u.filename,
+                                type: u.instrument_type,
+                                je_status: u.je_status,
+                                entries,
                             });
-                        });
+                        }
                     }
                 } catch(_) {}
             }
         }
     } catch(e) { console.error(e); }
 
+    // Also include approved/synced manual entries
+    fiVouchers.filter(v => v.status === 'approved' || v.status === 'synced').forEach(v => {
+        allGroups.push({
+            uploadId: null,
+            file: 'Manual Entry',
+            type: 'manual',
+            je_status: v.status,
+            entries: [{ ...v, total_amount: v.total_amount || 0 }],
+        });
+    });
+
     // Apply filter
-    if(_journalFilter !== 'all') {
-        allEntries = allEntries.filter(e => e.status === _journalFilter);
+    if(_journalFilter === 'synced') {
+        allGroups = allGroups.filter(g => g.je_status === 'synced');
+    } else if(_journalFilter === 'approved') {
+        allGroups = allGroups.filter(g => g.je_status === 'approved');
     }
 
     // Update count badge
+    const totalEntries = allGroups.reduce((s, g) => s + g.entries.length, 0);
     const total = document.getElementById('fi-journal-total');
-    if(total) total.textContent = allEntries.length;
+    if(total) total.textContent = totalEntries;
 
-    if(allEntries.length === 0) {
-        c.innerHTML = '<div class="fi-empty-mini"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><p>No journal entries yet — approve entries in Pending Review to see them here</p></div>';
+    if(allGroups.length === 0) {
+        c.innerHTML = '<div class="fi-empty-mini"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><p>No approved journal entries yet — approve entries via Statement Review to see them here</p></div>';
         return;
     }
 
-    // Group by source file
-    const groups = {};
-    allEntries.forEach(e => {
-        const key = e.sourceFile || 'Other';
-        if(!groups[key]) groups[key] = { file: key, type: e.sourceType || '', entries: [] };
-        groups[key].entries.push(e);
-    });
-
-    c.innerHTML = Object.values(groups).map((grp, gIdx) => {
-        const syncedCt = grp.entries.filter(e => e.status === 'synced').length;
-        const approvedCt = grp.entries.filter(e => e.status === 'approved').length;
+    c.innerHTML = allGroups.map((grp, gIdx) => {
         const totalAmt = grp.entries.reduce((s, e) => s + (e.total_amount || 0), 0);
+        const isSynced = grp.je_status === 'synced';
+        const isApproved = grp.je_status === 'approved';
 
         const typeIcon = (grp.type||'').startsWith('demat') ? '<span style="font-size:.55rem;font-weight:700;padding:1px 5px;border-radius:3px;background:#4338ca15;color:#4338ca;margin-left:4px">Demat</span>'
+            : (grp.type||'').startsWith('mutual') ? '<span style="font-size:.55rem;font-weight:700;padding:1px 5px;border-radius:3px;background:#05966915;color:#059669;margin-left:4px">MF</span>'
             : (grp.type||'').startsWith('pms') ? '<span style="font-size:.55rem;font-weight:700;padding:1px 5px;border-radius:3px;background:#d9770615;color:#d97706;margin-left:4px">PMS</span>'
             : '';
 
+        const statusBadge = isSynced
+            ? '<span style="font-size:.55rem;font-weight:700;padding:1px 6px;border-radius:10px;background:#dcfce7;color:#059669;margin-left:.5rem">✓ Synced to Tally</span>'
+            : '<span style="font-size:.55rem;font-weight:700;padding:1px 6px;border-radius:10px;background:#fef3c7;color:#d97706;margin-left:.5rem">Approved — Ready to Sync</span>';
+
+        // Sync button for approved (not yet synced) groups
+        const syncBtn = isApproved && grp.uploadId
+            ? `<button class="fi-btn tally" style="font-size:.65rem;padding:.25rem .6rem;margin-left:auto" onclick="event.stopPropagation();syncSingleToTally('${grp.uploadId}')">↻ Sync to Tally</button>`
+            : '';
+
         const entriesHTML = grp.entries.map(v => {
-            const statusPill = `<span class="fi-status-pill ${v.status}">${(v.status||'synced').toUpperCase()}</span>`;
-            const borderColor = v.status === 'synced' ? '#059669' : '#d97706';
+            const borderColor = isSynced ? '#059669' : '#d97706';
             const drEntries = (v.entries || []).filter(e => e.side === 'Dr');
             const crEntries = (v.entries || []).filter(e => e.side === 'Cr');
             let rows = '';
@@ -1950,7 +1956,6 @@ async function loadAllJournalEntries() {
                 <div class="fi-vc-header">
                     <span class="fi-vc-title">${v.narration || ''}</span>
                     ${v.voucher_type ? `<span style="font-size:.5rem;font-weight:700;padding:1px 5px;border-radius:3px;background:#f8fafc;color:#64748b">${v.voucher_type}</span>` : ''}
-                    ${statusPill}
                 </div>
                 <table class="fi-vc-table"><thead><tr><th style="text-align:left">Particulars</th><th style="text-align:right;width:100px">Dr (₹)</th><th style="text-align:right;width:100px">Cr (₹)</th></tr></thead><tbody>${rows}</tbody></table>
             </div>`;
@@ -1963,8 +1968,8 @@ async function loadAllJournalEntries() {
                 ${typeIcon}
                 <span style="font-size:.7rem;font-weight:800;font-family:'Outfit',sans-serif;color:#64748b;margin-left:.5rem">${grp.entries.length}</span>
                 <span style="font-size:.65rem;color:#94a3b8;margin-left:.15rem">· ${fmt(totalAmt)}</span>
-                ${syncedCt > 0 ? `<span style="font-size:.55rem;font-weight:700;padding:1px 6px;border-radius:10px;background:#dcfce7;color:#059669;margin-left:.5rem">${syncedCt} synced</span>` : ''}
-                ${approvedCt > 0 ? `<span style="font-size:.55rem;font-weight:700;padding:1px 6px;border-radius:10px;background:#fef3c7;color:#d97706">${approvedCt} approved</span>` : ''}
+                ${statusBadge}
+                ${syncBtn}
             </div>
             <div class="fi-file-body" style="display:none">${entriesHTML}</div>
         </div>`;
@@ -1994,12 +1999,34 @@ function buildStmtRow(u, showType) {
     const sc = statusColor[u.status] || '#94a3b8';
     const isProcessing = u.status !== 'completed' && u.status !== 'failed';
     const isCompleted = u.status === 'completed';
+    const jeStatus = u.je_status || 'pending';
     const delBtn = `<button class="fi-btn" style="font-size:.62rem;padding:.2rem .4rem;color:#dc2626;border-color:#fecaca" onclick="deleteUpload('${u.id}','${u.filename}')" title="Delete">✕</button>`;
-    const actionBtns = isProcessing
-        ? `<div style="display:flex;gap:.35rem;align-items:center"><span style="font-size:.7rem;font-weight:700;color:#d97706;animation:fiPulse 1.5s infinite">⏳ Processing...</span>${delBtn}</div>`
-        : isCompleted
-            ? `<div style="display:flex;gap:.35rem;flex-wrap:wrap"><button class="fi-btn" onclick="openReview('${u.id}','${u.instrument_type}')">Review</button><button class="fi-btn tally" style="font-size:.68rem;padding:.25rem .5rem" onclick="syncSingleToTally('${u.id}')">↻ Tally</button>${delBtn}</div>`
-            : `<div style="display:flex;gap:.35rem;align-items:center"><span style="font-size:.68rem;color:#dc2626;font-weight:600">Failed</span>${delBtn}</div>`;
+
+    // Action buttons — Review + Delete only (no Tally sync here)
+    let actionBtns;
+    if (isProcessing) {
+        actionBtns = `<div style="display:flex;gap:.35rem;align-items:center"><span style="font-size:.7rem;font-weight:700;color:#d97706;animation:fiPulse 1.5s infinite">⏳ Processing...</span>${delBtn}</div>`;
+    } else if (!isCompleted) {
+        actionBtns = `<div style="display:flex;gap:.35rem;align-items:center"><span style="font-size:.68rem;color:#dc2626;font-weight:600">Failed</span>${delBtn}</div>`;
+    } else {
+        actionBtns = `<div style="display:flex;gap:.35rem;flex-wrap:wrap">
+            <button class="fi-btn" onclick="openReview('${u.id}','${u.instrument_type}')">Review</button>
+            ${delBtn}</div>`;
+    }
+
+    // Status badge: show approval state for completed uploads
+    let statusBadge;
+    if (isProcessing) {
+        statusBadge = `<span class="fi-badge" style="background:${sc}15;color:${sc};font-weight:700">⏳ AI PROCESSING</span>`;
+    } else if (isCompleted && jeStatus === 'approved') {
+        statusBadge = `<span class="fi-badge" style="background:#dcfce7;color:#059669;font-weight:700">✓ APPROVED</span>`;
+    } else if (isCompleted && jeStatus === 'synced') {
+        statusBadge = `<span class="fi-badge" style="background:#eef2ff;color:#4338ca;font-weight:700">↻ SYNCED</span>`;
+    } else if (isCompleted && jeStatus === 'pending') {
+        statusBadge = `<span class="fi-badge" style="background:#fef3c7;color:#d97706;font-weight:700">NEEDS APPROVAL</span>`;
+    } else {
+        statusBadge = `<span class="fi-badge" style="background:${sc}15;color:${sc};font-weight:700">${(u.status||'').toUpperCase()}</span>`;
+    }
 
     const typeCol = showType ? `<td><span class="fi-badge" style="background:#eef2ff;color:#4338ca">${typeLabel(u.instrument_type)}</span></td>` : '';
     const dateStr = u.created_at ? new Date(u.created_at).toLocaleDateString('en-GB') : '-';
@@ -2008,7 +2035,7 @@ function buildStmtRow(u, showType) {
         <td style="font-weight:600;font-family:'Outfit',sans-serif;color:#4338ca">${dateStr}</td>
         ${typeCol}
         <td style="font-weight:500;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${u.filename}</td>
-        <td><span class="fi-badge" style="background:${sc}15;color:${sc};font-weight:700">${isProcessing ? '⏳ AI PROCESSING' : (u.status||'').toUpperCase()}</span></td>
+        <td>${statusBadge}</td>
         <td style="font-weight:700;font-family:'Outfit',sans-serif">${u.journal_entry_count || (isProcessing ? '—' : '0')}</td>
         <td>${actionBtns}</td>
     </tr>`;
@@ -2071,16 +2098,144 @@ async function loadStatementsTabbed() {
 }
 
 async function syncSingleToTally(uploadId) {
-    fiToast('Syncing to Tally...', 'info');
+    // Step 1: Fetch journal entries
+    let entries = [];
     try {
         const jr = await authFetch(`/financial-instruments/journal-entries/${uploadId}`);
         if (!jr.ok) throw new Error('Failed to fetch entries');
         const data = await jr.json();
-        const entries = data.journal_entries || [];
-        if (entries.length === 0) { fiToast('No journal entries to sync', 'warning'); return; }
-        // POST each entry to Tally connector
-        fiToast(`${entries.length} vouchers synced to Tally`, 'success');
-    } catch(e) { fiToast(e.message || 'Sync failed', 'error'); }
+        entries = data.journal_entries || [];
+    } catch (e) { fiToast(e.message || 'Failed to load entries', 'error'); return; }
+
+    if (entries.length === 0) { fiToast('No journal entries to sync', 'warning'); return; }
+
+    // Step 2: Check if Tally Connector is running
+    let tallyConnected = false;
+    let tallyCompany = '';
+    try {
+        const res = await fetch('http://127.0.0.1:17890/tally/companies', { signal: AbortSignal.timeout(3000) });
+        if (res.ok) {
+            const data = await res.json();
+            if (data.companies && data.companies.length > 0) {
+                tallyConnected = true;
+                tallyCompany = data.companies[0];
+            }
+        }
+    } catch (e) { /* connector not running */ }
+
+    if (!tallyConnected) {
+        fiToast('⚠️ Tally is not connected. Please connect Tally first.', 'error');
+        const goToIntegrations = await showConfirm({
+            title: 'Tally Not Connected',
+            message: 'The Tally connector is not running on this computer. Would you like to go to the <strong>Integrations</strong> page to set up the connection?',
+            type: 'warning',
+            icon: '🔗',
+            confirmText: 'Go to Integrations',
+            cancelText: 'Cancel',
+        });
+        if (goToIntegrations) window.location.href = 'integrations.html';
+        return;
+    }
+
+    // Step 3: Confirm with user
+    const totalAmt = entries.reduce((s, je) => {
+        const drTotal = (je.ledger_entries || [])
+            .filter(le => (le.side || '').includes('Dr'))
+            .reduce((a, le) => a + (Number(le.amount) || 0), 0);
+        return s + drTotal;
+    }, 0);
+    const fmt = v => '₹' + Math.abs(v).toLocaleString('en-IN', { maximumFractionDigits: 0 });
+
+    const syncOk = await showConfirm({
+        title: 'Sync to Tally?',
+        message: `<div style="text-align:left;line-height:1.8">
+            <strong>${entries.length}</strong> journal entries will be pushed to Tally<br>
+            Company: <strong>${tallyCompany}</strong><br>
+            Total Value: <strong>${fmt(totalAmt)}</strong><br>
+            <span style="font-size:.72rem;color:#64748b">Each entry will be created as a Journal voucher in Tally.</span>
+        </div>`,
+        type: 'confirm',
+        icon: '🔄',
+        confirmText: 'Push to Tally',
+        cancelText: 'Cancel',
+    });
+    if (!syncOk) return;
+
+    // Step 4: Push each journal entry as a voucher
+    fiToast(`⏳ Syncing ${entries.length} entries to Tally...`, 'info');
+    let successCount = 0;
+    let failCount = 0;
+    let lastError = '';
+
+    for (let i = 0; i < entries.length; i++) {
+        const je = entries[i];
+
+        // Convert date to YYYYMMDD format
+        let dateVal = '';
+        if (je.date) {
+            // Handle formats: "28-Aug-2025", "2025-08-28", "28/08/2025"
+            const d = new Date(je.date);
+            if (!isNaN(d.getTime())) {
+                const yyyy = d.getFullYear();
+                const mm = String(d.getMonth() + 1).padStart(2, '0');
+                const dd = String(d.getDate()).padStart(2, '0');
+                dateVal = `${yyyy}${mm}${dd}`;
+            }
+        }
+
+        // Build ledger entries for Tally
+        const ledger_entries = (je.ledger_entries || []).map(le => ({
+            ledger_name: le.ledger_name || '',
+            amount: Number(le.amount) || 0,
+            is_debit: (le.side || '').includes('Dr'),
+        }));
+
+        const payload = {
+            company: tallyCompany,
+            voucher_type: je.voucher_type || 'Journal',
+            date: dateVal,
+            narration: je.narration || '',
+            ledger_entries,
+            auto_create_ledgers: true,
+        };
+
+        try {
+            const res = await fetch('http://127.0.0.1:17890/tally/push-voucher', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+            });
+            const result = await res.json();
+            if (result.ok) {
+                successCount++;
+            } else {
+                failCount++;
+                lastError = result.details || result.error || 'Unknown error';
+                console.warn(`Tally push failed for entry ${i + 1}:`, lastError);
+            }
+        } catch (err) {
+            failCount++;
+            lastError = 'Connector not reachable';
+        }
+    }
+
+    // Step 5: Show results
+    if (failCount === 0) {
+        fiToast(`✅ All ${successCount} vouchers synced to Tally!`, 'success');
+        // Mark as synced in backend
+        await authFetch(`/financial-instruments/${uploadId}/je-status`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ je_status: 'synced' }),
+        });
+        // Refresh both views
+        loadStatementsTabbed();
+        loadAllJournalEntries();
+    } else if (successCount > 0) {
+        fiToast(`⚠️ ${successCount} synced, ${failCount} failed. Last error: ${lastError}`, 'warning');
+    } else {
+        fiToast(`❌ Sync failed: ${lastError}`, 'error');
+    }
 }
 
 async function deleteUpload(uploadId, filename) {
