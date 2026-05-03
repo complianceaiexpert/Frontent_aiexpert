@@ -82,15 +82,15 @@
     html += '</div>';
 
     // ═══ Client Level section ═══
-    html += '<div class="cn-section">';
-    html += '<div class="cn-section-label">';
+    html += '<div class="sb-section">';
+    html += '<div class="sb-section-label">';
     html += '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>';
     html += 'Client';
     html += '</div>';
 
     clientNavItems.forEach(item => {
         const activeClass = isActive(item.id);
-        html += `<a href="${item.href}" class="cn-item${activeClass}">
+        html += `<a href="${item.href}" class="sb-item${activeClass}">
             ${item.icon}
             ${item.label}
         </a>`;
@@ -110,9 +110,9 @@
     ];
 
     html += '<div id="cn-services-section">';
-    html += '<div class="cn-divider"></div>';
-    html += '<div class="cn-section">';
-    html += '<div class="cn-section-label">';
+    html += '<div class="sb-divider"></div>';
+    html += '<div class="sb-section">';
+    html += '<div class="sb-section-label">';
     html += '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>';
     html += 'Services';
     html += '</div>';
@@ -122,7 +122,7 @@
         const mapped = SERVICE_MAP[svc.key];
         if (mapped) {
             const activeClass = isActive(svc.id);
-            svcLinksHtml += `<a href="${mapped.href}" class="cn-item${activeClass}">
+            svcLinksHtml += `<a href="${mapped.href}" class="sb-item${activeClass}">
                 ${mapped.icon}
                 ${mapped.label}
             </a>`;
@@ -132,7 +132,7 @@
     html += '<div id="cn-service-links"></div>';
     html += '</div>';
     html += '</div>';
-    html += '<div class="cn-divider"></div>';
+    html += '<div class="sb-divider"></div>';
 
     container.innerHTML = html;
 
@@ -201,27 +201,77 @@
         tryLoadClient();
     }
 
-    // ═══ Inject Styles ═══
+    // ═══ Inject Styles (only cn-client-card styles + ensure sb-* are present) ═══
+    // Inject app-sidebar-css if not already present (for pages without app-sidebar.js)
+    if (!document.getElementById('app-sidebar-css')) {
+        const sbStyle = document.createElement('style');
+        sbStyle.id = 'app-sidebar-css';
+        sbStyle.textContent = `
+            .sb-section { padding: 0.25rem 0.65rem; }
+            .sb-section-label {
+                font-size: 0.58rem; font-weight: 800; text-transform: uppercase;
+                letter-spacing: 0.1em; color: #94a3b8;
+                padding: 0.25rem 0.75rem 0.15rem; margin-bottom: 0.05rem;
+            }
+            .sb-section-label svg { opacity: 0.5; }
+            .sb-item {
+                display: flex; align-items: center; gap: 0.65rem;
+                padding: 0.45rem 0.75rem; border-radius: 10px;
+                font-size: 0.82rem; font-weight: 550; color: #1e293b;
+                cursor: pointer; transition: all 0.2s ease;
+                text-decoration: none; margin-bottom: 1px;
+                border: 1.5px solid transparent; position: relative;
+            }
+            .sb-item:hover {
+                background: #ffffff; color: #1e3a8a;
+                border-color: #e2e8f0; box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+                transform: translateX(2px);
+            }
+            .sb-item.active {
+                background: #ffffff; color: #1e3a8a; font-weight: 600;
+                border-color: #bfdbfe;
+                box-shadow: 0 2px 8px rgba(30,58,138,0.08), inset 0 0 0 1px rgba(59,130,246,0.05);
+            }
+            .sb-item.active::before {
+                content: ''; position: absolute; left: -0.65rem; top: 50%;
+                transform: translateY(-50%); width: 3px; height: 60%;
+                background: linear-gradient(180deg, #1e3a8a, #3b82f6);
+                border-radius: 0 3px 3px 0;
+            }
+            .sb-item svg {
+                flex-shrink: 0; width: 16px; height: 16px;
+                opacity: 0.7; transition: opacity 0.15s;
+            }
+            .sb-item:hover svg, .sb-item.active svg { opacity: 1; }
+            .sb-divider {
+                height: 1px;
+                background: linear-gradient(90deg, transparent, #e2e8f0 30%, #e2e8f0 70%, transparent);
+                margin: 0.15rem 0.85rem;
+            }
+        `;
+        document.head.appendChild(sbStyle);
+    }
+
     if (!document.getElementById('cn-styles')) {
         const style = document.createElement('style');
         style.id = 'cn-styles';
         style.textContent = `
             .cn-client-card {
-                padding: 0.9rem 1rem;
-                border-bottom: 1px solid #f1f5f9;
+                padding: 0.9rem 0.85rem;
+                border-bottom: 1px solid #eef0f5;
                 display: flex;
                 align-items: center;
-                gap: 0.65rem;
+                gap: 0.6rem;
             }
             .cn-avatar {
-                width: 36px;
-                height: 36px;
-                border-radius: 10px;
+                width: 34px;
+                height: 34px;
+                border-radius: 9px;
                 background: linear-gradient(135deg, #1e3a8a, #3b82f6);
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                font-size: 1rem;
+                font-size: 0.9rem;
                 font-weight: 800;
                 font-family: 'Outfit', sans-serif;
                 color: #fff;
@@ -229,7 +279,7 @@
             }
             .cn-client-info { flex:1; min-width:0; }
             .cn-client-name {
-                font-size: 0.82rem;
+                font-size: 0.78rem;
                 font-weight: 700;
                 color: #111827;
                 white-space: nowrap;
@@ -237,58 +287,12 @@
                 text-overflow: ellipsis;
             }
             .cn-client-type {
-                font-size: 0.62rem;
+                font-size: 0.6rem;
                 color: #9ca3af;
                 font-weight: 500;
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
-            }
-            .cn-section { padding: 0.5rem 0.75rem; }
-            .cn-section-label {
-                font-size: 0.6rem;
-                font-weight: 700;
-                text-transform: uppercase;
-                letter-spacing: 0.08em;
-                color: #9ca3af;
-                padding: 0.4rem 0.75rem;
-                margin-bottom: 0.1rem;
-                display: flex;
-                align-items: center;
-                gap: 0.35rem;
-            }
-            .cn-item {
-                display: flex;
-                align-items: center;
-                gap: 0.6rem;
-                padding: 0.45rem 0.75rem;
-                border-radius: 8px;
-                font-size: 0.78rem;
-                font-weight: 500;
-                color: #4b5563;
-                cursor: pointer;
-                transition: all .2s;
-                text-decoration: none;
-                margin-bottom: 1px;
-            }
-            .cn-item:hover {
-                background: #f1f5f9;
-                color: #1e3a8a;
-            }
-            .cn-item.active {
-                background: #eff6ff;
-                color: #1e3a8a;
-                font-weight: 600;
-            }
-            .cn-item svg {
-                flex-shrink: 0;
-                width: 15px;
-                height: 15px;
-            }
-            .cn-divider {
-                height: 1px;
-                background: #f1f5f9;
-                margin: 0.3rem 0.75rem;
             }
         `;
         document.head.appendChild(style);

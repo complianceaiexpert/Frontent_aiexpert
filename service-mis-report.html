@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIS Reports — Suvidha AI</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="data-entry.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .mis-page { max-width:1200px; margin:0 auto; padding:1.5rem 2rem }
+        .mis-hero { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.25rem }
+        .mis-hero h1 { font-family:'Outfit',sans-serif; font-size:1.5rem; font-weight:800; color:#0f172a; margin:0 }
+        .mis-hero p { font-size:.82rem; color:#64748b; margin:.2rem 0 0 }
+        .mis-hero-actions { display:flex; gap:.5rem; align-items:center }
+        .mis-back { display:inline-flex; align-items:center; gap:.35rem; padding:.45rem .85rem; background:#fff; border:1px solid #e2e8f0; border-radius:8px; font-size:.78rem; font-weight:600; color:#374151; text-decoration:none; transition:all .15s; font-family:inherit; cursor:pointer }
+        .mis-back:hover { border-color:#3b82f6; color:#1e3a8a; background:#f0f5ff }
+        .mis-refresh { display:inline-flex; align-items:center; gap:.35rem; padding:.45rem .85rem; background:#1e3a8a; border:none; border-radius:8px; font-size:.78rem; font-weight:600; color:#fff; cursor:pointer; font-family:inherit; transition:all .15s }
+        .mis-refresh:hover { background:#1e40af }
+        .mis-company-badge { display:inline-flex; align-items:center; gap:.4rem; padding:.3rem .75rem; background:linear-gradient(135deg,#1e3a8a,#3b82f6); color:#fff; border-radius:8px; font-size:.78rem; font-weight:700; font-family:'Outfit',sans-serif }
+    </style>
+</head>
+<body>
+    <div id="app-topbar" data-active="dashboard"></div>
+
+    <div class="mis-page">
+        <!-- Hero Header -->
+        <div class="mis-hero">
+            <div>
+                <h1>📊 MIS Reports</h1>
+                <p>Comprehensive Financial Analysis — <span id="mis-company-name">Loading…</span></p>
+            </div>
+            <div class="mis-hero-actions">
+                <span class="mis-company-badge" id="mis-company-badge">—</span>
+                <button class="mis-refresh" onclick="loadMISReports()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                    Refresh
+                </button>
+                <a class="mis-back" id="back-link" href="service-data-entry.html">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                    Back to Data Entry
+                </a>
+            </div>
+        </div>
+
+        <!-- Loading -->
+        <div id="mis-loading" class="mis-loading-state">
+            <div class="mis-loading-spinner"></div>
+            <div class="mis-loading-text">Analysing your financial data…</div>
+            <div class="mis-loading-sub">Fetching profitability, cash flow & working capital metrics</div>
+        </div>
+
+        <!-- Content -->
+        <div id="mis-content" style="display:none">
+            <div class="mis-kpi-grid" id="mis-kpi-grid"></div>
+
+            <div class="mis-sub-tabs">
+                <button class="mis-sub-tab active" onclick="switchMisTab('profitability',this)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> Profitability</button>
+                <button class="mis-sub-tab" onclick="switchMisTab('sales',this)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg> Sales</button>
+                <button class="mis-sub-tab" onclick="switchMisTab('costs',this)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg> Costs</button>
+                <button class="mis-sub-tab" onclick="switchMisTab('inventory',this)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg> Inventory</button>
+                <button class="mis-sub-tab" onclick="switchMisTab('cashflow',this)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg> Cash Flow</button>
+                <button class="mis-sub-tab" onclick="switchMisTab('working-capital',this)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg> Ratios</button>
+                <button class="mis-sub-tab" onclick="switchMisTab('receivables',this)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg> Receivables & Payables</button>
+            </div>
+
+            <div class="mis-panel active" id="mis-panel-profitability"><div class="mis-panel-header"><h3>Profitability Statement</h3><span class="mis-panel-sub">Revenue vs Costs breakdown from Tally ledgers</span></div><div class="mis-panel-body" id="mis-profit-body"></div></div>
+            <div class="mis-panel" id="mis-panel-sales"><div class="mis-panel-header"><h3>Sales Analysis</h3><span class="mis-panel-sub">Monthly trend, top customers & invoice metrics</span></div><div class="mis-panel-body" id="mis-sales-body"></div></div>
+            <div class="mis-panel" id="mis-panel-costs"><div class="mis-panel-header"><h3>Cost Analysis</h3><span class="mis-panel-sub">Expense categories, monthly purchases & top cost heads</span></div><div class="mis-panel-body" id="mis-costs-body"></div></div>
+            <div class="mis-panel" id="mis-panel-inventory"><div class="mis-panel-header"><h3>Inventory Analysis</h3><span class="mis-panel-sub">Top items, warehouse breakdown & stock metrics</span></div><div class="mis-panel-body" id="mis-inventory-body"></div></div>
+            <div class="mis-panel" id="mis-panel-cashflow"><div class="mis-panel-header"><h3>Cash Flow Statement</h3><span class="mis-panel-sub">Operating, investing & financing activities</span></div><div class="mis-panel-body" id="mis-cashflow-body"></div></div>
+            <div class="mis-panel" id="mis-panel-working-capital"><div class="mis-panel-header"><h3>Working Capital & Financial Ratios</h3><span class="mis-panel-sub">Liquidity, solvency & efficiency indicators</span></div><div class="mis-panel-body" id="mis-ratios-body"></div></div>
+            <div class="mis-panel" id="mis-panel-receivables"><div class="mis-panel-header"><h3>Receivables & Payables</h3><span class="mis-panel-sub">Outstanding debtors & creditors with net position</span></div><div class="mis-panel-body" id="mis-receivables-body"></div></div>
+        </div>
+    </div>
+
+    <script src="api_config.js?v=2"></script>
+    <script src="app-topbar.js"></script>
+    <script src="mis-report.js"></script>
+</body>
+</html>

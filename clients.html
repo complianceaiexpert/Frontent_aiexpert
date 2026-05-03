@@ -31,9 +31,9 @@
 
         /* ── Sidebar ── */
         .firm-sidebar {
-            width: 220px;
-            background: #fafbfd;
-            border-right: 1px solid #f0f1f3;
+            width: 240px;
+            background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+            border-right: 1px solid #e2e8f0;
             position: fixed;
             top: 64px;
             bottom: 0;
@@ -41,20 +41,22 @@
             display: flex;
             flex-direction: column;
             z-index: 90;
-            overflow-y: auto
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: #cbd5e1 transparent;
         }
 
         .sb-section {
-            padding: 0.75rem 0.75rem
+            padding: 0.55rem 0.65rem
         }
 
         .sb-section-label {
-            font-size: 0.62rem;
-            font-weight: 700;
+            font-size: 0.58rem;
+            font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: #b0b5bf;
-            padding: 0.5rem 0.75rem;
+            letter-spacing: 0.1em;
+            color: #94a3b8;
+            padding: 0.5rem 0.75rem 0.3rem;
             margin-bottom: 0.15rem
         }
 
@@ -108,7 +110,7 @@
 
         /* ── Main ── */
         .firm-main {
-            margin-left: 220px;
+            margin-left: 240px;
             flex: 1;
             padding: 1.5rem 2rem 3rem
         }
@@ -1694,73 +1696,7 @@
         <aside class="firm-sidebar">
             <!-- ═══ Shared Main Navigation ═══ -->
             <div id="app-sidebar-main" data-active="home"></div>
-            <script src="app-sidebar.js?v=2"></script>
-
-            <!-- ═══ Active Workspaces Section ═══ -->
-            <div class="sb-section">
-                <div class="sb-section-label">Active Workspaces</div>
-                <a href="#" onclick="event.preventDefault();goToService('service-gst-overview.html','service-gst-refund-webview.html?clientId={clientId}&service=GST Filing')" class="sb-item">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <line x1="12" y1="1" x2="12" y2="23"/>
-                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-                    </svg>
-                    GST Filing
-                    <span class="sb-badge" style="background:#f1f5f9;color:#475569">Live</span>
-                </a>
-                <a href="#" onclick="event.preventDefault();goToService('service-data-entry-overview.html','service-data-entry.html?clientId={clientId}&service=Data Entry')" class="sb-item">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-                    </svg>
-                    Data Entry
-                    <span class="sb-badge" style="background:#f1f5f9;color:#475569">Live</span>
-                </a>
-
-                <a href="#" onclick="event.preventDefault();goToService('service-financial-statements-overview.html','service-financial-statements.html?clientId={clientId}')" class="sb-item">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="3" y="3" width="18" height="18" rx="2"/>
-                        <path d="M3 12h18"/><path d="M12 3v18"/>
-                    </svg>
-                    Financial Stmt.
-                    <span class="sb-badge" style="background:#ecfdf5;color:#059669">New</span>
-                </a>
-                <a href="#" onclick="event.preventDefault();goToService('service-financial-instruments-overview.html','service-financial-instruments.html?clientId={clientId}')" class="sb-item">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/>
-                    </svg>
-                    Financial Instr.
-                    <span class="sb-badge" style="background:#ecfdf5;color:#059669">New</span>
-                </a>
-            </div>
-            <div class="sb-divider"></div>
-
-            <!-- ═══ Page-Specific: Quick Links ═══ -->
-            <div class="sb-section">
-                <div class="sb-section-label">Quick Links</div>
-                <a href="about-us.html" class="sb-item">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10" />
-                        <path d="M12 16v-4" />
-                        <path d="M12 8h.01" />
-                    </svg>
-                    About Us
-                </a>
-                <a href="contact-us.html" class="sb-item">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-                        <polyline points="22,6 12,13 2,6" />
-                    </svg>
-                    Contact
-                </a>
-                <a href="integrations.html" class="sb-item">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="3" />
-                        <path
-                            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9v1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
-                    </svg>
-                    Integrations
-                </a>
-            </div>
+            <script src="app-sidebar.js"></script>
         </aside>
 
         <!-- ══ MAIN CONTENT ══ -->
@@ -1922,13 +1858,6 @@
                         <div class="qt-info">
                             <h4>GSTIN Validator</h4>
                             <p>Single or bulk GSTIN verification in seconds</p>
-                        </div>
-                    </a>
-                    <a href="tool-rule42-itc.html" class="qt-card">
-                        <div class="qt-icon" style="background:linear-gradient(135deg,#fef3c7,#fffbeb)">⚖️</div>
-                        <div class="qt-info">
-                            <h4>Rule 42 ITC Calculator</h4>
-                            <p>ITC reversal for mixed taxable & exempt supplies — GSTR-3B ready</p>
                         </div>
                     </a>
                 </div>

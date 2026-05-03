@@ -17,55 +17,58 @@
     <div class="sr-layout">
         <!-- ══════ SIDEBAR ══════ -->
         <aside class="sr-sidebar">
-            <div id="app-client-nav" data-active="statutory-reporting"></div>
-            <script src="app-client-nav.js"></script>
+            <!-- ═══ Shared Main Navigation ═══ -->
+            <div id="app-sidebar-main" data-active="statutory-reporting"></div>
+            <script src="app-sidebar.js"></script>
 
-            <div class="sr-sb-section">
-                <div class="sr-sb-label">Statutory Reporting</div>
-                <div class="sr-sb-item active">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-                    Dashboard
+            <!-- ═══ Active Workspace: Statutory Reporting ═══ -->
+            <div class="sb-section">
+                <div class="sb-section-label" style="display:flex;align-items:center;gap:0.35rem;">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/></svg>
+                    Active Workspace
                 </div>
-                <a class="sr-sb-item" id="sr-link-form3cd" href="service-form3cd.html">
+
+                <a class="sb-item active" href="service-statutory-reporting.html">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                    Overview
+                </a>
+                <a class="sb-item" id="sr-link-form3cd" href="service-form3cd.html">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
                     Form 3CD
                 </a>
-                <a class="sr-sb-item" id="sr-link-caro" href="service-caro.html">
+                <a class="sb-item" id="sr-link-caro" href="service-caro.html">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
                     CARO Report
                 </a>
-                <a class="sr-sb-item" id="sr-link-rule42" href="service-rule42.html">
+                <a class="sb-item" id="sr-link-rule42" href="service-rule42.html">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
                     Rule 42 ITC
                 </a>
-                <a class="sr-sb-item" id="sr-link-depreciation" href="service-depreciation.html">
+                <a class="sb-item" id="sr-link-depreciation" href="service-depreciation.html">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
                     Depreciation
                 </a>
-                <a class="sr-sb-item" id="sr-link-fs" href="service-financial-statements.html">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg>
-                    Financial Statements
-                </a>
-            </div>
 
-            <a class="sr-sb-back" id="sr-back-link" href="services-dashboard.html">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-                Back to Services
-            </a>
+            </div>
         </aside>
 
         <!-- ══════ MAIN ══════ -->
         <main class="sr-main">
-            <div class="sr-sh">
-                <h1>📑 Statutory & Financial Reporting</h1>
-                <p>AI-powered statutory compliance tools — Form 3CD, CARO, ITC workings, depreciation comparison & financial statement generation. Each tool syncs data directly from Tally.</p>
+            <div class="sr-sh" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.75rem">
+                <div>
+                    <h1>Statutory & Financial Reporting</h1>
+                    <p>AI-powered statutory compliance tools — Form 3CD, CARO, ITC workings & depreciation comparison. Each tool syncs data directly from Tally.</p>
+                </div>
+                <div id="sr-fy-container" style="min-width:200px"></div>
             </div>
 
             <!-- Service Cards Grid -->
-            <div class="sr-cards-grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr))">
+            <div class="sr-cards-grid" style="grid-template-columns: repeat(2, 1fr)">
                 <!-- Form 3CD -->
                 <div class="sr-card" id="sr-card-form3cd">
-                    <div class="sr-card-icon" style="background:#eff6ff">📄</div>
+                    <div class="sr-card-icon" style="background:linear-gradient(135deg,#eff6ff,#dbeafe)">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1e3a8a" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                    </div>
                     <div class="sr-card-name">Form 3CD Auto-Population</div>
                     <div class="sr-card-desc">Auto-populate 44 clauses of Tax Audit Report from synced Tally data. AI maps financials to each clause with status tracking.</div>
                     <div style="margin-top:.5rem;display:flex;gap:.35rem;flex-wrap:wrap">
@@ -75,9 +78,25 @@
                     <div class="sr-card-cta">Open Tool <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg></div>
                 </div>
 
+                <!-- Depreciation -->
+                <div class="sr-card" id="sr-card-depreciation">
+                    <div class="sr-card-icon" style="background:linear-gradient(135deg,#f5f3ff,#ede9fe)">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="1.8"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+                    </div>
+                    <div class="sr-card-name">Depreciation: IT vs Co. Act</div>
+                    <div class="sr-card-desc">Side-by-side depreciation as per Income Tax Act (Sec 32, WDV) and Companies Act (Schedule II). Asset register with deferred tax impact.</div>
+                    <div style="margin-top:.5rem;display:flex;gap:.35rem;flex-wrap:wrap">
+                        <span class="sr-badge green" style="font-size:.55rem">Dual Computation</span>
+                        <span class="sr-badge amber" style="font-size:.55rem">Tally Sync</span>
+                    </div>
+                    <div class="sr-card-cta">Open Tool <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg></div>
+                </div>
+
                 <!-- CARO 2020 -->
                 <div class="sr-card" id="sr-card-caro">
-                    <div class="sr-card-icon" style="background:#ecfdf5">✅</div>
+                    <div class="sr-card-icon" style="background:linear-gradient(135deg,#ecfdf5,#d1fae5)">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="1.8"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                    </div>
                     <div class="sr-card-name">CARO 2020 Report</div>
                     <div class="sr-card-desc">Generate CARO 2020 clause-by-clause report with AI-assisted observations. Companies Act section references and auditor wording templates.</div>
                     <div style="margin-top:.5rem;display:flex;gap:.35rem;flex-wrap:wrap">
@@ -89,7 +108,9 @@
 
                 <!-- Rule 42 ITC -->
                 <div class="sr-card" id="sr-card-rule42">
-                    <div class="sr-card-icon" style="background:#fef3c7">🧮</div>
+                    <div class="sr-card-icon" style="background:linear-gradient(135deg,#fef3c7,#fde68a)">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="1.8"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="12" y2="14"/></svg>
+                    </div>
                     <div class="sr-card-name">Rule 42 ITC Reversal</div>
                     <div class="sr-card-desc">Compute ITC reversal under Rule 42 for exempt & taxable supplies. Monthly register from Tally vouchers, annual summary and detailed workings.</div>
                     <div style="margin-top:.5rem;display:flex;gap:.35rem;flex-wrap:wrap">
@@ -98,35 +119,11 @@
                     </div>
                     <div class="sr-card-cta">Open Tool <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg></div>
                 </div>
-
-                <!-- Depreciation -->
-                <div class="sr-card" id="sr-card-depreciation">
-                    <div class="sr-card-icon" style="background:#f5f3ff">📊</div>
-                    <div class="sr-card-name">Depreciation: IT vs Co. Act</div>
-                    <div class="sr-card-desc">Side-by-side depreciation as per Income Tax Act (Sec 32, WDV) and Companies Act (Schedule II). Asset register with deferred tax impact.</div>
-                    <div style="margin-top:.5rem;display:flex;gap:.35rem;flex-wrap:wrap">
-                        <span class="sr-badge green" style="font-size:.55rem">Dual Computation</span>
-                        <span class="sr-badge amber" style="font-size:.55rem">Tally Sync</span>
-                    </div>
-                    <div class="sr-card-cta">Open Tool <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg></div>
-                </div>
-
-                <!-- Financial Statements -->
-                <div class="sr-card" id="sr-card-fs">
-                    <div class="sr-card-icon" style="background:#fef2f2">📋</div>
-                    <div class="sr-card-name">Financial Statements</div>
-                    <div class="sr-card-desc">Generate Schedule III Balance Sheet, Profit & Loss Statement, and Notes to Accounts directly from synced Tally ledger data.</div>
-                    <div style="margin-top:.5rem;display:flex;gap:.35rem;flex-wrap:wrap">
-                        <span class="sr-badge green" style="font-size:.55rem">Schedule III</span>
-                        <span class="sr-badge amber" style="font-size:.55rem">Instant Gen</span>
-                    </div>
-                    <div class="sr-card-cta">Open Tool <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg></div>
-                </div>
             </div>
 
             <!-- Quick Reference Section -->
             <div class="sr-panel" style="margin-top:1.5rem">
-                <div class="sr-panel-title">📚 Quick Reference — Data Sources</div>
+                <div class="sr-panel-title">Quick Reference — Data Sources</div>
                 <div style="margin-top:.75rem;overflow-x:auto">
                     <table class="sr-table">
                         <thead><tr>
@@ -183,12 +180,22 @@
     <script src="app-toast.js"></script>
     <script src="api_config.js?v=2"></script>
     <script src="app-topbar.js"></script>
+    <script src="fy-utils.js"></script>
+    <script>
+        FYPeriod.mount('#sr-fy-container', {
+            type: 'yearly',
+            label: 'Financial Year',
+            onChange: (period) => {
+                console.log('SR FY changed:', period);
+            }
+        });
+    </script>
     <script src="client-picker-overlay.js"></script>
     <script>
         initClientPicker({
             serviceName: 'Statutory & Financial Reporting',
             serviceIcon: '📑',
-            serviceDesc: 'Select a client for Form 3CD, CARO, Rule 42 ITC, Depreciation & Financial Statements',
+            serviceDesc: 'Select a client for Form 3CD, CARO, Rule 42 ITC & Depreciation',
             pagePath: 'service-statutory-reporting.html',
         });
     </script>
@@ -198,19 +205,16 @@
         const cq = clientId ? `?clientId=${clientId}` : '';
 
         // Fix all navigation links with clientId
-        document.getElementById('sr-back-link').href = `services-dashboard.html${cq}`;
         document.getElementById('sr-link-form3cd').href = `service-form3cd.html${cq}`;
         document.getElementById('sr-link-caro').href = `service-caro.html${cq}`;
         document.getElementById('sr-link-rule42').href = `service-rule42.html${cq}`;
         document.getElementById('sr-link-depreciation').href = `service-depreciation.html${cq}`;
-        document.getElementById('sr-link-fs').href = `service-financial-statements.html${cq}`;
 
         // Card click handlers
         document.getElementById('sr-card-form3cd').onclick = () => { window.location.href = `service-form3cd.html${cq}`; };
         document.getElementById('sr-card-caro').onclick = () => { window.location.href = `service-caro.html${cq}`; };
         document.getElementById('sr-card-rule42').onclick = () => { window.location.href = `service-rule42.html${cq}`; };
         document.getElementById('sr-card-depreciation').onclick = () => { window.location.href = `service-depreciation.html${cq}`; };
-        document.getElementById('sr-card-fs').onclick = () => { window.location.href = `service-financial-statements.html${cq}`; };
     </script>
 </body>
 </html>

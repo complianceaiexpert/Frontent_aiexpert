@@ -21,71 +21,37 @@
     <div class="de-layout">
         <!-- ══════ LEFT SIDEBAR ══════ -->
         <aside class="de-sidebar">
-            <!-- ═══ Shared Client-Level Navigation ═══ -->
-            <div id="app-client-nav" data-active="data-entry"></div>
-            <script src="app-client-nav.js"></script>
+            <!-- ═══ Shared Main Navigation ═══ -->
+            <div id="app-sidebar-main" data-active="data-entry"></div>
+            <script src="app-sidebar.js"></script>
 
-            <div class="de-sb-section">
-                <div class="de-sb-label" style="padding:0.35rem 0.75rem;font-size:0.6rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:#94a3b8;margin-top:0.25rem">Data Entry</div>
-
-                <div class="de-sb-item active" onclick="deNav('dashboard',this)">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="3" y="3" width="7" height="7" rx="1" />
-                        <rect x="14" y="3" width="7" height="7" rx="1" />
-                        <rect x="3" y="14" width="7" height="7" rx="1" />
-                        <rect x="14" y="14" width="7" height="7" rx="1" />
-                    </svg>
+            <!-- ═══ Active Workspace: Data Entry ═══ -->
+            <div class="sb-section">
+                <div class="sb-section-label" style="display:flex;align-items:center;gap:0.35rem;">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/></svg>
+                    Active Workspace
+                </div>
+                <div class="sb-item active" onclick="deNav('dashboard',this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
                     Overview
                 </div>
-
-                <div class="de-sb-item" onclick="goToTransactions()">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <line x1="12" y1="1" x2="12" y2="23" />
-                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-                    </svg>
-                    Add Transactions
+                <div class="sb-item" onclick="goToTransactions()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                    Add Data
                 </div>
-
-                <div class="de-sb-item" onclick="deNav('master',this)">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
-                    </svg>
-                    Master
+                <div class="sb-item" onclick="deNav('master',this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                    Tally Master
                 </div>
-
-                <div class="de-sb-divider"></div>
-
-                <div class="de-sb-label" style="padding:0.35rem 0.75rem;font-size:0.6rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:#94a3b8">Tally</div>
-
-                <div class="de-sb-item" onclick="deNav('reports',this)">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21.21 15.89A10 10 0 1 1 8 2.83" />
-                        <path d="M22 12A10 10 0 0 0 12 2v10z" />
-                    </svg>
-                    Tally Reports
+                <div class="sb-item" onclick="deNav('reports',this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
+                    All Transactions
                 </div>
-
+                <a class="sb-item" id="de-nav-mis" style="text-decoration:none;cursor:pointer">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+                    MIS Reports
+                </a>
             </div>
-
-            <a href="integrations.html"
-                style="display:flex;align-items:center;justify-content:center;gap:0.4rem;padding:0.5rem 0.85rem;margin:0.75rem 0.5rem;background:#1e3a8a;color:#fff;border-radius:8px;font-size:0.78rem;font-weight:600;text-decoration:none;transition:all .15s;font-family:inherit"
-                onmouseover="this.style.background='#1e40af'" onmouseout="this.style.background='#1e3a8a'">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M23 4v6h-6" />
-                    <path d="M1 20v-6h6" />
-                    <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
-                </svg>
-                Sync Tally
-            </a>
-
-            <a class="de-sb-back" id="back-link" href="services-dashboard.html">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <line x1="19" y1="12" x2="5" y2="12" />
-                    <polyline points="12 19 5 12 12 5" />
-                </svg>
-                Back to Services
-            </a>
         </aside>
 
         <!-- ══════ MAIN CONTENT ══════ -->
@@ -536,10 +502,17 @@
                         </svg>
                         Ledger
                     </button>
+                    <button class="rpt-tab rpt-tab-mis" onclick="deNav('mis',document.querySelector('[onclick*=\'mis\']'))">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M18 20V10" /><path d="M12 20V4" /><path d="M6 20v-6" />
+                        </svg>
+                        MIS Reports
+                    </button>
                 </div>
 
                 <!-- Search & Stats Bar -->
                 <div class="rpt-toolbar">
+                    <div id="de-period-container" style="min-width:200px"></div>
                     <input type="text" class="rpt-search" id="rpt-search-input"
                         placeholder="Search by party name, voucher no…" oninput="handleReportSearch(this.value)">
                     <div class="rpt-stats" id="rpt-stats-bar">
@@ -593,6 +566,120 @@
                 <div class="rpt-pagination" id="rpt-pagination"></div>
             </div>
 
+
+
+            <!-- ═══ MIS REPORTS ═══ -->
+            <div class="de-section" id="sec-mis">
+                <div class="de-sh" style="margin-bottom:.75rem">
+                    <h1>📊 MIS Reports</h1>
+                    <p>Management Information System — Comprehensive Financial Analysis from Tally data</p>
+                </div>
+                <div id="mis-loading" class="mis-loading-state">
+                    <div class="mis-loading-spinner"></div>
+                    <div class="mis-loading-text">Analysing your financial data…</div>
+                    <div class="mis-loading-sub">Fetching profitability, cash flow & working capital metrics</div>
+                </div>
+                <div id="mis-content" style="display:none">
+
+                    <!-- Hero KPI Cards — Top-level financial indicators -->
+                    <div class="mis-kpi-grid" id="mis-kpi-grid"></div>
+
+                    <!-- Tabs for sub-reports -->
+                    <div class="mis-sub-tabs">
+                        <button class="mis-sub-tab active" onclick="switchMisTab('profitability',this)">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                            Profitability
+                        </button>
+                        <button class="mis-sub-tab" onclick="switchMisTab('sales',this)">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                            Sales
+                        </button>
+                        <button class="mis-sub-tab" onclick="switchMisTab('costs',this)">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg>
+                            Costs
+                        </button>
+                        <button class="mis-sub-tab" onclick="switchMisTab('inventory',this)">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                            Inventory
+                        </button>
+                        <button class="mis-sub-tab" onclick="switchMisTab('cashflow',this)">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+                            Cash Flow
+                        </button>
+                        <button class="mis-sub-tab" onclick="switchMisTab('working-capital',this)">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+                            Ratios
+                        </button>
+                        <button class="mis-sub-tab" onclick="switchMisTab('receivables',this)">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                            Receivables & Payables
+                        </button>
+                    </div>
+
+                    <!-- Profitability Panel -->
+                    <div class="mis-panel active" id="mis-panel-profitability">
+                        <div class="mis-panel-header">
+                            <h3>Profitability Statement</h3>
+                            <span class="mis-panel-sub">Revenue vs Costs breakdown from Tally ledgers</span>
+                        </div>
+                        <div class="mis-panel-body" id="mis-profit-body"></div>
+                    </div>
+
+                    <!-- Sales Panel -->
+                    <div class="mis-panel" id="mis-panel-sales">
+                        <div class="mis-panel-header">
+                            <h3>Sales Analysis</h3>
+                            <span class="mis-panel-sub">Monthly trend, top customers & invoice metrics</span>
+                        </div>
+                        <div class="mis-panel-body" id="mis-sales-body"></div>
+                    </div>
+
+                    <!-- Cost Panel -->
+                    <div class="mis-panel" id="mis-panel-costs">
+                        <div class="mis-panel-header">
+                            <h3>Cost Analysis</h3>
+                            <span class="mis-panel-sub">Expense categories, monthly purchases & top cost heads</span>
+                        </div>
+                        <div class="mis-panel-body" id="mis-costs-body"></div>
+                    </div>
+
+                    <!-- Inventory Panel -->
+                    <div class="mis-panel" id="mis-panel-inventory">
+                        <div class="mis-panel-header">
+                            <h3>Inventory Analysis</h3>
+                            <span class="mis-panel-sub">Top items, warehouse breakdown & stock metrics</span>
+                        </div>
+                        <div class="mis-panel-body" id="mis-inventory-body"></div>
+                    </div>
+
+                    <!-- Cash Flow Panel -->
+                    <div class="mis-panel" id="mis-panel-cashflow">
+                        <div class="mis-panel-header">
+                            <h3>Cash Flow Statement</h3>
+                            <span class="mis-panel-sub">Operating, investing & financing activities</span>
+                        </div>
+                        <div class="mis-panel-body" id="mis-cashflow-body"></div>
+                    </div>
+
+                    <!-- Working Capital & Ratios Panel -->
+                    <div class="mis-panel" id="mis-panel-working-capital">
+                        <div class="mis-panel-header">
+                            <h3>Working Capital & Financial Ratios</h3>
+                            <span class="mis-panel-sub">Liquidity, solvency & efficiency indicators</span>
+                        </div>
+                        <div class="mis-panel-body" id="mis-ratios-body"></div>
+                    </div>
+
+                    <!-- Receivables & Payables Panel -->
+                    <div class="mis-panel" id="mis-panel-receivables">
+                        <div class="mis-panel-header">
+                            <h3>Receivables & Payables</h3>
+                            <span class="mis-panel-sub">Outstanding debtors & creditors with net position</span>
+                        </div>
+                        <div class="mis-panel-body" id="mis-receivables-body"></div>
+                    </div>
+                </div>
+            </div>
 
 
         </main>
@@ -739,26 +826,60 @@
 
         async function loadClientCompanyName() {
             if (!clientId) return;
+            let displayName = '';
             try {
                 const res = await authFetch('/clients/' + clientId);
                 if (res.ok) {
                     const client = await res.json();
-                    clientCompanyName = client.name || '';
-                    console.log('Client company name:', clientCompanyName);
-
-                    // Populate company card
-                    const nameEl = document.getElementById('dash-company-name');
-                    const avatarEl = document.getElementById('dash-company-avatar');
-                    if (nameEl) nameEl.textContent = clientCompanyName || 'Unnamed Company';
-                    if (avatarEl) avatarEl.textContent = (clientCompanyName || '?').charAt(0).toUpperCase();
-
-                    // FY label — derive from current date
-                    const now = new Date();
-                    const fyStart = now.getMonth() >= 3 ? now.getFullYear() : now.getFullYear() - 1;
-                    const fyLabel = document.getElementById('dash-fy-label');
-                    if (fyLabel) fyLabel.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> FY ${fyStart}-${String(fyStart + 1).slice(-2)}`;
+                    displayName = client.name || '';
+                    console.log('Client record name:', displayName);
                 }
             } catch (e) { console.error('Load client name error:', e); }
+
+            // Resolve actual Tally company name
+            // The client name in the clients table may differ from the Tally company_name
+            try {
+                const tallyRes = await authFetch('/tally/companies');
+                if (tallyRes.ok) {
+                    const companies = await tallyRes.json();
+                    if (Array.isArray(companies) && companies.length > 0) {
+                        // Try exact match first
+                        const exactMatch = companies.find(c => c.toLowerCase() === displayName.toLowerCase());
+                        if (exactMatch) {
+                            clientCompanyName = exactMatch;
+                        } else {
+                            // Try partial/fuzzy match (client name contained in Tally name or vice versa)
+                            const partialMatch = companies.find(c =>
+                                c.toLowerCase().includes(displayName.toLowerCase()) ||
+                                displayName.toLowerCase().includes(c.toLowerCase())
+                            );
+                            if (partialMatch) {
+                                clientCompanyName = partialMatch;
+                            } else {
+                                // Fallback: use the first available Tally company
+                                clientCompanyName = companies[0];
+                            }
+                        }
+                        console.log('Resolved Tally company name:', clientCompanyName, '(from', companies.length, 'companies)');
+                    }
+                }
+            } catch (e) { console.error('Tally companies lookup error:', e); }
+
+            // If still empty, fallback to client name
+            if (!clientCompanyName) clientCompanyName = displayName;
+
+            // Populate company card with display name (prefer client record name for UI)
+            const uiName = displayName || clientCompanyName;
+            const nameEl = document.getElementById('dash-company-name');
+            const avatarEl = document.getElementById('dash-company-avatar');
+            if (nameEl) nameEl.textContent = uiName || 'Unnamed Company';
+            if (avatarEl) avatarEl.textContent = (uiName || '?').charAt(0).toUpperCase();
+
+            // FY label — derive from current date
+            const now = new Date();
+            const fyStart = now.getMonth() >= 3 ? now.getFullYear() : now.getFullYear() - 1;
+            const fyLabel = document.getElementById('dash-fy-label');
+            if (fyLabel) fyLabel.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> FY ${fyStart}-${String(fyStart + 1).slice(-2)}`;
         }
 
         // Helper: append company_name to a Tally API URL
@@ -773,6 +894,10 @@
         function goToTransactions() {
             window.location.href = `transactions.html?clientId=${clientId}&service=${encodeURIComponent(serviceName)}`;
         }
+
+        // Wire MIS Reports link
+        const misLink = document.getElementById('de-nav-mis');
+        if (misLink) misLink.href = `mis-reports.html?clientId=${clientId}`;
 
         function pickFromDriveDE() {
             if (!clientId) { showToast('No client context — open from client workspace', 'warning'); return; }
@@ -807,11 +932,12 @@
             document.querySelectorAll('.de-section').forEach(s => s.classList.remove('active'));
             const target = document.getElementById('sec-' + sectionId);
             if (target) target.classList.add('active');
-            document.querySelectorAll('.de-sb-item').forEach(l => l.classList.remove('active'));
+            document.querySelectorAll('.de-sidebar .sb-item').forEach(l => l.classList.remove('active'));
             if (el) el.classList.add('active');
             if (sectionId === 'master') loadLedgerData();
             if (sectionId === 'transactions') renderTransactions();
             if (sectionId === 'reports') loadReportData();
+            if (sectionId === 'mis') loadMISReports();
         }
 
         // ═══ DASHBOARD — INVOICE STATS (REAL DATA) ═══
@@ -2770,6 +2896,170 @@
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && document.getElementById('review-overlay').classList.contains('open')) {
                 closeReviewModal();
+            }
+        });
+
+        // ═══ MIS REPORTS ═══
+        let misData = null;
+
+        function switchMisTab(tab, el) {
+            document.querySelectorAll('.mis-sub-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.mis-panel').forEach(p => p.classList.remove('active'));
+            if (el) el.classList.add('active');
+            const panel = document.getElementById('mis-panel-' + tab);
+            if (panel) panel.classList.add('active');
+        }
+
+        function misMonth(ym) {
+            if (!ym || ym.length < 6) return ym || '—';
+            const y = ym.substring(0, 4), m = parseInt(ym.substring(4, 6));
+            const mn = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            return mn[m] + ' ' + y;
+        }
+
+        async function loadMISReports() {
+            const loading = document.getElementById('mis-loading');
+            const content = document.getElementById('mis-content');
+            loading.style.display = ''; content.style.display = 'none';
+            try {
+                const res = await authFetch(withCompany('/tally/mis-reports'));
+                if (!res.ok) throw new Error('Failed');
+                misData = await res.json();
+                renderMIS();
+                loading.style.display = 'none'; content.style.display = '';
+            } catch (e) {
+                console.error('MIS error:', e);
+                loading.innerHTML = '<div style="font-size:1.5rem;margin-bottom:.3rem">⚠️</div>Failed to load MIS data. Ensure Tally data is synced.';
+            }
+        }
+
+        function renderMIS() {
+            const d = misData; const p = d.profitability; const wc = d.working_capital||{}; const cf = d.cash_flow||{};
+            // KPI Cards — 8 key indicators
+            document.getElementById('mis-kpi-grid').innerHTML = `
+                <div class="mis-kpi" style="border-left:3px solid #059669"><div class="mis-kpi-label">Revenue</div><div class="mis-kpi-value" style="color:#059669">${formatINR(p.total_revenue)}</div></div>
+                <div class="mis-kpi" style="border-left:3px solid #2563eb"><div class="mis-kpi-label">Gross Profit</div><div class="mis-kpi-value" style="color:#2563eb">${formatINR(p.gross_profit)}</div></div>
+                <div class="mis-kpi" style="border-left:3px solid ${p.net_profit >= 0 ? '#059669' : '#dc2626'}"><div class="mis-kpi-label">Net Profit</div><div class="mis-kpi-value" style="color:${p.net_profit >= 0 ? '#059669' : '#dc2626'}">${formatINR(p.net_profit)}</div></div>
+                <div class="mis-kpi" style="border-left:3px solid #7c3aed"><div class="mis-kpi-label">Gross Margin</div><div class="mis-kpi-value" style="color:#7c3aed">${p.gross_margin}%</div></div>
+                <div class="mis-kpi" style="border-left:3px solid #0d9488"><div class="mis-kpi-label">Net Margin</div><div class="mis-kpi-value" style="color:#0d9488">${p.net_margin}%</div></div>
+                <div class="mis-kpi" style="border-left:3px solid #ea580c"><div class="mis-kpi-label">Op. Margin</div><div class="mis-kpi-value" style="color:#ea580c">${p.operating_margin}%</div></div>
+                <div class="mis-kpi" style="border-left:3px solid ${(wc.current_ratio||0)>=1.5?'#059669':'#d97706'}"><div class="mis-kpi-label">Current Ratio</div><div class="mis-kpi-value" style="color:${(wc.current_ratio||0)>=1.5?'#059669':'#d97706'}">${wc.current_ratio||0}x</div></div>
+                <div class="mis-kpi" style="border-left:3px solid #2563eb"><div class="mis-kpi-label">Cash Balance</div><div class="mis-kpi-value" style="color:#2563eb">${formatINR(cf.closing_cash||0)}</div></div>
+            `;
+            // Profitability — comprehensive P&L statement
+            const pctOf = (v) => p.total_revenue ? (v/p.total_revenue*100).toFixed(1) : '0.0';
+            document.getElementById('mis-profit-body').innerHTML = `
+                <table class="mis-table"><thead><tr><th>Particulars</th><th style="text-align:right">Amount (₹)</th><th style="text-align:right">% of Revenue</th></tr></thead><tbody>
+                <tr><td style="font-weight:700;color:#059669">Revenue (Sales)</td><td style="text-align:right;font-weight:700;color:#059669">${formatINR(p.total_revenue)}</td><td style="text-align:right">100%</td></tr>
+                <tr><td style="color:#dc2626">Less: Cost of Goods Sold</td><td style="text-align:right;color:#dc2626">(${formatINR(p.total_cogs)})</td><td style="text-align:right">${pctOf(p.total_cogs)}%</td></tr>
+                <tr class="mis-total-row"><td style="font-weight:800">Gross Profit</td><td style="text-align:right;font-weight:800;color:#2563eb">${formatINR(p.gross_profit)}</td><td style="text-align:right;font-weight:700">${p.gross_margin}%</td></tr>
+                <tr><td style="color:#ea580c">Less: Indirect Expenses</td><td style="text-align:right;color:#ea580c">(${formatINR(p.indirect_expenses)})</td><td style="text-align:right">${pctOf(p.indirect_expenses)}%</td></tr>
+                <tr class="mis-total-row" style="background:#eff6ff"><td style="font-weight:800">Operating Profit (EBIT)</td><td style="text-align:right;font-weight:800;color:#1e3a8a">${formatINR(p.operating_profit)}</td><td style="text-align:right;font-weight:700">${p.operating_margin}%</td></tr>
+                <tr class="mis-total-row" style="background:${p.net_profit>=0?'#f0fdf4':'#fef2f2'}"><td style="font-weight:800;font-size:.9rem">Net Profit / (Loss)</td><td style="text-align:right;font-weight:800;font-size:.9rem;color:${p.net_profit>=0?'#059669':'#dc2626'}">${formatINR(p.net_profit)}</td><td style="text-align:right;font-weight:700">${p.net_margin}%</td></tr>
+                </tbody></table>
+                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.65rem;margin-top:1rem">
+                    <div class="mis-kpi" style="border-left:3px solid #dc2626"><div class="mis-kpi-label">Total COGS</div><div class="mis-kpi-value" style="color:#dc2626">${formatINR(p.total_cogs)}</div></div>
+                    <div class="mis-kpi" style="border-left:3px solid #ea580c"><div class="mis-kpi-label">Indirect Expenses</div><div class="mis-kpi-value" style="color:#ea580c">${formatINR(p.indirect_expenses)}</div></div>
+                    <div class="mis-kpi" style="border-left:3px solid #1e3a8a"><div class="mis-kpi-label">Operating Profit</div><div class="mis-kpi-value" style="color:#1e3a8a">${formatINR(p.operating_profit)}</div></div>
+                </div>`;
+            // Sales
+            const s = d.sales;
+            let salesH = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">';
+            salesH += '<div><h4 style="font-size:.78rem;font-weight:700;color:#374151;margin:0 0 .5rem">Monthly Sales Trend</h4><table class="mis-table"><thead><tr><th>Month</th><th style="text-align:right">Invoices</th><th style="text-align:right">Amount</th></tr></thead><tbody>';
+            if (s.monthly_trend.length) { s.monthly_trend.forEach(m => { salesH += `<tr><td>${misMonth(m.month)}</td><td style="text-align:right">${m.count}</td><td style="text-align:right;font-weight:600">${formatINR(m.total)}</td></tr>`; }); salesH += `<tr class="mis-total-row"><td style="font-weight:700">Total</td><td style="text-align:right;font-weight:700">${s.total_invoices}</td><td style="text-align:right;font-weight:800">${formatINR(s.total_amount)}</td></tr>`; } else { salesH += '<tr><td colspan="3" style="text-align:center;color:#94a3b8;padding:1.5rem">No sales data</td></tr>'; }
+            salesH += '</tbody></table></div>';
+            salesH += '<div><h4 style="font-size:.78rem;font-weight:700;color:#374151;margin:0 0 .5rem">Top 10 Customers</h4><table class="mis-table"><thead><tr><th>#</th><th>Customer</th><th style="text-align:right">Invoices</th><th style="text-align:right">Amount</th></tr></thead><tbody>';
+            if (s.top_customers.length) { s.top_customers.forEach((c,i) => { salesH += `<tr><td style="color:#94a3b8">${i+1}</td><td style="font-weight:600">${c.name}</td><td style="text-align:right">${c.invoice_count}</td><td style="text-align:right;font-weight:700;color:#059669">${formatINR(c.total)}</td></tr>`; }); } else { salesH += '<tr><td colspan="4" style="text-align:center;color:#94a3b8;padding:1.5rem">No customer data</td></tr>'; }
+            salesH += '</tbody></table></div></div>';
+            document.getElementById('mis-sales-body').innerHTML = salesH;
+            // Costs
+            const c = d.costs;
+            let costH = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">';
+            costH += '<div><h4 style="font-size:.78rem;font-weight:700;color:#374151;margin:0 0 .5rem">Expense Categories</h4><table class="mis-table"><thead><tr><th>Category</th><th style="text-align:right">Ledgers</th><th style="text-align:right">Amount</th></tr></thead><tbody>';
+            if (c.categories.length) { c.categories.forEach(cat => { costH += `<tr><td style="font-weight:600">${cat.category}</td><td style="text-align:right">${cat.ledger_count}</td><td style="text-align:right;font-weight:700;color:#dc2626">${formatINR(cat.total)}</td></tr>`; }); costH += `<tr class="mis-total-row"><td style="font-weight:700">Total Expenses</td><td></td><td style="text-align:right;font-weight:800;color:#dc2626">${formatINR(c.total_expenses)}</td></tr>`; } else { costH += '<tr><td colspan="3" style="text-align:center;color:#94a3b8;padding:1.5rem">No expense data</td></tr>'; }
+            costH += '</tbody></table></div>';
+            costH += '<div><h4 style="font-size:.78rem;font-weight:700;color:#374151;margin:0 0 .5rem">Top 10 Expense Heads</h4><table class="mis-table"><thead><tr><th>#</th><th>Ledger</th><th>Group</th><th style="text-align:right">Amount</th></tr></thead><tbody>';
+            if (c.top_expenses.length) { c.top_expenses.forEach((e,i) => { costH += `<tr><td style="color:#94a3b8">${i+1}</td><td style="font-weight:600">${e.name}</td><td style="font-size:.75rem;color:#6b7280">${e.group}</td><td style="text-align:right;font-weight:700;color:#dc2626">${formatINR(e.amount)}</td></tr>`; }); } else { costH += '<tr><td colspan="4" style="text-align:center;color:#94a3b8;padding:1.5rem">No expense data</td></tr>'; }
+            costH += '</tbody></table></div></div>';
+            document.getElementById('mis-costs-body').innerHTML = costH;
+            // Inventory
+            const inv = d.inventory;
+            let invH = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">';
+            invH += '<div><h4 style="font-size:.78rem;font-weight:700;color:#374151;margin:0 0 .5rem">Top Items by Sales Value</h4><table class="mis-table"><thead><tr><th>#</th><th>Item</th><th style="text-align:right">Qty</th><th style="text-align:right">Value</th></tr></thead><tbody>';
+            if (inv.top_items_by_sales.length) { inv.top_items_by_sales.forEach((it,i) => { invH += `<tr><td style="color:#94a3b8">${i+1}</td><td style="font-weight:600">${it.name}</td><td style="text-align:right">${it.total_qty.toLocaleString('en-IN')}</td><td style="text-align:right;font-weight:700;color:#2563eb">${formatINR(it.total_value)}</td></tr>`; }); } else { invH += '<tr><td colspan="4" style="text-align:center;color:#94a3b8;padding:1.5rem">No inventory data</td></tr>'; }
+            invH += '</tbody></table></div>';
+            invH += '<div><h4 style="font-size:.78rem;font-weight:700;color:#374151;margin:0 0 .5rem">Godown / Warehouse</h4><table class="mis-table"><thead><tr><th>Location</th><th style="text-align:right">Entries</th><th style="text-align:right">Value</th></tr></thead><tbody>';
+            if (inv.godown_analysis.length) { inv.godown_analysis.forEach(g => { invH += `<tr><td style="font-weight:600">${g.godown}</td><td style="text-align:right">${g.entries}</td><td style="text-align:right;font-weight:700">${formatINR(g.total_value)}</td></tr>`; }); } else { invH += '<tr><td colspan="3" style="text-align:center;color:#94a3b8;padding:1.5rem">No godown data</td></tr>'; }
+            invH += '</tbody></table></div></div>';
+            invH += `<div style="display:flex;gap:1rem;margin-top:.75rem"><div class="mis-kpi" style="border-left:3px solid #7c3aed;flex:1"><div class="mis-kpi-label">Unique Items</div><div class="mis-kpi-value" style="color:#7c3aed">${inv.unique_items}</div></div><div class="mis-kpi" style="border-left:3px solid #2563eb;flex:1"><div class="mis-kpi-label">Total Inventory Value</div><div class="mis-kpi-value" style="color:#2563eb">${formatINR(inv.total_value)}</div></div></div>`;
+            document.getElementById('mis-inventory-body').innerHTML = invH;
+            // Cash Flow
+            const cf = d.cash_flow || {};
+            document.getElementById('mis-cashflow-body').innerHTML = `
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+                <div>
+                <table class="mis-table"><thead><tr><th>Particulars</th><th style="text-align:right">Amount (₹)</th></tr></thead><tbody>
+                <tr><td>Opening Cash & Bank</td><td style="text-align:right;font-weight:600">${formatINR(cf.opening_cash)}</td></tr>
+                <tr style="background:#f0fdf4"><td style="font-weight:700;color:#059669">A. Operating Activities</td><td style="text-align:right;font-weight:700;color:#059669">${formatINR(cf.operating)}</td></tr>
+                <tr style="background:${cf.investing>=0?'#f0fdf4':'#fef2f2'}"><td style="font-weight:700;color:${cf.investing>=0?'#059669':'#dc2626'}">B. Investing Activities</td><td style="text-align:right;font-weight:700;color:${cf.investing>=0?'#059669':'#dc2626'}">${cf.investing>=0?'':'-'}${formatINR(cf.investing)}</td></tr>
+                <tr style="background:${cf.financing>=0?'#f0fdf4':'#fef2f2'}"><td style="font-weight:700;color:${cf.financing>=0?'#059669':'#dc2626'}">C. Financing Activities</td><td style="text-align:right;font-weight:700;color:${cf.financing>=0?'#059669':'#dc2626'}">${cf.financing>=0?'':'-'}${formatINR(cf.financing)}</td></tr>
+                <tr class="mis-total-row"><td style="font-weight:800">Net Change in Cash</td><td style="text-align:right;font-weight:800;color:${cf.net_change>=0?'#059669':'#dc2626'}">${formatINR(cf.net_change)}</td></tr>
+                <tr><td style="font-weight:700">Closing Cash & Bank</td><td style="text-align:right;font-weight:700;color:#2563eb">${formatINR(cf.closing_cash)}</td></tr>
+                </tbody></table>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:.65rem">
+                    <div class="mis-kpi" style="border-left:3px solid #059669;flex:1"><div class="mis-kpi-label">Operating Cash</div><div class="mis-kpi-value" style="color:#059669">${formatINR(cf.operating)}</div></div>
+                    <div class="mis-kpi" style="border-left:3px solid #7c3aed;flex:1"><div class="mis-kpi-label">Investing</div><div class="mis-kpi-value" style="color:#7c3aed">${formatINR(cf.investing)}</div></div>
+                    <div class="mis-kpi" style="border-left:3px solid #2563eb;flex:1"><div class="mis-kpi-label">Financing</div><div class="mis-kpi-value" style="color:#2563eb">${formatINR(cf.financing)}</div></div>
+                    <div class="mis-kpi" style="border-left:3px solid ${cf.net_change>=0?'#059669':'#dc2626'};flex:1"><div class="mis-kpi-label">Net Change</div><div class="mis-kpi-value" style="color:${cf.net_change>=0?'#059669':'#dc2626'}">${formatINR(cf.net_change)}</div></div>
+                </div></div>`;
+            // Working Capital & Ratios
+            const wc = d.working_capital || {};
+            function ratioColor(v,good,warn) { return v>=good?'#059669':v>=warn?'#d97706':'#dc2626'; }
+            document.getElementById('mis-ratios-body').innerHTML = `
+                <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.65rem;margin-bottom:1rem">
+                    <div class="mis-kpi" style="border-left:3px solid ${ratioColor(wc.current_ratio,1.5,1)}"><div class="mis-kpi-label">Current Ratio</div><div class="mis-kpi-value" style="color:${ratioColor(wc.current_ratio,1.5,1)}">${wc.current_ratio}x</div></div>
+                    <div class="mis-kpi" style="border-left:3px solid ${ratioColor(wc.quick_ratio,1,0.5)}"><div class="mis-kpi-label">Quick Ratio</div><div class="mis-kpi-value" style="color:${ratioColor(wc.quick_ratio,1,0.5)}">${wc.quick_ratio}x</div></div>
+                    <div class="mis-kpi" style="border-left:3px solid ${wc.debt_equity_ratio<=1?'#059669':'#dc2626'}"><div class="mis-kpi-label">Debt-Equity</div><div class="mis-kpi-value" style="color:${wc.debt_equity_ratio<=1?'#059669':'#dc2626'}">${wc.debt_equity_ratio}x</div></div>
+                    <div class="mis-kpi" style="border-left:3px solid ${wc.working_capital>=0?'#059669':'#dc2626'}"><div class="mis-kpi-label">Working Capital</div><div class="mis-kpi-value" style="color:${wc.working_capital>=0?'#059669':'#dc2626'}">${formatINR(wc.working_capital)}</div></div>
+                </div>
+                <table class="mis-table"><thead><tr><th>Component</th><th style="text-align:right">Amount (₹)</th></tr></thead><tbody>
+                <tr><td style="font-weight:600;color:#2563eb">Current Assets</td><td style="text-align:right;font-weight:700;color:#2563eb">${formatINR(wc.current_assets)}</td></tr>
+                <tr><td style="padding-left:1.5rem;color:#6b7280">— Receivables</td><td style="text-align:right">${formatINR(wc.total_receivables)}</td></tr>
+                <tr><td style="padding-left:1.5rem;color:#6b7280">— Stock-in-Hand</td><td style="text-align:right">${formatINR(wc.stock_value)}</td></tr>
+                <tr><td style="font-weight:600;color:#dc2626">Current Liabilities</td><td style="text-align:right;font-weight:700;color:#dc2626">${formatINR(wc.current_liabilities)}</td></tr>
+                <tr><td style="padding-left:1.5rem;color:#6b7280">— Payables</td><td style="text-align:right">${formatINR(wc.total_payables)}</td></tr>
+                <tr class="mis-total-row"><td style="font-weight:800">Net Working Capital</td><td style="text-align:right;font-weight:800;color:${wc.working_capital>=0?'#059669':'#dc2626'}">${formatINR(wc.working_capital)}</td></tr>
+                <tr><td style="font-weight:600">Total Debt</td><td style="text-align:right;font-weight:600">${formatINR(wc.total_debt)}</td></tr>
+                <tr><td style="font-weight:600">Total Equity</td><td style="text-align:right;font-weight:600">${formatINR(wc.total_equity)}</td></tr>
+                </tbody></table>`;
+            // Receivables & Payables
+            const rp = d.receivables_payables || {};
+            let rpH = '<div style="display:flex;gap:.65rem;margin-bottom:1rem">';
+            rpH += `<div class="mis-kpi" style="border-left:3px solid #2563eb;flex:1"><div class="mis-kpi-label">Total Receivables</div><div class="mis-kpi-value" style="color:#2563eb">${formatINR(rp.total_receivables)}</div></div>`;
+            rpH += `<div class="mis-kpi" style="border-left:3px solid #dc2626;flex:1"><div class="mis-kpi-label">Total Payables</div><div class="mis-kpi-value" style="color:#dc2626">${formatINR(rp.total_payables)}</div></div>`;
+            rpH += `<div class="mis-kpi" style="border-left:3px solid ${rp.net_position>=0?'#059669':'#dc2626'};flex:1"><div class="mis-kpi-label">Net Position</div><div class="mis-kpi-value" style="color:${rp.net_position>=0?'#059669':'#dc2626'}">${formatINR(rp.net_position)}</div></div>`;
+            rpH += '</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">';
+            rpH += '<div><h4 style="font-size:.78rem;font-weight:700;color:#374151;margin:0 0 .5rem">Top Debtors (Receivables)</h4><table class="mis-table"><thead><tr><th>#</th><th>Party</th><th>GSTIN</th><th style="text-align:right">Balance</th></tr></thead><tbody>';
+            if (rp.debtors && rp.debtors.length) { rp.debtors.forEach((d,i)=>{ rpH += `<tr><td style="color:#94a3b8">${i+1}</td><td style="font-weight:600">${d.name}</td><td style="font-size:.72rem;color:#6b7280">${d.gstin||'—'}</td><td style="text-align:right;font-weight:700;color:#2563eb">${formatINR(d.balance)}</td></tr>`; }); } else { rpH += '<tr><td colspan="4" style="text-align:center;color:#94a3b8;padding:1.5rem">No debtor data</td></tr>'; }
+            rpH += '</tbody></table></div>';
+            rpH += '<div><h4 style="font-size:.78rem;font-weight:700;color:#374151;margin:0 0 .5rem">Top Creditors (Payables)</h4><table class="mis-table"><thead><tr><th>#</th><th>Party</th><th>GSTIN</th><th style="text-align:right">Balance</th></tr></thead><tbody>';
+            if (rp.creditors && rp.creditors.length) { rp.creditors.forEach((c,i)=>{ rpH += `<tr><td style="color:#94a3b8">${i+1}</td><td style="font-weight:600">${c.name}</td><td style="font-size:.72rem;color:#6b7280">${c.gstin||'—'}</td><td style="text-align:right;font-weight:700;color:#dc2626">${formatINR(c.balance)}</td></tr>`; }); } else { rpH += '<tr><td colspan="4" style="text-align:center;color:#94a3b8;padding:1.5rem">No creditor data</td></tr>'; }
+            rpH += '</tbody></table></div></div>';
+            document.getElementById('mis-receivables-body').innerHTML = rpH;
+        }
+    </script>
+
+    <script src="fy-utils.js"></script>
+    <script>
+        // Mount FY Period selector in toolbar
+        FYPeriod.mount('#de-period-container', {
+            type: 'monthly',
+            label: 'Voucher Period',
+            onChange: (period) => {
+                // period = { value: '2026-04', dateRange: { from, to }, fy, label }
+                console.log('Period changed:', period);
+                // Future: filter vouchers by date range
             }
         });
     </script>

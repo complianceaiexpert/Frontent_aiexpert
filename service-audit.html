@@ -297,12 +297,15 @@
     <div class="service-page">
         <!-- Left Panel: Workflow Steps -->
         <div class="workflow-panel">
-            <div class="service-header">
-                <h1 id="service-title-display">
-                    <span>🔍</span>
-                    <span>Audit Service</span>
-                </h1>
-                <p id="client-info-display" class="subtitle">Loading client details...</p>
+            <div class="service-header" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem">
+                <div>
+                    <h1 id="service-title-display">
+                        <span>🔍</span>
+                        <span>Audit Service</span>
+                    </h1>
+                    <p id="client-info-display" class="subtitle">Loading client details...</p>
+                </div>
+                <div id="audit-fy-container" style="min-width:200px"></div>
             </div>
 
             <!-- Workflow Steps -->
@@ -536,6 +539,16 @@
 
         initPage();
     </script>
+<script src="fy-utils.js"></script>
+<script>
+    FYPeriod.mount('#audit-fy-container', {
+        type: 'yearly',
+        label: 'Audit Year',
+        onChange: (period) => {
+            console.log('Audit FY changed:', period);
+        }
+    });
+</script>
 <script src="app-topbar.js"></script>
 </body>
 

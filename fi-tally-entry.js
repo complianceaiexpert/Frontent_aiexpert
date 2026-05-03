@@ -31,7 +31,7 @@ function fiNav(sectionId, el) {
     document.querySelectorAll('.fi-section').forEach(s => s.classList.remove('active'));
     const target = document.getElementById('sec-' + sectionId);
     if (target) target.classList.add('active');
-    document.querySelectorAll('.fi-sb-item').forEach(l => l.classList.remove('active'));
+    document.querySelectorAll('.fi-sidebar .sb-item').forEach(l => l.classList.remove('active'));
     if (el) el.classList.add('active');
     // Persist active section in URL for reload support
     const u = new URL(window.location);
@@ -175,7 +175,7 @@ async function handleFIUpload(input, instrumentType) {
         // Refresh statements table immediately + auto-switch to Statements section
         loadStatementsTabbed();
         // Auto-switch to the Statements section so user sees the upload
-        const stmtNav = document.querySelector('.fi-sb-item[onclick*="statements"]');
+        const stmtNav = document.querySelector('.fi-sidebar .sb-item[onclick*="statements"]');
         if (stmtNav) fiNav('statements', stmtNav);
         fiToast('Upload started — processing in background', 'success');
 
@@ -1337,23 +1337,17 @@ async function loadDashboardStats() {
         // ── Populate AUM ──
         setEl('fi-stat-total-amt', formatINR(totalAUM));
 
-        // ── Set FY/AY consistently across all cards ──
-        let displayFY, displayAY;
+        // ── Set FY consistently across all cards ──
+        let displayFY;
         if(detectedFY) {
             displayFY = detectedFY;
-            const fyMatch = detectedFY.match(/(\d{4})/);
-            if(fyMatch) {
-                const fyStart = parseInt(fyMatch[1]);
-                displayAY = `AY ${fyStart+1}-${String(fyStart+2).slice(2)}`;
-            }
         }
         // Fallback to current date if no FY detected from data
         if(!displayFY) {
-            const { fy, ay } = getFinancialYears();
+            const { fy } = getFinancialYears();
             displayFY = fy;
-            displayAY = ay;
         }
-        setEl('fi-ay', displayAY);
+        setEl('fi-ay', displayFY);
         setEl('fi-fy-cg', displayFY);
         setEl('fi-fy-tds', displayFY);
 
@@ -2554,7 +2548,7 @@ setTimeout(() => load26ASMatch(), 1500);
     const section = new URLSearchParams(window.location.search).get('section');
     if (section && section !== 'dashboard') {
         // Find the matching sidebar item and activate it
-        const items = document.querySelectorAll('.fi-sb-item');
+        const items = document.querySelectorAll('.fi-sidebar .sb-item');
         for (const el of items) {
             const onclick = el.getAttribute('onclick') || '';
             if (onclick.includes("'" + section + "'")) {

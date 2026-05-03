@@ -52,67 +52,6 @@
             margin: 0
         }
 
-        .tx-sb-section {
-            padding: .75rem .65rem
-        }
-
-        .tx-sb-label {
-            font-size: .6rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: .06em;
-            color: #9ca3af;
-            padding: 0 .5rem;
-            margin-bottom: .3rem;
-        }
-
-        .tx-sb-item {
-            display: flex;
-            align-items: center;
-            gap: .6rem;
-            padding: .5rem .65rem;
-            border-radius: 8px;
-            font-size: .8rem;
-            font-weight: 500;
-            color: #6b7280;
-            cursor: pointer;
-            transition: all .15s;
-            margin-bottom: 1px;
-        }
-
-        .tx-sb-item:hover {
-            background: #f8fafc;
-            color: #1e3a8a
-        }
-
-        .tx-sb-item.active {
-            background: #eff6ff;
-            color: #1e3a8a;
-            font-weight: 600
-        }
-
-        .tx-sb-item svg {
-            width: 16px;
-            height: 16px;
-            flex-shrink: 0
-        }
-
-        .tx-sb-badge {
-            margin-left: auto;
-            font-size: .6rem;
-            font-weight: 700;
-            padding: 1px 6px;
-            border-radius: 4px;
-            background: #fee2e2;
-            color: #dc2626;
-        }
-
-        .tx-sb-divider {
-            height: 1px;
-            background: #f1f5f9;
-            margin: .4rem .65rem
-        }
-
         .tx-sb-back {
             display: flex;
             align-items: center;
@@ -728,15 +667,17 @@
     <div class="tx-layout">
         <!-- ══ SIDEBAR ══ -->
         <aside class="tx-sidebar">
-            <div class="tx-sb-header">
-                <h3>💰 Transactions</h3>
-                <p>Review & approve uploaded entries</p>
-            </div>
+            <!-- ═══ Common Main Navigation ═══ -->
+            <div id="app-sidebar-main" data-active="data-entry"></div>
+            <script src="app-sidebar.js"></script>
 
             <!-- Data Entry Module Navigation -->
-            <div class="tx-sb-section">
-                <div class="tx-sb-label">Data Entry</div>
-                <a class="tx-sb-item" id="de-nav-dashboard" style="text-decoration:none">
+            <div class="sb-section">
+                <div class="sb-section-label" style="display:flex;align-items:center;gap:0.35rem">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                    Data Entry
+                </div>
+                <a class="sb-item" id="de-nav-dashboard" style="text-decoration:none">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="3" y="3" width="7" height="9" rx="1"/>
                         <rect x="14" y="3" width="7" height="5" rx="1"/>
@@ -745,7 +686,7 @@
                     </svg>
                     Overview
                 </a>
-                <div class="tx-sb-item active" style="pointer-events:none">
+                <div class="sb-item active" style="pointer-events:none">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <line x1="8" y1="6" x2="21" y2="6"/>
                         <line x1="8" y1="12" x2="21" y2="12"/>
@@ -754,28 +695,30 @@
                         <line x1="3" y1="12" x2="3.01" y2="12"/>
                         <line x1="3" y1="18" x2="3.01" y2="18"/>
                     </svg>
-                    Add Transactions ✓
+                    Add Data
                 </div>
-                <a class="tx-sb-item" id="de-nav-master" style="text-decoration:none">
+                <a class="sb-item" id="de-nav-master" style="text-decoration:none">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
                         <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
                     </svg>
-                    Master
+                    Tally Master
                 </a>
-                <a class="tx-sb-item" id="de-nav-reports" style="text-decoration:none">
+                <a class="sb-item" id="de-nav-reports" style="text-decoration:none" href="mis-reports.html">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21.21 15.89A10 10 0 1 1 8 2.83"/>
-                        <path d="M22 12A10 10 0 0 0 12 2v10z"/>
+                        <path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/>
                     </svg>
-                    Tally Reports
+                    MIS Reports
                 </a>
             </div>
-            <div class="tx-sb-divider"></div>
+            <div class="sb-divider"></div>
 
-            <div class="tx-sb-section">
-                <div class="tx-sb-label">Filter by Type</div>
-                <div class="tx-sb-item active" onclick="filterByType('all',this)">
+            <div class="sb-section">
+                <div class="sb-section-label" style="display:flex;align-items:center;gap:0.35rem">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg>
+                    Filter by Type
+                </div>
+                <div class="sb-item active" onclick="filterByType('all',this)">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="3" y="3" width="7" height="7" rx="1" />
                         <rect x="14" y="3" width="7" height="7" rx="1" />
@@ -783,36 +726,36 @@
                         <rect x="14" y="14" width="7" height="7" rx="1" />
                     </svg>
                     All Types
-                    <span class="tx-sb-badge" id="sb-count-all" style="background:#f1f5f9;color:#475569">0</span>
+                    <span class="sb-badge" id="sb-count-all" style="background:#f1f5f9;color:#475569">0</span>
                 </div>
-                <div class="tx-sb-item" onclick="filterByType('Sales',this)">
+                <div class="sb-item" onclick="filterByType('Sales',this)">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <line x1="12" y1="1" x2="12" y2="23" />
                         <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
                     </svg>
                     Sales
                 </div>
-                <div class="tx-sb-item" onclick="filterByType('Purchase',this)">
+                <div class="sb-item" onclick="filterByType('Purchase',this)">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
                         <line x1="3" y1="6" x2="21" y2="6" />
                     </svg>
                     Purchase
                 </div>
-                <div class="tx-sb-item" onclick="filterByType('Journal',this)">
+                <div class="sb-item" onclick="filterByType('Journal',this)">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                         <polyline points="14 2 14 8 20 8" />
                     </svg>
                     Journal
                 </div>
-                <div class="tx-sb-item" onclick="filterByType('Receipt',this)">
+                <div class="sb-item" onclick="filterByType('Receipt',this)">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M4 4v16l3-2 3 2 3-2 3 2 3-2 3 2V4l-3 2-3-2-3 2-3-2-3 2z" />
                     </svg>
                     Receipt
                 </div>
-                <div class="tx-sb-item" onclick="filterByType('Contra',this)">
+                <div class="sb-item" onclick="filterByType('Contra',this)">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M17 1l4 4-4 4" />
                         <path d="M3 11V9a4 4 0 0 1 4-4h14" />
@@ -821,8 +764,8 @@
                     </svg>
                     Contra
                 </div>
-                <div class="tx-sb-divider"></div>
-                <div class="tx-sb-item" onclick="filterByType('Banking',this)">
+                <div class="sb-divider"></div>
+                <div class="sb-item" onclick="filterByType('Banking',this)">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="2" y="5" width="20" height="14" rx="2" />
                         <line x1="2" y1="10" x2="22" y2="10" />
@@ -830,30 +773,37 @@
                     Banking
                 </div>
             </div>
-            <div class="tx-sb-divider"></div>
-            <div class="tx-sb-section">
-                <div class="tx-sb-label">Filter by Status</div>
-                <div class="tx-sb-item" onclick="filterByStatus('Pending',this)">
-                    ⏳ Pending Review
-                    <span class="tx-sb-badge" id="sb-count-pending">0</span>
+            <div class="sb-divider"></div>
+            <div class="sb-section">
+                <div class="sb-section-label" style="display:flex;align-items:center;gap:0.35rem">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                    Filter by Status
                 </div>
-                <div class="tx-sb-item" onclick="filterByStatus('Approved',this)">
-                    ✅ Approved
-                    <span class="tx-sb-badge" id="sb-count-approved" style="background:#dbeafe;color:#1e40af">0</span>
+                <div class="sb-item" onclick="filterByStatus('Pending',this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                    Pending Review
+                    <span class="sb-badge" id="sb-count-pending" style="background:#fee2e2;color:#dc2626">0</span>
                 </div>
-                <div class="tx-sb-item" onclick="filterByStatus('PendingSync',this)">
-                    🔄 Pending Tally Sync
-                    <span class="tx-sb-badge" id="sb-count-pendingsync"
-                        style="background:#fef3c7;color:#b45309">0</span>
+                <div class="sb-item" onclick="filterByStatus('Approved',this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    Approved
+                    <span class="sb-badge" id="sb-count-approved" style="background:#dbeafe;color:#1e40af">0</span>
                 </div>
-                <div class="tx-sb-item" onclick="filterByStatus('Synced',this)">
-                    📊 Synced to Tally
-                    <span class="tx-sb-badge" id="sb-count-synced" style="background:#ecfdf5;color:#059669">0</span>
+                <div class="sb-item" onclick="filterByStatus('PendingSync',this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"/><path d="M20.49 15a9 9 0 0 1-14.85 3.36L1 14"/></svg>
+                    Pending Tally Sync
+                    <span class="sb-badge" id="sb-count-pendingsync" style="background:#fef3c7;color:#b45309">0</span>
                 </div>
-                <div class="tx-sb-divider"></div>
-                <div class="tx-sb-item" onclick="filterByStatus('Uncategorised',this)">
-                    ❓ Uncategorised
-                    <span class="tx-sb-badge" id="sb-count-uncat" style="background:#fef2f2;color:#dc2626">0</span>
+                <div class="sb-item" onclick="filterByStatus('Synced',this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+                    Synced to Tally
+                    <span class="sb-badge" id="sb-count-synced" style="background:#ecfdf5;color:#059669">0</span>
+                </div>
+                <div class="sb-divider"></div>
+                <div class="sb-item" onclick="filterByStatus('Uncategorised',this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    Uncategorised
+                    <span class="sb-badge" id="sb-count-uncat" style="background:#fef2f2;color:#dc2626">0</span>
                 </div>
             </div>
             <a class="tx-sb-back" id="back-link" href="service-data-entry.html">
@@ -1109,7 +1059,7 @@
         const deBase = `service-data-entry.html?clientId=${clientId}&service=${encodeURIComponent(serviceName)}`;
         document.getElementById('de-nav-dashboard').href = deBase;
         document.getElementById('de-nav-master').href = deBase + '&section=master';
-        document.getElementById('de-nav-reports').href = deBase + '&section=reports';
+        document.getElementById('de-nav-reports').href = `mis-reports.html?clientId=${clientId}`;
 
         // ═══ HELPERS ═══
         function parseAmount(val) {
@@ -1303,7 +1253,7 @@
             const u = new URL(window.location);
             if (type === 'all') { u.searchParams.delete('tab'); } else { u.searchParams.set('tab', type); }
             window.history.replaceState({}, '', u);
-            document.querySelectorAll('.tx-sb-item').forEach(i => i.classList.remove('active'));
+            document.querySelectorAll('.sb-item').forEach(i => i.classList.remove('active'));
             if (el) el.classList.add('active');
             // Update upload button label to reflect active type
             const uploadLabel = document.querySelector('.tx-upload-btn');
@@ -1341,7 +1291,7 @@
         function filterByStatus(status, el) {
             currentStatus = status;
             currentFilter = 'all';
-            document.querySelectorAll('.tx-sb-item').forEach(i => i.classList.remove('active'));
+            document.querySelectorAll('.sb-item').forEach(i => i.classList.remove('active'));
             if (el) el.classList.add('active');
             // Sync dropdown
             document.getElementById('tx-status-filter').value = status;
@@ -1351,13 +1301,13 @@
         function filterByStatusDropdown(status) {
             currentStatus = status;
             // Clear sidebar active
-            document.querySelectorAll('.tx-sb-item').forEach(i => i.classList.remove('active'));
+            document.querySelectorAll('.sb-item').forEach(i => i.classList.remove('active'));
             applyFilters();
         }
 
         // Helper to find sidebar item for stat clicks
         function findSbItem(status) {
-            const items = document.querySelectorAll('.tx-sb-item');
+            const items = document.querySelectorAll('.sb-item');
             for (const it of items) {
                 if (it.textContent.includes(status)) return it;
             }
@@ -2090,7 +2040,7 @@
             const tab = urlParams.get('tab');
             if (tab && tab !== 'all') {
                 // Find and click the matching sidebar item
-                const items = document.querySelectorAll('.tx-sb-item');
+                const items = document.querySelectorAll('.sb-item');
                 for (const el of items) {
                     if (el.textContent.trim().replace(/\d+/g, '').trim() === tab) {
                         filterByType(tab, el);

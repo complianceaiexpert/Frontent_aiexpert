@@ -17,7 +17,7 @@
         }
 
         body {
-            background: #f8fafc;
+            background: #f4f6fb;
             margin: 0;
             min-height: 100vh
         }
@@ -32,8 +32,8 @@
         /* ── Sidebar ── */
         .ws-sidebar {
             width: 240px;
-            background: #fff;
-            border-right: 1px solid #e5e7eb;
+            background: linear-gradient(180deg, #fafbfe 0%, #f5f7fc 100%);
+            border-right: 1px solid #eaecf3;
             position: fixed;
             top: 64px;
             bottom: 0;
@@ -41,26 +41,31 @@
             display: flex;
             flex-direction: column;
             z-index: 90;
-            overflow-y: auto
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: #dde0e9 transparent;
         }
+        .ws-sidebar::-webkit-scrollbar { width: 4px }
+        .ws-sidebar::-webkit-scrollbar-track { background: transparent }
+        .ws-sidebar::-webkit-scrollbar-thumb { background: #dde0e9; border-radius: 4px }
 
         .sb-client-card {
             padding: 1.15rem 1rem;
-            border-bottom: 1px solid #f1f5f9;
+            border-bottom: 1px solid #eef0f5;
             display: flex;
             align-items: center;
             gap: 0.75rem
         }
 
         .sb-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
             background: linear-gradient(135deg, #1e3a8a, #3b82f6);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: 800;
             font-family: 'Outfit', sans-serif;
             color: #fff;
@@ -73,7 +78,7 @@
         }
 
         .sb-client-name {
-            font-size: 0.85rem;
+            font-size: 0.82rem;
             font-weight: 700;
             color: #111827;
             white-space: nowrap;
@@ -82,85 +87,100 @@
         }
 
         .sb-client-type {
-            font-size: 0.65rem;
+            font-size: 0.62rem;
             color: #9ca3af;
             font-weight: 500
         }
 
         .sb-section {
-            padding: 0.75rem 1rem
+            padding: 0.5rem 0.65rem
         }
 
         .sb-section-label {
-            font-size: 0.62rem;
+            font-size: 0.58rem;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: #9ca3af;
-            padding: 0.5rem 0.75rem;
-            margin-bottom: 0.1rem
+            letter-spacing: 0.1em;
+            color: #b0b5c3;
+            padding: 0.45rem 0.65rem;
+            margin-bottom: 0.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
         }
 
         .sb-item {
             display: flex;
             align-items: center;
-            gap: 0.6rem;
-            padding: 0.5rem 0.75rem;
-            border-radius: 8px;
-            font-size: 0.8rem;
+            gap: 0.55rem;
+            padding: 0.42rem 0.65rem;
+            border-radius: 7px;
+            font-size: 0.76rem;
             font-weight: 500;
-            color: #4b5563;
+            color: #5b6478;
             cursor: pointer;
             transition: all .2s;
             text-decoration: none;
-            margin-bottom: 1px
+            margin-bottom: 1px;
+            position: relative;
         }
 
         .sb-item:hover {
-            background: #f1f5f9;
+            background: rgba(30,58,138,.04);
             color: #1e3a8a
         }
 
         .sb-item.active {
-            background: #eff6ff;
+            background: linear-gradient(135deg, rgba(30,58,138,.07), rgba(59,130,246,.06));
             color: #1e3a8a;
-            font-weight: 600
+            font-weight: 600;
+        }
+        .sb-item.active::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 4px; bottom: 4px;
+            width: 2.5px;
+            border-radius: 0 3px 3px 0;
+            background: linear-gradient(180deg, #1e3a8a, #3b82f6);
         }
 
         .sb-item svg {
             flex-shrink: 0;
-            width: 16px;
-            height: 16px
+            width: 14px;
+            height: 14px;
+            opacity: 0.7;
         }
+        .sb-item.active svg,
+        .sb-item:hover svg { opacity: 1 }
 
         .sb-badge {
             margin-left: auto;
-            font-size: 0.6rem;
+            font-size: 0.55rem;
             font-weight: 700;
-            background: #dbeafe;
+            background: rgba(30,58,138,.08);
             color: #1e3a8a;
             padding: 1px 6px;
             border-radius: 10px
         }
 
         .sb-badge.green {
-            background: #dcfce7;
+            background: rgba(22,163,74,.08);
             color: #16a34a
         }
 
         .sb-divider {
             height: 1px;
-            background: #f1f5f9;
-            margin: 0.4rem 1rem
+            background: linear-gradient(90deg, transparent, #e5e8f0, transparent);
+            margin: 0.25rem 1rem
         }
 
         .sb-back {
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            padding: 0.85rem 1rem;
-            border-top: 1px solid #f1f5f9;
-            font-size: 0.8rem;
+            padding: 0.75rem 1rem;
+            border-top: 1px solid #eef0f5;
+            font-size: 0.76rem;
             font-weight: 600;
             color: #6b7280;
             cursor: pointer;
@@ -171,83 +191,114 @@
 
         .sb-back:hover {
             color: #1e3a8a;
-            background: #f8fafc
+            background: rgba(30,58,138,.03)
         }
 
         .sb-back svg {
-            width: 16px;
-            height: 16px
+            width: 14px;
+            height: 14px
         }
 
         /* ── Main ── */
         .ws-main {
             margin-left: 240px;
             flex: 1;
-            padding: 1.5rem 2rem 3rem
+            padding: 0 2rem 3rem
         }
 
-        /* ── Breadcrumb ── */
         .ws-breadcrumb {
             display: flex;
             align-items: center;
             gap: 0.4rem;
-            font-size: 0.75rem;
-            color: #9ca3af;
-            margin-bottom: 1rem
+            font-size: 0.72rem;
+            color: rgba(255,255,255,.45);
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
         }
 
         .ws-breadcrumb a {
-            color: #6b7280;
+            color: rgba(255,255,255,.55);
             text-decoration: none;
             font-weight: 500
         }
 
         .ws-breadcrumb a:hover {
-            color: #1e3a8a
+            color: #fff
         }
 
         .ws-breadcrumb .sep {
-            font-size: 0.65rem
+            font-size: 0.65rem;
+            color: rgba(255,255,255,.3)
         }
 
-        /* ── Client Header ── */
+        .ws-breadcrumb .bc-current {
+            color: rgba(255,255,255,.8);
+            font-weight: 600
+        }
+
+        /* ── Client Header — Hero Style ── */
         .ws-client-header {
-            background: #fff;
-            border: 1px solid #f1f5f9;
-            border-radius: 14px;
-            padding: 1.35rem 1.5rem;
-            margin-bottom: 1.25rem;
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 60%, #2563eb 100%);
+            margin: 0 -2rem;
+            padding: 2.75rem 2rem 3.5rem;
             display: flex;
             align-items: center;
             gap: 1.25rem;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, .03)
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ws-client-header::before {
+            content: '';
+            position: absolute;
+            top: -50%; right: -5%;
+            width: 280px; height: 280px;
+            background: radial-gradient(circle, rgba(255,255,255,.06) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        .ws-client-header::after {
+            content: '';
+            position: absolute;
+            bottom: -40%; left: 30%;
+            width: 200px; height: 200px;
+            background: radial-gradient(circle, rgba(59,130,246,.15) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
         }
 
         .ws-hero-avatar {
-            width: 56px;
-            height: 56px;
+            width: 52px;
+            height: 52px;
             border-radius: 14px;
-            background: linear-gradient(135deg, #1e3a8a, #2563eb);
+            background: rgba(255,255,255,.12);
+            border: 1px solid rgba(255,255,255,.2);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             font-weight: 800;
             font-family: 'Outfit', sans-serif;
             color: #fff;
-            flex-shrink: 0
+            flex-shrink: 0;
+            backdrop-filter: blur(4px);
+            position: relative;
+            z-index: 1;
         }
 
         .ws-hero-info {
             flex: 1;
-            min-width: 0
+            min-width: 0;
+            position: relative;
+            z-index: 1;
         }
 
         .ws-hero-info h1 {
             font-family: 'Outfit', sans-serif;
             font-size: 1.35rem;
             font-weight: 800;
-            color: #111827;
+            color: #fff;
             margin: 0 0 0.15rem;
             letter-spacing: -0.01em
         }
@@ -257,12 +308,12 @@
             align-items: center;
             gap: 0.35rem;
             padding: 0.2rem 0.65rem;
-            background: rgba(30, 58, 138, .06);
-            border: 1px solid rgba(30, 58, 138, .12);
+            background: rgba(255,255,255,.1);
+            border: 1px solid rgba(255,255,255,.2);
             border-radius: 999px;
             font-size: 0.65rem;
             font-weight: 700;
-            color: #1e3a8a;
+            color: rgba(255,255,255,.85);
             text-transform: uppercase;
             letter-spacing: 0.04em;
             margin-bottom: 0.5rem
@@ -285,20 +336,22 @@
             font-size: 0.6rem;
             text-transform: uppercase;
             letter-spacing: 0.08em;
-            color: #9ca3af;
+            color: rgba(255,255,255,.45);
             font-weight: 700
         }
 
         .ws-id-value {
             font-size: 0.8rem;
-            color: #374151;
+            color: rgba(255,255,255,.9);
             font-weight: 600
         }
 
         .ws-hero-actions {
             display: flex;
             gap: 0.5rem;
-            flex-shrink: 0
+            flex-shrink: 0;
+            position: relative;
+            z-index: 1;
         }
 
         .btn-ws {
@@ -307,62 +360,79 @@
             gap: 0.4rem;
             padding: 0.5rem 0.9rem;
             border-radius: 8px;
-            border: 1px solid #e5e7eb;
-            background: #fff;
-            color: #374151;
+            border: 1px solid rgba(255,255,255,.2);
+            background: rgba(255,255,255,.08);
+            color: rgba(255,255,255,.75);
             font-weight: 600;
             font-size: 0.78rem;
             cursor: pointer;
             transition: all .2s;
             font-family: inherit;
-            text-decoration: none
+            text-decoration: none;
+            backdrop-filter: blur(4px);
         }
 
         .btn-ws:hover {
-            background: #f9fafb;
-            border-color: #1e3a8a;
-            color: #1e3a8a
+            background: rgba(255,255,255,.15);
+            border-color: rgba(255,255,255,.35);
+            color: #fff
         }
 
         .btn-ws.primary {
-            background: #1e3a8a;
+            background: linear-gradient(135deg, #EB6711, #f5841a);
             color: #fff;
-            border-color: #1e3a8a;
-            box-shadow: 0 2px 6px rgba(30, 58, 138, .15)
+            border-color: transparent;
+            box-shadow: 0 4px 14px rgba(235,103,17,.25)
         }
 
         .btn-ws.primary:hover {
-            background: #1e40af
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(235,103,17,.35)
         }
 
         /* ── Stats ── */
         .ws-stats {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 1rem;
-            margin-bottom: 1.5rem
+            gap: 0.85rem;
+            margin: -2rem 0 1.25rem;
+            position: relative;
+            z-index: 2;
         }
 
         .ws-stat {
             background: #fff;
-            border: 1px solid #f1f5f9;
-            border-radius: 12px;
+            border: 1px solid #eef0f5;
+            border-radius: 14px;
             padding: 1rem 1.15rem;
             display: flex;
             align-items: center;
             gap: 0.85rem;
-            transition: all .2s
+            transition: all .25s;
+            box-shadow: 0 2px 10px rgba(0,0,0,.04);
+            position: relative;
+            overflow: hidden;
         }
+        .ws-stat::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; bottom: 0;
+            width: 3px;
+            border-radius: 14px 0 0 14px;
+        }
+        .ws-stat:nth-child(1)::before { background: linear-gradient(180deg, #1e3a8a, #3b82f6) }
+        .ws-stat:nth-child(2)::before { background: linear-gradient(180deg, #059669, #34d399) }
+        .ws-stat:nth-child(3)::before { background: linear-gradient(180deg, #7c3aed, #a78bfa) }
 
         .ws-stat:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 14px rgba(0, 0, 0, .05)
+            box-shadow: 0 8px 24px rgba(0, 0, 0, .07)
         }
 
         .ws-stat-icon {
             width: 40px;
             height: 40px;
-            border-radius: 10px;
+            border-radius: 11px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -371,7 +441,7 @@
         }
 
         .ws-stat-num {
-            font-size: 1.35rem;
+            font-size: 1.4rem;
             font-weight: 800;
             font-family: 'Outfit', sans-serif;
             color: #111827;
@@ -433,132 +503,108 @@
 
         .services-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-            gap: 1rem;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 0.85rem;
             margin-bottom: 1.5rem
         }
 
         .service-card {
             background: #fff;
-            border: 1px solid #f1f5f9;
+            border: 1px solid #eef0f5;
             border-radius: 14px;
-            padding: 1.35rem;
+            padding: 1.15rem;
             position: relative;
             overflow: hidden;
             cursor: pointer;
             transition: all .3s cubic-bezier(.4, 0, .2, 1);
             display: flex;
             flex-direction: column;
-            min-height: 180px
+            min-height: 155px;
+            box-shadow: 0 1px 4px rgba(0,0,0,.03);
         }
 
         .service-card:hover {
-            border-color: #1e3a8a;
-            box-shadow: 0 8px 24px -8px rgba(30, 58, 138, .10);
+            border-color: transparent;
+            box-shadow: 0 8px 28px -6px rgba(30, 58, 138, .12);
             transform: translateY(-3px)
         }
 
         .service-card::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            opacity: 0;
-            transition: opacity .25s
+            top: 0; left: 0;
+            width: 100%; height: 3px;
+            transition: opacity .25s;
         }
 
-        .service-card:hover::before {
-            opacity: 1
-        }
-
-        .service-card[data-color="blue"]::before {
-            background: linear-gradient(90deg, #3b82f6, #60a5fa)
-        }
-
-        .service-card[data-color="green"]::before {
-            background: linear-gradient(90deg, #10b981, #34d399)
-        }
-
-        .service-card[data-color="purple"]::before {
-            background: linear-gradient(90deg, #8b5cf6, #a78bfa)
-        }
-
-        .service-card[data-color="orange"]::before {
-            background: linear-gradient(90deg, #f59e0b, #fbbf24)
-        }
-
-        .service-card[data-color="pink"]::before {
-            background: linear-gradient(90deg, #ec4899, #f472b6)
-        }
-
-        .service-card[data-color="teal"]::before {
-            background: linear-gradient(90deg, #14b8a6, #2dd4bf)
-        }
+        .service-card[data-color="blue"]::before { background: linear-gradient(90deg, #1e3a8a, #3b82f6) }
+        .service-card[data-color="green"]::before { background: linear-gradient(90deg, #059669, #34d399) }
+        .service-card[data-color="purple"]::before { background: linear-gradient(90deg, #7c3aed, #a78bfa) }
+        .service-card[data-color="orange"]::before { background: linear-gradient(90deg, #d97706, #fbbf24) }
+        .service-card[data-color="pink"]::before { background: linear-gradient(90deg, #ec4899, #f472b6) }
+        .service-card[data-color="teal"]::before { background: linear-gradient(90deg, #0d9488, #2dd4bf) }
+        .service-card[data-color="amber"]::before { background: linear-gradient(90deg, #d97706, #f59e0b) }
 
         .svc-card-top {
             display: flex;
             align-items: flex-start;
-            gap: 0.85rem;
-            margin-bottom: 0.65rem
+            gap: 0.75rem;
+            margin-bottom: 0.5rem
         }
 
         .svc-icon-box {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
+            width: 36px;
+            height: 36px;
+            border-radius: 9px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.2rem;
+            font-size: 1.05rem;
             flex-shrink: 0
         }
 
         .svc-card-title {
-            font-size: 0.92rem;
+            font-size: 0.88rem;
             font-weight: 700;
-            color: #111827;
+            color: #0f172a;
             margin-bottom: 0.1rem
         }
 
         .svc-card-status {
-            font-size: 0.62rem;
+            font-size: 0.58rem;
             font-weight: 700;
-            padding: 2px 8px;
+            padding: 2px 7px;
             border-radius: 16px;
             text-transform: uppercase;
             letter-spacing: 0.04em
         }
 
-        .status-active {
-            background: #ecfdf5;
-            color: #065f46
-        }
+        .status-active { background: #ecfdf5; color: #065f46 }
 
         .svc-card-desc {
-            font-size: 0.78rem;
+            font-size: 0.73rem;
             color: #6b7280;
-            line-height: 1.55;
+            line-height: 1.5;
             flex: 1;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             line-clamp: 2;
             -webkit-box-orient: vertical;
-            overflow: hidden
+            overflow: hidden;
+            margin-bottom: 0.5rem;
         }
 
         .svc-card-footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding-top: 0.65rem;
+            padding-top: 0.5rem;
             margin-top: auto;
-            border-top: 1px solid #f8fafc
+            border-top: 1px solid #f4f6f8
         }
 
         .svc-open-link {
-            font-size: 0.78rem;
+            font-size: 0.75rem;
             color: #1e3a8a;
             font-weight: 600;
             display: flex;
@@ -567,13 +613,17 @@
             transition: gap .2s
         }
 
-        .service-card:hover .svc-open-link {
-            gap: 0.4rem
-        }
+        .service-card:hover .svc-open-link { gap: 0.4rem }
 
         .svc-card-meta {
-            font-size: 0.68rem;
-            color: #9ca3af
+            font-size: 0.62rem;
+            color: #94a3b8;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            background: #f8fafc;
+            padding: 2px 6px;
+            border-radius: 5px;
         }
 
         /* ── Modals ── */
@@ -821,21 +871,11 @@
         }
 
         @media(max-width:768px) {
-            .ws-sidebar {
-                display: none
-            }
-
-            .ws-main {
-                margin-left: 0
-            }
-
-            .ws-stats {
-                grid-template-columns: 1fr
-            }
-
-            .services-grid {
-                grid-template-columns: 1fr
-            }
+            .ws-sidebar { display: none }
+            .ws-main { margin-left: 0 }
+            .ws-stats { grid-template-columns: 1fr }
+            .services-grid { grid-template-columns: 1fr }
+            .ws-client-header { margin: 0 }
         }
     </style>
 </head>
@@ -848,39 +888,25 @@
     <div class="ws-layout">
         <!-- ══ LEFT SIDEBAR ══ -->
         <aside class="ws-sidebar">
-            <!-- ═══ Common Main Navigation ═══ -->
-            <div id="app-sidebar-main" data-active=""></div>
-            <script src="app-sidebar.js"></script>
-
             <!-- ═══ Client-Level Navigation ═══ -->
             <div id="app-client-nav" data-active="overview"></div>
             <script src="app-client-nav.js"></script>
-            <div class="sb-divider"></div>
-            <!-- [COMMENTED OUT] Add Service sidebar action — removed for discoverability
-            <div class="sb-section">
-                <div class="sb-section-label">Actions</div>
-                <a href="#" class="sb-item" onclick="event.preventDefault();showAddService()">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M12 5v14" />
-                        <path d="M5 12h14" />
-                    </svg>
-                    Add Service
-                </a>
-            </div>
-            -->
         </aside>
 
         <!-- ══ MAIN CONTENT ══ -->
         <main class="ws-main">
-            <!-- Breadcrumb -->
-            <div class="ws-breadcrumb">
-                <a href="clients.html">Firm</a>
-                <span class="sep">›</span>
-                <span id="breadcrumb-client" style="color:#374151;font-weight:600">Client</span>
-            </div>
-
             <!-- Client Header -->
             <div class="ws-client-header">
+                <!-- Breadcrumb (inside hero) -->
+                <div style="position:absolute;top:1rem;left:2rem;z-index:1">
+                    <div class="ws-breadcrumb">
+                        <a href="clients.html">Firm</a>
+                        <span class="sep">›</span>
+                        <a href="client-list.html">Clients</a>
+                        <span class="sep">›</span>
+                        <span class="bc-current" id="breadcrumb-client">Client</span>
+                    </div>
+                </div>
                 <div class="ws-hero-avatar" id="hero-avatar">C</div>
                 <div class="ws-hero-info">
                     <div class="ws-hero-tag" id="client-entity-type">Individual</div>
@@ -901,24 +927,33 @@
             <!-- Stats -->
             <div class="ws-stats">
                 <div class="ws-stat">
-                    <div class="ws-stat-icon" style="background:#eff6ff;color:#3b82f6">⚡</div>
+                    <div class="ws-stat-icon" style="background:#eff6ff;color:#3b82f6">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                    </div>
                     <div>
                         <div class="ws-stat-num" id="stat-services">0</div>
                         <div class="ws-stat-label">Active Services</div>
                     </div>
                 </div>
                 <div class="ws-stat">
-                    <div class="ws-stat-icon" style="background:#ecfdf5;color:#059669">📄</div>
+                    <div class="ws-stat-icon" style="background:#ecfdf5;color:#059669">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                    </div>
                     <div>
                         <div class="ws-stat-num" id="stat-gstins">0</div>
                         <div class="ws-stat-label">GSTINs</div>
                     </div>
                 </div>
-                <div class="ws-stat">
-                    <div class="ws-stat-icon" style="background:#f5f3ff;color:#7c3aed">🕐</div>
-                    <div>
-                        <div class="ws-stat-num" id="stat-updated" style="font-size:1rem">Today</div>
-                        <div class="ws-stat-label">Last Updated</div>
+                <div class="ws-stat" id="tally-sync-stat" style="cursor:pointer" title="Click to sync Tally" onclick="openSyncModal()">
+                    <div class="ws-stat-icon" style="background:#f5f3ff;color:#7c3aed">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"/><path d="M20.49 15a9 9 0 0 1-14.85 3.36L1 14"/></svg>
+                    </div>
+                    <div style="flex:1;min-width:0">
+                        <div style="display:flex;align-items:center;gap:0.4rem">
+                            <div class="ws-stat-num" id="stat-tally-sync" style="font-size:0.95rem">Checking…</div>
+                            <span id="tally-sync-dot" style="width:7px;height:7px;border-radius:50%;background:#d1d5db;flex-shrink:0"></span>
+                        </div>
+                        <div class="ws-stat-label">Tally Sync</div>
                     </div>
                 </div>
             </div>
@@ -1091,6 +1126,9 @@
                 const svcCountEl = document.getElementById('sb-svc-count');
                 if (svcCountEl) svcCountEl.textContent = clientServices.length;
                 renderActiveServices();
+
+                // Fetch Tally sync status
+                loadTallySyncStatus(client.name);
             } catch (err) {
                 console.error('Client Load Error:', err);
                 if (err.message.includes('401')) { alert('Session expired.'); window.location.href = 'index.html' }
@@ -1116,43 +1154,57 @@
         // Now we show all available services directly. These are the 3 currently active ones.
         const AVAILABLE_SERVICES = [
             {
-                name: 'GST Filing',
+                name: 'GST Filing & Reconciliation',
                 icon: '🧾',
                 color: 'blue',
-                desc: 'GST return filing with automated reconciliation, ITC optimization, and AI-powered error detection.',
-                page: 'service-gst-refund-webview.html'
+                desc: 'Complete GST compliance — automated GSTR-1 vs 3B / 2B reconciliation, ITC optimization, refund tracking.',
+                page: 'service-gst-refund-webview.html',
+                tag: 'Most Used'
+            },
+            {
+                name: 'Data Entry & Accounting',
+                icon: '⌨️',
+                color: 'orange',
+                desc: 'Quick-entry workspace for banking, sales, purchase vouchers. One-click Tally company sync.',
+                page: 'service-data-entry.html',
+                tag: 'Tally Sync'
             },
             {
                 name: 'CA Certificates',
                 icon: '📃',
                 color: 'purple',
-                desc: 'Generate GST, Financial, Net Worth, FEMA, and Bank certificates with AI-powered templates.',
-                page: 'ca-certificates.html'
-            },
-            {
-                name: 'Data Entry',
-                icon: '⌨️',
-                color: 'orange',
-                desc: 'Quick entry of banking, sales, purchase, journal, and ledger transactions with Tally sync.',
-                page: 'service-data-entry.html'
+                desc: 'Generate GST, Net Worth, FEMA, and Bank certificates from standardized templates instantly.',
+                page: 'ca-certificates.html',
+                tag: 'Templates'
             },
             {
                 name: 'Financial Statements',
                 icon: '📊',
                 color: 'green',
-                desc: 'AI-powered Balance Sheet, P&L and Schedules generation from Tally or uploaded Trial Balance.',
-                page: 'service-financial-statements.html'
+                desc: 'Schedule III Balance Sheet, P&L from Tally ledgers or uploaded Trial Balance with AI grouping.',
+                page: 'service-financial-statements.html',
+                tag: 'New'
             },
             {
                 name: 'Financial Instruments',
                 icon: '📈',
                 color: 'teal',
                 desc: 'Process Demat, Mutual Fund, and PMS statements with AI extraction and journal entry generation.',
-                page: 'service-financial-instruments.html'
+                page: 'service-financial-instruments.html',
+                tag: 'New'
+            },
+            {
+                name: 'Statutory & Financial Reporting',
+                icon: '📑',
+                color: 'amber',
+                desc: 'Form 3CD, CARO report, Rule 42 ITC reversal workings & depreciation comparison.',
+                page: 'service-statutory-reporting.html',
+                tag: 'New'
             }
         ];
 
-        function getIconBg(c) { return { blue: '#eff6ff', green: '#ecfdf5', purple: '#f5f3ff', orange: '#fffbeb', pink: '#fdf2f8', teal: '#f0fdfa' }[c] || '#f3f4f6' }
+        function getIconBg(c) { return { blue: '#eff6ff', green: '#ecfdf5', purple: '#f5f3ff', orange: '#fffbeb', pink: '#fdf2f8', teal: '#f0fdfa', amber: '#fef3c7' }[c] || '#f3f4f6' }
+        function getTagStyle(c) { return { blue: 'background:#eff6ff;color:#1e3a8a', green: 'background:#ecfdf5;color:#059669', purple: 'background:#f5f3ff;color:#7c3aed', orange: 'background:#fffbeb;color:#92400e', teal: 'background:#f0fdfa;color:#0d9488', amber: 'background:#fef3c7;color:#92400e', pink: 'background:#fdf2f8;color:#9d174d' }[c] || 'background:#f3f4f6;color:#6b7280' }
 
         // ====== RENDER SERVICES (now shows all available services directly) ======
         function renderActiveServices() {
@@ -1164,13 +1216,16 @@
                 card.onclick = () => openViewSelection(svc);
                 card.innerHTML = `
                     <div class="svc-card-top">
-                        <div class="svc-icon-box" style="background:${getIconBg(svc.color)};font-size:1.2rem">${svc.icon}</div>
-                        <div style="flex:1;min-width:0"><div class="svc-card-title">${svc.name}</div><span class="svc-card-status status-active">Active</span></div>
+                        <div class="svc-icon-box" style="background:${getIconBg(svc.color)}">${svc.icon}</div>
+                        <div style="flex:1;min-width:0">
+                            <div class="svc-card-title">${svc.name}</div>
+                            <span class="svc-card-status" style="${getTagStyle(svc.color)}">${svc.tag || 'Active'}</span>
+                        </div>
                     </div>
                     <p class="svc-card-desc">${svc.desc}</p>
                     <div class="svc-card-footer">
-                        <span class="svc-open-link">Open Workspace <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg></span>
-                        <span class="svc-card-meta">AI Powered</span>
+                        <span class="svc-open-link">Open Workspace <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg></span>
+                        <span class="svc-card-meta">✦ AI Powered</span>
                     </div>`;
                 grid.appendChild(card);
             });
@@ -1243,6 +1298,72 @@
         }
 
         document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal('view-modal'); /* closeModal('manage-services-modal'); */ closeModal('tally-sync-modal') } });
+
+        // ====== TALLY SYNC STATUS ======
+        async function loadTallySyncStatus(clientName) {
+            const el = document.getElementById('stat-tally-sync');
+            const dot = document.getElementById('tally-sync-dot');
+            const stat = document.getElementById('tally-sync-stat');
+            if (!el) return;
+
+            try {
+                // Try to get the most recent synced ledger for this client's company
+                const r = await authFetch(`/tally/ledgers?company_name=${encodeURIComponent(clientName)}&per_page=1`);
+                if (!r || !r.ok) throw new Error('No data');
+                const data = await r.json();
+
+                if (data.total === 0 || !data.data || data.data.length === 0) {
+                    el.textContent = 'Not Synced';
+                    el.style.color = '#9ca3af';
+                    dot.style.background = '#ef4444';
+                    if (stat) stat.title = 'No Tally data found. Click to sync.';
+                    return;
+                }
+
+                const syncedAt = data.data[0].synced_at;
+                if (!syncedAt) {
+                    el.textContent = 'Not Synced';
+                    el.style.color = '#9ca3af';
+                    dot.style.background = '#ef4444';
+                    return;
+                }
+
+                const syncDate = new Date(syncedAt);
+                const now = new Date();
+                const diffMs = now - syncDate;
+                const diffMins = Math.floor(diffMs / 60000);
+                const diffHrs = Math.floor(diffMs / 3600000);
+                const diffDays = Math.floor(diffMs / 86400000);
+
+                let label;
+                if (diffMins < 1) label = 'Just now';
+                else if (diffMins < 60) label = `${diffMins} min ago`;
+                else if (diffHrs < 24) label = `${diffHrs} hr${diffHrs > 1 ? 's' : ''} ago`;
+                else if (diffDays < 7) label = `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+                else label = syncDate.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+
+                el.textContent = label;
+                el.style.color = '#111827';
+
+                // Status dot: green if <24h, amber if <7d, red if older
+                if (diffHrs < 24) {
+                    dot.style.background = '#22c55e';
+                } else if (diffDays < 7) {
+                    dot.style.background = '#f59e0b';
+                } else {
+                    dot.style.background = '#ef4444';
+                }
+
+                if (stat) stat.title = `Last synced: ${syncDate.toLocaleString('en-IN')} — Click to re-sync`;
+
+            } catch (e) {
+                el.textContent = 'Not Synced';
+                el.style.color = '#9ca3af';
+                dot.style.background = '#d1d5db';
+                console.warn('Tally sync status:', e.message);
+            }
+        }
+
         loadDashboard();
     </script>
     <script src="session-manager.js?v=2"></script>

@@ -39,59 +39,6 @@
             padding: 0.75rem 0;
         }
 
-        .sidebar-nav {
-            list-style: none;
-            margin: 0;
-            padding: 0;
-        }
-
-        .sidebar-item {
-            position: relative;
-        }
-
-        .sidebar-link {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.7rem 1.25rem;
-            color: #475569;
-            text-decoration: none;
-            font-size: 0.85rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            border-left: 3px solid transparent;
-        }
-
-        .sidebar-link:hover {
-            background: #eff6ff;
-            color: #1e3a8a;
-        }
-
-        .sidebar-link.active {
-            background: #eff6ff;
-            color: #1e3a8a;
-            border-left-color: #1e3a8a;
-            font-weight: 600;
-        }
-
-        .sidebar-link .link-icon {
-            width: 20px;
-            text-align: center;
-            font-size: 0.95rem;
-            flex-shrink: 0;
-        }
-
-        .sidebar-link .link-text {
-            flex: 1;
-        }
-
-        .sidebar-divider {
-            height: 1px;
-            background: #e2e8f0;
-            margin: 0.5rem 1rem;
-        }
-
         .main-content {
             flex: 1;
             overflow-y: auto;
@@ -458,48 +405,38 @@
 
     <div class="app-layout">
         <aside class="sidebar">
-            <div id="app-client-nav" data-active="gst-refund"></div>
-            <script src="app-client-nav.js"></script>
-            <ul class="sidebar-nav">
-                <li class="sidebar-item">
-                    <a class="sidebar-link" onclick="navigateToPage('service-gst-refund-webview.html')">
-                        <span class="link-icon">📊</span>
-                        <span class="link-text">Refund Dashboard</span>
-                    </a>
-                </li>
-                <li class="sidebar-item">
-                    <a class="sidebar-link active">
-                        <span class="link-icon">📝</span>
-                        <span class="link-text">File GST Refund</span>
-                    </a>
-                </li>
-                <li class="sidebar-item">
-                    <a class="sidebar-link"
-                        onclick="navigateToPage('refund-calculator.html')">
-                        <span class="link-icon">🧮</span>
-                        <span class="link-text">Calculate Refund</span>
-                    </a>
-                </li>
-                <li class="sidebar-item">
-                    <a class="sidebar-link"
-                        onclick="navigateToPage('service-gst-refund-webview.html', 'reconciliation')">
-                        <span class="link-icon">⚖️</span>
-                        <span class="link-text">GST Reconciliation</span>
-                    </a>
-                </li>
-                <li class="sidebar-item">
-                    <a class="sidebar-link" onclick="navigateToPage('service-gst-refund-webview.html', 'reports')">
-                        <span class="link-icon">📄</span>
-                        <span class="link-text">Reports</span>
-                    </a>
-                </li>
-                <li class="sidebar-item">
-                    <a class="sidebar-link" onclick="navigateToPage('service-gst-refund-webview.html', 'tools')">
-                        <span class="link-icon">🛠️</span>
-                        <span class="link-text">Tools</span>
-                    </a>
-                </li>
-            </ul>
+            <div id="app-sidebar-main" data-active="gst-filing"></div>
+            <script src="app-sidebar.js"></script>
+            <div class="sb-section">
+                <div class="sb-section-label" style="display:flex;align-items:center;gap:0.35rem;">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/></svg>
+                    Active Workspace
+                </div>
+                <a class="sb-item" onclick="navigateToPage('service-gst-refund-webview.html')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                    Refund Dashboard
+                </a>
+                <a class="sb-item active">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                    File GST Refund
+                </a>
+                <a class="sb-item" onclick="navigateToPage('refund-calculator.html')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="12" y2="14"/></svg>
+                    Calculate Refund
+                </a>
+                <a class="sb-item" onclick="navigateToPage('service-gst-refund-webview.html', 'reconciliation')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 3h5v5"/><path d="M8 21H3v-5"/><path d="M21 3l-8.5 8.5"/><path d="M3 21l8.5-8.5"/></svg>
+                    GST Reconciliation
+                </a>
+                <a class="sb-item" onclick="navigateToPage('service-gst-refund-webview.html', 'reports')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    Reports
+                </a>
+                <a class="sb-item" onclick="navigateToPage('service-gst-refund-webview.html', 'tools')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+                    Tools
+                </a>
+            </div>
         </aside>
 
         <main class="main-content">

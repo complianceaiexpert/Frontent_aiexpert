@@ -39,7 +39,7 @@
   <nav class="app-navbar" id="app-navbar">
     <div class="app-navbar-inner">
       <!-- Logo -->
-      <a href="clients.html" class="app-logo">
+      <a href="client-list.html" class="app-logo">
         <div class="app-logo-icon">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5">
             <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
@@ -53,13 +53,26 @@
 
       <!-- Center Nav -->
       <div class="app-nav-center">
-        <a href="${_isCorporate ? 'services-dashboard.html' : 'clients.html'}" class="${cls('dashboard')}">
+        <a href="${_isCorporate ? 'services-dashboard.html' : 'client-list.html'}" class="${cls('dashboard')}">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/>
             <rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>
           </svg>
           Dashboard
         </a>
+
+        <div class="app-svc-selector" id="app-svc-selector">
+          <button class="app-nav-link" onclick="window.__toggleSvcDD(event)">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+            </svg>
+            Services
+            <svg class="app-svc-chevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="m6 9 6 6 6-6"/>
+            </svg>
+          </button>
+          <div class="app-svc-dropdown" id="app-svc-dropdown"></div>
+        </div>
 
         <a href="tool-gstin-validator.html" class="${cls('tools')}">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -93,13 +106,11 @@
         ` : `
         <!-- CA Firm: full client selector dropdown -->
         <div class="app-client-selector" id="app-client-selector">
-          <button class="app-client-btn" id="app-client-btn" onclick="window.__toggleClientDD(event)" title="Select Client">
-            <span class="app-client-ctx-dot"></span>
+          <button class="app-client-btn" id="app-client-btn" onclick="window.__toggleClientDD(event)" title="Switch Client">
             <svg class="app-client-ctx-svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-              <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/>
-              <path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/>
-              <path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/>
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
             </svg>
+            <span class="app-client-btn-label">Client:</span>
             <span class="app-client-btn-name" id="app-client-btn-name">${_clientName || 'Select Client'}</span>
             <svg class="app-client-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
               <path d="m6 9 6 6 6-6"/>
@@ -112,22 +123,23 @@
               </svg>
               <input type="text" id="app-client-search" placeholder="Search clients..." autocomplete="off">
             </div>
+            <div class="app-client-dd-header">Your Clients</div>
             <div class="app-client-dd-list" id="app-client-dd-list">
               <div class="app-client-dd-loading">Loading clients…</div>
             </div>
             <div class="app-client-dd-actions">
-              <a href="#" onclick="localStorage.removeItem('selectedClient');window.location.href='clients.html'" class="app-client-dd-footer" style="flex:1">
+              <a href="client-list.html" class="app-client-dd-footer" style="flex:1">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/>
                   <rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>
                 </svg>
-                All Clients
+                View All Clients
               </a>
-              <a href="#" onclick="localStorage.removeItem('selectedClient');window.location.href='clients.html#add-client'" class="app-client-dd-footer app-client-dd-add" style="flex:1">
+              <a href="client-list.html#add-client" class="app-client-dd-footer app-client-dd-add" style="flex:1">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                   <circle cx="12" cy="12" r="10"/><path d="M12 8v8"/><path d="M8 12h8"/>
                 </svg>
-                Add Client
+                + New Client
               </a>
             </div>
           </div>
@@ -210,20 +222,23 @@
     .app-client-btn {
       display: flex; align-items: center; gap: 6px;
       padding: 6px 12px; border-radius: 10px;
-      background: linear-gradient(135deg, #1E293B, #0F172A);
-      border: 1.5px solid rgba(99,102,241,0.3);
+      background: linear-gradient(135deg, #1e3a8a, #1e40af);
+      border: 1.5px solid rgba(59,130,246,0.4);
       color: #F1F5F9; font-size: 0.8rem; font-weight: 600;
       font-family: inherit; cursor: pointer;
       transition: all 0.2s;
-      white-space: nowrap; max-width: 200px;
+      white-space: nowrap; max-width: 260px;
     }
     .app-client-btn:hover {
-      border-color: rgba(99,102,241,0.6);
-      box-shadow: 0 0 12px rgba(99,102,241,0.15);
+      border-color: rgba(59,130,246,0.7);
+      box-shadow: 0 0 12px rgba(59,130,246,0.2);
+    }
+    .app-client-btn-label {
+      font-size: 0.7rem; font-weight: 500; opacity: 0.65;
     }
     .app-client-btn-name {
       overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-      max-width: 120px; display: inline-block;
+      max-width: 130px; display: inline-block;
     }
     .app-client-chevron { flex-shrink: 0; opacity: 0.5; transition: transform 0.2s; }
     .app-client-selector.open .app-client-chevron { transform: rotate(180deg); }
@@ -263,17 +278,17 @@
     }
     .app-client-dd-item:hover { background: #F8FAFC; }
     .app-client-dd-item.selected {
-      background: #EEF2FF; border-color: #818CF8;
+      background: #eff6ff; border-color: #3b82f6;
     }
     .app-client-dd-item-avatar {
       width: 32px; height: 32px; border-radius: 8px;
-      background: linear-gradient(135deg, #6366F1, #818CF8);
+      background: linear-gradient(135deg, #1e3a8a, #3b82f6);
       display: flex; align-items: center; justify-content: center;
       color: #fff; font-size: 0.75rem; font-weight: 700;
       flex-shrink: 0;
     }
     .app-client-dd-item.selected .app-client-dd-item-avatar {
-      background: linear-gradient(135deg, #4338CA, #6366F1);
+      background: linear-gradient(135deg, #1e3a8a, #2563eb);
     }
     .app-client-dd-item-info { flex: 1; min-width: 0; }
     .app-client-dd-item-name {
@@ -286,7 +301,7 @@
     }
     .app-client-dd-check {
       width: 18px; height: 18px; border-radius: 50%;
-      background: #6366F1; display: none;
+      background: #1e3a8a; display: none;
       align-items: center; justify-content: center; flex-shrink: 0;
     }
     .app-client-dd-item.selected .app-client-dd-check { display: flex; }
@@ -295,28 +310,33 @@
       padding: 20px; text-align: center; font-size: 0.8rem; color: #94A3B8;
     }
 
+    .app-client-dd-header {
+      padding: 6px 16px 4px; font-size: 0.6rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.06em; color: #94A3B8;
+    }
+
     .app-client-dd-footer {
       display: flex; align-items: center; gap: 8px; justify-content: center;
       padding: 10px 14px; border-top: 1px solid #F1F5F9;
-      font-size: 0.78rem; font-weight: 500; color: #6366F1;
-      text-decoration: none; transition: background 0.15s;
+      font-size: 0.78rem; font-weight: 600; color: #1e3a8a;
+      text-decoration: none; transition: all 0.15s;
     }
-    .app-client-dd-footer:hover { background: #F8FAFC; }
+    .app-client-dd-footer:hover { background: #eff6ff; color: #1e40af; }
 
     .app-client-dd-actions {
-      display: flex; border-top: 1px solid #F1F5F9;
+      display: flex; border-top: 1px solid #E2E8F0;
     }
     .app-client-dd-actions .app-client-dd-footer {
       border-top: none; border-radius: 0;
     }
     .app-client-dd-actions .app-client-dd-footer:first-child {
-      border-right: 1px solid #F1F5F9; border-radius: 0 0 0 14px;
+      border-right: 1px solid #E2E8F0; border-radius: 0 0 0 14px;
     }
     .app-client-dd-actions .app-client-dd-footer:last-child {
       border-radius: 0 0 14px 0;
     }
-    .app-client-dd-add { color: #059669 !important; font-weight: 600 !important; }
-    .app-client-dd-add:hover { background: #ecfdf5 !important; }
+    .app-client-dd-add { color: #059669 !important; font-weight: 700 !important; }
+    .app-client-dd-add:hover { background: #ecfdf5 !important; color: #047857 !important; }
 
     /* Corporate badge (replaces client selector) */
     .app-corp-badge {
@@ -331,6 +351,37 @@
       overflow: hidden; text-overflow: ellipsis;
       max-width: 140px; display: inline-block;
     }
+
+    /* ── Services Dropdown ── */
+    .app-svc-selector { position: relative; }
+    .app-svc-selector button.app-nav-link { cursor: pointer; border: none; background: none; font-family: inherit; }
+    .app-svc-chevron { flex-shrink: 0; opacity: 0.5; transition: transform 0.2s; margin-left: -2px; }
+    .app-svc-selector.open .app-svc-chevron { transform: rotate(180deg); }
+    .app-svc-dropdown {
+      display: none; position: absolute; top: calc(100% + 8px); left: 50%; transform: translateX(-50%);
+      width: 280px; background: #fff; border-radius: 14px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.15), 0 0 0 1px rgba(0,0,0,0.05);
+      z-index: 9999; overflow: hidden; padding: 6px;
+      animation: clientDDSlide 0.2s ease;
+    }
+    .app-svc-selector.open .app-svc-dropdown { display: block; }
+    .app-svc-dd-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 12px; border-radius: 9px; cursor: pointer;
+      transition: all 0.15s; text-decoration: none;
+      border: 1.5px solid transparent; color: #1E293B;
+    }
+    .app-svc-dd-item:hover { background: #F8FAFC; border-color: #E2E8F0; }
+    .app-svc-dd-item.svc-active {
+      background: #EEF2FF; border-color: #818CF8;
+    }
+    .app-svc-dd-icon {
+      width: 30px; height: 30px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .app-svc-dd-icon svg { width: 15px; height: 15px; }
+    .app-svc-dd-label { font-size: 0.82rem; font-weight: 600; }
+    .app-svc-dd-item.svc-active .app-svc-dd-label { color: #4338CA; }
   </style>
   `;
 
@@ -351,8 +402,11 @@
   document.addEventListener('click', function (e) {
     if (!e.target.closest('#profile-wrap'))
       document.getElementById('profile-dropdown').classList.remove('app-dd-open');
-    if (!e.target.closest('#app-client-selector'))
-      document.getElementById('app-client-selector').classList.remove('open');
+    const clientSel = document.getElementById('app-client-selector');
+    if (clientSel && !e.target.closest('#app-client-selector'))
+      clientSel.classList.remove('open');
+    if (!e.target.closest('#app-svc-selector'))
+      document.getElementById('app-svc-selector').classList.remove('open');
   });
 
   // ── Client Selector Toggle ──
@@ -444,7 +498,7 @@
     if (filtered.length === 0) {
       listEl.innerHTML = query
         ? '<div class="app-client-dd-empty">No clients match your search</div>'
-        : '<div class="app-client-dd-empty">No clients yet. <a href="clients.html" style="color:#6366F1">Add one →</a></div>';
+        : '<div class="app-client-dd-empty">No clients yet. <a href="client-list.html" style="color:#6366F1">Add one →</a></div>';
       return;
     }
 
@@ -538,6 +592,51 @@
   window.__updateTopbarClientCtx = function (name) {
     const nameEl = document.getElementById('app-client-btn-name');
     if (nameEl && name) nameEl.textContent = name;
+  };
+
+  // ── Services Dropdown ──
+  const _svcItems = [
+    { id: 'gst-filing', label: 'GST Filing', page: 'service-gst-refund-webview.html', color: '#3b82f6', bg: '#eff6ff',
+      icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>' },
+    { id: 'data-entry', label: 'Data Entry', page: 'service-data-entry.html', color: '#f59e0b', bg: '#fffbeb',
+      icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>' },
+    { id: 'ca-certificates', label: 'CA Certificates', page: 'ca-certificates.html', color: '#8b5cf6', bg: '#f5f3ff',
+      icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>' },
+    { id: 'financial-statements', label: 'Financial Statements', page: 'service-financial-statements.html', color: '#059669', bg: '#ecfdf5',
+      icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 12h18"/><path d="M12 3v18"/></svg>' },
+    { id: 'financial-instruments', label: 'Financial Instruments', page: 'service-financial-instruments.html', color: '#0d9488', bg: '#f0fdfa',
+      icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>' },
+    { id: 'statutory-reporting', label: 'Statutory Reporting', page: 'service-statutory-reporting.html', color: '#d97706', bg: '#fef3c7',
+      icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>' },
+  ];
+
+  function _svcHref(page) {
+    const cid = _clientId || (JSON.parse(localStorage.getItem('selectedClient') || '{}').id || '');
+    return cid ? `${page}?clientId=${cid}` : page;
+  }
+
+  // Render services dropdown
+  const svcDD = document.getElementById('app-svc-dropdown');
+  if (svcDD) {
+    // Detect active service from page URL
+    const curPage = window.location.pathname.split('/').pop();
+    svcDD.innerHTML = _svcItems.map(s => {
+      const isActive = s.page === curPage;
+      return `<a href="${_svcHref(s.page)}" class="app-svc-dd-item${isActive ? ' svc-active' : ''}">
+        <div class="app-svc-dd-icon" style="background:${s.bg};color:${s.color}">${s.icon}</div>
+        <span class="app-svc-dd-label">${s.label}</span>
+      </a>`;
+    }).join('');
+  }
+
+  window.__toggleSvcDD = function (e) {
+    e.stopPropagation();
+    const sel = document.getElementById('app-svc-selector');
+    sel.classList.toggle('open');
+    // Close other dropdowns
+    document.getElementById('profile-dropdown').classList.remove('app-dd-open');
+    const clientSel = document.getElementById('app-client-selector');
+    if (clientSel) clientSel.classList.remove('open');
   };
 })();
 

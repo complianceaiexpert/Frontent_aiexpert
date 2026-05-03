@@ -8,7 +8,7 @@ body { background: #f8fafc; margin: 0; overflow: hidden; min-height: 100vh; font
 .fs-layout { display: flex; height: 100vh; padding-top: 64px }
 
 /* ── Sidebar ── */
-.fs-sidebar { width: 220px; background: #fff; border-right: 1px solid #e5e7eb; display: flex; flex-direction: column; flex-shrink: 0; overflow-y: auto }
+.fs-sidebar { width: 240px; background: #fff; border-right: 1px solid #e5e7eb; display: flex; flex-direction: column; flex-shrink: 0; overflow-y: auto }
 .fs-sb-section { padding: .5rem .65rem }
 .fs-sb-label { font-size:.58rem; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:#9ca3af; padding:.4rem .65rem; margin-bottom:.1rem; display:flex; align-items:center; gap:.35rem }
 .fs-sb-item { display:flex; align-items:center; gap:.6rem; padding:.55rem .65rem; border-radius:8px; font-size:.82rem; font-weight:500; color:#4b5563; cursor:pointer; transition:all .2s; text-decoration:none; margin-bottom:1px }

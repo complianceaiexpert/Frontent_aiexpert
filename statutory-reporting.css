@@ -786,3 +786,292 @@
 /* Responsive */
 @media(max-width:1100px){.dep-stats-row{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:768px){.dep-stats-row{grid-template-columns:1fr}}
+
+/* ══════════════════════════════════════════════════
+   DEPRECIATION CALCULATOR — dep-calc- prefix
+   ══════════════════════════════════════════════════ */
+.dep-calc-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.25rem;
+    background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%);
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.dep-calc-header-left {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: #fff;
+}
+
+.dep-calc-header-left svg {
+    opacity: 0.8;
+}
+
+.dep-calc-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+.dep-calc-subtitle {
+    font-size: 0.68rem;
+    color: rgba(255, 255, 255, 0.65);
+    margin-top: 1px;
+}
+
+/* Method Toggle */
+.dep-calc-method-toggle {
+    display: flex;
+    gap: 0;
+    background: #f1f5f9;
+    border-radius: 10px;
+    padding: 3px;
+    border: 1px solid #e2e8f0;
+}
+
+.dep-calc-method-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 1rem;
+    border: none;
+    background: transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: #64748b;
+    font-family: inherit;
+    white-space: nowrap;
+}
+
+.dep-calc-method-btn:hover {
+    color: #334155;
+    background: #e2e8f0;
+}
+
+.dep-calc-method-btn.active {
+    background: #fff;
+    color: #1e1b4b;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    font-weight: 700;
+}
+
+.dep-calc-method-icon {
+    font-size: 1.1rem;
+}
+
+.dep-calc-method-name {
+    font-size: 0.82rem;
+    font-weight: 700;
+    display: block;
+    font-family: 'Outfit', sans-serif;
+}
+
+.dep-calc-method-desc {
+    font-size: 0.58rem;
+    display: block;
+    opacity: 0.7;
+    font-weight: 500;
+}
+
+.dep-calc-method-btn.active .dep-calc-method-desc {
+    color: #6366f1;
+}
+
+/* Body */
+.dep-calc-body {
+    padding: 1.25rem;
+}
+
+/* Method Info Banner */
+.dep-calc-method-info {
+    background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
+    border: 1px solid #c7d2fe;
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    transition: all 0.3s;
+}
+
+.dep-calc-method-info.slm-active {
+    background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+    border-color: #a7f3d0;
+}
+
+.dep-calc-info-badge {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.55rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    padding: 2px 8px;
+    border-radius: 5px;
+    margin-bottom: 0.35rem;
+}
+
+.dep-calc-info-badge.wdv {
+    background: #4338ca;
+    color: #fff;
+}
+
+.dep-calc-info-badge.slm {
+    background: #059669;
+    color: #fff;
+}
+
+.dep-calc-method-info p {
+    font-size: 0.76rem;
+    color: #374151;
+    margin: 0;
+    line-height: 1.55;
+}
+
+/* Results */
+.dep-calc-results-header {
+    padding: 0.85rem 1.25rem;
+    background: #f8fafc;
+    border-top: 1px solid #e8ecf1;
+    border-bottom: 1px solid #e8ecf1;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #0f172a;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Summary Cards */
+.dep-calc-summary-cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.75rem;
+    padding: 1.25rem;
+}
+
+.dep-calc-sum-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 0.85rem 1rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.2s;
+}
+
+.dep-calc-sum-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+}
+
+.dep-calc-sum-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+}
+
+.dep-calc-sum-card.cost::before { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
+.dep-calc-sum-card.total-dep::before { background: linear-gradient(90deg, #8b5cf6, #a78bfa); }
+.dep-calc-sum-card.residual::before { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+.dep-calc-sum-card.effective::before { background: linear-gradient(90deg, #059669, #34d399); }
+
+.dep-calc-sum-value {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.25rem;
+    font-weight: 800;
+    margin-bottom: 0.15rem;
+}
+
+.dep-calc-sum-label {
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+/* Schedule visual bar */
+.dep-calc-bar-wrap {
+    height: 8px;
+    background: #f1f5f9;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.dep-calc-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dep-calc-bar-fill.wdv {
+    background: linear-gradient(90deg, #6366f1, #8b5cf6);
+}
+
+.dep-calc-bar-fill.slm {
+    background: linear-gradient(90deg, #059669, #34d399);
+}
+
+/* Year highlight */
+.dep-calc-year-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    background: #f1f5f9;
+    color: #475569;
+}
+
+.dep-calc-year-badge.first {
+    background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+    color: #1e40af;
+}
+
+.dep-calc-year-badge.last {
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+    color: #92400e;
+}
+
+@media (max-width: 1100px) {
+    .dep-calc-summary-cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .dep-calc-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+@media (max-width: 768px) {
+    .dep-calc-summary-cards {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Chevron rotation for collapsible panels */
+.dep-calc-chevron {
+    transition: transform 0.2s ease;
+}
+
+.dep-calc-chevron.open {
+    transform: rotate(180deg);
+}
+
+/* Asset count indicator */
+.dep-calc-asset-count {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}

@@ -1,22 +1,27 @@
 /* ══════════════════════════════════════════════════════════════
-   sidebar.css — Unified Sidebar Styles
+   sidebar.css — Premium Sidebar Styles v3
    ══════════════════════════════════════════════════════════════
    Single source of truth for ALL sidebar styling.
-   Replaces: .de-sidebar, .fi-sidebar, .pf-sidebar, .ac-sidebar,
-             .tx-sidebar, .firm-sidebar, .ws-sidebar, .tool-sidebar
    ══════════════════════════════════════════════════════════════ */
 
 /* ── Base Sidebar Container ── */
-.app-sidebar {
-    width: 230px;
-    background: #fff;
-    border-right: 1px solid #e8ecf0;
+.app-sidebar,
+.firm-sidebar {
+    width: 240px;
+    background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+    border-right: 1px solid #e2e8f0;
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
     overflow-y: auto;
     overflow-x: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
 }
+.app-sidebar::-webkit-scrollbar,
+.firm-sidebar::-webkit-scrollbar { width: 3px; }
+.app-sidebar::-webkit-scrollbar-thumb,
+.firm-sidebar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
 
 /* Fixed variant (for tool pages using margin-left layout) */
 .app-sidebar--fixed {
@@ -29,92 +34,121 @@
 
 /* ── Section ── */
 .sb-section {
-    padding: 0.5rem 0.65rem;
+    padding: 0.55rem 0.65rem;
 }
 
 /* ── Section Label ── */
 .sb-section-label {
-    font-size: 0.6rem;
-    font-weight: 700;
+    font-size: 0.58rem;
+    font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: #9ca3af;
-    padding: 0.4rem 0.75rem;
-    margin-bottom: 0.1rem;
+    letter-spacing: 0.1em;
+    color: #94a3b8;
+    padding: 0.5rem 0.75rem 0.3rem;
+    margin-bottom: 0.15rem;
     display: flex;
     align-items: center;
     gap: 0.35rem;
+}
+.sb-section-label svg {
+    opacity: 0.5;
 }
 
 /* ── Nav Item ── */
 .sb-item {
     display: flex;
     align-items: center;
-    gap: 0.6rem;
-    padding: 0.5rem 0.75rem;
-    border-radius: 8px;
+    gap: 0.65rem;
+    padding: 0.55rem 0.75rem;
+    border-radius: 10px;
     font-size: 0.8rem;
     font-weight: 500;
-    color: #4b5563;
+    color: #475569;
     cursor: pointer;
-    transition: all .2s;
+    transition: all 0.2s ease;
     text-decoration: none;
-    margin-bottom: 1px;
+    margin-bottom: 2px;
+    border: 1.5px solid transparent;
+    position: relative;
 }
 
 .sb-item:hover {
-    background: #f1f5f9;
+    background: #ffffff;
     color: #1e3a8a;
+    border-color: #e2e8f0;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    transform: translateX(2px);
 }
 
 .sb-item.active {
-    background: #eff6ff;
+    background: #ffffff;
     color: #1e3a8a;
     font-weight: 600;
+    border-color: #bfdbfe;
+    box-shadow: 0 2px 8px rgba(30,58,138,0.08), inset 0 0 0 1px rgba(59,130,246,0.05);
+}
+.sb-item.active::before {
+    content: '';
+    position: absolute;
+    left: -0.65rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 60%;
+    background: linear-gradient(180deg, #1e3a8a, #3b82f6);
+    border-radius: 0 3px 3px 0;
 }
 
 .sb-item svg {
     flex-shrink: 0;
     width: 16px;
     height: 16px;
+    opacity: 0.7;
+    transition: opacity 0.15s;
+}
+.sb-item:hover svg,
+.sb-item.active svg {
+    opacity: 1;
 }
 
 /* ── Badge ── */
 .sb-badge {
     margin-left: auto;
-    font-size: 0.58rem;
+    font-size: 0.56rem;
     font-weight: 700;
-    background: #dbeafe;
-    color: #1e3a8a;
-    padding: 1px 6px;
-    border-radius: 10px;
+    background: #e0e7ff;
+    color: #3730a3;
+    padding: 2px 7px;
+    border-radius: 6px;
+    letter-spacing: 0.02em;
+    border: 1px solid rgba(99,102,241,0.1);
 }
 
-.sb-badge--beta {
+.sb-badge--beta,
+.sb-badge--ai {
     background: linear-gradient(135deg, #6366f1, #8b5cf6);
     color: #fff;
+    border: none;
+    box-shadow: 0 1px 4px rgba(99,102,241,0.2);
 }
 
 .sb-badge--green {
     background: #dcfce7;
     color: #166534;
+    border-color: rgba(22,101,52,0.1);
 }
 
 .sb-badge--orange {
     background: #fef3c7;
     color: #92400e;
-}
-
-.sb-badge--ai {
-    background: linear-gradient(135deg, #6366f1, #8b5cf6);
-    color: #fff;
+    border-color: rgba(146,64,14,0.1);
 }
 
 /* ── Divider ── */
 .sb-divider {
     height: 1px;
-    background: #f1f5f9;
-    margin: 0.35rem 0.65rem;
+    background: linear-gradient(90deg, transparent, #e2e8f0 30%, #e2e8f0 70%, transparent);
+    margin: 0.25rem 0.85rem;
 }
 
 /* ── Back Link ── */
@@ -123,10 +157,10 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.85rem 1rem;
-    border-top: 1px solid #f1f5f9;
-    font-size: 0.8rem;
+    border-top: 1px solid #e2e8f0;
+    font-size: 0.78rem;
     font-weight: 600;
-    color: #6b7280;
+    color: #64748b;
     cursor: pointer;
     text-decoration: none;
     transition: all .2s;
@@ -135,7 +169,7 @@
 
 .sb-back:hover {
     color: #1e3a8a;
-    background: #f8fafc;
+    background: rgba(255,255,255,0.6);
 }
 
 .sb-back svg {
@@ -144,13 +178,17 @@
     height: 16px;
 }
 
-/* ── Client Nav (injected by app-client-nav.js) ── */
+/* ══════════════════════════════════════════════════════
+   Client Nav (injected by app-client-nav.js)
+   ══════════════════════════════════════════════════════ */
+
 .cn-client-card {
-    padding: 0.9rem 1rem;
-    border-bottom: 1px solid #f1f5f9;
+    padding: 0.9rem 0.85rem;
+    border-bottom: 1px solid #e2e8f0;
     display: flex;
     align-items: center;
     gap: 0.65rem;
+    background: linear-gradient(135deg, rgba(30,58,138,0.03), rgba(59,130,246,0.03));
 }
 
 .cn-avatar {
@@ -166,6 +204,7 @@
     font-family: 'Outfit', sans-serif;
     color: #fff;
     flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(30,58,138,0.15);
 }
 
 .cn-client-info {
@@ -176,15 +215,15 @@
 .cn-client-name {
     font-size: 0.82rem;
     font-weight: 700;
-    color: #111827;
+    color: #0f172a;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
 .cn-client-type {
-    font-size: 0.62rem;
-    color: #9ca3af;
+    font-size: 0.6rem;
+    color: #94a3b8;
     font-weight: 500;
     white-space: nowrap;
     overflow: hidden;
@@ -192,17 +231,17 @@
 }
 
 .cn-section {
-    padding: 0.5rem 0.75rem;
+    padding: 0.5rem 0.65rem;
 }
 
 .cn-section-label {
-    font-size: 0.6rem;
-    font-weight: 700;
+    font-size: 0.58rem;
+    font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: #9ca3af;
-    padding: 0.4rem 0.75rem;
-    margin-bottom: 0.1rem;
+    letter-spacing: 0.1em;
+    color: #94a3b8;
+    padding: 0.5rem 0.75rem 0.3rem;
+    margin-bottom: 0.15rem;
     display: flex;
     align-items: center;
     gap: 0.35rem;
@@ -212,53 +251,79 @@
     display: flex;
     align-items: center;
     gap: 0.6rem;
-    padding: 0.45rem 0.75rem;
-    border-radius: 8px;
+    padding: 0.5rem 0.75rem;
+    border-radius: 10px;
     font-size: 0.78rem;
     font-weight: 500;
-    color: #4b5563;
+    color: #475569;
     cursor: pointer;
     transition: all .2s;
     text-decoration: none;
-    margin-bottom: 1px;
+    margin-bottom: 2px;
+    border: 1.5px solid transparent;
+    position: relative;
 }
 
 .cn-item:hover {
-    background: #f1f5f9;
+    background: #ffffff;
     color: #1e3a8a;
+    border-color: #e2e8f0;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
 }
 
 .cn-item.active {
-    background: #eff6ff;
+    background: #ffffff;
     color: #1e3a8a;
     font-weight: 600;
+    border-color: #bfdbfe;
+    box-shadow: 0 2px 8px rgba(30,58,138,0.08);
+}
+.cn-item.active::before {
+    content: '';
+    position: absolute;
+    left: -0.65rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 60%;
+    background: linear-gradient(180deg, #1e3a8a, #3b82f6);
+    border-radius: 0 3px 3px 0;
 }
 
 .cn-item svg {
     flex-shrink: 0;
     width: 15px;
     height: 15px;
+    opacity: 0.7;
+    transition: opacity 0.15s;
+}
+.cn-item:hover svg,
+.cn-item.active svg {
+    opacity: 1;
 }
 
 .cn-divider {
     height: 1px;
-    background: #f1f5f9;
-    margin: 0.3rem 0.75rem;
+    background: linear-gradient(90deg, transparent, #e2e8f0 30%, #e2e8f0 70%, transparent);
+    margin: 0.25rem 0.85rem;
 }
 
-/* ── Tool Sidebar (GST tools) ── */
+/* ══════════════════════════════════════════════════════
+   Tool Sidebar (GST tools)
+   ══════════════════════════════════════════════════════ */
+
 .tsb-section {
-    padding: 0.75rem 1rem;
+    padding: 0.55rem 0.75rem;
 }
 
 .tsb-label {
-    font-size: 0.62rem;
-    font-weight: 700;
+    font-size: 0.58rem;
+    font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: #9ca3af;
-    padding: 0.5rem 0.75rem;
-    margin-bottom: 0.1rem;
+    letter-spacing: 0.1em;
+    color: #94a3b8;
+    padding: 0.5rem 0.75rem 0.3rem;
+    margin-bottom: 0.15rem;
 }
 
 .tsb-item {
@@ -266,25 +331,42 @@
     align-items: center;
     gap: 0.6rem;
     padding: 0.5rem 0.75rem;
-    border-radius: 8px;
+    border-radius: 10px;
     font-size: 0.78rem;
     font-weight: 500;
-    color: #4b5563;
+    color: #475569;
     cursor: pointer;
     transition: all .2s;
     text-decoration: none;
-    margin-bottom: 1px;
+    margin-bottom: 2px;
+    border: 1.5px solid transparent;
+    position: relative;
 }
 
 .tsb-item:hover {
-    background: #f1f5f9;
+    background: #ffffff;
     color: #1e3a8a;
+    border-color: #e2e8f0;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
 }
 
 .tsb-item.active {
-    background: #eff6ff;
+    background: #ffffff;
     color: #1e3a8a;
     font-weight: 600;
+    border-color: #bfdbfe;
+    box-shadow: 0 2px 8px rgba(30,58,138,0.08);
+}
+.tsb-item.active::before {
+    content: '';
+    position: absolute;
+    left: -0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 60%;
+    background: linear-gradient(180deg, #1e3a8a, #3b82f6);
+    border-radius: 0 3px 3px 0;
 }
 
 .tsb-item svg {
@@ -295,31 +377,35 @@
 
 .tsb-badge {
     margin-left: auto;
-    font-size: 0.58rem;
+    font-size: 0.56rem;
     font-weight: 700;
-    padding: 1px 6px;
-    border-radius: 10px;
+    padding: 2px 7px;
+    border-radius: 6px;
+    letter-spacing: 0.02em;
 }
 
 .tsb-badge-blue {
-    background: #dbeafe;
-    color: #1e3a8a;
+    background: #e0e7ff;
+    color: #3730a3;
+    border: 1px solid rgba(99,102,241,0.1);
 }
 
 .tsb-badge-green {
     background: #dcfce7;
     color: #166534;
+    border: 1px solid rgba(22,101,52,0.1);
 }
 
 .tsb-badge-orange {
     background: #fef3c7;
     color: #92400e;
+    border: 1px solid rgba(146,64,14,0.1);
 }
 
 .tsb-divider {
     height: 1px;
-    background: #f1f5f9;
-    margin: 0.4rem 1rem;
+    background: linear-gradient(90deg, transparent, #e2e8f0 30%, #e2e8f0 70%, transparent);
+    margin: 0.25rem 0.85rem;
 }
 
 .tsb-back {
@@ -327,10 +413,10 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.85rem 1rem;
-    border-top: 1px solid #f1f5f9;
-    font-size: 0.8rem;
+    border-top: 1px solid #e2e8f0;
+    font-size: 0.78rem;
     font-weight: 600;
-    color: #6b7280;
+    color: #64748b;
     cursor: pointer;
     text-decoration: none;
     transition: all .2s;
@@ -339,7 +425,7 @@
 
 .tsb-back:hover {
     color: #1e3a8a;
-    background: #f8fafc;
+    background: rgba(255,255,255,0.6);
 }
 
 .tsb-back svg {
@@ -353,25 +439,31 @@
     align-items: center;
     justify-content: center;
     gap: 0.4rem;
-    padding: 0.5rem 0.85rem;
-    margin: 0.75rem 0.5rem;
-    background: #1e3a8a;
+    padding: 0.55rem 0.85rem;
+    margin: 0.75rem 0.65rem;
+    background: linear-gradient(135deg, #1e3a8a, #2563eb);
     color: #fff;
-    border-radius: 8px;
+    border-radius: 10px;
     font-size: 0.78rem;
     font-weight: 600;
     text-decoration: none;
-    transition: all .15s;
+    transition: all .2s;
     font-family: inherit;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(30,58,138,0.2);
 }
 
 .sb-sync-btn:hover {
-    background: #1e40af;
+    background: linear-gradient(135deg, #1e40af, #3b82f6);
+    box-shadow: 0 4px 12px rgba(30,58,138,0.25);
+    transform: translateY(-1px);
 }
 
 /* ── Responsive ── */
 @media (max-width: 768px) {
-    .app-sidebar {
+    .app-sidebar,
+    .firm-sidebar {
         display: none;
     }
 }
