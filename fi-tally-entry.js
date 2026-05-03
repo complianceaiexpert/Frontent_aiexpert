@@ -17,7 +17,7 @@ function fiToast(msg, type = 'info') {
     const colors = { success: '#059669', error: '#dc2626', info: '#4338ca', warning: '#d97706' };
     const t = document.createElement('div');
     t.style.cssText = `padding:.7rem 1.15rem;border-radius:10px;background:#fff;border-left:4px solid ${colors[type]};color:#1e293b;font-size:.78rem;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.1);animation:fiFadeIn .3s ease;font-family:inherit;max-width:380px`;
-    t.innerHTML = `<span style="color:${colors[type]};margin-right:.35rem">${{success:'✓',error:'✕',info:'ℹ',warning:'⚠'}[type]}</span> ${msg}`;
+    t.innerHTML = `<span style="color:${colors[type]};margin-right:.35rem">${{ success: '✓', error: '✕', info: 'ℹ', warning: '⚠' }[type]}</span> ${msg}`;
     ct.appendChild(t);
     setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateX(20px)'; setTimeout(() => t.remove(), 300); }, 5000);
 }
@@ -71,7 +71,7 @@ function toggleAllocDrop(key) {
 }
 
 function populateAllocDropdowns(config) {
-    const COLORS = ['#4338ca','#059669','#d97706','#ec4899','#8b5cf6','#06b6d4','#f97316','#ef4444','#14b8a6','#6366f1'];
+    const COLORS = ['#4338ca', '#059669', '#d97706', '#ec4899', '#8b5cf6', '#06b6d4', '#f97316', '#ef4444', '#14b8a6', '#6366f1'];
 
     Object.entries(config).forEach(([key, cfg]) => {
         const body = document.getElementById('fi-alloc-drop-' + key + '-body');
@@ -118,7 +118,7 @@ function populateAllocDropdowns(config) {
             // For PMS grouped accounts, show sub-securities
             let subHtml = '';
             if (key === 'pms' && item.items && item.items.length > 1) {
-                const topSec = item.items.sort((a,b) => b.value - a.value).slice(0, 5);
+                const topSec = item.items.sort((a, b) => b.value - a.value).slice(0, 5);
                 subHtml = '<div style="padding-left:1rem;margin-top:2px">' +
                     topSec.map(s => `<div style="display:flex;align-items:center;gap:.35rem;padding:2px 0"><span style="font-size:.56rem;color:#94a3b8">•</span><span style="font-size:.62rem;color:#64748b;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${s.name}</span><span style="font-size:.58rem;font-weight:700;color:#334155;font-family:'Outfit',sans-serif">${formatINR(s.value)}</span></div>`).join('') +
                     (item.items.length > 5 ? `<div style="font-size:.56rem;color:#94a3b8;padding:2px 0">+${item.items.length - 5} more securities</div>` : '') +
@@ -147,7 +147,7 @@ async function handleFIUpload(input, instrumentType) {
     if (!clientId) { fiToast('No client selected', 'error'); return; }
 
     const file = files[0];
-    if (file.size > 25 * 1024 * 1024) { fiToast(`File too large (${(file.size/1024/1024).toFixed(1)} MB). Max 25 MB.`, 'error'); return; }
+    if (file.size > 25 * 1024 * 1024) { fiToast(`File too large (${(file.size / 1024 / 1024).toFixed(1)} MB). Max 25 MB.`, 'error'); return; }
 
     // Show uploading state on the card
     const card = input.closest('.fi-upload-card');
@@ -250,15 +250,15 @@ function pollUploadStatus(uploadId, instrumentType) {
                     fiToast('Processing failed — please try again', 'error');
                 }
             }
-        } catch(e) { /* continue polling */ }
+        } catch (e) { /* continue polling */ }
     }, 5000);
 }
 
 // ═══ DEMAT 3-FILE UPLOAD ═══
 const DEMAT_FILE_TYPES = [
-    { key: 'holdings',  label: 'Holdings',  keywords: ['holding', 'portfolio', 'position', 'folio'], icon: '📊' },
-    { key: 'taxpnl',    label: 'Tax P&L',   keywords: ['tax', 'pnl', 'p&l', 'profit', 'loss', 'capital', 'gain'], icon: '📋' },
-    { key: 'tradebook', label: 'Tradebook',  keywords: ['trade', 'book', 'transaction', 'order', 'ledger'], icon: '📒' },
+    { key: 'holdings', label: 'Holdings', keywords: ['holding', 'portfolio', 'position', 'folio'], icon: '📊' },
+    { key: 'taxpnl', label: 'Tax P&L', keywords: ['tax', 'pnl', 'p&l', 'profit', 'loss', 'capital', 'gain'], icon: '📋' },
+    { key: 'tradebook', label: 'Tradebook', keywords: ['trade', 'book', 'transaction', 'order', 'ledger'], icon: '📒' },
 ];
 
 let dematSelectedFiles = {}; // { holdings: File, taxpnl: File, tradebook: File }
@@ -404,14 +404,14 @@ async function processDematMultiUpload() {
 // ══════════════════════════════════════════════════
 
 const TALLY_DEFAULTS = {
-    purchase: { dr:'Investment in Shares', drg:'Investments', cr:'Bank Account', crg:'Bank Accounts', vt:'Journal', nr:'Being purchase of shares/units as per contract note' },
-    sale: { dr:'Bank Account', drg:'Bank Accounts', cr:'Investment in Shares', crg:'Investments', vt:'Journal', nr:'Being sale of shares/units as per contract note' },
-    dividend: { dr:'Bank Account', drg:'Bank Accounts', cr:'Dividend Income', crg:'Income (Indirect)', vt:'Receipt', nr:'Being dividend received, TDS u/s 194 deducted' },
-    charges: { dr:'Brokerage & Commission', drg:'Indirect Expenses', cr:'Bank Account', crg:'Bank Accounts', vt:'Payment', nr:'Being brokerage/DP charges paid' },
-    sip: { dr:'Investment in Mutual Funds', drg:'Investments', cr:'Bank Account', crg:'Bank Accounts', vt:'Journal', nr:'Being SIP investment as per mandate' },
-    ipo: { dr:'Investment in Shares (IPO)', drg:'Investments', cr:'Bank Account', crg:'Bank Accounts', vt:'Journal', nr:'Being IPO allotment, shares credited to demat' },
-    bonus: { dr:'', drg:'', cr:'', crg:'', vt:'Memorandum', nr:'Being bonus/split — quantity memo, no monetary entry' },
-    transfer: { dr:'Investment (New)', drg:'Investments', cr:'Investment (Old)', crg:'Investments', vt:'Journal', nr:'Being switch/transfer of units' }
+    purchase: { dr: 'Investment in Shares', drg: 'Investments', cr: 'Bank Account', crg: 'Bank Accounts', vt: 'Journal', nr: 'Being purchase of shares/units as per contract note' },
+    sale: { dr: 'Bank Account', drg: 'Bank Accounts', cr: 'Investment in Shares', crg: 'Investments', vt: 'Journal', nr: 'Being sale of shares/units as per contract note' },
+    dividend: { dr: 'Bank Account', drg: 'Bank Accounts', cr: 'Dividend Income', crg: 'Income (Indirect)', vt: 'Receipt', nr: 'Being dividend received, TDS u/s 194 deducted' },
+    charges: { dr: 'Brokerage & Commission', drg: 'Indirect Expenses', cr: 'Bank Account', crg: 'Bank Accounts', vt: 'Payment', nr: 'Being brokerage/DP charges paid' },
+    sip: { dr: 'Investment in Mutual Funds', drg: 'Investments', cr: 'Bank Account', crg: 'Bank Accounts', vt: 'Journal', nr: 'Being SIP investment as per mandate' },
+    ipo: { dr: 'Investment in Shares (IPO)', drg: 'Investments', cr: 'Bank Account', crg: 'Bank Accounts', vt: 'Journal', nr: 'Being IPO allotment, shares credited to demat' },
+    bonus: { dr: '', drg: '', cr: '', crg: '', vt: 'Memorandum', nr: 'Being bonus/split — quantity memo, no monetary entry' },
+    transfer: { dr: 'Investment (New)', drg: 'Investments', cr: 'Investment (Old)', crg: 'Investments', vt: 'Journal', nr: 'Being switch/transfer of units' }
 };
 
 function selectTxnType(type) {
@@ -426,11 +426,11 @@ function renderEntryForm(type) {
     if (!d) { c.innerHTML = ''; return; }
     const today = new Date().toISOString().split('T')[0];
     const isSale = type === 'sale', isDividend = type === 'dividend';
-    const names = { purchase:'Share/MF Purchase', sale:'Share/MF Sale', dividend:'Dividend/Interest', charges:'Brokerage/Charges', sip:'SIP/STP', ipo:'IPO Allotment', bonus:'Bonus/Split', transfer:'MF Switch' };
+    const names = { purchase: 'Share/MF Purchase', sale: 'Share/MF Sale', dividend: 'Dividend/Interest', charges: 'Brokerage/Charges', sip: 'SIP/STP', ipo: 'IPO Allotment', bonus: 'Bonus/Split', transfer: 'MF Switch' };
 
     c.innerHTML = `<div class="fi-entry-form">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem">
-            <div><h3 style="margin:0;font-size:1rem;font-weight:800;font-family:'Outfit',sans-serif;color:#0f172a">${names[type]||type}</h3>
+            <div><h3 style="margin:0;font-size:1rem;font-weight:800;font-family:'Outfit',sans-serif;color:#0f172a">${names[type] || type}</h3>
             <p style="margin:.1rem 0 0;font-size:.72rem;color:#94a3b8">Voucher: <strong>${d.vt}</strong></p></div>
             <span class="fi-chip">${d.vt}</span>
         </div>
@@ -441,11 +441,11 @@ function renderEntryForm(type) {
         </div>
         <div class="fi-form-grid cols-4" style="margin-bottom:1rem">
             <div class="fi-form-group"><label class="fi-form-label">Quantity</label><input type="number" class="fi-form-input" id="fi-entry-qty" placeholder="0" oninput="calcAmt()"></div>
-            <div class="fi-form-group"><label class="fi-form-label">${isSale?'Sale Price':'Rate'} (₹)</label><input type="number" class="fi-form-input" id="fi-entry-rate" placeholder="0.00" oninput="calcAmt()"></div>
+            <div class="fi-form-group"><label class="fi-form-label">${isSale ? 'Sale Price' : 'Rate'} (₹)</label><input type="number" class="fi-form-input" id="fi-entry-rate" placeholder="0.00" oninput="calcAmt()"></div>
             <div class="fi-form-group"><label class="fi-form-label">Amount (₹) <span class="fi-required">*</span></label><input type="number" class="fi-form-input" id="fi-entry-amount" placeholder="0.00" style="font-weight:700" oninput="updateEntryPreview()"></div>
-            <div class="fi-form-group"><label class="fi-form-label">${isDividend?'TDS (₹)':isSale?'Cost (₹)':'Charges (₹)'}</label><input type="number" class="fi-form-input" id="fi-entry-extra" placeholder="0.00" oninput="updateEntryPreview()"></div>
+            <div class="fi-form-group"><label class="fi-form-label">${isDividend ? 'TDS (₹)' : isSale ? 'Cost (₹)' : 'Charges (₹)'}</label><input type="number" class="fi-form-input" id="fi-entry-extra" placeholder="0.00" oninput="updateEntryPreview()"></div>
         </div>
-        ${isSale?`<div class="fi-form-grid cols-3" style="margin-bottom:1rem"><div class="fi-form-group"><label class="fi-form-label">Holding Period</label><select class="fi-form-select" id="fi-entry-holding"><option value="ltcg">Long Term</option><option value="stcg">Short Term</option></select></div><div class="fi-form-group"><label class="fi-form-label">Capital Gain (₹)</label><input type="number" class="fi-form-input" id="fi-entry-gain" readonly style="background:#f0fdf4;font-weight:700;color:#059669"></div><div class="fi-form-group"><label class="fi-form-label">STT (₹)</label><input type="number" class="fi-form-input" id="fi-entry-stt" placeholder="0.00"></div></div>`:''}
+        ${isSale ? `<div class="fi-form-grid cols-3" style="margin-bottom:1rem"><div class="fi-form-group"><label class="fi-form-label">Holding Period</label><select class="fi-form-select" id="fi-entry-holding"><option value="ltcg">Long Term</option><option value="stcg">Short Term</option></select></div><div class="fi-form-group"><label class="fi-form-label">Capital Gain (₹)</label><input type="number" class="fi-form-input" id="fi-entry-gain" readonly style="background:#f0fdf4;font-weight:700;color:#059669"></div><div class="fi-form-group"><label class="fi-form-label">STT (₹)</label><input type="number" class="fi-form-input" id="fi-entry-stt" placeholder="0.00"></div></div>` : ''}
         <div class="fi-form-grid" style="margin-bottom:1.25rem"><div class="fi-form-group fi-form-full"><label class="fi-form-label">Narration</label><textarea class="fi-form-textarea" id="fi-entry-narration" rows="2" style="padding:.55rem .75rem;border:1px solid #d4d8e8;border-radius:8px;font-size:.82rem;font-family:inherit;outline:none;resize:vertical">${d.nr}</textarea></div></div>
         <div style="margin-bottom:1rem"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem"><label style="font-size:.7rem;font-weight:700;text-transform:uppercase;color:#374151;letter-spacing:.04em">Tally Journal Preview (Dr / Cr)</label><button class="fi-btn" onclick="addRow()" style="font-size:.72rem;padding:.3rem .6rem">+ Add Row</button></div>
         <div class="fi-entry-table-wrap"><table class="fi-entry-table"><thead><tr><th style="width:40%">Ledger Name</th><th style="width:20%">Group</th><th class="right" style="width:15%">Debit (₹)</th><th class="right" style="width:15%">Credit (₹)</th><th class="center" style="width:10%"></th></tr></thead><tbody id="fi-preview-body"></tbody></table>
@@ -472,54 +472,54 @@ function addRowWith(name, group, dr, cr, removable) {
     const tbody = document.getElementById('fi-preview-body');
     const id = ++entryRowCounter;
     const row = document.createElement('tr'); row.id = 'fi-row-' + id;
-    row.innerHTML = `<td><input type="text" value="${name}" placeholder="Ledger name" oninput="recalc()"></td><td><input type="text" value="${group}" placeholder="Group" style="color:#64748b;font-size:.75rem"></td><td class="right"><input type="number" value="${dr}" placeholder="—" step="0.01" style="text-align:right;font-weight:600;color:#dc2626" oninput="recalc()"></td><td class="right"><input type="number" value="${cr}" placeholder="—" step="0.01" style="text-align:right;font-weight:600;color:#059669" oninput="recalc()"></td><td class="center">${removable?`<button class="fi-remove-row" onclick="delRow(${id})">✕</button>`:''}</td>`;
+    row.innerHTML = `<td><input type="text" value="${name}" placeholder="Ledger name" oninput="recalc()"></td><td><input type="text" value="${group}" placeholder="Group" style="color:#64748b;font-size:.75rem"></td><td class="right"><input type="number" value="${dr}" placeholder="—" step="0.01" style="text-align:right;font-weight:600;color:#dc2626" oninput="recalc()"></td><td class="right"><input type="number" value="${cr}" placeholder="—" step="0.01" style="text-align:right;font-weight:600;color:#059669" oninput="recalc()"></td><td class="center">${removable ? `<button class="fi-remove-row" onclick="delRow(${id})">✕</button>` : ''}</td>`;
     tbody.appendChild(row);
 }
 function addRow() { addRowWith('', '', '', '', true); }
-function delRow(id) { const r = document.getElementById('fi-row-'+id); if(r) r.remove(); recalc(); }
+function delRow(id) { const r = document.getElementById('fi-row-' + id); if (r) r.remove(); recalc(); }
 
 function calcAmt() {
-    const q = parseFloat(document.getElementById('fi-entry-qty')?.value)||0;
-    const r = parseFloat(document.getElementById('fi-entry-rate')?.value)||0;
+    const q = parseFloat(document.getElementById('fi-entry-qty')?.value) || 0;
+    const r = parseFloat(document.getElementById('fi-entry-rate')?.value) || 0;
     const f = document.getElementById('fi-entry-amount');
-    if (q && r && f) f.value = (q*r).toFixed(2);
+    if (q && r && f) f.value = (q * r).toFixed(2);
     updateEntryPreview();
 }
 function updateEntryPreview() {
-    const amt = parseFloat(document.getElementById('fi-entry-amount')?.value)||0;
-    const ext = parseFloat(document.getElementById('fi-entry-extra')?.value)||0;
+    const amt = parseFloat(document.getElementById('fi-entry-amount')?.value) || 0;
+    const ext = parseFloat(document.getElementById('fi-entry-extra')?.value) || 0;
     const type = selectedTxnType;
     const tbody = document.getElementById('fi-preview-body'); if (!tbody) return;
     const rows = tbody.querySelectorAll('tr');
-    if (type==='purchase'||type==='sip'||type==='ipo') { if(rows[0])rows[0].querySelectorAll('input[type=number]')[0].value=(amt+ext).toFixed(2); if(rows[1])rows[1].querySelectorAll('input[type=number]')[1].value=(amt+ext).toFixed(2); }
-    else if (type==='sale') { const g=amt-ext; const gf=document.getElementById('fi-entry-gain'); if(gf)gf.value=g.toFixed(2); if(rows[0])rows[0].querySelectorAll('input[type=number]')[0].value=amt.toFixed(2); if(rows[1])rows[1].querySelectorAll('input[type=number]')[1].value=ext.toFixed(2); if(rows[2])rows[2].querySelectorAll('input[type=number]')[1].value=(g>0?g:0).toFixed(2); }
-    else if (type==='dividend') { if(rows[0])rows[0].querySelectorAll('input[type=number]')[0].value=(amt-ext).toFixed(2); if(rows[1])rows[1].querySelectorAll('input[type=number]')[1].value=amt.toFixed(2); if(rows[2])rows[2].querySelectorAll('input[type=number]')[0].value=ext.toFixed(2); }
-    else { if(rows[0])rows[0].querySelectorAll('input[type=number]')[0].value=amt.toFixed(2); if(rows[1])rows[1].querySelectorAll('input[type=number]')[1].value=amt.toFixed(2); }
+    if (type === 'purchase' || type === 'sip' || type === 'ipo') { if (rows[0]) rows[0].querySelectorAll('input[type=number]')[0].value = (amt + ext).toFixed(2); if (rows[1]) rows[1].querySelectorAll('input[type=number]')[1].value = (amt + ext).toFixed(2); }
+    else if (type === 'sale') { const g = amt - ext; const gf = document.getElementById('fi-entry-gain'); if (gf) gf.value = g.toFixed(2); if (rows[0]) rows[0].querySelectorAll('input[type=number]')[0].value = amt.toFixed(2); if (rows[1]) rows[1].querySelectorAll('input[type=number]')[1].value = ext.toFixed(2); if (rows[2]) rows[2].querySelectorAll('input[type=number]')[1].value = (g > 0 ? g : 0).toFixed(2); }
+    else if (type === 'dividend') { if (rows[0]) rows[0].querySelectorAll('input[type=number]')[0].value = (amt - ext).toFixed(2); if (rows[1]) rows[1].querySelectorAll('input[type=number]')[1].value = amt.toFixed(2); if (rows[2]) rows[2].querySelectorAll('input[type=number]')[0].value = ext.toFixed(2); }
+    else { if (rows[0]) rows[0].querySelectorAll('input[type=number]')[0].value = amt.toFixed(2); if (rows[1]) rows[1].querySelectorAll('input[type=number]')[1].value = amt.toFixed(2); }
     recalc();
 }
 function recalc() {
-    const tbody = document.getElementById('fi-preview-body'); if(!tbody)return;
-    let dr=0,cr=0;
-    tbody.querySelectorAll('tr').forEach(r=>{const n=r.querySelectorAll('input[type=number]');dr+=parseFloat(n[0]?.value)||0;cr+=parseFloat(n[1]?.value)||0;});
-    document.getElementById('fi-total-dr').textContent=formatINR(dr);
-    document.getElementById('fi-total-cr').textContent=formatINR(cr);
-    const diff=Math.abs(dr-cr);
-    const b=document.getElementById('fi-balance-status');
-    b.className='fi-entry-balance '+(diff<0.01?'balanced':'unbalanced');
-    b.textContent=diff<0.01?'✓ Balanced':`⚠ Diff: ${formatINR(diff)}`;
+    const tbody = document.getElementById('fi-preview-body'); if (!tbody) return;
+    let dr = 0, cr = 0;
+    tbody.querySelectorAll('tr').forEach(r => { const n = r.querySelectorAll('input[type=number]'); dr += parseFloat(n[0]?.value) || 0; cr += parseFloat(n[1]?.value) || 0; });
+    document.getElementById('fi-total-dr').textContent = formatINR(dr);
+    document.getElementById('fi-total-cr').textContent = formatINR(cr);
+    const diff = Math.abs(dr - cr);
+    const b = document.getElementById('fi-balance-status');
+    b.className = 'fi-entry-balance ' + (diff < 0.01 ? 'balanced' : 'unbalanced');
+    b.textContent = diff < 0.01 ? '✓ Balanced' : `⚠ Diff: ${formatINR(diff)}`;
 }
 function collectData(status) {
-    const tbody=document.getElementById('fi-preview-body');
-    const entries=[];
-    tbody.querySelectorAll('tr').forEach(r=>{const i=r.querySelectorAll('input');const l=i[0]?.value?.trim(),g=i[1]?.value?.trim(),d=parseFloat(i[2]?.value)||0,c=parseFloat(i[3]?.value)||0;if(l&&(d||c))entries.push({ledger_name:l,group:g,amount:d||c,side:d>0?'Dr':'Cr'});});
-    return{id:'FI-'+Date.now(),type:selectedTxnType,date:document.getElementById('fi-entry-date')?.value||'',scrip:document.getElementById('fi-entry-scrip')?.value||'',narration:document.getElementById('fi-entry-narration')?.value||'',voucher_type:TALLY_DEFAULTS[selectedTxnType]?.vt||'Journal',status,entries,total_amount:parseFloat(document.getElementById('fi-entry-amount')?.value)||0,created_at:new Date().toISOString()};
+    const tbody = document.getElementById('fi-preview-body');
+    const entries = [];
+    tbody.querySelectorAll('tr').forEach(r => { const i = r.querySelectorAll('input'); const l = i[0]?.value?.trim(), g = i[1]?.value?.trim(), d = parseFloat(i[2]?.value) || 0, c = parseFloat(i[3]?.value) || 0; if (l && (d || c)) entries.push({ ledger_name: l, group: g, amount: d || c, side: d > 0 ? 'Dr' : 'Cr' }); });
+    return { id: 'FI-' + Date.now(), type: selectedTxnType, date: document.getElementById('fi-entry-date')?.value || '', scrip: document.getElementById('fi-entry-scrip')?.value || '', narration: document.getElementById('fi-entry-narration')?.value || '', voucher_type: TALLY_DEFAULTS[selectedTxnType]?.vt || 'Journal', status, entries, total_amount: parseFloat(document.getElementById('fi-entry-amount')?.value) || 0, created_at: new Date().toISOString() };
 }
 
 async function saveVoucher(status) {
-    if(!selectedTxnType){fiToast('Select a transaction type','warning');return;}
-    const v=collectData(status);
-    if(!v.scrip){fiToast('Scrip/Fund name required','warning');return;}
-    if(v.entries.length<2){fiToast('Need at least 2 ledger entries','warning');return;}
+    if (!selectedTxnType) { fiToast('Select a transaction type', 'warning'); return; }
+    const v = collectData(status);
+    if (!v.scrip) { fiToast('Scrip/Fund name required', 'warning'); return; }
+    if (v.entries.length < 2) { fiToast('Need at least 2 ledger entries', 'warning'); return; }
 
     try {
         const res = await authFetch('/financial-instruments/manual-entry', {
@@ -546,15 +546,15 @@ async function saveVoucher(status) {
         fiToast(`Voucher saved (${status}) — ${v.scrip}`, 'success');
         resetEntry();
         loadDashboardStats();
-    } catch(e) {
+    } catch (e) {
         fiToast(`Save failed: ${e.message}`, 'error');
     }
 }
 
 async function saveAndSync() {
-    if(!selectedTxnType){fiToast('Select a transaction type','warning');return;}
-    const v=collectData('synced');
-    if(!v.scrip){fiToast('Scrip required','warning');return;}
+    if (!selectedTxnType) { fiToast('Select a transaction type', 'warning'); return; }
+    const v = collectData('synced');
+    if (!v.scrip) { fiToast('Scrip required', 'warning'); return; }
 
     try {
         const res = await authFetch('/financial-instruments/manual-entry', {
@@ -581,12 +581,12 @@ async function saveAndSync() {
         fiToast(`Voucher synced to Tally — ${v.scrip}`, 'success');
         resetEntry();
         loadDashboardStats();
-    } catch(e) {
+    } catch (e) {
         fiToast(`Sync failed: ${e.message}`, 'error');
     }
 }
 
-function resetEntry() { selectedTxnType=null; document.querySelectorAll('.fi-txn-type-card').forEach(c=>c.classList.remove('selected')); document.getElementById('fi-entry-form-container').innerHTML=''; }
+function resetEntry() { selectedTxnType = null; document.querySelectorAll('.fi-txn-type-card').forEach(c => c.classList.remove('selected')); document.getElementById('fi-entry-form-container').innerHTML = ''; }
 
 // ═══ LOAD MANUAL ENTRIES FROM BACKEND ═══
 async function loadManualEntries() {
@@ -608,7 +608,7 @@ async function loadManualEntries() {
             entries: e.entries,
             created_at: e.created_at,
         }));
-    } catch(e) {
+    } catch (e) {
         console.warn('Failed to load manual entries:', e);
     }
 }
@@ -620,69 +620,99 @@ async function loadManualEntries() {
 // ══════════════════════════════════════════════════
 
 function renderVouchersList() { loadPendingEntries(); }
-function filterVouchers(){}
-function filterVoucherType(){}
+function filterVouchers() { }
+function filterVoucherType() { }
 async function approveAllPending() {
     const promises = [];
+    // Persist manual entry approvals
     fiVouchers.forEach(v => {
-        if(v.status==='draft') {
-            v.status='approved';
+        if (v.status === 'draft') {
+            v.status = 'approved';
             promises.push(authFetch(`/financial-instruments/manual-entry/${v.id}/status`, {
                 method: 'PATCH', body: JSON.stringify({ status: 'approved' }),
             }).catch(e => console.warn('Approve persist failed:', e)));
         }
     });
-    (window._autoEntries || []).forEach(e => { if(e.status==='draft') e.status='approved'; });
+    // Update auto entries in memory AND persist upload je_status
+    const uploadIds = new Set();
+    (window._autoEntries || []).forEach(e => {
+        if (e.status === 'draft') {
+            e.status = 'approved';
+            if (e.uploadId) uploadIds.add(e.uploadId);
+        }
+    });
+    uploadIds.forEach(uid => {
+        promises.push(authFetch(`/financial-instruments/${uid}/je-status`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ je_status: 'approved' }),
+        }).catch(e => console.warn('Upload approve persist failed:', e)));
+    });
     await Promise.all(promises);
     loadPendingEntries();
-    fiToast('All entries approved','success');
+    fiToast('All entries approved', 'success');
     loadDashboardStats();
+    loadAllJournalEntries();
 }
 async function syncAllPending() {
     const promises = [];
     fiVouchers.forEach(v => {
-        if(v.status==='approved'||v.status==='draft') {
-            v.status='synced';
+        if (v.status === 'approved' || v.status === 'draft') {
+            v.status = 'synced';
             promises.push(authFetch(`/financial-instruments/manual-entry/${v.id}/status`, {
                 method: 'PATCH', body: JSON.stringify({ status: 'synced' }),
             }).catch(e => console.warn('Sync persist failed:', e)));
         }
     });
-    (window._autoEntries || []).forEach(e => { if(e.status==='approved'||e.status==='draft') e.status='synced'; });
+    const uploadIds = new Set();
+    (window._autoEntries || []).forEach(e => {
+        if (e.status === 'approved' || e.status === 'draft') {
+            e.status = 'synced';
+            if (e.uploadId) uploadIds.add(e.uploadId);
+        }
+    });
+    uploadIds.forEach(uid => {
+        promises.push(authFetch(`/financial-instruments/${uid}/je-status`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ je_status: 'synced' }),
+        }).catch(e => console.warn('Upload sync persist failed:', e)));
+    });
     await Promise.all(promises);
     loadPendingEntries();
-    fiToast('All entries synced to Tally','success');
+    fiToast('All entries synced to Tally', 'success');
     loadDashboardStats();
+    loadAllJournalEntries();
 }
 
 // ═══ AUTO JOURNAL GENERATOR ═══
 // Converts parsed structured_data → draft journal vouchers grouped by scrip
 async function generateAutoEntries() {
-    if(!clientId) return [];
+    if (!clientId) return [];
     const entries = [];
     try {
         const res = await authFetch(`/financial-instruments/?client_id=${clientId}`);
-        if(!res.ok) return [];
+        if (!res.ok) return [];
         const uploads = await res.json();
         const completed = uploads.filter(u => u.status === 'completed');
 
-        for(const u of completed) {
+        for (const u of completed) {
             let d = null;
             try {
                 const dr = await authFetch(`/financial-instruments/data/${u.id}`);
-                if(dr.ok) d = (await dr.json()).structured_data;
-            } catch(e) {}
-            if(!d) continue;
+                if (dr.ok) d = (await dr.json()).structured_data;
+            } catch (e) { }
+            if (!d) continue;
 
             const fname = u.filename || u.instrument_type;
             const uType = u.instrument_type;
 
             // ── Tax P&L → Sell trades grouped by scrip ──
-            if(uType === 'demat_taxpnl' && d.transactions?.length) {
+            if (uType === 'demat_taxpnl' && d.transactions?.length) {
                 const byScript = {};
                 d.transactions.forEach(t => {
                     const name = t.scrip_name || t.security_name || t.symbol || 'Unknown';
-                    if(!byScript[name]) byScript[name] = { buys: 0, sells: 0, gain: 0, count: 0, type: 'STCG', dates: [] };
+                    if (!byScript[name]) byScript[name] = { buys: 0, sells: 0, gain: 0, count: 0, type: 'STCG', dates: [] };
                     const buyVal = Number(t.buy_value || t.purchase_value || 0);
                     const sellVal = Number(t.sell_value || t.sale_value || 0);
                     const pnl = Number(t.realized_pnl || t.pnl || t.profit || (sellVal - buyVal) || 0);
@@ -692,18 +722,18 @@ async function generateAutoEntries() {
                     byScript[name].count++;
                     // Determine CG type
                     const tt = String(t.trade_type || t.type || '').toLowerCase();
-                    if(tt.includes('long') || tt === 'ltcg') byScript[name].type = 'LTCG';
-                    else if(tt.includes('intraday') || tt.includes('speculative')) byScript[name].type = 'Intraday';
-                    if(t.sell_date) byScript[name].dates.push(t.sell_date);
+                    if (tt.includes('long') || tt === 'ltcg') byScript[name].type = 'LTCG';
+                    else if (tt.includes('intraday') || tt.includes('speculative')) byScript[name].type = 'Intraday';
+                    if (t.sell_date) byScript[name].dates.push(t.sell_date);
                 });
 
                 Object.entries(byScript).forEach(([scrip, data]) => {
                     const isProfit = data.gain >= 0;
                     const gainLabel = data.type === 'LTCG' ? 'Long Term Capital Gain'
                         : data.type === 'Intraday' ? 'Speculative Business Income'
-                        : 'Short Term Capital Gain';
+                            : 'Short Term Capital Gain';
                     const ledgers = [];
-                    if(isProfit) {
+                    if (isProfit) {
                         ledgers.push({ ledger_name: 'Bank A/c', amount: Math.abs(data.sells), side: 'Dr' });
                         ledgers.push({ ledger_name: 'Investment A/c', amount: Math.abs(data.buys), side: 'Cr' });
                         ledgers.push({ ledger_name: gainLabel, amount: Math.abs(data.gain), side: 'Cr' });
@@ -714,11 +744,11 @@ async function generateAutoEntries() {
                     }
                     const lastDate = data.dates.sort().pop() || '';
                     entries.push({
-                        id: `AUTO-${u.id}-${scrip.replace(/\s/g,'_')}`,
+                        id: `AUTO-${u.id}-${scrip.replace(/\s/g, '_')}`,
                         source: 'auto', sourceFile: fname, uploadId: u.id,
                         sourceType: uType,
                         date: lastDate,
-                        narration: `${scrip} — ${data.count} sell trade${data.count>1?'s':''} (${data.type})`,
+                        narration: `${scrip} — ${data.count} sell trade${data.count > 1 ? 's' : ''} (${data.type})`,
                         scrip, tradeCount: data.count, cgType: data.type,
                         voucher_type: 'Journal', status: 'draft',
                         entries: ledgers,
@@ -728,9 +758,9 @@ async function generateAutoEntries() {
 
                 // Capital gains summary voucher
                 const cg = d.capital_gains_summary;
-                if(cg) {
+                if (cg) {
                     const spec = Number(cg.intraday_profit || cg.speculative_profit || 0);
-                    if(spec !== 0) {
+                    if (spec !== 0) {
                         entries.push({
                             id: `AUTO-${u.id}-SPEC-SUMMARY`,
                             source: 'auto', sourceFile: fname, uploadId: u.id, sourceType: uType,
@@ -738,9 +768,9 @@ async function generateAutoEntries() {
                             voucher_type: 'Journal', status: 'draft',
                             entries: spec >= 0
                                 ? [{ ledger_name: 'Bank A/c', amount: Math.abs(spec), side: 'Dr' },
-                                   { ledger_name: 'Speculative Business Income', amount: Math.abs(spec), side: 'Cr' }]
+                                { ledger_name: 'Speculative Business Income', amount: Math.abs(spec), side: 'Cr' }]
                                 : [{ ledger_name: 'Speculative Business Loss', amount: Math.abs(spec), side: 'Dr' },
-                                   { ledger_name: 'Bank A/c', amount: Math.abs(spec), side: 'Cr' }],
+                                { ledger_name: 'Bank A/c', amount: Math.abs(spec), side: 'Cr' }],
                             total_amount: Math.abs(spec),
                         });
                     }
@@ -748,12 +778,12 @@ async function generateAutoEntries() {
             }
 
             // ── Dividends ──
-            if(d.dividends?.length) {
+            if (d.dividends?.length) {
                 d.dividends.forEach((dv, i) => {
                     const gross = Number(dv.amount || 0);
                     const tds = Number(dv.tds_deducted || dv.tds || 0);
                     const net = gross - tds;
-                    if(gross === 0) return;
+                    if (gross === 0) return;
                     entries.push({
                         id: `AUTO-${u.id}-DIV-${i}`,
                         source: 'auto', sourceFile: fname, uploadId: u.id, sourceType: uType,
@@ -771,7 +801,7 @@ async function generateAutoEntries() {
             }
 
             // ── PMS Transactions (Buy/Sell from structured_data) ──
-            if(uType?.startsWith('pms') && d.transactions?.length) {
+            if (uType?.startsWith('pms') && d.transactions?.length) {
                 const sells = {};
                 const buys = {};
                 d.transactions.forEach(t => {
@@ -781,26 +811,26 @@ async function generateAutoEntries() {
                     const amount = Number(t.amount || t.value || t.total || 0);
                     const date = t.date || t.trade_date || '';
 
-                    if(ttype.includes('sell') || ttype.includes('redemption')) {
-                        if(!sells[name]) sells[name] = { amount: 0, count: 0, dates: [] };
+                    if (ttype.includes('sell') || ttype.includes('redemption')) {
+                        if (!sells[name]) sells[name] = { amount: 0, count: 0, dates: [] };
                         sells[name].amount += Math.abs(amount);
                         sells[name].count++;
-                        if(date) sells[name].dates.push(date);
-                    } else if(ttype.includes('buy') || ttype.includes('purchase')) {
-                        if(!buys[name]) buys[name] = { amount: 0, count: 0, dates: [] };
+                        if (date) sells[name].dates.push(date);
+                    } else if (ttype.includes('buy') || ttype.includes('purchase')) {
+                        if (!buys[name]) buys[name] = { amount: 0, count: 0, dates: [] };
                         buys[name].amount += Math.abs(amount);
                         buys[name].count++;
-                        if(date) buys[name].dates.push(date);
+                        if (date) buys[name].dates.push(date);
                     }
                 });
 
                 // PMS Sell entries
                 Object.entries(sells).forEach(([scrip, data]) => {
                     entries.push({
-                        id: `AUTO-${u.id}-PMS-SELL-${scrip.replace(/\s/g,'_')}`,
+                        id: `AUTO-${u.id}-PMS-SELL-${scrip.replace(/\s/g, '_')}`,
                         source: 'auto', sourceFile: fname, uploadId: u.id, sourceType: uType,
                         date: data.dates.sort().pop() || '',
-                        narration: `${scrip} — ${data.count} PMS sell${data.count>1?'s':''}`,
+                        narration: `${scrip} — ${data.count} PMS sell${data.count > 1 ? 's' : ''}`,
                         scrip, tradeCount: data.count, cgType: 'STCG',
                         voucher_type: 'Journal', status: 'draft',
                         entries: [
@@ -814,10 +844,10 @@ async function generateAutoEntries() {
                 // PMS Buy entries
                 Object.entries(buys).forEach(([scrip, data]) => {
                     entries.push({
-                        id: `AUTO-${u.id}-PMS-BUY-${scrip.replace(/\s/g,'_')}`,
+                        id: `AUTO-${u.id}-PMS-BUY-${scrip.replace(/\s/g, '_')}`,
                         source: 'auto', sourceFile: fname, uploadId: u.id, sourceType: uType,
                         date: data.dates.sort().pop() || '',
-                        narration: `${scrip} — ${data.count} PMS purchase${data.count>1?'s':''}`,
+                        narration: `${scrip} — ${data.count} PMS purchase${data.count > 1 ? 's' : ''}`,
                         scrip, tradeCount: data.count,
                         voucher_type: 'Journal', status: 'draft',
                         entries: [
@@ -830,10 +860,10 @@ async function generateAutoEntries() {
             }
 
             // ── PMS Expenses (Management Fee, Advisory Fee, etc.) ──
-            if(uType?.startsWith('pms') && d.expenses?.length) {
+            if (uType?.startsWith('pms') && d.expenses?.length) {
                 d.expenses.forEach((exp, i) => {
                     const amt = Number(exp.amount || exp.value || 0);
-                    if(amt === 0) return;
+                    if (amt === 0) return;
                     const label = exp.description || exp.type || exp.name || 'PMS Charges';
                     entries.push({
                         id: `AUTO-${u.id}-EXP-${i}`,
@@ -854,11 +884,11 @@ async function generateAutoEntries() {
         // ── PMS Capital Gains from FIFO Engine ──
         try {
             const token = localStorage.getItem('access_token');
-            for(const acct of (typeof pmsAccounts !== 'undefined' ? pmsAccounts : [])) {
+            for (const acct of (typeof pmsAccounts !== 'undefined' ? pmsAccounts : [])) {
                 const cgRes = await fetch(`${PMS_API}/capital-gains?pms_account_id=${acct.id}`, {
                     headers: { 'Authorization': `Bearer ${token}` },
                 });
-                if(!cgRes.ok) continue;
+                if (!cgRes.ok) continue;
                 const cgData = await cgRes.json();
                 const label = acct.account_name || acct.provider_name || 'PMS';
 
@@ -866,13 +896,13 @@ async function generateAutoEntries() {
                 const byScrip = {};
                 (cgData.entries || []).forEach(e => {
                     const name = e.security_name || 'Unknown';
-                    if(!byScrip[name]) byScrip[name] = { cost: 0, proceeds: 0, gain: 0, count: 0, type: 'STCG', dates: [] };
+                    if (!byScrip[name]) byScrip[name] = { cost: 0, proceeds: 0, gain: 0, count: 0, type: 'STCG', dates: [] };
                     byScrip[name].cost += Number(e.cost_basis || 0);
                     byScrip[name].proceeds += Number(e.sale_proceeds || 0);
                     byScrip[name].gain += Number(e.gain_loss || 0);
                     byScrip[name].count++;
                     byScrip[name].type = e.gain_type || 'STCG';
-                    if(e.sale_date) byScrip[name].dates.push(e.sale_date);
+                    if (e.sale_date) byScrip[name].dates.push(e.sale_date);
                 });
 
                 Object.entries(byScrip).forEach(([scrip, data]) => {
@@ -880,17 +910,17 @@ async function generateAutoEntries() {
                     const gainLabel = data.type === 'LTCG' ? 'Long Term Capital Gain' : 'Short Term Capital Gain';
                     const ledgers = isProfit
                         ? [{ ledger_name: 'Bank A/c', amount: Math.abs(data.proceeds), side: 'Dr' },
-                           { ledger_name: 'Investment A/c', amount: Math.abs(data.cost), side: 'Cr' },
-                           { ledger_name: gainLabel, amount: Math.abs(data.gain), side: 'Cr' }]
+                        { ledger_name: 'Investment A/c', amount: Math.abs(data.cost), side: 'Cr' },
+                        { ledger_name: gainLabel, amount: Math.abs(data.gain), side: 'Cr' }]
                         : [{ ledger_name: 'Bank A/c', amount: Math.abs(data.proceeds), side: 'Dr' },
-                           { ledger_name: gainLabel, amount: Math.abs(data.gain), side: 'Dr' },
-                           { ledger_name: 'Investment A/c', amount: Math.abs(data.cost), side: 'Cr' }];
+                        { ledger_name: gainLabel, amount: Math.abs(data.gain), side: 'Dr' },
+                        { ledger_name: 'Investment A/c', amount: Math.abs(data.cost), side: 'Cr' }];
 
                     entries.push({
-                        id: `AUTO-PMS-CG-${acct.id}-${scrip.replace(/\s/g,'_')}`,
+                        id: `AUTO-PMS-CG-${acct.id}-${scrip.replace(/\s/g, '_')}`,
                         source: 'auto', sourceFile: `PMS — ${label}`, sourceType: 'pms_cg',
                         date: data.dates.sort().pop() || '',
-                        narration: `${scrip} — ${data.count} FIFO exit${data.count>1?'s':''} (${data.type})`,
+                        narration: `${scrip} — ${data.count} FIFO exit${data.count > 1 ? 's' : ''} (${data.type})`,
                         scrip, tradeCount: data.count, cgType: data.type,
                         voucher_type: 'Journal', status: 'draft',
                         entries: ledgers,
@@ -898,15 +928,24 @@ async function generateAutoEntries() {
                     });
                 });
             }
-        } catch(e) { console.warn('PMS CG auto-gen:', e); }
+        } catch (e) { console.warn('PMS CG auto-gen:', e); }
 
-    } catch(e) { console.error('Auto-gen failed:', e); }
+    } catch (e) { console.error('Auto-gen failed:', e); }
 
-    // Preserve previous approval states
+    // Preserve previous approval states from in-memory cache
     const prev = window._autoEntries || [];
     entries.forEach(e => {
         const old = prev.find(p => p.id === e.id);
-        if(old && old.status !== 'draft') e.status = old.status;
+        if (old && old.status !== 'draft') e.status = old.status;
+    });
+
+    // Also apply persisted je_status from the upload record (survives page refresh)
+    const uploadStatusMap = {};
+    uploads.forEach(u => { if (u.je_status && u.je_status !== 'pending') uploadStatusMap[u.id] = u.je_status; });
+    entries.forEach(e => {
+        if (e.status === 'draft' && e.uploadId && uploadStatusMap[e.uploadId]) {
+            e.status = uploadStatusMap[e.uploadId];
+        }
     });
 
     window._autoEntries = entries;
@@ -916,27 +955,27 @@ async function generateAutoEntries() {
 // ═══ PENDING ENTRIES — File-Grouped Accordion ═══
 async function loadPendingEntries() {
     const c = document.getElementById('fi-pending-list');
-    if(!c) return;
+    if (!c) return;
 
     c.innerHTML = '<div style="text-align:center;padding:2rem;color:#94a3b8;font-size:.78rem">Generating journal entries from parsed data...</div>';
 
     // Gather all entries
     const autoEntries = await generateAutoEntries();
-    const manualEntries = fiVouchers.filter(v => v.status !== 'synced').map(v => ({
+    const manualEntries = fiVouchers.filter(v => v.status === 'draft').map(v => ({
         ...v, source: 'manual', sourceFile: 'Manual Entries', sourceType: 'manual',
     }));
 
-    const allCards = [...autoEntries.filter(e => e.status !== 'synced'), ...manualEntries];
+    const allCards = [...autoEntries.filter(e => e.status === 'draft'), ...manualEntries];
 
     // Update badges
     const badge = document.getElementById('fi-sb-pending-count');
     const total = document.getElementById('fi-pending-total');
     const draftCount = allCards.filter(e => e.status === 'draft').length;
     const approvedCount = allCards.filter(e => e.status === 'approved').length;
-    if(badge) { badge.textContent = allCards.length; badge.style.display = allCards.length > 0 ? '' : 'none'; }
-    if(total) total.textContent = allCards.length;
+    if (badge) { badge.textContent = allCards.length; badge.style.display = allCards.length > 0 ? '' : 'none'; }
+    if (total) total.textContent = allCards.length;
 
-    if(allCards.length === 0) {
+    if (allCards.length === 0) {
         c.innerHTML = '<div class="fi-empty-mini"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><p>No pending entries — upload statements to auto-generate</p></div>';
         return;
     }
@@ -945,7 +984,7 @@ async function loadPendingEntries() {
     const groups = {};
     allCards.forEach(card => {
         const key = card.sourceFile || 'Other';
-        if(!groups[key]) groups[key] = { file: key, type: card.sourceType || '', source: card.source, entries: [] };
+        if (!groups[key]) groups[key] = { file: key, type: card.sourceType || '', source: card.source, entries: [] };
         groups[key].entries.push(card);
     });
 
@@ -962,11 +1001,11 @@ async function loadPendingEntries() {
 
         const typeIcon = grp.type.startsWith('demat') ? '<span style="font-size:.55rem;font-weight:700;padding:1px 5px;border-radius:3px;background:#4338ca15;color:#4338ca;margin-left:4px">Demat</span>'
             : grp.type.startsWith('pms') ? '<span style="font-size:.55rem;font-weight:700;padding:1px 5px;border-radius:3px;background:#d9770615;color:#d97706;margin-left:4px">PMS</span>'
-            : grp.type === 'mutual_fund' ? '<span style="font-size:.55rem;font-weight:700;padding:1px 5px;border-radius:3px;background:#05966915;color:#059669;margin-left:4px">MF</span>'
-            : '';
+                : grp.type === 'mutual_fund' ? '<span style="font-size:.55rem;font-weight:700;padding:1px 5px;border-radius:3px;background:#05966915;color:#059669;margin-left:4px">MF</span>'
+                    : '';
 
         const entriesHTML = grp.entries.map((v, eIdx) => {
-            const statusPill = `<span class="fi-status-pill ${v.status}">${(v.status||'draft').toUpperCase()}</span>`;
+            const statusPill = `<span class="fi-status-pill ${v.status}">${(v.status || 'draft').toUpperCase()}</span>`;
             const borderColor = v.status === 'approved' ? '#059669' : v.status === 'synced' ? '#4338ca' : '#e2e8f0';
             const approveDisabled = v.status !== 'draft';
             const cgBadge = v.cgType ? `<span class="fi-cg-badge fi-cg-${v.cgType.toLowerCase()}">${v.cgType}</span>` : '';
@@ -987,7 +1026,7 @@ async function loadPendingEntries() {
                 <div class="fi-vc-header">
                     <span class="fi-vc-title">${v.narration || v.scrip || ''}</span>
                     ${tradeBadge}${cgBadge}${statusPill}
-                    <button class="fi-vc-approve ${approveDisabled?'disabled':''}" onclick="approveEntry('${v.id}')" ${approveDisabled?'disabled':''}>✓</button>
+                    <button class="fi-vc-approve ${approveDisabled ? 'disabled' : ''}" onclick="approveEntry('${v.id}')" ${approveDisabled ? 'disabled' : ''}>✓</button>
                 </div>
                 <table class="fi-vc-table"><thead><tr><th style="text-align:left">Particulars</th><th style="text-align:right;width:100px">Dr (₹)</th><th style="text-align:right;width:100px">Cr (₹)</th></tr></thead><tbody>${rows}</tbody></table>
             </div>`;
@@ -1018,20 +1057,20 @@ async function loadPendingEntries() {
 
 function toggleFileGroup(idx) {
     const grp = document.getElementById(`fg-${idx}`);
-    if(!grp) return;
+    if (!grp) return;
     const body = grp.querySelector('.fi-file-body');
     const arrow = grp.querySelector('.fi-fg-arrow');
-    if(!body) return;
+    if (!body) return;
     const isOpen = body.style.display !== 'none';
     body.style.display = isOpen ? 'none' : 'block';
-    if(arrow) arrow.style.transform = isOpen ? '' : 'rotate(90deg)';
+    if (arrow) arrow.style.transform = isOpen ? '' : 'rotate(90deg)';
 }
 
 async function approveEntry(id) {
     const auto = (window._autoEntries || []).find(e => e.id === id);
-    if(auto) { auto.status = 'approved'; }
+    if (auto) { auto.status = 'approved'; }
     const manual = fiVouchers.find(v => v.id === id);
-    if(manual) {
+    if (manual) {
         manual.status = 'approved';
         // Persist to backend
         try {
@@ -1039,26 +1078,56 @@ async function approveEntry(id) {
                 method: 'PATCH',
                 body: JSON.stringify({ status: 'approved' }),
             });
-        } catch(e) { console.warn('Failed to persist approval:', e); }
+        } catch (e) { console.warn('Failed to persist approval:', e); }
     }
     loadPendingEntries();
     loadDashboardStats();
 }
 
 function approveFileGroup(fileName) {
-    (window._autoEntries || []).forEach(e => { if(e.sourceFile === fileName && e.status === 'draft') e.status = 'approved'; });
-    fiVouchers.forEach(v => { if(v.sourceFile === fileName && v.status === 'draft') v.status = 'approved'; });
+    const uploadIds = new Set();
+    (window._autoEntries || []).forEach(e => {
+        if (e.sourceFile === fileName && e.status === 'draft') {
+            e.status = 'approved';
+            if (e.uploadId) uploadIds.add(e.uploadId);
+        }
+    });
+    fiVouchers.forEach(v => { if (v.sourceFile === fileName && v.status === 'draft') v.status = 'approved'; });
+    // Persist upload je_status
+    uploadIds.forEach(uid => {
+        authFetch(`/financial-instruments/${uid}/je-status`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ je_status: 'approved' }),
+        }).catch(e => console.warn('Upload approve persist failed:', e));
+    });
     loadPendingEntries();
     fiToast(`All entries from "${fileName}" approved`, 'success');
     loadDashboardStats();
+    loadAllJournalEntries();
 }
 
 function syncFileGroup(fileName) {
-    (window._autoEntries || []).forEach(e => { if(e.sourceFile === fileName && (e.status === 'approved' || e.status === 'draft')) e.status = 'synced'; });
-    fiVouchers.forEach(v => { if(v.sourceFile === fileName && (v.status === 'approved' || v.status === 'draft')) v.status = 'synced'; });
+    const uploadIds = new Set();
+    (window._autoEntries || []).forEach(e => {
+        if (e.sourceFile === fileName && (e.status === 'approved' || e.status === 'draft')) {
+            e.status = 'synced';
+            if (e.uploadId) uploadIds.add(e.uploadId);
+        }
+    });
+    fiVouchers.forEach(v => { if (v.sourceFile === fileName && (v.status === 'approved' || v.status === 'draft')) v.status = 'synced'; });
+    // Persist upload je_status
+    uploadIds.forEach(uid => {
+        authFetch(`/financial-instruments/${uid}/je-status`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ je_status: 'synced' }),
+        }).catch(e => console.warn('Upload sync persist failed:', e));
+    });
     loadPendingEntries();
     fiToast(`Entries from "${fileName}" synced to Tally`, 'success');
     loadDashboardStats();
+    loadAllJournalEntries();
 }
 
 // ═══ Pending entries — inline edit handlers ═══
@@ -1097,7 +1166,7 @@ async function removePendingEntry(id, source) {
             try {
                 await authFetch(`/financial-instruments/manual-entry/${id}`, { method: 'DELETE' });
                 fiToast('Entry removed', 'success');
-            } catch(e) {
+            } catch (e) {
                 fiToast('Entry removed locally (backend error)', 'warning');
             }
         }
@@ -1108,8 +1177,8 @@ async function removePendingEntry(id, source) {
 }
 
 // ═══ DASHBOARD ═══
-function setEl(id, val) { const el=document.getElementById(id); if(el) el.textContent=val; }
-function setStyle(id, prop, val) { const el=document.getElementById(id); if(el) el.style[prop]=val; }
+function setEl(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
+function setStyle(id, prop, val) { const el = document.getElementById(id); if (el) el.style[prop] = val; }
 
 // Compute AY/FY dynamically from current date
 function getFinancialYears() {
@@ -1134,10 +1203,10 @@ async function loadDashboardStats() {
     // Local voucher counts (manual + auto-generated)
     const autoEntries = window._autoEntries || [];
     const allEntries = [...fiVouchers, ...autoEntries];
-    const draftCount = allEntries.filter(v=>v.status==='draft').length;
-    const approvedCount = allEntries.filter(v=>v.status==='approved').length;
-    const syncedCount = allEntries.filter(v=>v.status==='synced').length;
-    const totalAmt = allEntries.reduce((s,v)=>s+(v.total_amount||0),0);
+    const draftCount = allEntries.filter(v => v.status === 'draft').length;
+    const approvedCount = allEntries.filter(v => v.status === 'approved').length;
+    const syncedCount = allEntries.filter(v => v.status === 'synced').length;
+    const totalAmt = allEntries.reduce((s, v) => s + (v.total_amount || 0), 0);
 
     setEl('fi-stat-uploads', fiVouchers.length);
     setEl('fi-stat-vouchers', allEntries.length);
@@ -1148,20 +1217,20 @@ async function loadDashboardStats() {
     setEl('fi-pipe-approved', approvedCount);
     setEl('fi-pipe-synced', syncedCount);
 
-    if(!clientId) return;
+    if (!clientId) return;
     let uploads = null;
     // Retry up to 3 times with 2s back-off
     for (let attempt = 1; attempt <= 3; attempt++) {
         try {
             const res = await authFetch(`/financial-instruments/?client_id=${clientId}`);
-            if(!res || !res.ok) {
+            if (!res || !res.ok) {
                 console.warn(`Dashboard: FI list fetch attempt ${attempt} failed (${res?.status})`);
                 if (attempt < 3) { await new Promise(r => setTimeout(r, 2000)); continue; }
                 return;
             }
             uploads = await res.json();
             break;
-        } catch(e) {
+        } catch (e) {
             console.warn(`Dashboard: FI list fetch attempt ${attempt} error:`, e.message);
             if (attempt < 3) { await new Promise(r => setTimeout(r, 2000)); continue; }
             // Show retry button instead of silent zeros
@@ -1171,18 +1240,18 @@ async function loadDashboardStats() {
         }
     }
     if (!uploads) return;
-    if(uploads.length > 0) setEl('fi-stat-uploads', uploads.length);
+    if (uploads.length > 0) setEl('fi-stat-uploads', uploads.length);
 
     try {
         // Pipeline from server — exclude 26as from holdings data
-        const completed = uploads.filter(u=>u.status==='completed' && u.instrument_type !== '26as');
-        const processing = uploads.filter(u=>u.status!=='completed'&&u.status!=='failed');
-        const failed = uploads.filter(u=>u.status==='failed');
-        const totalJE = uploads.reduce((s,u)=>s+(u.journal_entry_count||0),0);
+        const completed = uploads.filter(u => u.status === 'completed' && u.instrument_type !== '26as');
+        const processing = uploads.filter(u => u.status !== 'completed' && u.status !== 'failed');
+        const failed = uploads.filter(u => u.status === 'failed');
+        const totalJE = uploads.reduce((s, u) => s + (u.journal_entry_count || 0), 0);
         setEl('fi-stat-vouchers', totalJE);
         setEl('fi-pipe-draft', processing.length);
         setEl('fi-pipe-approved', completed.length);
-        setEl('fi-pipe-synced', syncedCount + completed.filter(u=>u.journal_entry_count>0).length);
+        setEl('fi-pipe-synced', syncedCount + completed.filter(u => u.journal_entry_count > 0).length);
 
         // ── Fetch structured data for ALL completed uploads ──
         // Aggregate: AUM, capital gains, TDS, allocation
@@ -1212,7 +1281,7 @@ async function loadDashboardStats() {
         }
 
         allData.forEach((resp, idx) => {
-            if(!resp || !resp.structured_data) return;
+            if (!resp || !resp.structured_data) return;
             const d = resp.structured_data;
             const uType = completed[idx].instrument_type;
 
@@ -1223,22 +1292,22 @@ async function loadDashboardStats() {
                 const val = Number(h.market_value || h.current_value || h.value || 0);
                 holdVal += val;
                 const item = { name: h.scrip_name || h.security_name || h.name || h.fund_name || 'Unknown', value: val, sector: h.sector || '' };
-                if(uType === 'demat' || uType.startsWith('demat_')) eqSubItems.push(item);
-                else if(uType === 'mutual_fund') mfSubItems.push(item);
-                else if(uType === 'pms' || uType.startsWith('pms_')) pmsSubItems.push(item);
+                if (uType === 'demat' || uType.startsWith('demat_')) eqSubItems.push(item);
+                else if (uType === 'mutual_fund') mfSubItems.push(item);
+                else if (uType === 'pms' || uType.startsWith('pms_')) pmsSubItems.push(item);
                 else bondSubItems.push(item);
             });
 
             // Accumulate by instrument type
-            if(uType === 'demat' || uType.startsWith('demat_')) eqValue += holdVal;
-            else if(uType === 'mutual_fund') mfValue += holdVal;
-            else if(uType === 'pms' || uType.startsWith('pms_')) pmsValue += holdVal;
+            if (uType === 'demat' || uType.startsWith('demat_')) eqValue += holdVal;
+            else if (uType === 'mutual_fund') mfValue += holdVal;
+            else if (uType === 'pms' || uType.startsWith('pms_')) pmsValue += holdVal;
             else bondValue += holdVal;
             totalAUM += holdVal;
 
             // Capital Gains
             const cg = d.capital_gains_summary;
-            if(cg) {
+            if (cg) {
                 const stcg = Number(cg.short_term_gain || cg.stcg || cg.short_term_profit || 0);
                 const ltcg = Number(cg.long_term_gain || cg.ltcg || cg.long_term_profit || 0);
                 const spec = Number(cg.speculative_profit || cg.intraday_profit || 0);
@@ -1249,36 +1318,36 @@ async function loadDashboardStats() {
                 // Determine source label
                 let sourceLabel = 'Unknown';
                 const fn = completed[idx].filename || '';
-                if(uType.startsWith('demat_')) {
+                if (uType.startsWith('demat_')) {
                     const broker = d.broker || 'Demat';
                     const clientId = d.client_id || '';
-                    sourceLabel = `${broker.charAt(0).toUpperCase()+broker.slice(1)} (${clientId || fn})`;
-                } else if(uType === 'pms' || uType.startsWith('pms_')) {
+                    sourceLabel = `${broker.charAt(0).toUpperCase() + broker.slice(1)} (${clientId || fn})`;
+                } else if (uType === 'pms' || uType.startsWith('pms_')) {
                     sourceLabel = `PMS — ${fn}`;
-                } else if(uType === 'mutual_fund') {
+                } else if (uType === 'mutual_fund') {
                     sourceLabel = `Mutual Fund — ${fn}`;
                 } else {
                     sourceLabel = fn || uType;
                 }
 
-                if(stcg !== 0 || ltcg !== 0 || spec !== 0) {
+                if (stcg !== 0 || ltcg !== 0 || spec !== 0) {
                     cgSources.push({ source: sourceLabel, stcg, ltcg, spec });
                 }
             }
 
             // Detect FY from data or filename
-            if(!detectedFY) {
+            if (!detectedFY) {
                 const fn = completed[idx].filename || '';
                 // Pattern: 2025_2026 or 2025-2026 or "from 2025-04-01"
                 const fyMatch = fn.match(/(20\d{2})[_-](20\d{2})/);
-                if(fyMatch) {
+                if (fyMatch) {
                     detectedFY = `FY ${fyMatch[1]}-${fyMatch[2].slice(2)}`;
                 }
                 // Or from period in structured data
-                if(!detectedFY && d.period_start) {
+                if (!detectedFY && d.period_start) {
                     const ps = String(d.period_start);
-                    const yr = parseInt(ps.substring(0,4));
-                    if(yr) detectedFY = `FY ${yr}-${String(yr+1).slice(2)}`;
+                    const yr = parseInt(ps.substring(0, 4));
+                    if (yr) detectedFY = `FY ${yr}-${String(yr + 1).slice(2)}`;
                 }
             }
 
@@ -1334,9 +1403,95 @@ async function loadDashboardStats() {
             }
         } catch (e) { console.warn('PMS accounts fetch error:', e); }
 
+        // Pre-declare divRows so Tally block can push dividend data
+        let divRows = [];
+
+        // ── Fetch Tally FI classified data (holdings + transactions) ──
+        // Use the client's name as company_name — matches Tally company
+        let tallyHoldings = []; // for sector/market-cap analysis
+        try {
+            // Resolve client name → Tally company name
+            let clientCompanyName = '';
+            if (clientId) {
+                const clientRes = await authFetch(`/clients/${clientId}`);
+                if (clientRes && clientRes.ok) {
+                    const clientData = await clientRes.json();
+                    clientCompanyName = clientData.name || '';
+                }
+            }
+            if (clientCompanyName) {
+                const fiRes = await authFetch(`/fi-tally/classify?company_name=${encodeURIComponent(clientCompanyName)}`);
+                if (fiRes && fiRes.ok) {
+                    const fiData = await fiRes.json();
+
+                    // ── Holdings → AUM + allocation ──
+                    const holdings = fiData.holdings || [];
+                    holdings.forEach(cat => {
+                        const catName = (cat.category || '').toLowerCase();
+                        const ledgers = cat.top_holdings || [];
+                        ledgers.forEach(ldg => {
+                            const val = Math.abs(Number(ldg.closing_balance) || 0);
+                            if (val <= 0) return;
+                            totalAUM += val;
+                            const item = { name: ldg.name, value: val, sector: cat.category };
+                            // Build holding object for sector/market-cap analysis
+                            tallyHoldings.push({
+                                name: ldg.name, security_name: ldg.name,
+                                value: val, market_value: val,
+                                sector: 'Unknown', market_cap: '',
+                                instrument_type: 'tally', fi_category: cat.category,
+                            });
+                            // Allocation buckets:
+                            // - "Equity Holdings" (shares of XYZ) → Equity
+                            // - "AIF", "PMS", "Investments" (generic) → PMS/AIF
+                            // - "Mutual Funds" → MF
+                            // - "Fixed Deposits", "Bonds", "Debentures" → Bonds
+                            if (catName === 'equity holdings' || catName === 'preference shares') {
+                                eqValue += val; eqSubItems.push(item);
+                            } else if (catName.includes('mutual') || catName.includes('fund')) {
+                                mfValue += val; mfSubItems.push(item);
+                            } else if (catName.includes('fixed') || catName.includes('deposit') || catName.includes('bond') || catName.includes('debenture')) {
+                                bondValue += val; bondSubItems.push(item);
+                            } else {
+                                // AIF, PMS, generic Investments → PMS bucket
+                                pmsValue += val; pmsSubItems.push(item);
+                            }
+                        });
+                    });
+
+                    // ── Transactions → Capital Gains + Dividends ──
+                    const fiVouchers = fiData.fi_vouchers || [];
+                    fiVouchers.forEach(v => {
+                        const txnType = v.fi_txn_type || '';
+                        const amt = Math.abs(Number(v.amount) || 0);
+
+                        // Capital gains from share transfers
+                        if (txnType === 'Capital Gain/Loss' || txnType === 'Share Transfer') {
+                            totalSTCG += amt;
+                            cgSources.push({ source: `Tally — ${clientCompanyName}`, stcg: amt, ltcg: 0, spec: 0 });
+                        }
+                        // Dividends
+                        if (txnType === 'Dividend Receipt') {
+                            totalDivAmt += amt;
+                            divRows.push({ name: v.scrip || v.narration || 'Tally Dividend', amount: amt, tds: 0, source: 'tally' });
+                        }
+                    });
+
+                    // ── Summary stats ──
+                    const summary = fiData.summary || {};
+                    if (summary.total_gains && !totalSTCG) {
+                        totalSTCG += Math.abs(summary.total_gains);
+                    }
+
+                    console.log(`Tally FI: ${fiData.fi_ledger_count || 0} ledgers, ${fiData.fi_voucher_count || 0} vouchers from ${clientCompanyName}`);
+                }
+            }
+        } catch (e) { console.warn('Tally FI fetch error:', e); }
+
         // ── Populate AUM ──
         setEl('fi-stat-total-amt', formatINR(totalAUM));
 
+<<<<<<< Updated upstream
         // ── Set FY consistently across all cards ──
         let displayFY;
         if(detectedFY) {
@@ -1345,6 +1500,21 @@ async function loadDashboardStats() {
         // Fallback to current date if no FY detected from data
         if(!displayFY) {
             const { fy } = getFinancialYears();
+=======
+        // ── Set FY/AY consistently across all cards ──
+        let displayFY, displayAY;
+        if (detectedFY) {
+            displayFY = detectedFY;
+            const fyMatch = detectedFY.match(/(\d{4})/);
+            if (fyMatch) {
+                const fyStart = parseInt(fyMatch[1]);
+                displayAY = `AY ${fyStart + 1}-${String(fyStart + 2).slice(2)}`;
+            }
+        }
+        // Fallback to current date if no FY detected from data
+        if (!displayFY) {
+            const { fy, ay } = getFinancialYears();
+>>>>>>> Stashed changes
             displayFY = fy;
         }
         setEl('fi-ay', displayFY);
@@ -1355,9 +1525,9 @@ async function loadDashboardStats() {
         const netGain = totalSTCG + totalLTCG + totalSpec;
 
         // Speculative row (show only if data exists)
-        if(totalSpec !== 0) {
+        if (totalSpec !== 0) {
             const specRow = document.getElementById('fi-cg-spec-row');
-            if(specRow) specRow.style.display = 'flex';
+            if (specRow) specRow.style.display = 'flex';
             setEl('fi-cg-spec', (totalSpec >= 0 ? '' : '(') + formatINR(totalSpec) + (totalSpec < 0 ? ')' : ''));
         }
 
@@ -1367,12 +1537,12 @@ async function loadDashboardStats() {
 
         // Progress bars — scale relative to max
         const maxCG = Math.max(Math.abs(totalSTCG), Math.abs(totalLTCG), Math.abs(totalSpec), 1);
-        setStyle('fi-cg-spec-bar', 'width', Math.round(Math.abs(totalSpec)/maxCG*100) + '%');
-        setStyle('fi-cg-stcg-bar', 'width', Math.round(Math.abs(totalSTCG)/maxCG*100) + '%');
-        setStyle('fi-cg-ltcg-bar', 'width', Math.round(Math.abs(totalLTCG)/maxCG*100) + '%');
-        if(totalSpec < 0) setStyle('fi-cg-spec-bar', 'background', '#dc2626');
-        if(totalSTCG < 0) setStyle('fi-cg-stcg-bar', 'background', '#dc2626');
-        if(totalLTCG < 0) setStyle('fi-cg-ltcg-bar', 'background', '#dc2626');
+        setStyle('fi-cg-spec-bar', 'width', Math.round(Math.abs(totalSpec) / maxCG * 100) + '%');
+        setStyle('fi-cg-stcg-bar', 'width', Math.round(Math.abs(totalSTCG) / maxCG * 100) + '%');
+        setStyle('fi-cg-ltcg-bar', 'width', Math.round(Math.abs(totalLTCG) / maxCG * 100) + '%');
+        if (totalSpec < 0) setStyle('fi-cg-spec-bar', 'background', '#dc2626');
+        if (totalSTCG < 0) setStyle('fi-cg-stcg-bar', 'background', '#dc2626');
+        if (totalLTCG < 0) setStyle('fi-cg-ltcg-bar', 'background', '#dc2626');
 
         // Tax estimates (Indian rates — Budget 2024 onwards)
         const stcgTax = Math.max(0, totalSTCG) * 0.20;
@@ -1383,7 +1553,7 @@ async function loadDashboardStats() {
         // ── CG Hover Tooltips (source breakdown) ──
         function buildCGTooltip(field) {
             const relevant = cgSources.filter(s => s[field] !== 0);
-            if(relevant.length === 0) return 'No data';
+            if (relevant.length === 0) return 'No data';
             return relevant.map(s => {
                 const val = s[field];
                 const sign = val >= 0 ? '+' : '';
@@ -1393,21 +1563,21 @@ async function loadDashboardStats() {
             }).join('');
         }
         const specTip = document.getElementById('fi-cg-spec-tip');
-        if(specTip) specTip.innerHTML = `<div style="font-weight:700;margin-bottom:4px;color:#d97706">Speculative Income Sources</div>` + buildCGTooltip('spec');
+        if (specTip) specTip.innerHTML = `<div style="font-weight:700;margin-bottom:4px;color:#d97706">Speculative Income Sources</div>` + buildCGTooltip('spec');
         const stcgTip = document.getElementById('fi-cg-stcg-tip');
-        if(stcgTip) stcgTip.innerHTML = `<div style="font-weight:700;margin-bottom:4px;color:#059669">STCG Sources</div>` + buildCGTooltip('stcg');
+        if (stcgTip) stcgTip.innerHTML = `<div style="font-weight:700;margin-bottom:4px;color:#059669">STCG Sources</div>` + buildCGTooltip('stcg');
         const ltcgTip = document.getElementById('fi-cg-ltcg-tip');
-        if(ltcgTip) ltcgTip.innerHTML = `<div style="font-weight:700;margin-bottom:4px;color:#6366f1">LTCG Sources</div>` + buildCGTooltip('ltcg');
+        if (ltcgTip) ltcgTip.innerHTML = `<div style="font-weight:700;margin-bottom:4px;color:#6366f1">LTCG Sources</div>` + buildCGTooltip('ltcg');
 
         // ── Populate Instrument Allocation ──
         const totalAlloc = totalAUM || 1;
-        setEl('fi-alloc-eq-pct', Math.round(eqValue/totalAlloc*100) + '%');
+        setEl('fi-alloc-eq-pct', Math.round(eqValue / totalAlloc * 100) + '%');
         setEl('fi-alloc-eq-val', formatINR(eqValue));
-        setEl('fi-alloc-mf-pct', Math.round(mfValue/totalAlloc*100) + '%');
+        setEl('fi-alloc-mf-pct', Math.round(mfValue / totalAlloc * 100) + '%');
         setEl('fi-alloc-mf-val', formatINR(mfValue));
-        setEl('fi-alloc-pms-pct', Math.round(pmsValue/totalAlloc*100) + '%');
+        setEl('fi-alloc-pms-pct', Math.round(pmsValue / totalAlloc * 100) + '%');
         setEl('fi-alloc-pms-val', formatINR(pmsValue));
-        setEl('fi-alloc-bond-pct', Math.round(bondValue/totalAlloc*100) + '%');
+        setEl('fi-alloc-bond-pct', Math.round(bondValue / totalAlloc * 100) + '%');
         setEl('fi-alloc-bond-val', formatINR(bondValue));
 
         // ── Populate Allocation Dropdowns ──
@@ -1427,7 +1597,7 @@ async function loadDashboardStats() {
         // ══════════════════════════════════════════════
         // ── PORTFOLIO ANALYSIS: Sector + Market Cap ──
         // ══════════════════════════════════════════════
-        populatePortfolioAnalysis(allData, completed, pmsHoldings);
+        populatePortfolioAnalysis(allData, completed, pmsHoldings, tallyHoldings);
 
         // ── Render recent statements ──
         const r = document.getElementById('fi-recent-vouchers');
@@ -1436,80 +1606,80 @@ async function loadDashboardStats() {
             <div class="fi-fq-info"><div class="fi-fq-name">${u.filename}</div><div class="fi-fq-meta">${typeLabel(u.instrument_type)} · ${u.created_at ? new Date(u.created_at).toLocaleDateString('en-GB') : '-'} · ${u.journal_entry_count || 0} entries</div></div>
             <span class="fi-status-pill ${u.status}">${(u.status || '').toUpperCase()}</span>
         </div>`).join('');
-        if(uploads.length === 0) r.innerHTML = '<div class="fi-empty-mini"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><p>Upload Demat, MF, or PMS statements to get started</p></div>';
+        if (uploads.length === 0) r.innerHTML = '<div class="fi-empty-mini"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><p>Upload Demat, MF, or PMS statements to get started</p></div>';
 
         // ══════════════════════════════════════════════
         // ── NEW CARDS: Dividend, Compliance, Unrealized, 26AS, Timeline ──
         // ══════════════════════════════════════════════
 
         // ── 1. Dividend Income Summary ──
-        if(detectedFY) setEl('fi-div-fy', detectedFY);
+        if (detectedFY) setEl('fi-div-fy', detectedFY);
         setEl('fi-div-total', formatINR(totalDivAmt));
         setEl('fi-div-tds-total', formatINR(totalDivTDS));
         // Build dividend breakup from all data
-        let divRows = [];
+        // divRows already declared above (before Tally FI fetch)
         allData.forEach((resp, idx) => {
-            if(!resp || !completed[idx]) return;
+            if (!resp || !completed[idx]) return;
             const sd = resp.structured_data || {};
             const fn = completed[idx].filename || 'Unknown';
             const divs = sd.dividends || [];
-            if(!divs.length) return;
+            if (!divs.length) return;
             divs.forEach(dv => {
-                divRows.push({ name: dv.company || dv.fund_name || dv.scrip || fn, amount: Number(dv.amount||0), tds: Number(dv.tds_deducted||dv.tds||0) });
+                divRows.push({ name: dv.company || dv.fund_name || dv.scrip || fn, amount: Number(dv.amount || 0), tds: Number(dv.tds_deducted || dv.tds || 0) });
             });
         });
         const divBreak = document.getElementById('fi-div-breakup');
-        if(divRows.length > 0) {
+        if (divRows.length > 0) {
             divBreak.innerHTML = divRows.map(d => `<div style="display:flex;align-items:center;justify-content:space-between;padding:.3rem .5rem;border-bottom:1px solid #f8fafc;font-size:.72rem">
                 <span style="flex:1;font-weight:600;color:#0f172a;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:180px">${d.name}</span>
                 <span style="font-family:'Outfit',sans-serif;font-weight:700;color:#059669;min-width:70px;text-align:right">${formatINR(d.amount)}</span>
                 <span style="font-family:'Outfit',sans-serif;font-weight:600;color:#dc2626;min-width:60px;text-align:right;font-size:.65rem">${d.tds > 0 ? '-' + formatINR(d.tds) : '—'}</span>
             </div>`).join('');
-            if(totalDivAmt > 5000 && totalDivTDS === 0) setEl('fi-div-tds-note', '⚠️ Dividend >₹5,000 but no TDS deducted — verify with 26AS');
+            if (totalDivAmt > 5000 && totalDivTDS === 0) setEl('fi-div-tds-note', '⚠️ Dividend >₹5,000 but no TDS deducted — verify with 26AS');
         }
 
         // ── 2. Compliance Alerts ──
         let alerts = [];
         // Check dividend TDS threshold
-        if(totalDivAmt > 5000 && totalDivTDS === 0) {
-            alerts.push({ icon:'⚠️', type:'warning', text:'Dividend income exceeds ₹5,000 — verify TDS u/s 194 deducted by payer', color:'#d97706' });
+        if (totalDivAmt > 5000 && totalDivTDS === 0) {
+            alerts.push({ icon: '⚠️', type: 'warning', text: 'Dividend income exceeds ₹5,000 — verify TDS u/s 194 deducted by payer', color: '#d97706' });
         }
-        if(totalDivAmt > 5000 && totalDivTDS > 0) {
-            alerts.push({ icon:'✅', type:'info', text:`TDS of ${formatINR(totalDivTDS)} deducted on dividends of ${formatINR(totalDivAmt)} — cross-verify with 26AS`, color:'#059669' });
+        if (totalDivAmt > 5000 && totalDivTDS > 0) {
+            alerts.push({ icon: '✅', type: 'info', text: `TDS of ${formatINR(totalDivTDS)} deducted on dividends of ${formatINR(totalDivAmt)} — cross-verify with 26AS`, color: '#059669' });
         }
         // STCG alert — shares held <12 months
-        if(totalSTCG > 0) {
-            alerts.push({ icon:'📊', type:'info', text:`STCG of ${formatINR(totalSTCG)} — taxable at 20% under Sec 111A (listed equity via STT)`, color:'#d97706' });
+        if (totalSTCG > 0) {
+            alerts.push({ icon: '📊', type: 'info', text: `STCG of ${formatINR(totalSTCG)} — taxable at 20% under Sec 111A (listed equity via STT)`, color: '#d97706' });
         }
-        if(totalSTCG < 0) {
-            alerts.push({ icon:'📉', type:'warning', text:`STCG loss of ${formatINR(Math.abs(totalSTCG))} — can be set off against LTCG and carried forward 8 years`, color:'#dc2626' });
+        if (totalSTCG < 0) {
+            alerts.push({ icon: '📉', type: 'warning', text: `STCG loss of ${formatINR(Math.abs(totalSTCG))} — can be set off against LTCG and carried forward 8 years`, color: '#dc2626' });
         }
         // LTCG exemption check
-        if(totalLTCG > 125000) {
+        if (totalLTCG > 125000) {
             const taxable = totalLTCG - 125000;
-            alerts.push({ icon:'💰', type:'warning', text:`LTCG of ${formatINR(totalLTCG)} exceeds ₹1.25L exemption — ${formatINR(taxable)} taxable at 12.5% (Sec 112A)`, color:'#d97706' });
-        } else if(totalLTCG > 0) {
-            alerts.push({ icon:'✅', type:'success', text:`LTCG of ${formatINR(totalLTCG)} is within ₹1.25L exemption — no tax payable`, color:'#059669' });
+            alerts.push({ icon: '💰', type: 'warning', text: `LTCG of ${formatINR(totalLTCG)} exceeds ₹1.25L exemption — ${formatINR(taxable)} taxable at 12.5% (Sec 112A)`, color: '#d97706' });
+        } else if (totalLTCG > 0) {
+            alerts.push({ icon: '✅', type: 'success', text: `LTCG of ${formatINR(totalLTCG)} is within ₹1.25L exemption — no tax payable`, color: '#059669' });
         }
         // Speculative income
-        if(totalSpec !== 0) {
-            alerts.push({ icon:'🎯', type:'info', text:`Speculative income of ${formatINR(totalSpec)} from intraday trading — report under Sec 73, cannot set off against other heads`, color:'#6366f1' });
+        if (totalSpec !== 0) {
+            alerts.push({ icon: '🎯', type: 'info', text: `Speculative income of ${formatINR(totalSpec)} from intraday trading — report under Sec 73, cannot set off against other heads`, color: '#6366f1' });
         }
         // AUM threshold
-        if(totalAUM > 5000000) {
-            alerts.push({ icon:'📋', type:'info', text:`Total portfolio exceeds ₹50L — Schedule AL (Assets & Liabilities) disclosure required in ITR`, color:'#5b21b6' });
+        if (totalAUM > 5000000) {
+            alerts.push({ icon: '📋', type: 'info', text: `Total portfolio exceeds ₹50L — Schedule AL (Assets & Liabilities) disclosure required in ITR`, color: '#5b21b6' });
         }
-        if(totalAUM > 10000000) {
-            alerts.push({ icon:'🏛️', type:'warning', text:`Total portfolio exceeds ₹1 Cr — verify Advance Tax liability (Sec 208-211)`, color:'#dc2626' });
+        if (totalAUM > 10000000) {
+            alerts.push({ icon: '🏛️', type: 'warning', text: `Total portfolio exceeds ₹1 Cr — verify Advance Tax liability (Sec 208-211)`, color: '#dc2626' });
         }
         // High value PMS
-        if(pmsValue > 0) {
-            alerts.push({ icon:'📄', type:'info', text:`PMS portfolio of ${formatINR(pmsValue)} — ensure fee/expense allocation for capital gains computation`, color:'#d97706' });
+        if (pmsValue > 0) {
+            alerts.push({ icon: '📄', type: 'info', text: `PMS portfolio of ${formatINR(pmsValue)} — ensure fee/expense allocation for capital gains computation`, color: '#d97706' });
         }
 
         const alertCt = document.getElementById('fi-compliance-alerts');
         setEl('fi-alert-count', alerts.length);
-        if(alerts.length > 0) {
+        if (alerts.length > 0) {
             alertCt.innerHTML = alerts.map(a => `<div style="display:flex;align-items:flex-start;gap:.55rem;padding:.45rem .6rem;border-bottom:1px solid #f8fafc">
                 <span style="font-size:.85rem;flex-shrink:0">${a.icon}</span>
                 <span style="font-size:.72rem;color:#374151;line-height:1.5">${a.text}</span>
@@ -1532,7 +1702,7 @@ async function loadDashboardStats() {
         setEl('fi-unreal-cost', formatINR(totalBookCost));
         setEl('fi-unreal-market', formatINR(totalMarketVal));
         const pnlEl = document.getElementById('fi-unreal-pnl');
-        if(pnlEl) {
+        if (pnlEl) {
             pnlEl.textContent = (unrealPnl >= 0 ? '+' : '') + formatINR(unrealPnl);
             pnlEl.style.color = unrealPnl >= 0 ? '#059669' : '#dc2626';
         }
@@ -1545,14 +1715,14 @@ async function loadDashboardStats() {
             { name: 'PMS / AIF', cost: pmsBookCost, market: pmsMarketVal, color: '#d97706' },
             { name: 'Bonds / NCDs / FDs', cost: bondValue, market: bondValue, color: '#7c3aed' },
         ].filter(i => i.cost > 0 || i.market > 0);
-        if(unrealItems.length > 0) {
+        if (unrealItems.length > 0) {
             unrealBk.innerHTML = unrealItems.map(i => {
                 const pnl = i.market - i.cost;
                 return `<div style="display:flex;align-items:center;gap:.5rem;padding:.35rem .5rem;border-bottom:1px solid #f8fafc;font-size:.72rem">
                     <div style="width:6px;height:6px;border-radius:50%;background:${i.color};flex-shrink:0"></div>
                     <span style="flex:1;font-weight:600">${i.name}</span>
                     <span style="font-family:'Outfit',sans-serif;font-weight:700;min-width:70px;text-align:right">${formatINR(i.cost)}</span>
-                    <span style="font-family:'Outfit',sans-serif;font-weight:700;color:${pnl>=0?'#059669':'#dc2626'};min-width:60px;text-align:right;font-size:.65rem">${pnl!==0?(pnl>0?'+':'')+formatINR(pnl):'—'}</span>
+                    <span style="font-family:'Outfit',sans-serif;font-weight:700;color:${pnl >= 0 ? '#059669' : '#dc2626'};min-width:60px;text-align:right;font-size:.65rem">${pnl !== 0 ? (pnl > 0 ? '+' : '') + formatINR(pnl) : '—'}</span>
                 </div>`;
             }).join('');
         }
@@ -1563,7 +1733,7 @@ async function loadDashboardStats() {
         setEl('fi-26as-ltcg-stmt', formatINR(Math.max(0, (totalLTCG - 125000) * 0.125)));
 
         // ── 5. Transaction Timeline ──
-        if(detectedFY) setEl('fi-timeline-fy', detectedFY);
+        if (detectedFY) setEl('fi-timeline-fy', detectedFY);
         // Collect monthly buy/sell from all data
         let monthlyBuy = new Array(12).fill(0);
         let monthlySell = new Array(12).fill(0);
@@ -1571,27 +1741,27 @@ async function loadDashboardStats() {
         // Helper to bucket a transaction into monthly buy/sell
         function _bucketTxn(t) {
             let dateStr = t.date || t.trade_date || t.transaction_date || '';
-            if(!dateStr) return;
+            if (!dateStr) return;
             // Parse date — could be DD/MM/YYYY, YYYY-MM-DD, DD-MMM-YYYY, etc.
             let dt;
-            if(dateStr.includes('/')) { const p=dateStr.split('/'); dt=new Date(p[2],p[1]-1,p[0]); }
+            if (dateStr.includes('/')) { const p = dateStr.split('/'); dt = new Date(p[2], p[1] - 1, p[0]); }
             else { dt = new Date(dateStr); }
-            if(isNaN(dt.getTime())) return;
+            if (isNaN(dt.getTime())) return;
             // FY month index: Apr=0, Mar=11
             let m = dt.getMonth() - 3; // Apr=0
-            if(m < 0) m += 12;
+            if (m < 0) m += 12;
             const amt = Math.abs(Number(t.amount || t.total_amount || t.value || t.net_amount || 0));
             const txType = (t.type || t.transaction_type || t.trade_type || '').toLowerCase();
-            if(txType.includes('buy') || txType.includes('purchase') || txType.includes('invest') || txType.includes('sip')) {
+            if (txType.includes('buy') || txType.includes('purchase') || txType.includes('invest') || txType.includes('sip')) {
                 monthlyBuy[m] += amt;
-            } else if(txType.includes('sell') || txType.includes('redeem') || txType.includes('sale')) {
+            } else if (txType.includes('sell') || txType.includes('redeem') || txType.includes('sale')) {
                 monthlySell[m] += amt;
             }
         }
 
         // A. From FI uploads (Demat/MF) — transactions live under structured_data
         allData.forEach((resp, idx) => {
-            if(!resp || !completed[idx]) return;
+            if (!resp || !completed[idx]) return;
             const sd = resp.structured_data || {};
             const txns = sd.transactions || sd.trade_details || [];
             txns.forEach(_bucketTxn);
@@ -1623,20 +1793,20 @@ async function loadDashboardStats() {
                                 (sec.sell_transactions || []).forEach(st => _bucketTxn({ ...st, type: st.type || 'sell' }));
                             });
                         }
-                    } catch(e) {}
+                    } catch (e) { }
                 }
             }
-        } catch(e) { console.warn('PMS timeline fetch error:', e); }
+        } catch (e) { console.warn('PMS timeline fetch error:', e); }
         const maxBar = Math.max(...monthlyBuy, ...monthlySell, 1);
-        for(let i = 0; i < 12; i++) {
-            const buyBar = document.getElementById('fi-tl-buy-'+i);
-            const sellBar = document.getElementById('fi-tl-sell-'+i);
-            if(buyBar) buyBar.style.height = Math.max(0, Math.round(monthlyBuy[i]/maxBar*72)) + 'px';
-            if(sellBar) sellBar.style.height = Math.max(0, Math.round(monthlySell[i]/maxBar*72)) + 'px';
+        for (let i = 0; i < 12; i++) {
+            const buyBar = document.getElementById('fi-tl-buy-' + i);
+            const sellBar = document.getElementById('fi-tl-sell-' + i);
+            if (buyBar) buyBar.style.height = Math.max(0, Math.round(monthlyBuy[i] / maxBar * 72)) + 'px';
+            if (sellBar) sellBar.style.height = Math.max(0, Math.round(monthlySell[i] / maxBar * 72)) + 'px';
         }
 
         setEl('fi-dash-status', '● Live');
-    } catch(e) { console.error('Dashboard load error:', e); }
+    } catch (e) { console.error('Dashboard load error:', e); }
 }
 
 // ══════════════════════════════════════════════════════
@@ -1645,24 +1815,24 @@ async function loadDashboardStats() {
 
 // Sector inference from security name / sector field
 const SECTOR_KEYWORDS = {
-    'Banking': ['hdfc bank','icici bank','sbi','kotak','axis bank','indusind','bandhan','idfc','federal bank','rbl bank','bank of baroda','pnb','canara bank','bank','banking'],
-    'IT / Technology': ['tcs','infosys','wipro','hcl tech','tech mahindra','ltimindtree','persistent','coforge','mphasis','sonata','zensar','cyient','mastek','happiest','firstsource','eclerx','birlasoft','tata elxsi','l&t technology','kpit','software','technology','infotech','it '],
-    'Financial Services': ['bajaj finance','bajaj finserv','hdfc amc','muthoot','manappuram','shriram','chola','sundaram','lic','sbi life','hdfc life','icici lombard','icici pru','max financial','star health','piramal','aditya birla capital','jio financial','insurance','finance','nbfc','nse:bse'],
-    'Pharma & Healthcare': ['sun pharma','dr reddy','cipla','lupin','divi','aurobindo','biocon','alkem','torrent pharma','glenmark','laurus','natco','ipca','abbott','pfizer','sanofi','zydus','eris','jb pharma','pharma','healthcare','hospital','apollo hospital','fortis','max health','diagnostic','metropolis','thyrocare'],
-    'FMCG': ['hindustan unilever','itc','nestle','britannia','dabur','marico','godrej consumer','colgate','emami','tata consumer','hul','pidilite','asian paints','berger','fmcg','consumer'],
-    'Automobile': ['maruti','tata motors','mahindra','bajaj auto','hero moto','eicher motors','tvs motor','ashok leyland','auto','automobile','motor'],
-    'Energy & Power': ['reliance','ntpc','power grid','adani green','adani power','tata power','nhpc','sjvn','powergrid','bpcl','hpcl','ioc','ongc','oil india','gail','coal india','petronet','energy','power','oil','gas','petroleum'],
-    'Metals & Mining': ['tata steel','jsw steel','hindalco','vedanta','nalco','nmdc','jindal steel','sail','hindustan zinc','metal','steel','mining','aluminium'],
-    'Cement & Construction': ['ultratech','ambuja','acc','shree cement','dalmia','ramco','jk cement','jk lakshmi','cement','construction'],
-    'Telecom': ['bharti airtel','jio','vodafone','idea','telecom','airtel','indus towers'],
-    'Real Estate': ['dlf','godrej properties','brigade','oberoi realty','prestige','phoenix','sobha','real estate','realty','housing'],
-    'Infrastructure': ['larsen','l&t','adani ports','adani enterprises','gmr','irb infrastructure','nh','infrastructure','infra'],
-    'Capital Goods': ['siemens','abb','bhel','cummins','thermax','honeywell','heg','graphite','capital goods','engineering'],
-    'Chemicals': ['pidilite','srf','aarti','atul','vinati','navin fluorine','deepak nitrite','clean science','upl','chemical','fertilizer'],
-    'Consumer Durables': ['titan','havells','voltas','crompton','whirlpool','blue star','dixon','amber','kajaria','somany','consumer durable','electronics','appliance'],
-    'Media & Entertainment': ['zee','sun tv','pvr','inox','saregama','media','entertainment'],
-    'Textiles': ['page industries','raymond','arvind','welspun','textile','garment'],
-    'Mutual Fund': ['mutual fund','nifty','sensex','index fund','etf','fund','equity fund','debt fund','liquid fund','balanced','hybrid'],
+    'Banking': ['hdfc bank', 'icici bank', 'sbi', 'kotak', 'axis bank', 'indusind', 'bandhan', 'idfc', 'federal bank', 'rbl bank', 'bank of baroda', 'pnb', 'canara bank', 'bank', 'banking'],
+    'IT / Technology': ['tcs', 'infosys', 'wipro', 'hcl tech', 'tech mahindra', 'ltimindtree', 'persistent', 'coforge', 'mphasis', 'sonata', 'zensar', 'cyient', 'mastek', 'happiest', 'firstsource', 'eclerx', 'birlasoft', 'tata elxsi', 'l&t technology', 'kpit', 'software', 'technology', 'infotech', 'it '],
+    'Financial Services': ['bajaj finance', 'bajaj finserv', 'hdfc amc', 'muthoot', 'manappuram', 'shriram', 'chola', 'sundaram', 'lic', 'sbi life', 'hdfc life', 'icici lombard', 'icici pru', 'max financial', 'star health', 'piramal', 'aditya birla capital', 'jio financial', 'insurance', 'finance', 'nbfc', 'nse:bse'],
+    'Pharma & Healthcare': ['sun pharma', 'dr reddy', 'cipla', 'lupin', 'divi', 'aurobindo', 'biocon', 'alkem', 'torrent pharma', 'glenmark', 'laurus', 'natco', 'ipca', 'abbott', 'pfizer', 'sanofi', 'zydus', 'eris', 'jb pharma', 'pharma', 'healthcare', 'hospital', 'apollo hospital', 'fortis', 'max health', 'diagnostic', 'metropolis', 'thyrocare'],
+    'FMCG': ['hindustan unilever', 'itc', 'nestle', 'britannia', 'dabur', 'marico', 'godrej consumer', 'colgate', 'emami', 'tata consumer', 'hul', 'pidilite', 'asian paints', 'berger', 'fmcg', 'consumer'],
+    'Automobile': ['maruti', 'tata motors', 'mahindra', 'bajaj auto', 'hero moto', 'eicher motors', 'tvs motor', 'ashok leyland', 'auto', 'automobile', 'motor'],
+    'Energy & Power': ['reliance', 'ntpc', 'power grid', 'adani green', 'adani power', 'tata power', 'nhpc', 'sjvn', 'powergrid', 'bpcl', 'hpcl', 'ioc', 'ongc', 'oil india', 'gail', 'coal india', 'petronet', 'energy', 'power', 'oil', 'gas', 'petroleum'],
+    'Metals & Mining': ['tata steel', 'jsw steel', 'hindalco', 'vedanta', 'nalco', 'nmdc', 'jindal steel', 'sail', 'hindustan zinc', 'metal', 'steel', 'mining', 'aluminium'],
+    'Cement & Construction': ['ultratech', 'ambuja', 'acc', 'shree cement', 'dalmia', 'ramco', 'jk cement', 'jk lakshmi', 'cement', 'construction'],
+    'Telecom': ['bharti airtel', 'jio', 'vodafone', 'idea', 'telecom', 'airtel', 'indus towers'],
+    'Real Estate': ['dlf', 'godrej properties', 'brigade', 'oberoi realty', 'prestige', 'phoenix', 'sobha', 'real estate', 'realty', 'housing'],
+    'Infrastructure': ['larsen', 'l&t', 'adani ports', 'adani enterprises', 'gmr', 'irb infrastructure', 'nh', 'infrastructure', 'infra'],
+    'Capital Goods': ['siemens', 'abb', 'bhel', 'cummins', 'thermax', 'honeywell', 'heg', 'graphite', 'capital goods', 'engineering'],
+    'Chemicals': ['pidilite', 'srf', 'aarti', 'atul', 'vinati', 'navin fluorine', 'deepak nitrite', 'clean science', 'upl', 'chemical', 'fertilizer'],
+    'Consumer Durables': ['titan', 'havells', 'voltas', 'crompton', 'whirlpool', 'blue star', 'dixon', 'amber', 'kajaria', 'somany', 'consumer durable', 'electronics', 'appliance'],
+    'Media & Entertainment': ['zee', 'sun tv', 'pvr', 'inox', 'saregama', 'media', 'entertainment'],
+    'Textiles': ['page industries', 'raymond', 'arvind', 'welspun', 'textile', 'garment'],
+    'Mutual Fund': ['mutual fund', 'nifty', 'sensex', 'index fund', 'etf', 'fund', 'equity fund', 'debt fund', 'liquid fund', 'balanced', 'hybrid'],
 };
 
 const SECTOR_COLORS = [
@@ -1719,7 +1889,7 @@ function inferMarketCap(holding) {
     return 'micro';
 }
 
-function populatePortfolioAnalysis(allData, completed, pmsHoldings) {
+function populatePortfolioAnalysis(allData, completed, pmsHoldings, tallyHoldings) {
     const sectorMap = {};  // sector → { value, count }
     const capMap = { large: 0, mid: 0, small: 0, micro: 0 };
     let totalHoldings = 0;
@@ -1753,6 +1923,11 @@ function populatePortfolioAnalysis(allData, completed, pmsHoldings) {
     // 2. Process PMS holdings from stock register (actual equity held via PMS)
     if (pmsHoldings && pmsHoldings.length > 0) {
         pmsHoldings.forEach(processHolding);
+    }
+
+    // 3. Process Tally FI classified holdings (sector defaults to 'Unknown')
+    if (tallyHoldings && tallyHoldings.length > 0) {
+        tallyHoldings.forEach(processHolding);
     }
 
 
@@ -1843,7 +2018,7 @@ function filterJournal(filter) {
 
 async function loadAllJournalEntries() {
     const c = document.getElementById('fi-journal-list');
-    if(!c || !clientId) return;
+    if (!c || !clientId) return;
     c.innerHTML = '<div style="text-align:center;padding:2rem;color:#94a3b8;font-size:.78rem">Loading journal history...</div>';
 
     const fmt = v => '₹' + Math.abs(v).toLocaleString('en-IN', { maximumFractionDigits: 0 });
@@ -1852,13 +2027,13 @@ async function loadAllJournalEntries() {
     // Fetch all completed uploads with approved/synced je_status
     try {
         const r = await authFetch(`/financial-instruments/?client_id=${clientId}`);
-        if(r.ok) {
+        if (r.ok) {
             const ups = await r.json();
             const relevant = ups.filter(u => u.status === 'completed' && u.journal_entry_count > 0 && (u.je_status === 'approved' || u.je_status === 'synced'));
-            for(const u of relevant) {
+            for (const u of relevant) {
                 try {
                     const jr = await authFetch(`/financial-instruments/journal-entries/${u.id}`);
-                    if(jr.ok) {
+                    if (jr.ok) {
                         const d = await jr.json();
                         const entries = (d.journal_entries || []).map((je, i) => ({
                             id: `BE-${u.id}-${i}`,
@@ -1882,10 +2057,50 @@ async function loadAllJournalEntries() {
                             });
                         }
                     }
-                } catch(_) {}
+                } catch (_) { }
             }
         }
-    } catch(e) { console.error(e); }
+    } catch (e) { console.error(e); }
+
+    // Also include approved/synced AUTO entries (frontend-generated)
+    // These use richer field parsing (buy_value/sell_value) that the backend JE endpoint may miss
+    const autoEntries = window._autoEntries || [];
+    const autoApproved = autoEntries.filter(e => e.status === 'approved' || e.status === 'synced');
+    if (autoApproved.length > 0) {
+        // Group by sourceFile
+        const autoGroups = {};
+        autoApproved.forEach(e => {
+            const key = e.uploadId || e.sourceFile || 'auto';
+            if (!autoGroups[key]) autoGroups[key] = {
+                uploadId: e.uploadId,
+                file: e.sourceFile || 'Auto Generated',
+                type: e.sourceType || 'auto',
+                je_status: e.status,
+                entries: [],
+            };
+            autoGroups[key].entries.push({
+                id: e.id,
+                date: e.date || '',
+                narration: e.narration || '',
+                voucher_type: e.voucher_type || 'Journal',
+                entries: (e.entries || []).map(le => ({
+                    ledger_name: le.ledger_name,
+                    amount: Number(le.amount) || 0,
+                    side: (le.side || '').includes('Dr') ? 'Dr' : 'Cr',
+                })),
+                total_amount: e.total_amount || 0,
+            });
+            // Use worst status (approved > synced)
+            if (e.status === 'approved') autoGroups[key].je_status = 'approved';
+        });
+        // Merge: only add auto groups that aren't already covered by backend JE
+        const existingUploadIds = new Set(allGroups.map(g => g.uploadId).filter(Boolean));
+        Object.values(autoGroups).forEach(g => {
+            if (!existingUploadIds.has(g.uploadId)) {
+                allGroups.push(g);
+            }
+        });
+    }
 
     // Also include approved/synced manual entries
     fiVouchers.filter(v => v.status === 'approved' || v.status === 'synced').forEach(v => {
@@ -1899,18 +2114,18 @@ async function loadAllJournalEntries() {
     });
 
     // Apply filter
-    if(_journalFilter === 'synced') {
+    if (_journalFilter === 'synced') {
         allGroups = allGroups.filter(g => g.je_status === 'synced');
-    } else if(_journalFilter === 'approved') {
+    } else if (_journalFilter === 'approved') {
         allGroups = allGroups.filter(g => g.je_status === 'approved');
     }
 
     // Update count badge
     const totalEntries = allGroups.reduce((s, g) => s + g.entries.length, 0);
     const total = document.getElementById('fi-journal-total');
-    if(total) total.textContent = totalEntries;
+    if (total) total.textContent = totalEntries;
 
-    if(allGroups.length === 0) {
+    if (allGroups.length === 0) {
         c.innerHTML = '<div class="fi-empty-mini"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><p>No approved journal entries yet — approve entries via Statement Review to see them here</p></div>';
         return;
     }
@@ -1920,18 +2135,18 @@ async function loadAllJournalEntries() {
         const isSynced = grp.je_status === 'synced';
         const isApproved = grp.je_status === 'approved';
 
-        const typeIcon = (grp.type||'').startsWith('demat') ? '<span style="font-size:.55rem;font-weight:700;padding:1px 5px;border-radius:3px;background:#4338ca15;color:#4338ca;margin-left:4px">Demat</span>'
-            : (grp.type||'').startsWith('mutual') ? '<span style="font-size:.55rem;font-weight:700;padding:1px 5px;border-radius:3px;background:#05966915;color:#059669;margin-left:4px">MF</span>'
-            : (grp.type||'').startsWith('pms') ? '<span style="font-size:.55rem;font-weight:700;padding:1px 5px;border-radius:3px;background:#d9770615;color:#d97706;margin-left:4px">PMS</span>'
-            : '';
+        const typeIcon = (grp.type || '').startsWith('demat') ? '<span style="font-size:.55rem;font-weight:700;padding:1px 5px;border-radius:3px;background:#4338ca15;color:#4338ca;margin-left:4px">Demat</span>'
+            : (grp.type || '').startsWith('mutual') ? '<span style="font-size:.55rem;font-weight:700;padding:1px 5px;border-radius:3px;background:#05966915;color:#059669;margin-left:4px">MF</span>'
+                : (grp.type || '').startsWith('pms') ? '<span style="font-size:.55rem;font-weight:700;padding:1px 5px;border-radius:3px;background:#d9770615;color:#d97706;margin-left:4px">PMS</span>'
+                    : '';
 
         const statusBadge = isSynced
             ? '<span style="font-size:.55rem;font-weight:700;padding:1px 6px;border-radius:10px;background:#dcfce7;color:#059669;margin-left:.5rem">✓ Synced to Tally</span>'
             : '<span style="font-size:.55rem;font-weight:700;padding:1px 6px;border-radius:10px;background:#fef3c7;color:#d97706;margin-left:.5rem">Approved — Ready to Sync</span>';
 
-        // Sync button for approved (not yet synced) groups
-        const syncBtn = isApproved && grp.uploadId
-            ? `<button class="fi-btn tally" style="font-size:.65rem;padding:.25rem .6rem;margin-left:auto" onclick="event.stopPropagation();syncSingleToTally('${grp.uploadId}')">↻ Sync to Tally</button>`
+        // Sync button for approved (not yet synced) or re-sync for already synced
+        const syncBtn = grp.uploadId && (isApproved || isSynced)
+            ? `<button class="fi-btn tally" style="font-size:.65rem;padding:.25rem .6rem;margin-left:auto" onclick="event.stopPropagation();syncSingleToTally('${grp.uploadId}')">${isSynced ? '🔄 Re-sync' : '↻ Sync to Tally'}</button>`
             : '';
 
         const entriesHTML = grp.entries.map(v => {
@@ -1989,7 +2204,7 @@ function switchStmtTab(tab) {
 
 // Builds a table row for a statement upload
 function buildStmtRow(u, showType) {
-    const statusColor = {completed:'#059669',processing:'#d97706',extracting:'#4338ca',structuring:'#6366f1',failed:'#dc2626'};
+    const statusColor = { completed: '#059669', processing: '#d97706', extracting: '#4338ca', structuring: '#6366f1', failed: '#dc2626' };
     const sc = statusColor[u.status] || '#94a3b8';
     const isProcessing = u.status !== 'completed' && u.status !== 'failed';
     const isCompleted = u.status === 'completed';
@@ -2019,13 +2234,13 @@ function buildStmtRow(u, showType) {
     } else if (isCompleted && jeStatus === 'pending') {
         statusBadge = `<span class="fi-badge" style="background:#fef3c7;color:#d97706;font-weight:700">NEEDS APPROVAL</span>`;
     } else {
-        statusBadge = `<span class="fi-badge" style="background:${sc}15;color:${sc};font-weight:700">${(u.status||'').toUpperCase()}</span>`;
+        statusBadge = `<span class="fi-badge" style="background:${sc}15;color:${sc};font-weight:700">${(u.status || '').toUpperCase()}</span>`;
     }
 
     const typeCol = showType ? `<td><span class="fi-badge" style="background:#eef2ff;color:#4338ca">${typeLabel(u.instrument_type)}</span></td>` : '';
     const dateStr = u.created_at ? new Date(u.created_at).toLocaleDateString('en-GB') : '-';
 
-    return `<tr${isProcessing?' style="background:#fefce8"':''}>
+    return `<tr${isProcessing ? ' style="background:#fefce8"' : ''}>
         <td style="font-weight:600;font-family:'Outfit',sans-serif;color:#4338ca">${dateStr}</td>
         ${typeCol}
         <td style="font-weight:500;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${u.filename}</td>
@@ -2038,10 +2253,10 @@ function buildStmtRow(u, showType) {
 async function loadStatements() { loadStatementsTabbed(); }
 
 async function loadStatementsTabbed() {
-    if(!clientId) return;
+    if (!clientId) return;
     try {
         const res = await authFetch(`/financial-instruments/?client_id=${clientId}`);
-        if(!res.ok) return;
+        if (!res.ok) return;
         const allUploads = await res.json();
 
         // Split by type
@@ -2060,14 +2275,14 @@ async function loadStatementsTabbed() {
         const filteredPms = pmsFilter === 'all' ? pms : pms.filter(u => u.instrument_type === pmsFilter);
 
         // Update tab badge counts
-        const setCount = (id, n) => { const el = document.getElementById(id); if(el) el.textContent = n; };
+        const setCount = (id, n) => { const el = document.getElementById(id); if (el) el.textContent = n; };
         setCount('fi-tab-demat-count', demat.length);
         setCount('fi-tab-mf-count', mf.length);
         setCount('fi-tab-pms-count', pms.length);
 
         // Populate Demat table
         const dematBody = document.getElementById('fi-demat-tbody');
-        if(dematBody) {
+        if (dematBody) {
             dematBody.innerHTML = demat.length === 0
                 ? '<tr><td colspan="6" style="text-align:center;padding:2rem;color:#94a3b8">No Demat statements uploaded yet</td></tr>'
                 : demat.map(u => buildStmtRow(u, true)).join('');
@@ -2075,7 +2290,7 @@ async function loadStatementsTabbed() {
 
         // Populate MF table
         const mfBody = document.getElementById('fi-mf-tbody');
-        if(mfBody) {
+        if (mfBody) {
             mfBody.innerHTML = mf.length === 0
                 ? '<tr><td colspan="5" style="text-align:center;padding:2rem;color:#94a3b8">No Mutual Fund statements uploaded yet</td></tr>'
                 : mf.map(u => buildStmtRow(u, false)).join('');
@@ -2083,12 +2298,12 @@ async function loadStatementsTabbed() {
 
         // Populate PMS table
         const pmsBody = document.getElementById('fi-pms-tbody');
-        if(pmsBody) {
+        if (pmsBody) {
             pmsBody.innerHTML = filteredPms.length === 0
                 ? '<tr><td colspan="6" style="text-align:center;padding:2rem;color:#94a3b8">No PMS statements uploaded yet</td></tr>'
                 : filteredPms.map(u => buildStmtRow(u, true)).join('');
         }
-    } catch(e) { console.error(e); }
+    } catch (e) { console.error(e); }
 }
 
 async function syncSingleToTally(uploadId) {
@@ -2103,7 +2318,7 @@ async function syncSingleToTally(uploadId) {
 
     if (entries.length === 0) { fiToast('No journal entries to sync', 'warning'); return; }
 
-    // Step 2: Check if Tally Connector is running
+    // Step 2: Check if Tally Connector is running & match correct company
     let tallyConnected = false;
     let tallyCompany = '';
     try {
@@ -2112,7 +2327,17 @@ async function syncSingleToTally(uploadId) {
             const data = await res.json();
             if (data.companies && data.companies.length > 0) {
                 tallyConnected = true;
-                tallyCompany = data.companies[0];
+                // Try to match client name to a Tally company
+                let matchedCompany = '';
+                try {
+                    const cRes = await authFetch(`/clients/${clientId}`);
+                    if (cRes && cRes.ok) {
+                        const cData = await cRes.json();
+                        const cName = (cData.name || '').toUpperCase();
+                        matchedCompany = data.companies.find(c => c.toUpperCase().includes(cName) || cName.includes(c.toUpperCase())) || '';
+                    }
+                } catch (e) { /* ignore */ }
+                tallyCompany = matchedCompany || data.companies[0];
             }
         }
     } catch (e) { /* connector not running */ }
@@ -2176,13 +2401,36 @@ async function syncSingleToTally(uploadId) {
                 dateVal = `${yyyy}${mm}${dd}`;
             }
         }
+        // Fallback: use FY start date (1st April) for opening balance entries
+        // Use PREVIOUS FY start — opening balances are for the FY open in Tally
+        // e.g. if today is May 2026, Tally likely has FY 2025-26 → date = 01-Apr-2025
+        if (!dateVal) {
+            const now = new Date();
+            const fyYear = now.getMonth() >= 3 ? now.getFullYear() - 1 : now.getFullYear() - 2;
+            dateVal = `${fyYear}0401`;
+        }
 
-        // Build ledger entries for Tally
-        const ledger_entries = (je.ledger_entries || []).map(le => ({
-            ledger_name: le.ledger_name || '',
-            amount: Number(le.amount) || 0,
-            is_debit: (le.side || '').includes('Dr'),
-        }));
+        // Build ledger entries for Tally with correct parent groups
+        const ledger_entries = (je.ledger_entries || []).map(le => {
+            const name = (le.ledger_name || '').toLowerCase();
+            // Determine correct parent group for auto-creation in Tally
+            let parent_group = '';
+            if (name.includes('investment') || name.includes('shares of') || name.includes('equity -')) {
+                parent_group = 'Investments';
+            } else if (name.includes('capital') || name.includes('opening balance')) {
+                parent_group = 'Capital Account';
+            } else if (name.includes('dividend') || name.includes('interest income')) {
+                parent_group = 'Indirect Incomes';
+            } else if (name.includes('brokerage') || name.includes('stt') || name.includes('stamp duty')) {
+                parent_group = 'Indirect Expenses';
+            }
+            return {
+                ledger_name: le.ledger_name || '',
+                amount: Number(le.amount) || 0,
+                is_debit: (le.side || '').includes('Dr'),
+                parent_group,
+            };
+        });
 
         const payload = {
             company: tallyCompany,
@@ -2200,11 +2448,18 @@ async function syncSingleToTally(uploadId) {
                 body: JSON.stringify(payload),
             });
             const result = await res.json();
+            // Connector returns batch format: { ok, results: [{ok, error, details},...] }
             if (result.ok) {
                 successCount++;
             } else {
                 failCount++;
-                lastError = result.details || result.error || 'Unknown error';
+                // Extract error from batch results array or top-level
+                if (result.results && result.results.length > 0) {
+                    const firstFail = result.results.find(r => !r.ok) || result.results[0];
+                    lastError = firstFail.details || firstFail.error || 'Unknown Tally error';
+                } else {
+                    lastError = result.details || result.error || 'Unknown error';
+                }
                 console.warn(`Tally push failed for entry ${i + 1}:`, lastError);
             }
         } catch (err) {
@@ -2251,7 +2506,7 @@ async function deleteUpload(uploadId, filename) {
         fiToast(`"${filename}" deleted`, 'success');
         loadStatements();
         loadDashboardStats();
-    } catch(e) {
+    } catch (e) {
         fiToast(e.message || 'Delete failed', 'error');
     }
 }
@@ -2317,11 +2572,11 @@ async function handle26ASUpload(input) {
                     fiToast(`26AS processing failed: ${status.error || 'Unknown error'}`, 'error');
                 } else {
                     const stepMsg = status.status === 'extracting' ? '📄 Extracting text...' :
-                                    status.status === 'structuring' ? '🤖 AI structuring...' :
-                                    status.status === 'generating_entries' ? '🔗 Auto-matching...' : '⏳ Processing...';
+                        status.status === 'structuring' ? '🤖 AI structuring...' :
+                            status.status === 'generating_entries' ? '🔗 Auto-matching...' : '⏳ Processing...';
                     if (label) label.textContent = stepMsg;
                 }
-            } catch(e) { /* continue polling */ }
+            } catch (e) { /* continue polling */ }
 
             if (attempts > 60) {
                 clearInterval(poll);

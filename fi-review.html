@@ -338,7 +338,7 @@
         }
         function showToast(msg,type='info') { const tc=document.getElementById('toast-container'); const bg=type==='success'?'#059669':type==='error'?'#dc2626':'#4338ca'; const t=document.createElement('div'); t.style.cssText=`background:${bg};color:#fff;padding:.6rem 1.1rem;border-radius:8px;font-size:.82rem;font-weight:600;box-shadow:0 4px 14px rgba(0,0,0,.15);font-family:inherit`; t.textContent=msg; tc.appendChild(t); setTimeout(()=>{t.style.opacity='0';t.style.transition='opacity .3s';setTimeout(()=>t.remove(),300)},3500); }
         function goBack() { window.location.href = backUrl; }
-        function typeLabel(t) { return {demat:'Demat Statement',mutual_fund:'Mutual Fund CAS',pms:'PMS Statement'}[t]||t; }
+        function typeLabel(t) { return {demat:'Demat Statement',mutual_fund:'Mutual Fund CAS',pms:'PMS Statement',pms_transaction:'PMS Transactions',pms_dividend:'PMS Dividends',pms_expenses:'PMS Expenses'}[t]||t; }
 
         // Timer
         timerInterval = setInterval(() => {
