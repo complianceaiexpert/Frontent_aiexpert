@@ -61,6 +61,10 @@
 
             <!-- ━━━ DASHBOARD ━━━ -->
             <div class="fi-section active" id="sec-dashboard">
+                <!-- FY Period Picker -->
+                <div style="display:flex;align-items:center;justify-content:flex-end;margin-bottom:.75rem">
+                    <div id="fi-period-container" style="min-width:200px"></div>
+                </div>
                 <!-- Row 1: AUM + Capital Gains + Tally Pipeline -->
                 <div class="fi-dash-grid-3" id="fi-row-overview">
                     <!-- AUM Overview -->
@@ -780,19 +784,19 @@
                 </div>
             </div>
 
-            <!-- ━━━ JOURNAL LEDGER (Read-only history) ━━━ -->
+            <!-- ━━━ TALLY ENTRIES (Approved, ready for Tally sync) ━━━ -->
             <div class="fi-section" id="sec-journal-entries">
-                <div class="fi-sh"><h1>Journal Ledger</h1><p>Complete history of all synced & approved journal vouchers — read-only</p></div>
+                <div class="fi-sh"><h1>Tally Entries</h1><p>Approved journal vouchers ready to be synced to Tally</p></div>
                 <div class="fi-panel" style="padding:0">
                     <div class="fi-toolbar">
                         <div style="display:flex;align-items:center;gap:.5rem">
-                            <span style="font-size:.72rem;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:.05em">History</span>
-                            <span class="fi-sb-badge" id="fi-journal-total" style="background:#4338ca;min-width:20px;text-align:center">0</span>
+                            <span style="font-size:.72rem;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:.05em">Ready to Sync</span>
+                            <span class="fi-sb-badge" id="fi-journal-total" style="background:#d97706;min-width:20px;text-align:center">0</span>
                         </div>
                         <div class="fi-pill-group" style="margin-left:auto">
-                            <button class="fi-pill active" data-jl-filter="all" onclick="filterJournal('all')">All</button>
+                            <button class="fi-pill" data-jl-filter="all" onclick="filterJournal('all')">All</button>
                             <button class="fi-pill" data-jl-filter="synced" onclick="filterJournal('synced')"><span class="fi-pill-dot" style="background:#059669"></span>Synced</button>
-                            <button class="fi-pill" data-jl-filter="approved" onclick="filterJournal('approved')"><span class="fi-pill-dot" style="background:#d97706"></span>Approved</button>
+                            <button class="fi-pill active" data-jl-filter="approved" onclick="filterJournal('approved')"><span class="fi-pill-dot" style="background:#d97706"></span>Ready</button>
                         </div>
                     </div>
                     <div id="fi-journal-list" style="padding:.5rem"></div>

@@ -5,11 +5,28 @@
 
 const urlParams = new URLSearchParams(window.location.search);
 const clientId = urlParams.get('clientId');
-document.getElementById('fi-back-link').href = `services-dashboard.html?clientId=${clientId}`;
+const _backLink = document.getElementById('fi-back-link');
+if (_backLink) _backLink.href = `services-dashboard.html?clientId=${clientId}`;
 
 let fiVouchers = [];
 let entryRowCounter = 0;
 let selectedTxnType = null;
+
+// ═══ FY DATE FILTERING ═══
+let fiSelectedDateFrom = '';
+let fiSelectedDateTo = '';
+let fiSelectedFYLabel = '';  // tracks the FY label from picker, e.g. 'FY 2025-26'
+function fiToTallyDate(isoDate) {
+    return isoDate ? isoDate.replace(/-/g, '') : '';
+}
+function fiWithDateRange(url) {
+    if (!fiSelectedDateFrom && !fiSelectedDateTo) return url;
+    const sep = url.includes('?') ? '&' : '?';
+    let params = '';
+    if (fiSelectedDateFrom) params += `date_from=${fiSelectedDateFrom}`;
+    if (fiSelectedDateTo) params += `${params ? '&' : ''}date_to=${fiSelectedDateTo}`;
+    return url + sep + params;
+}
 
 // ═══ TOAST ═══
 function fiToast(msg, type = 'info') {
@@ -690,10 +707,11 @@ async function syncAllPending() {
 async function generateAutoEntries() {
     if (!clientId) return [];
     const entries = [];
+    let uploads = [];
     try {
         const res = await authFetch(`/financial-instruments/?client_id=${clientId}`);
         if (!res.ok) return [];
-        const uploads = await res.json();
+        uploads = await res.json();
         const completed = uploads.filter(u => u.status === 'completed');
 
         for (const u of completed) {
@@ -1222,7 +1240,7 @@ async function loadDashboardStats() {
     // Retry up to 3 times with 2s back-off
     for (let attempt = 1; attempt <= 3; attempt++) {
         try {
-            const res = await authFetch(`/financial-instruments/?client_id=${clientId}`);
+            const res = await authFetch(fiWithDateRange(`/financial-instruments/?client_id=${clientId}`));
             if (!res || !res.ok) {
                 console.warn(`Dashboard: FI list fetch attempt ${attempt} failed (${res?.status})`);
                 if (attempt < 3) { await new Promise(r => setTimeout(r, 2000)); continue; }
@@ -1420,7 +1438,7 @@ async function loadDashboardStats() {
                 }
             }
             if (clientCompanyName) {
-                const fiRes = await authFetch(`/fi-tally/classify?company_name=${encodeURIComponent(clientCompanyName)}`);
+                const fiRes = await authFetch(fiWithDateRange(`/fi-tally/classify?company_name=${encodeURIComponent(clientCompanyName)}`));
                 if (fiRes && fiRes.ok) {
                     const fiData = await fiRes.json();
 
@@ -1491,30 +1509,17 @@ async function loadDashboardStats() {
         // ── Populate AUM ──
         setEl('fi-stat-total-amt', formatINR(totalAUM));
 
-<<<<<<< Updated upstream
         // ── Set FY consistently across all cards ──
         let displayFY;
-        if(detectedFY) {
+        // Priority: 1. FYPeriod picker selection, 2. detected from data, 3. current date
+        if (fiSelectedFYLabel) {
+            displayFY = fiSelectedFYLabel;
+        } else if (detectedFY) {
             displayFY = detectedFY;
         }
-        // Fallback to current date if no FY detected from data
-        if(!displayFY) {
-            const { fy } = getFinancialYears();
-=======
-        // ── Set FY/AY consistently across all cards ──
-        let displayFY, displayAY;
-        if (detectedFY) {
-            displayFY = detectedFY;
-            const fyMatch = detectedFY.match(/(\d{4})/);
-            if (fyMatch) {
-                const fyStart = parseInt(fyMatch[1]);
-                displayAY = `AY ${fyStart + 1}-${String(fyStart + 2).slice(2)}`;
-            }
-        }
-        // Fallback to current date if no FY detected from data
+        // Fallback to current date if no FY set
         if (!displayFY) {
-            const { fy, ay } = getFinancialYears();
->>>>>>> Stashed changes
+            const { fy } = getFinancialYears();
             displayFY = fy;
         }
         setEl('fi-ay', displayFY);
@@ -2008,7 +2013,7 @@ function openReview(id, type) {
 }
 
 // ═══ JOURNAL LEDGER (Read-only history of synced + approved entries) ═══
-let _journalFilter = 'all';
+let _journalFilter = 'approved';
 
 function filterJournal(filter) {
     _journalFilter = filter;
@@ -2793,6 +2798,33 @@ function show26ASDetails() {
 }
 
 // ═══ INIT ═══
+// Mount FY Period picker
+if (typeof FYPeriod !== 'undefined') {
+    FYPeriod.mount('#fi-period-container', {
+        type: 'yearly',
+        label: 'Financial Year',
+        onChange: (period) => {
+            if (period && period.dateRange) {
+                fiSelectedDateFrom = fiToTallyDate(period.dateRange.from);
+                fiSelectedDateTo = fiToTallyDate(period.dateRange.to);
+                // Build FY label from the selected period, e.g. 'FY 2025-26'
+                fiSelectedFYLabel = period.label ? `FY ${period.label}` : '';
+                if (period.value) fiSelectedFYLabel = `FY ${period.value}`;
+            } else {
+                fiSelectedDateFrom = '';
+                fiSelectedDateTo = '';
+                fiSelectedFYLabel = '';
+            }
+            console.log('FI FY changed:', fiSelectedFYLabel, fiSelectedDateFrom, fiSelectedDateTo);
+            // Immediately update dashboard FY labels
+            setEl('fi-ay', fiSelectedFYLabel || '—');
+            setEl('fi-fy-cg', fiSelectedFYLabel || '—');
+            setEl('fi-fy-tds', fiSelectedFYLabel || '—');
+            // Reload dashboard data with new date scope
+            loadDashboardStats();
+        }
+    });
+}
 // Load persisted manual entries first, then dashboard stats
 loadManualEntries().then(() => loadDashboardStats());
 // Load 26AS match results if available

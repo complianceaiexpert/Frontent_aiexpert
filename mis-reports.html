@@ -61,9 +61,12 @@
                 <span style="color:#374151;font-weight:600">MIS Reports</span>
             </div>
 
-            <div class="de-sh" style="margin-bottom:.75rem">
-                <h1><span style="background:linear-gradient(135deg,#1e3a8a,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">MIS Reports</span></h1>
-                <p>Management Information System — Comprehensive Financial Analysis from Tally data</p>
+            <div class="de-sh" style="margin-bottom:.75rem;display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:.5rem">
+                <div>
+                    <h1><span style="background:linear-gradient(135deg,#1e3a8a,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">MIS Reports</span></h1>
+                    <p>Management Information System — Comprehensive Financial Analysis from Tally data</p>
+                </div>
+                <div id="mis-period-container" style="min-width:200px"></div>
             </div>
 
             <div id="mis-loading" class="mis-loading-state">
@@ -116,6 +119,7 @@
 
     <script src="api_config.js?v=2"></script>
     <script src="app-topbar.js"></script>
+    <script src="fy-utils.js"></script>
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         const clientId = urlParams.get("clientId");
@@ -153,10 +157,28 @@
             if (!clientCompanyName) clientCompanyName = displayName;
         }
 
+        // ═══ FY DATE FILTERING ═══
+        let selectedDateFrom = '';
+        let selectedDateTo = '';
+        function toTallyDate(isoDate) {
+            return isoDate ? isoDate.replace(/-/g, '') : '';
+        }
+
         function withCompany(url) {
-            if (!clientCompanyName) return url;
-            const sep = url.includes('?') ? '&' : '?';
-            return url + sep + 'company_name=' + encodeURIComponent(clientCompanyName);
+            let result = url;
+            if (clientCompanyName) {
+                const sep = result.includes('?') ? '&' : '?';
+                result = result + sep + 'company_name=' + encodeURIComponent(clientCompanyName);
+            }
+            // Append date range
+            if (selectedDateFrom || selectedDateTo) {
+                const sep2 = result.includes('?') ? '&' : '?';
+                let params = '';
+                if (selectedDateFrom) params += `date_from=${selectedDateFrom}`;
+                if (selectedDateTo) params += `${params ? '&' : ''}date_to=${selectedDateTo}`;
+                result = result + sep2 + params;
+            }
+            return result;
         }
 
         function formatINR(val) {
@@ -364,7 +386,24 @@
         }
 
         // Init
-        loadClientCompanyName().then(() => loadMISReports());
+        loadClientCompanyName().then(() => {
+            // Mount FY Period picker
+            FYPeriod.mount('#mis-period-container', {
+                type: 'yearly',
+                label: 'Financial Year',
+                onChange: (period) => {
+                    if (period && period.dateRange) {
+                        selectedDateFrom = toTallyDate(period.dateRange.from);
+                        selectedDateTo = toTallyDate(period.dateRange.to);
+                    } else {
+                        selectedDateFrom = '';
+                        selectedDateTo = '';
+                    }
+                    console.log('MIS FY changed:', period?.label, selectedDateFrom, selectedDateTo);
+                    loadMISReports();
+                }
+            });
+        });
     </script>
 </body>
 </html>

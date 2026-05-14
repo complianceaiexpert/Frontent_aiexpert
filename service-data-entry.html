@@ -427,6 +427,34 @@
                         </div>
                         <div class="de-pagination" id="voucher-pagination"></div>
                     </div>
+
+                    <!-- Items Content -->
+                    <div id="master-content-item" style="display:none">
+                        <div class="de-filter-bar" style="padding:.5rem 1rem;border-bottom:1px solid #f1f5f9">
+                            <input type="text" class="de-search" placeholder="Search by stock item name, HSN code..."
+                                id="item-search" oninput="filterItems(this.value)">
+                        </div>
+                        <div class="de-table-wrap">
+                            <table class="de-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width:50px">Sr.</th>
+                                        <th>Stock Item Name</th>
+                                        <th>HSN Code</th>
+                                        <th>UOM</th>
+                                        <th>GST %</th>
+                                        <th style="text-align:right">Total Qty</th>
+                                        <th style="text-align:right">Total Value</th>
+                                        <th style="text-align:center">Txns</th>
+                                        <th>Last Txn</th>
+                                        <th>Godown</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="items-tbody"></tbody>
+                            </table>
+                        </div>
+                        <div class="de-pagination" id="item-pagination"></div>
+                    </div>
                 </div>
             </div>
 
@@ -883,13 +911,28 @@
         }
 
         // Helper: append company_name to a Tally API URL
+        // Also appends date_from/date_to for FY filtering
+        let selectedDateFrom = '';
+        let selectedDateTo = '';
+        function toTallyDate(isoDate) {
+            return isoDate ? isoDate.replace(/-/g, '') : '';
+        }
         function withCompany(url) {
-            if (!clientCompanyName) return url;
+            if (!clientCompanyName) return withDateRange(url);
             const sep = url.includes('?') ? '&' : '?';
-            return url + sep + 'company_name=' + encodeURIComponent(clientCompanyName);
+            return withDateRange(url + sep + 'company_name=' + encodeURIComponent(clientCompanyName));
+        }
+        function withDateRange(url) {
+            if (!selectedDateFrom && !selectedDateTo) return url;
+            const sep = url.includes('?') ? '&' : '?';
+            let params = '';
+            if (selectedDateFrom) params += `date_from=${selectedDateFrom}`;
+            if (selectedDateTo) params += `${params ? '&' : ''}date_to=${selectedDateTo}`;
+            return url + sep + params;
         }
 
-        document.getElementById('back-link').href = `services-dashboard.html?clientId=${clientId}`;
+        const backLink = document.getElementById('back-link');
+        if (backLink) backLink.href = `services-dashboard.html?clientId=${clientId}`;
 
         function goToTransactions() {
             window.location.href = `transactions.html?clientId=${clientId}&service=${encodeURIComponent(serviceName)}`;
@@ -1189,7 +1232,7 @@
             el.classList.add('active');
 
             // Hide all master content panes
-            const panes = ['ledger', 'vouchers'];
+            const panes = ['ledger', 'vouchers', 'item'];
             panes.forEach(p => {
                 const pane = document.getElementById('master-content-' + p);
                 if (pane) pane.style.display = 'none';
@@ -1199,9 +1242,9 @@
             const activePane = document.getElementById('master-content-' + tab);
             if (activePane) activePane.style.display = '';
 
-            // Update search placeholder
+            // Update search placeholder — hide the top search bar for vouchers/items (they have their own)
             const searchBar = document.getElementById('master-search-bar');
-            if (tab === 'vouchers') {
+            if (tab === 'vouchers' || tab === 'item') {
                 searchBar.style.display = 'none';
             } else {
                 searchBar.style.display = 'flex';
@@ -1209,6 +1252,112 @@
 
             if (tab === 'ledger') loadLedgerData();
             if (tab === 'vouchers') loadVoucherData();
+            if (tab === 'item') loadItemsData();
+        }
+
+        // ═══ ITEMS TAB — STOCK ITEMS FROM INVENTORY ENTRIES ═══
+        let itemPage = 1;
+        let itemTotalPages = 1;
+        let itemTotal = 0;
+        const ITEM_PER_PAGE = 20;
+        let itemSearchVal = '';
+        let itemSearchDebounce = null;
+
+        document.getElementById('item-search')?.addEventListener('input', function () {
+            clearTimeout(itemSearchDebounce);
+            itemSearchDebounce = setTimeout(() => filterItems(this.value), 300);
+        });
+
+        function filterItems(val) { itemSearchVal = val; itemPage = 1; loadItemsData(); }
+
+        async function loadItemsData(page) {
+            if (page) itemPage = page;
+            const tbody = document.getElementById('items-tbody');
+            tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:2rem;color:#9ca3af">Loading stock items…</td></tr>';
+
+            try {
+                let url = withCompany(`/tally/stock-items?page=${itemPage}&per_page=${ITEM_PER_PAGE}`);
+                if (itemSearchVal) url += `&search=${encodeURIComponent(itemSearchVal)}`;
+
+                const res = await authFetch(url);
+                if (!res.ok) throw new Error('Failed to load stock items');
+                const result = await res.json();
+
+                itemTotal = result.total;
+                itemTotalPages = result.total_pages;
+                const items = result.data;
+
+                if (items.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:3rem;color:#9ca3af"><div style="font-size:2rem;margin-bottom:.5rem">📦</div>No stock items found</td></tr>';
+                    document.getElementById('item-pagination').innerHTML = '';
+                    return;
+                }
+
+                tbody.innerHTML = items.map((item, i) => {
+                    const srNo = (itemPage - 1) * ITEM_PER_PAGE + i + 1;
+                    const hsnBadge = item.hsn_code
+                        ? `<span style="font-family:monospace;font-size:.75rem;background:#eff6ff;color:#3b82f6;padding:1px 6px;border-radius:4px">${item.hsn_code}</span>`
+                        : '<span style="color:#d1d5db">—</span>';
+                    const gstDisplay = item.gst_rate ? `${item.gst_rate}%` : '—';
+                    // Use txn totals if available, else fallback to opening balance from master
+                    const qty = item.total_qty || item.opening_qty || 0;
+                    const val = item.total_value || item.opening_value || 0;
+                    const qtyDisplay = qty ? qty.toLocaleString('en-IN', { maximumFractionDigits: 2 }) : '—';
+                    const valDisplay = val ? formatINR(val) : '—';
+                    const qtyLabel = item.total_qty ? '' : (item.opening_qty ? '<div style="font-size:.6rem;color:#9ca3af">Op. Bal</div>' : '');
+                    const valLabel = item.total_value ? '' : (item.opening_value ? '<div style="font-size:.6rem;color:#9ca3af">Op. Bal</div>' : '');
+                    const lastDate = item.last_txn_date ? formatTallyDate(item.last_txn_date) : '—';
+
+                    return `<tr>
+                        <td style="text-align:center;color:#6b7280">${srNo}</td>
+                        <td>
+                            <strong style="font-weight:600;color:#0f172a">${item.name}</strong>
+                            ${item.parent ? `<div style="font-size:.68rem;color:#9ca3af">${item.parent}</div>` : ''}
+                        </td>
+                        <td>${hsnBadge}</td>
+                        <td style="font-size:.82rem;color:#475569">${item.uom || '—'}</td>
+                        <td style="font-size:.82rem;color:#475569">${gstDisplay}</td>
+                        <td style="text-align:right;font-size:.82rem;font-weight:600">${qtyDisplay} ${item.uom || ''}${qtyLabel}</td>
+                        <td style="text-align:right;font-size:.82rem;font-weight:600">${valDisplay}${valLabel}</td>
+                        <td style="text-align:center">
+                            <span style="background:#f5f3ff;color:#7c3aed;font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:10px">${item.txn_count || 0}</span>
+                        </td>
+                        <td style="font-size:.78rem;color:#6b7280">${lastDate}</td>
+                        <td style="font-size:.78rem;color:#6b7280">${item.godown || '—'}</td>
+                    </tr>`;
+                }).join('');
+
+                renderItemPagination();
+            } catch (e) {
+                console.error('Items load error:', e);
+                tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:3rem;color:#dc2626">⚠️ Failed to load stock items. Check server connection.</td></tr>';
+            }
+        }
+
+        function renderItemPagination() {
+            const pagEl = document.getElementById('item-pagination');
+            if (itemTotalPages <= 1) { pagEl.innerHTML = `<div class="de-page-info">${itemTotal} item(s)</div><div></div><div></div>`; return; }
+
+            const startItem = (itemPage - 1) * ITEM_PER_PAGE + 1;
+            const endItem = Math.min(itemPage * ITEM_PER_PAGE, itemTotal);
+
+            let pagHtml = `<div class="de-page-info">Showing ${startItem}–${endItem} of ${itemTotal} items</div>`;
+            pagHtml += `<div class="de-page-btns">`;
+            pagHtml += `<button class="de-page-btn" ${itemPage === 1 ? 'disabled' : ''} onclick="loadItemsData(${itemPage - 1})">‹</button>`;
+
+            let startP = Math.max(1, itemPage - 2);
+            let endP = Math.min(itemTotalPages, startP + 4);
+            if (endP - startP < 4) startP = Math.max(1, endP - 4);
+
+            if (startP > 1) pagHtml += `<button class="de-page-btn" onclick="loadItemsData(1)">1</button><button class="de-page-btn" disabled>…</button>`;
+            for (let p = startP; p <= endP; p++) {
+                pagHtml += `<button class="de-page-btn ${p === itemPage ? 'active' : ''}" onclick="loadItemsData(${p})">${p}</button>`;
+            }
+            if (endP < itemTotalPages) pagHtml += `<button class="de-page-btn" disabled>…</button><button class="de-page-btn ${itemTotalPages === itemPage ? 'active' : ''}" onclick="loadItemsData(${itemTotalPages})">${itemTotalPages}</button>`;
+
+            pagHtml += `<button class="de-page-btn" ${itemPage === itemTotalPages ? 'disabled' : ''} onclick="loadItemsData(${itemPage + 1})">›</button>`;
+            pagHtml += `</div><div style="font-size:.78rem;color:#9ca3af">${ITEM_PER_PAGE} / page</div>`;
+            pagEl.innerHTML = pagHtml;
         }
 
         // ═══ VOUCHERS TAB — TALLY SYNCED VOUCHERS ═══
@@ -2994,27 +3143,26 @@
             invH += `<div style="display:flex;gap:1rem;margin-top:.75rem"><div class="mis-kpi" style="border-left:3px solid #7c3aed;flex:1"><div class="mis-kpi-label">Unique Items</div><div class="mis-kpi-value" style="color:#7c3aed">${inv.unique_items}</div></div><div class="mis-kpi" style="border-left:3px solid #2563eb;flex:1"><div class="mis-kpi-label">Total Inventory Value</div><div class="mis-kpi-value" style="color:#2563eb">${formatINR(inv.total_value)}</div></div></div>`;
             document.getElementById('mis-inventory-body').innerHTML = invH;
             // Cash Flow
-            const cf = d.cash_flow || {};
+            const cfData = d.cash_flow || {};
             document.getElementById('mis-cashflow-body').innerHTML = `
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
                 <div>
                 <table class="mis-table"><thead><tr><th>Particulars</th><th style="text-align:right">Amount (₹)</th></tr></thead><tbody>
-                <tr><td>Opening Cash & Bank</td><td style="text-align:right;font-weight:600">${formatINR(cf.opening_cash)}</td></tr>
-                <tr style="background:#f0fdf4"><td style="font-weight:700;color:#059669">A. Operating Activities</td><td style="text-align:right;font-weight:700;color:#059669">${formatINR(cf.operating)}</td></tr>
-                <tr style="background:${cf.investing>=0?'#f0fdf4':'#fef2f2'}"><td style="font-weight:700;color:${cf.investing>=0?'#059669':'#dc2626'}">B. Investing Activities</td><td style="text-align:right;font-weight:700;color:${cf.investing>=0?'#059669':'#dc2626'}">${cf.investing>=0?'':'-'}${formatINR(cf.investing)}</td></tr>
-                <tr style="background:${cf.financing>=0?'#f0fdf4':'#fef2f2'}"><td style="font-weight:700;color:${cf.financing>=0?'#059669':'#dc2626'}">C. Financing Activities</td><td style="text-align:right;font-weight:700;color:${cf.financing>=0?'#059669':'#dc2626'}">${cf.financing>=0?'':'-'}${formatINR(cf.financing)}</td></tr>
-                <tr class="mis-total-row"><td style="font-weight:800">Net Change in Cash</td><td style="text-align:right;font-weight:800;color:${cf.net_change>=0?'#059669':'#dc2626'}">${formatINR(cf.net_change)}</td></tr>
-                <tr><td style="font-weight:700">Closing Cash & Bank</td><td style="text-align:right;font-weight:700;color:#2563eb">${formatINR(cf.closing_cash)}</td></tr>
+                <tr><td>Opening Cash & Bank</td><td style="text-align:right;font-weight:600">${formatINR(cfData.opening_cash)}</td></tr>
+                <tr style="background:#f0fdf4"><td style="font-weight:700;color:#059669">A. Operating Activities</td><td style="text-align:right;font-weight:700;color:#059669">${formatINR(cfData.operating)}</td></tr>
+                <tr style="background:${cfData.investing>=0?'#f0fdf4':'#fef2f2'}"><td style="font-weight:700;color:${cfData.investing>=0?'#059669':'#dc2626'}">B. Investing Activities</td><td style="text-align:right;font-weight:700;color:${cfData.investing>=0?'#059669':'#dc2626'}">${cfData.investing>=0?'':'-'}${formatINR(cfData.investing)}</td></tr>
+                <tr style="background:${cfData.financing>=0?'#f0fdf4':'#fef2f2'}"><td style="font-weight:700;color:${cfData.financing>=0?'#059669':'#dc2626'}">C. Financing Activities</td><td style="text-align:right;font-weight:700;color:${cfData.financing>=0?'#059669':'#dc2626'}">${cfData.financing>=0?'':'-'}${formatINR(cfData.financing)}</td></tr>
+                <tr class="mis-total-row"><td style="font-weight:800">Net Change in Cash</td><td style="text-align:right;font-weight:800;color:${cfData.net_change>=0?'#059669':'#dc2626'}">${formatINR(cfData.net_change)}</td></tr>
+                <tr><td style="font-weight:700">Closing Cash & Bank</td><td style="text-align:right;font-weight:700;color:#2563eb">${formatINR(cfData.closing_cash)}</td></tr>
                 </tbody></table>
                 </div>
                 <div style="display:flex;flex-direction:column;gap:.65rem">
-                    <div class="mis-kpi" style="border-left:3px solid #059669;flex:1"><div class="mis-kpi-label">Operating Cash</div><div class="mis-kpi-value" style="color:#059669">${formatINR(cf.operating)}</div></div>
-                    <div class="mis-kpi" style="border-left:3px solid #7c3aed;flex:1"><div class="mis-kpi-label">Investing</div><div class="mis-kpi-value" style="color:#7c3aed">${formatINR(cf.investing)}</div></div>
-                    <div class="mis-kpi" style="border-left:3px solid #2563eb;flex:1"><div class="mis-kpi-label">Financing</div><div class="mis-kpi-value" style="color:#2563eb">${formatINR(cf.financing)}</div></div>
-                    <div class="mis-kpi" style="border-left:3px solid ${cf.net_change>=0?'#059669':'#dc2626'};flex:1"><div class="mis-kpi-label">Net Change</div><div class="mis-kpi-value" style="color:${cf.net_change>=0?'#059669':'#dc2626'}">${formatINR(cf.net_change)}</div></div>
+                    <div class="mis-kpi" style="border-left:3px solid #059669;flex:1"><div class="mis-kpi-label">Operating Cash</div><div class="mis-kpi-value" style="color:#059669">${formatINR(cfData.operating)}</div></div>
+                    <div class="mis-kpi" style="border-left:3px solid #7c3aed;flex:1"><div class="mis-kpi-label">Investing</div><div class="mis-kpi-value" style="color:#7c3aed">${formatINR(cfData.investing)}</div></div>
+                    <div class="mis-kpi" style="border-left:3px solid #2563eb;flex:1"><div class="mis-kpi-label">Financing</div><div class="mis-kpi-value" style="color:#2563eb">${formatINR(cfData.financing)}</div></div>
+                    <div class="mis-kpi" style="border-left:3px solid ${cfData.net_change>=0?'#059669':'#dc2626'};flex:1"><div class="mis-kpi-label">Net Change</div><div class="mis-kpi-value" style="color:${cfData.net_change>=0?'#059669':'#dc2626'}">${formatINR(cfData.net_change)}</div></div>
                 </div></div>`;
-            // Working Capital & Ratios
-            const wc = d.working_capital || {};
+            // Working Capital & Ratios (wc already declared above)
             function ratioColor(v,good,warn) { return v>=good?'#059669':v>=warn?'#d97706':'#dc2626'; }
             document.getElementById('mis-ratios-body').innerHTML = `
                 <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.65rem;margin-bottom:1rem">
@@ -3054,12 +3202,28 @@
     <script>
         // Mount FY Period selector in toolbar
         FYPeriod.mount('#de-period-container', {
-            type: 'monthly',
-            label: 'Voucher Period',
+            type: 'yearly',
+            label: 'Financial Year',
             onChange: (period) => {
-                // period = { value: '2026-04', dateRange: { from, to }, fy, label }
-                console.log('Period changed:', period);
-                // Future: filter vouchers by date range
+                // period = { value: '2025-26', dateRange: { from: '2025-04-01', to: '2026-03-31' }, fy, label }
+                if (period && period.dateRange) {
+                    selectedDateFrom = toTallyDate(period.dateRange.from);
+                    selectedDateTo = toTallyDate(period.dateRange.to);
+                } else {
+                    selectedDateFrom = '';
+                    selectedDateTo = '';
+                }
+                console.log('FY changed:', period?.label, selectedDateFrom, selectedDateTo);
+                // Reload all data sections with new date range
+                loadDashboardStats();
+                loadRecentVouchers();
+                loadTop5();
+                if (typeof loadVoucherData === 'function') loadVoucherData(1);
+                if (typeof loadItemsData === 'function') loadItemsData(1);
+                if (typeof loadMISReports === 'function') loadMISReports();
+                // Update FY label in header if present
+                const fyLabel = document.getElementById('dash-fy-label');
+                if (fyLabel && period) fyLabel.textContent = period.label || '';
             }
         });
     </script>
