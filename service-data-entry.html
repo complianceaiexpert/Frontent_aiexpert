@@ -12,6 +12,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap"
         rel="stylesheet">
+    <script src="download-utils.js"></script>
 </head>
 
 <body>
@@ -541,6 +542,13 @@
                 <!-- Search & Stats Bar -->
                 <div class="rpt-toolbar">
                     <div id="de-period-container" style="min-width:200px"></div>
+                    <div class="rpt-date-filter" id="rpt-date-filter" style="display:flex;align-items:center;gap:6px;">
+                        <label style="font-size:.75rem;color:#64748b;font-weight:600;white-space:nowrap;">From</label>
+                        <input type="date" id="rpt-date-from" class="rpt-date-input" onchange="applyDateFilter()">
+                        <label style="font-size:.75rem;color:#64748b;font-weight:600;white-space:nowrap;">To</label>
+                        <input type="date" id="rpt-date-to" class="rpt-date-input" onchange="applyDateFilter()">
+                        <button class="rpt-date-clear" onclick="clearDateFilter()" title="Clear date filter" style="background:none;border:1px solid #e2e8f0;border-radius:6px;padding:4px 8px;cursor:pointer;font-size:.72rem;color:#94a3b8;white-space:nowrap;">✕ Clear</button>
+                    </div>
                     <input type="text" class="rpt-search" id="rpt-search-input"
                         placeholder="Search by party name, voucher no…" oninput="handleReportSearch(this.value)">
                     <div class="rpt-stats" id="rpt-stats-bar">
@@ -548,14 +556,32 @@
                         <span class="rpt-stat-chip dr" id="rpt-stat-dr">Dr: —</span>
                         <span class="rpt-stat-chip cr" id="rpt-stat-cr">Cr: —</span>
                     </div>
+                    <div style="display:flex;align-items:center;gap:6px;margin-left:auto;flex-shrink:0">
+                        <button onclick="downloadReportExcel()" class="rpt-dl-btn" title="Download Excel" style="border:1px solid #059669;background:#ecfdf5;color:#059669">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                            Excel
+                        </button>
+                        <button onclick="downloadReportPDF()" class="rpt-dl-btn" title="Download PDF" style="border:1px solid #dc2626;background:#fef2f2;color:#dc2626">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                            PDF
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Ledger Selector (hidden by default, shown on Ledger tab) -->
                 <div class="rpt-ledger-bar" id="rpt-ledger-bar" style="display:none">
                     <label class="rpt-ledger-label">Select Ledger</label>
-                    <select id="rpt-ledger-select" class="rpt-ledger-select" onchange="loadLedgerReport()">
-                        <option value="">— Choose a Ledger —</option>
-                    </select>
+                    <div class="rpt-ledger-combo" id="rpt-ledger-combo">
+                        <input type="text" id="rpt-ledger-input" class="rpt-ledger-input"
+                            placeholder="Type to search ledgers…"
+                            autocomplete="off"
+                            onfocus="showLedgerDropdown()"
+                            oninput="filterLedgerDropdown(this.value)">
+                        <button class="rpt-ledger-clear" id="rpt-ledger-clear" onclick="clearLedgerSelection()" title="Clear" style="display:none">✕</button>
+                        <div class="rpt-ledger-dropdown" id="rpt-ledger-dropdown"></div>
+                    </div>
+                    <!-- Keep hidden select for backward compat -->
+                    <select id="rpt-ledger-select" style="display:none"></select>
                     <div class="rpt-ledger-balance" id="rpt-ledger-balance"></div>
                 </div>
 
@@ -977,6 +1003,16 @@
             if (target) target.classList.add('active');
             document.querySelectorAll('.de-sidebar .sb-item').forEach(l => l.classList.remove('active'));
             if (el) el.classList.add('active');
+
+            // Persist active section in URL so reload stays on same section
+            const url = new URL(window.location);
+            if (sectionId && sectionId !== 'dashboard') {
+                url.searchParams.set('section', sectionId);
+            } else {
+                url.searchParams.delete('section');
+            }
+            history.replaceState(null, '', url);
+
             if (sectionId === 'master') loadLedgerData();
             if (sectionId === 'transactions') renderTransactions();
             if (sectionId === 'reports') loadReportData();
@@ -2063,6 +2099,35 @@
         let rptSearchDebounce = null;
         const RPT_PER_PAGE = 25;
         let rptExpandedGuid = null;
+        // Date filter (overrides FY range when set)
+        let rptDateFrom = '';
+        let rptDateTo = '';
+
+        function applyDateFilter() {
+            const fromEl = document.getElementById('rpt-date-from');
+            const toEl = document.getElementById('rpt-date-to');
+            rptDateFrom = fromEl.value ? fromEl.value.replace(/-/g, '') : '';
+            rptDateTo = toEl.value ? toEl.value.replace(/-/g, '') : '';
+            rptPage = 1;
+            if (rptCurrentTab === 'ledger') {
+                loadLedgerReport();
+            } else {
+                loadReportData();
+            }
+        }
+
+        function clearDateFilter() {
+            document.getElementById('rpt-date-from').value = '';
+            document.getElementById('rpt-date-to').value = '';
+            rptDateFrom = '';
+            rptDateTo = '';
+            rptPage = 1;
+            if (rptCurrentTab === 'ledger') {
+                loadLedgerReport();
+            } else {
+                loadReportData();
+            }
+        }
 
         function switchReportTab(tab, el) {
             document.querySelectorAll('.rpt-tab').forEach(t => t.classList.remove('active'));
@@ -2072,6 +2137,21 @@
             rptSearchVal = '';
             const searchInput = document.getElementById('rpt-search-input');
             if (searchInput) searchInput.value = '';
+
+            // Show date filter only for Day Book
+            const dateFilter = document.getElementById('rpt-date-filter');
+            if (dateFilter) {
+                dateFilter.style.display = tab === 'daybook' ? 'flex' : 'none';
+            }
+            // Clear date filter when leaving Day Book
+            if (tab !== 'daybook') {
+                rptDateFrom = '';
+                rptDateTo = '';
+                const fromEl = document.getElementById('rpt-date-from');
+                const toEl = document.getElementById('rpt-date-to');
+                if (fromEl) fromEl.value = '';
+                if (toEl) toEl.value = '';
+            }
 
             // Toggle ledger selector
             const ledgerBar = document.getElementById('rpt-ledger-bar');
@@ -2107,6 +2187,9 @@
 
             try {
                 let url = withCompany(`/tally/vouchers?page=${rptPage}&per_page=${RPT_PER_PAGE}`);
+                // Date filter from pickers overrides FY range
+                if (rptDateFrom) url += `&date_from=${rptDateFrom}`;
+                if (rptDateTo) url += `&date_to=${rptDateTo}`;
                 if (rptCurrentTab !== 'daybook') {
                     url += `&voucher_type=${encodeURIComponent(rptCurrentTab)}`;
                 }
@@ -2301,30 +2384,145 @@
 
         // ═══ LEDGER-WISE REPORT ═══
         let rptLedgerNames = [];
+        let rptSelectedLedger = null; // { name, parent, opening_balance, closing_balance }
+        let _ledgerSearchDebounce = null;
 
         async function loadLedgerList() {
-            const sel = document.getElementById('rpt-ledger-select');
-            try {
-                const res = await authFetch(withCompany('/tally/ledgers?per_page=200'));
-                if (res.ok) {
-                    const d = await res.json();
-                    rptLedgerNames = d.data || [];
-                    sel.innerHTML = '<option value="">— Choose a Ledger —</option>' +
-                        rptLedgerNames.map(l => `<option value="${l.name}" data-ob="${l.opening_balance}" data-cb="${l.closing_balance}">${l.name} (${l.parent})</option>`).join('');
-                }
-            } catch (e) { console.error('Ledger list error:', e); }
+            // No bulk-fetch — ledger dropdown uses server-side search on keystroke
+            rptLedgerNames = [];
+
+            // Reset input
+            const input = document.getElementById('rpt-ledger-input');
+            if (input) { input.value = ''; input.classList.remove('has-value'); }
+            document.getElementById('rpt-ledger-clear').style.display = 'none';
+            rptSelectedLedger = null;
 
             // Clear table
-            document.getElementById('rpt-tbody').innerHTML = '<tr><td colspan="8" class="rpt-loading">Select a ledger to view its entries</td></tr>';
+            document.getElementById('rpt-tbody').innerHTML = '<tr><td colspan="8" class="rpt-loading">Type a ledger name above to view its entries</td></tr>';
             document.getElementById('rpt-tfoot').style.display = 'none';
             document.getElementById('rpt-pagination').innerHTML = '';
+            document.getElementById('rpt-ledger-balance').innerHTML = '';
         }
+
+        function showLedgerDropdown() {
+            const input = document.getElementById('rpt-ledger-input');
+            const q = input.value.trim();
+            if (q.length >= 2) {
+                filterLedgerDropdown(q);
+            } else {
+                const dropdown = document.getElementById('rpt-ledger-dropdown');
+                dropdown.innerHTML = '<div class="rpt-ledger-no-match">Type at least 2 characters to search ledgers…</div>';
+                dropdown.classList.add('open');
+            }
+        }
+
+        function filterLedgerDropdown(query) {
+            clearTimeout(_ledgerSearchDebounce);
+            const dropdown = document.getElementById('rpt-ledger-dropdown');
+            const q = query.trim();
+
+            if (q.length < 2) {
+                dropdown.innerHTML = '<div class="rpt-ledger-no-match">Type at least 2 characters to search ledgers…</div>';
+                dropdown.classList.add('open');
+                return;
+            }
+
+            // Show loading indicator
+            dropdown.innerHTML = '<div class="rpt-ledger-no-match">🔍 Searching…</div>';
+            dropdown.classList.add('open');
+
+            _ledgerSearchDebounce = setTimeout(async () => {
+                try {
+                    const url = withCompany(`/tally/ledgers?per_page=50&search=${encodeURIComponent(q)}`);
+                    const res = await authFetch(url);
+                    if (!res.ok) throw new Error('Search failed');
+                    const d = await res.json();
+                    const results = d.data || [];
+
+                    // Deduplicate by name
+                    const seen = new Map();
+                    results.forEach(l => { if (!seen.has(l.name)) seen.set(l.name, l); });
+                    rptLedgerNames = Array.from(seen.values());
+
+                    const qLower = q.toLowerCase();
+                    if (rptLedgerNames.length === 0) {
+                        dropdown.innerHTML = '<div class="rpt-ledger-no-match">No ledgers matching "' + q + '"</div>';
+                    } else {
+                        dropdown.innerHTML = rptLedgerNames.slice(0, 50).map(l => {
+                            const isActive = rptSelectedLedger && rptSelectedLedger.name === l.name;
+                            return `<div class="rpt-ledger-option${isActive ? ' active' : ''}"
+                                        onclick="selectLedger('${l.name.replace(/'/g, "\\'")}')">
+                                <span class="rpt-ledger-option-name">${highlightMatch(l.name, qLower)}</span>
+                                <span class="rpt-ledger-option-group">${l.parent || ''}</span>
+                            </div>`;
+                        }).join('');
+                        if (d.total > 50) {
+                            dropdown.innerHTML += '<div class="rpt-ledger-no-match">' + (d.total - 50) + ' more — keep typing to narrow</div>';
+                        }
+                    }
+                } catch (e) {
+                    console.error('Ledger search error:', e);
+                    dropdown.innerHTML = '<div class="rpt-ledger-no-match">⚠️ Search failed — try again</div>';
+                }
+                dropdown.classList.add('open');
+            }, 300);
+        }
+
+        function highlightMatch(text, query) {
+            if (!query) return text;
+            const idx = text.toLowerCase().indexOf(query);
+            if (idx === -1) return text;
+            return text.substring(0, idx) + '<strong style="color:#1e3a8a">' + text.substring(idx, idx + query.length) + '</strong>' + text.substring(idx + query.length);
+        }
+
+        function selectLedger(name) {
+            const ledger = rptLedgerNames.find(l => l.name === name);
+            if (!ledger) return;
+            rptSelectedLedger = ledger;
+
+            const input = document.getElementById('rpt-ledger-input');
+            input.value = ledger.name + ' (' + (ledger.parent || '') + ')';
+            input.classList.add('has-value');
+            document.getElementById('rpt-ledger-clear').style.display = '';
+            document.getElementById('rpt-ledger-dropdown').classList.remove('open');
+
+            // Show balance
+            const ob = ledger.opening_balance || 0;
+            const cb = ledger.closing_balance || 0;
+            const balEl = document.getElementById('rpt-ledger-balance');
+            balEl.innerHTML = `<span style="color:#6b7280;font-weight:500">Op: </span><span style="color:${ob < 0 ? '#dc2626' : '#059669'}">${formatINR(ob)} ${ob < 0 ? 'Dr' : 'Cr'}</span>
+                <span style="margin:0 .5rem;color:#d1d5db">|</span>
+                <span style="color:#6b7280;font-weight:500">Cl: </span><span style="color:${cb < 0 ? '#dc2626' : '#059669'}">${formatINR(cb)} ${cb < 0 ? 'Dr' : 'Cr'}</span>`;
+
+            loadLedgerReport();
+        }
+
+        function clearLedgerSelection() {
+            rptSelectedLedger = null;
+            const input = document.getElementById('rpt-ledger-input');
+            input.value = '';
+            input.classList.remove('has-value');
+            document.getElementById('rpt-ledger-clear').style.display = 'none';
+            document.getElementById('rpt-ledger-balance').innerHTML = '';
+            document.getElementById('rpt-tbody').innerHTML = '<tr><td colspan="8" class="rpt-loading">Type a ledger name above to view its entries</td></tr>';
+            document.getElementById('rpt-tfoot').style.display = 'none';
+            document.getElementById('rpt-pagination').innerHTML = '';
+            input.focus();
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            const combo = document.getElementById('rpt-ledger-combo');
+            if (combo && !combo.contains(e.target)) {
+                document.getElementById('rpt-ledger-dropdown').classList.remove('open');
+            }
+        });
 
         async function loadLedgerReport(page) {
             if (page) rptPage = page; else rptPage = 1;
-            const ledgerName = document.getElementById('rpt-ledger-select').value;
+            const ledgerName = rptSelectedLedger ? rptSelectedLedger.name : '';
             if (!ledgerName) {
-                document.getElementById('rpt-tbody').innerHTML = '<tr><td colspan="8" class="rpt-loading">Select a ledger to view its entries</td></tr>';
+                document.getElementById('rpt-tbody').innerHTML = '<tr><td colspan="8" class="rpt-loading">Type a ledger name above to view its entries</td></tr>';
                 document.getElementById('rpt-tfoot').style.display = 'none';
                 document.getElementById('rpt-ledger-balance').innerHTML = '';
                 return;
@@ -2335,17 +2533,10 @@
             tbody.innerHTML = '<tr><td colspan="8" class="rpt-loading">Loading ledger entries…</td></tr>';
             tfoot.style.display = 'none';
 
-            // Show balance from selected option
-            const selOpt = document.getElementById('rpt-ledger-select').selectedOptions[0];
-            const ob = parseFloat(selOpt?.dataset.ob) || 0;
-            const cb = parseFloat(selOpt?.dataset.cb) || 0;
-            const balEl = document.getElementById('rpt-ledger-balance');
-            balEl.innerHTML = `<span style="color:#6b7280;font-weight:500">Op: </span><span style="color:${ob < 0 ? '#dc2626' : '#059669'}">${formatINR(ob)} ${ob < 0 ? 'Dr' : 'Cr'}</span>
-                <span style="margin:0 .5rem;color:#d1d5db">|</span>
-                <span style="color:#6b7280;font-weight:500">Cl: </span><span style="color:${cb < 0 ? '#dc2626' : '#059669'}">${formatINR(cb)} ${cb < 0 ? 'Dr' : 'Cr'}</span>`;
-
             try {
                 let url = withCompany(`/tally/vouchers?page=${rptPage}&per_page=${RPT_PER_PAGE}&search=${encodeURIComponent(ledgerName)}`);
+                if (rptDateFrom) url += `&date_from=${rptDateFrom}`;
+                if (rptDateTo) url += `&date_to=${rptDateTo}`;
                 const res = await authFetch(url);
                 if (!res.ok) throw new Error('Failed');
                 const result = await res.json();
@@ -2407,6 +2598,179 @@
         function switchAnalysisTab(tab, el) {
             document.querySelectorAll('.de-tab').forEach(t => t.classList.remove('active'));
             el.classList.add('active');
+        }
+
+        // ═══ DOWNLOAD REPORT — EXCEL & PDF ═══
+        function _getReportTabLabel() {
+            const map = {
+                'daybook': 'Day Book', 'Sales': 'Sales Register', 'Purchase': 'Purchase Register',
+                'Payment': 'Payment Register', 'Receipt': 'Receipt Register',
+                'Journal': 'Journal Register', 'Contra': 'Contra Register', 'ledger': 'Ledger Report'
+            };
+            return map[rptCurrentTab] || rptCurrentTab;
+        }
+
+        async function _fetchAllReportVouchers() {
+            // Fetch ALL vouchers for the current tab (paginate through all pages)
+            const allVouchers = [];
+            let page = 1;
+            const batchSize = 200;
+            let totalPages = 1;
+
+            while (page <= totalPages) {
+                let url;
+                if (rptCurrentTab === 'ledger' && rptSelectedLedger) {
+                    url = withCompany(`/tally/vouchers?page=${page}&per_page=${batchSize}&search=${encodeURIComponent(rptSelectedLedger.name)}`);
+                } else {
+                    url = withCompany(`/tally/vouchers?page=${page}&per_page=${batchSize}`);
+                    if (rptCurrentTab !== 'daybook') {
+                        url += `&voucher_type=${encodeURIComponent(rptCurrentTab)}`;
+                    }
+                }
+                if (rptDateFrom) url += `&date_from=${rptDateFrom}`;
+                if (rptDateTo) url += `&date_to=${rptDateTo}`;
+                if (rptSearchVal && rptCurrentTab !== 'ledger') url += `&search=${encodeURIComponent(rptSearchVal)}`;
+
+                const res = await authFetch(url);
+                if (!res.ok) throw new Error('Failed to fetch data for download');
+                const result = await res.json();
+                totalPages = result.total_pages;
+                allVouchers.push(...(result.data || []));
+                page++;
+            }
+            return allVouchers;
+        }
+
+        function _vouchersToRows(vouchers) {
+            let totalDr = 0, totalCr = 0;
+            const rows = vouchers.map((v, i) => {
+                const dateStr = v.date ? formatTallyDate(v.date) : '';
+                const amt = Math.abs(v.amount || 0);
+                const isDr = ['Purchase', 'Payment', 'Debit Note'].includes(v.voucher_type);
+                const drAmt = isDr ? amt : 0;
+                const crAmt = isDr ? 0 : amt;
+                totalDr += drAmt;
+                totalCr += crAmt;
+                return [
+                    i + 1,
+                    dateStr,
+                    v.voucher_type || '',
+                    v.voucher_number || '',
+                    v.party_name || '',
+                    drAmt > 0 ? formatINR(drAmt) : '',
+                    crAmt > 0 ? formatINR(crAmt) : '',
+                ];
+            });
+            return { rows, totalDr, totalCr };
+        }
+
+        function _buildReportConfig(vouchers) {
+            const tabLabel = _getReportTabLabel();
+            const company = clientCompanyName || 'Company';
+            const { rows, totalDr, totalCr } = _vouchersToRows(vouchers);
+            const headers = ['#', 'Date', 'Type', 'Vch No.', 'Party / Particulars', 'Debit (Dr)', 'Credit (Cr)'];
+            const totals = ['', '', '', '', 'TOTAL', formatINR(totalDr), formatINR(totalCr)];
+
+            const summaryObj = { 'Company': company };
+            if (rptCurrentTab === 'ledger' && rptSelectedLedger) {
+                summaryObj['Ledger'] = rptSelectedLedger.name;
+                summaryObj['Group'] = rptSelectedLedger.parent || '';
+            }
+            if (rptDateFrom || rptDateTo) {
+                summaryObj['Period'] = `${rptDateFrom ? formatTallyDate(rptDateFrom) : 'Start'} to ${rptDateTo ? formatTallyDate(rptDateTo) : 'End'}`;
+            }
+            summaryObj['Total Entries'] = String(vouchers.length);
+            summaryObj['Total Debit'] = formatINR(totalDr);
+            summaryObj['Total Credit'] = formatINR(totalCr);
+
+            const fileBase = `${company.replace(/[^a-zA-Z0-9]/g, '_')}_${tabLabel.replace(/\s/g, '_')}`;
+
+            return { tabLabel, company, headers, rows, totals, summaryObj, fileBase };
+        }
+
+        async function downloadReportExcel() {
+            if (rptCurrentTab === 'ledger' && !rptSelectedLedger) {
+                showToast('Please select a ledger first', 'warning'); return;
+            }
+            const btn = event.target.closest('button');
+            const origHTML = btn.innerHTML;
+            btn.innerHTML = '⏳ Preparing…';
+            btn.disabled = true;
+            try {
+                const vouchers = await _fetchAllReportVouchers();
+                if (!vouchers.length) { showToast('No data to download', 'warning'); return; }
+                const cfg = _buildReportConfig(vouchers);
+
+                // For Excel, use raw numbers instead of formatted strings
+                const excelRows = vouchers.map((v, i) => {
+                    const amt = Math.abs(v.amount || 0);
+                    const isDr = ['Purchase', 'Payment', 'Debit Note'].includes(v.voucher_type);
+                    return [
+                        i + 1,
+                        v.date ? formatTallyDate(v.date) : '',
+                        v.voucher_type || '',
+                        v.voucher_number || '',
+                        v.party_name || '',
+                        isDr ? amt : '',
+                        isDr ? '' : amt,
+                    ];
+                });
+
+                await DownloadUtils.excel({
+                    filename: cfg.fileBase,
+                    sheetName: cfg.tabLabel,
+                    headers: cfg.headers,
+                    rows: excelRows,
+                    columnWidths: [5, 12, 12, 14, 35, 16, 16],
+                    summary: cfg.summaryObj,
+                    totals: cfg.totals,
+                });
+                showToast(`📥 Excel downloaded — ${vouchers.length} entries`, 'success');
+            } catch (e) {
+                console.error('Excel download error:', e);
+                showToast('❌ Failed to download Excel: ' + e.message, 'error');
+            } finally {
+                btn.innerHTML = origHTML;
+                btn.disabled = false;
+            }
+        }
+
+        async function downloadReportPDF() {
+            if (rptCurrentTab === 'ledger' && !rptSelectedLedger) {
+                showToast('Please select a ledger first', 'warning'); return;
+            }
+            const btn = event.target.closest('button');
+            const origHTML = btn.innerHTML;
+            btn.innerHTML = '⏳ Generating…';
+            btn.disabled = true;
+            try {
+                const vouchers = await _fetchAllReportVouchers();
+                if (!vouchers.length) { showToast('No data to download', 'warning'); return; }
+                const cfg = _buildReportConfig(vouchers);
+
+                let subtitle = cfg.company;
+                if (rptCurrentTab === 'ledger' && rptSelectedLedger) {
+                    subtitle += ` · Ledger: ${rptSelectedLedger.name}`;
+                }
+
+                await DownloadUtils.pdf({
+                    filename: cfg.fileBase,
+                    title: cfg.tabLabel,
+                    subtitle: subtitle,
+                    headers: cfg.headers,
+                    rows: cfg.rows,
+                    totals: cfg.totals,
+                    summary: cfg.summaryObj,
+                    orientation: 'landscape',
+                });
+                showToast(`📄 PDF downloaded — ${vouchers.length} entries`, 'success');
+            } catch (e) {
+                console.error('PDF download error:', e);
+                showToast('❌ Failed to download PDF: ' + e.message, 'error');
+            } finally {
+                btn.innerHTML = origHTML;
+                btn.disabled = false;
+            }
         }
 
         // ═══ INIT ═══
@@ -3221,6 +3585,8 @@
                 if (typeof loadVoucherData === 'function') loadVoucherData(1);
                 if (typeof loadItemsData === 'function') loadItemsData(1);
                 if (typeof loadMISReports === 'function') loadMISReports();
+                // Reload Day Book / Reports tab with new FY dates
+                if (typeof loadReportData === 'function') loadReportData(1);
                 // Update FY label in header if present
                 const fyLabel = document.getElementById('dash-fy-label');
                 if (fyLabel && period) fyLabel.textContent = period.label || '';
