@@ -343,12 +343,12 @@
 
         async function fsLoadCompanies() {
             try {
-                const res = await authFetch('/tally/companies');
+                const res = await authFetch('/fs-tally/companies');
                 if (res?.ok) {
                     const c = await res.json();
                     const sel = document.getElementById('fs-company-select');
-                    c.forEach(x => { const o = document.createElement('option'); o.value = x; o.textContent = x; sel.appendChild(o); });
-                    if (c.length === 1) sel.value = c[0];
+                    c.forEach(x => { const o = document.createElement('option'); o.value = x.company_name; o.textContent = `${x.company_name} (${x.ledger_count} ledgers)`; sel.appendChild(o); });
+                    if (c.length === 1) sel.value = c[0].company_name;
                 }
             } catch(e) {}
         }
@@ -476,7 +476,7 @@
                     const fy = document.getElementById('fs-fy-select').value;
                     const res = await authFetch('/fs-tally/generate', {
                         method: 'POST',
-                        body: JSON.stringify({ company_name: company, financial_year: fy }),
+                        body: JSON.stringify({ company_name: company, financial_year: fy, client_id: clientId }),
                     });
                     if (!res?.ok) { const e = await res?.json().catch(()=>({})); throw new Error(e.detail || 'Failed'); }
                     const data = await res.json();
@@ -491,7 +491,8 @@
                     fsRenderSchedules(data);
                     fsResetGenBtn();
                     srToast(`Schedule III generated from ${data.total_ledgers} ledgers — ${data.summary.is_balanced ? 'Balanced ✅' : 'Unbalanced ⚠️'}`, 'success');
-                    fsTabSwitch('bs', document.querySelectorAll('.fs-nav-tab')[2]);
+                    if (data.job_id) currentJobId = data.job_id;
+                    fsTabSwitch('bs', document.querySelectorAll('.fs-nav-tab')[1]);
                     return;
                 } else {
                     // Generate from uploaded files
@@ -658,7 +659,7 @@
                     const date = j.created_at ? new Date(j.created_at).toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }) : '—';
                     const source = isTally ? '<span style="font-size:.62rem;background:#eff6ff;color:#3b82f6;padding:1px 5px;border-radius:4px;font-weight:600;margin-left:.35rem">TALLY</span>' : '';
 
-                    return `<div style="display:flex;align-items:center;gap:.85rem;padding:.65rem .5rem;border-bottom:1px solid #f1f5f9;cursor:pointer;transition:background .2s" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background=''" onclick="${j.status==='completed'?`fsLoadResult('${j.id}')`:''}"">
+                    return `<div style="display:flex;align-items:center;gap:.85rem;padding:.65rem .5rem;border-bottom:1px solid #f1f5f9;cursor:pointer;transition:background .2s" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background=''" onclick="${j.status==='completed'?`fsLoadResult('${j.id}')`:''}">
                         <div style="width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.15rem;background:${iconBg}">${icon}</div>
                         <div style="flex:1;min-width:0">
                             <div style="font-size:.82rem;font-weight:600;color:#1e293b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${label}${source}</div>

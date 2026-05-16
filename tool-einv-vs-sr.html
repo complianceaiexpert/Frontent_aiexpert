@@ -46,11 +46,29 @@
                             <div class="t-sub">Click to upload (.xlsx, .csv)</div>
                             <div class="t-file" id="einv-file-name" style="display:none"></div>
                         </div>
-                        <div class="tool-upload" onclick="document.getElementById('sr-file').click()">
-                            <div class="t-icon">📤</div>
-                            <div class="t-title">Sales Register</div>
-                            <div class="t-sub">Click to upload (.xlsx, .csv)</div>
-                            <div class="t-file" id="sr-file-name" style="display:none"></div>
+                        <div class="tool-upload" id="sr-upload-wrap">
+                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
+                                <div class="t-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
+                                <div style="display:flex;gap:0.2rem;background:#f1f5f9;border-radius:6px;padding:0.15rem;">
+                                    <button id="sr-toggle-upload" onclick="event.stopPropagation();setSRSource('upload')" style="padding:0.15rem 0.4rem;border:none;border-radius:4px;font-size:0.6rem;font-weight:600;cursor:pointer;font-family:inherit;background:#fff;color:#1f2937;transition:all .15s;">Upload</button>
+                                    <button id="sr-toggle-tally" onclick="event.stopPropagation();setSRSource('tally')" style="padding:0.15rem 0.4rem;border:none;border-radius:4px;font-size:0.6rem;font-weight:600;cursor:pointer;font-family:inherit;background:transparent;color:#6b7280;transition:all .15s;">Tally</button>
+                                </div>
+                            </div>
+                            <div id="sr-upload-zone" onclick="document.getElementById('sr-file').click()">
+                                <div class="t-title">Sales Register</div>
+                                <div class="t-sub">Click to upload (.xlsx, .csv)</div>
+                                <div class="t-file" id="sr-file-name" style="display:none"></div>
+                            </div>
+                            <div id="sr-tally-panel" style="display:none;" onclick="event.stopPropagation()">
+                                <div class="t-title" style="color:#059669;">Sales Register from Tally</div>
+                                <select id="sr-tally-company" style="width:100%;padding:0.3rem 0.4rem;border:1px solid #d1d5db;border-radius:6px;font-size:0.72rem;font-family:inherit;margin:0.35rem 0;"><option>Loading...</option></select>
+                                <div style="display:flex;gap:0.35rem;margin-bottom:0.35rem;">
+                                    <input type="date" id="sr-tally-from" style="flex:1;padding:0.25rem;border:1px solid #d1d5db;border-radius:5px;font-size:0.68rem;font-family:inherit;">
+                                    <input type="date" id="sr-tally-to" style="flex:1;padding:0.25rem;border:1px solid #d1d5db;border-radius:5px;font-size:0.68rem;font-family:inherit;">
+                                </div>
+                                <button onclick="event.stopPropagation();fetchTallySR()" style="width:100%;padding:0.35rem;border:none;border-radius:6px;background:linear-gradient(135deg,#059669,#10b981);color:#fff;font-size:0.72rem;font-weight:600;cursor:pointer;font-family:inherit;">Fetch from Tally</button>
+                                <div id="sr-tally-status" style="display:none;margin-top:0.25rem;font-size:0.65rem;font-weight:600;color:#065f46;text-align:center;"></div>
+                            </div>
                         </div>
                     </div>
                     <input type="file" id="einv-file" accept=".xlsx,.csv" style="display:none"
@@ -118,6 +136,78 @@
             else { file2 = input.files[0]; const el = document.getElementById('sr-file-name'); el.textContent = '📎 ' + file2.name; el.style.display = ''; if (ub) ub.classList.add('has-file'); }
             document.getElementById('reconcile-btn').disabled = !(file1 && file2);
         }
+
+        // ═══ TALLY SOURCE TOGGLE ═══
+        async function authFetch(path, opts = {}) {
+            const token = localStorage.getItem('access_token');
+            opts.headers = { ...(opts.headers || {}), 'Authorization': `Bearer ${token}` };
+            return fetch(API_BASE_URL + path, opts);
+        }
+
+        function setSRSource(source) {
+            const uploadZone = document.getElementById('sr-upload-zone');
+            const tallyPanel = document.getElementById('sr-tally-panel');
+            const btnUp = document.getElementById('sr-toggle-upload');
+            const btnTally = document.getElementById('sr-toggle-tally');
+            if (source === 'tally') {
+                uploadZone.style.display = 'none';
+                tallyPanel.style.display = 'block';
+                btnTally.style.background = '#059669'; btnTally.style.color = '#fff';
+                btnUp.style.background = 'transparent'; btnUp.style.color = '#6b7280';
+                loadTallyCompanies();
+            } else {
+                uploadZone.style.display = 'block';
+                tallyPanel.style.display = 'none';
+                btnUp.style.background = '#fff'; btnUp.style.color = '#1f2937';
+                btnTally.style.background = 'transparent'; btnTally.style.color = '#6b7280';
+            }
+        }
+
+        async function loadTallyCompanies() {
+            try {
+                const res = await authFetch('/tally/companies');
+                const companies = await res.json();
+                document.getElementById('sr-tally-company').innerHTML = companies.map(c => `<option value="${c}">${c}</option>`).join('');
+            } catch (e) { console.warn(e); }
+        }
+
+        async function fetchTallySR() {
+            const status = document.getElementById('sr-tally-status');
+            status.style.display = 'block'; status.textContent = 'Fetching...'; status.style.color = '#d97706';
+            try {
+                const company = document.getElementById('sr-tally-company').value;
+                const df = (document.getElementById('sr-tally-from').value || '').replace(/-/g, '');
+                const dt = (document.getElementById('sr-tally-to').value || '').replace(/-/g, '');
+                const params = new URLSearchParams({ company_name: company, voucher_type: 'Sales', per_page: '2000' });
+                if (df) params.set('date_from', df);
+                if (dt) params.set('date_to', dt);
+
+                const res = await authFetch(`/tally/invoices?${params}`);
+                const data = await res.json();
+                if (!data.invoices || data.invoices.length === 0) { status.textContent = 'No sales invoices found'; status.style.color = '#dc2626'; return; }
+
+                const headers = ['GSTIN','Party Name','Invoice No','Invoice Date','Taxable Value','CGST','SGST','IGST','Cess','Total Amount'];
+                const csv = [headers.join(','), ...data.invoices.map(inv => {
+                    const d = inv.date; const fd = d.length===8 ? `${d.slice(6,8)}/${d.slice(4,6)}/${d.slice(0,4)}` : d;
+                    return [inv.gstin, `"${inv.party_name}"`, inv.invoice_no, fd, inv.taxable_value, inv.cgst, inv.sgst, inv.igst, inv.cess, inv.total_amount].join(',');
+                })].join('\n');
+
+                const blob = new Blob([csv], { type: 'text/csv' });
+                file2 = new File([blob], `tally_sales_${company.replace(/\s+/g, '_')}.csv`, { type: 'text/csv' });
+
+                const el = document.getElementById('sr-file-name');
+                el.textContent = `✓ ${data.summary.invoice_count} invoices from Tally`;
+                el.style.display = ''; el.style.color = '#059669';
+                document.getElementById('reconcile-btn').disabled = !(file1 && file2);
+                status.textContent = `${data.summary.invoice_count} invoices · ₹${(data.summary.total_taxable||0).toLocaleString('en-IN')}`;
+                status.style.color = '#065f46';
+            } catch (e) { status.textContent = 'Failed: ' + e.message; status.style.color = '#dc2626'; }
+        }
+
+        // Auto-activate from URL
+        (function() {
+            if (new URLSearchParams(window.location.search).get('source') === 'tally') setTimeout(() => setSRSource('tally'), 300);
+        })();
         async function startReconciliation() {
             const params = new URLSearchParams(window.location.search); const clientId = params.get('clientId');
             if (!clientId) { alert('⚠️ No client selected. Please navigate from a client workspace.'); return; }

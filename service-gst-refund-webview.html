@@ -947,7 +947,7 @@
             <div class="content-section active" id="sec-dashboard">
                 <div class="section-header" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.75rem">
                     <div>
-                        <h1>💰 GST Refund Service</h1>
+                        <h1>GST Refund Service</h1>
                         <p class="section-subtitle">End-to-end GST refund filing, calculation & reconciliation</p>
                     </div>
                     <div id="gst-period-container" style="min-width:200px"></div>
@@ -958,21 +958,153 @@
                     style="background:linear-gradient(135deg,#0f172a 0%,#1e3a8a 60%,#2563eb 100%);border-radius:16px;padding:2rem 2.25rem;color:#fff;margin-bottom:2rem;position:relative;overflow:hidden;">
                     <div style="position:absolute;top:-60%;right:-5%;width:200px;height:200px;background:radial-gradient(circle,rgba(255,255,255,.06) 0%,transparent 70%);border-radius:50%;pointer-events:none;"></div>
                     <h2 style="font-size:1.25rem;font-weight:800;margin:0 0 0.5rem;font-family:'Outfit',sans-serif;position:relative;z-index:1;">File
-                        GST Refund in Minutes ⚡</h2>
+                        GST Refund in Minutes</h2>
                     <p style="font-size:0.85rem;opacity:0.65;margin:0 0 1.25rem;line-height:1.55;max-width:580px;position:relative;z-index:1;">Select your refund
                         type, follow the guided workflow, use AI-powered tools for Statement 3, Reconciliation &
                         Annexure B — all in one place.</p>
                     <button onclick="navigateToTool('gst-refund.html')"
-                        style="background:linear-gradient(135deg,#EB6711,#f5841a);color:#fff;border:none;border-radius:9px;padding:0.6rem 1.4rem;font-weight:700;font-size:0.85rem;cursor:pointer;box-shadow:0 4px 14px rgba(235,103,17,.25);position:relative;z-index:1;transition:all .2s;">📝
+                        style="background:linear-gradient(135deg,#EB6711,#f5841a);color:#fff;border:none;border-radius:9px;padding:0.6rem 1.4rem;font-weight:700;font-size:0.85rem;cursor:pointer;box-shadow:0 4px 14px rgba(235,103,17,.25);position:relative;z-index:1;transition:all .2s;">
                         Start Filing Now →</button>
+                </div>
+
+                <!-- ═══ TALLY-POWERED LIVE STATS ═══ -->
+                <h3 style="font-size:0.9rem;font-weight:600;color:#374151;margin:0 0 0.75rem;display:flex;align-items:center;gap:0.35rem;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                    Tally Book Snapshot
+                    <span id="dash-tally-period" style="font-size:0.68rem;font-weight:500;color:#6b7280;margin-left:0.25rem;"></span>
+                </h3>
+                <div class="refund-stats" id="dash-tally-stats">
+                    <div class="stat-card">
+                        <div class="stat-label">Total Turnover</div>
+                        <div class="stat-value" id="dash-total-turnover">—</div>
+                        <div style="font-size:0.68rem;color:#9ca3af;margin-top:0.15rem;" id="dash-turnover-sub">Sales vouchers</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Export / Zero-Rated</div>
+                        <div class="stat-value" style="color:#059669" id="dash-export-sales">—</div>
+                        <div style="font-size:0.68rem;color:#9ca3af;margin-top:0.15rem;" id="dash-export-sub">Export ledgers</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">ITC Available</div>
+                        <div class="stat-value" style="color:#7c3aed" id="dash-itc">—</div>
+                        <div style="font-size:0.68rem;color:#9ca3af;margin-top:0.15rem;" id="dash-itc-sub">Duties & Taxes</div>
+                    </div>
+                    <div class="stat-card" style="border-left:3px solid #1e3a8a;">
+                        <div class="stat-label">Est. Refund (Books)</div>
+                        <div class="stat-value" id="dash-est-refund">—</div>
+                        <div style="font-size:0.68rem;color:#9ca3af;margin-top:0.15rem;">Approximate · Rule 89(4)</div>
+                    </div>
+                </div>
+                <div id="dash-tally-note" style="display:none;background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:0.55rem 0.85rem;font-size:0.72rem;color:#1e40af;margin-bottom:1.5rem;line-height:1.5;">
+                    These are <strong>book-based estimates</strong> from Tally. Verify against filed GSTR-3B / GSTR-1 before claiming.
+                </div>
+
+                <!-- ═══ BOOKS vs RETURNS — COMPLIANCE HEALTH (KILLER FEATURE) ═══ -->
+                <div id="dash-health-check" style="background:linear-gradient(135deg,#fffbeb,#fef3c7);border:2px solid #f59e0b;border-radius:16px;padding:1.5rem 1.75rem;margin-bottom:2rem;position:relative;overflow:hidden;">
+                    <!-- Decorative corner -->
+                    <div style="position:absolute;top:-30px;right:-30px;width:100px;height:100px;background:radial-gradient(circle,rgba(245,158,11,0.12) 0%,transparent 70%);border-radius:50%;pointer-events:none;"></div>
+                    
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:0.5rem;">
+                        <div style="display:flex;align-items:center;gap:0.5rem;">
+                            <div style="width:32px;height:32px;background:linear-gradient(135deg,#f59e0b,#d97706);border-radius:8px;display:flex;align-items:center;justify-content:center;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"/><path d="M8 21H3v-5"/><path d="M21 3l-8.5 8.5"/><path d="M3 21l8.5-8.5"/></svg>
+                            </div>
+                            <div>
+                                <div style="font-weight:800;font-size:0.95rem;color:#92400e;font-family:'Outfit',sans-serif;">Books vs Returns</div>
+                                <div style="font-size:0.7rem;color:#b45309;">Compliance Health Check — <span id="health-period-label">Current Period</span></div>
+                            </div>
+                        </div>
+                        <span style="font-size:0.58rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:0.2rem 0.65rem;border-radius:20px;background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;">Key Insight</span>
+                    </div>
+
+                    <!-- Comparison Grid -->
+                    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1rem;" id="health-grid">
+                        <!-- Sales Comparison -->
+                        <div style="background:rgba(255,255,255,0.85);backdrop-filter:blur(8px);border-radius:12px;padding:1rem;border:1px solid rgba(245,158,11,0.2);">
+                            <div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:#92400e;margin-bottom:0.65rem;">Sales / Turnover</div>
+                            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:0.3rem;">
+                                <span style="font-size:0.7rem;color:#6b7280;">Tally Books</span>
+                                <span style="font-size:0.88rem;font-weight:700;color:#1f2937;" id="health-sales-books">—</span>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:0.5rem;">
+                                <span style="font-size:0.7rem;color:#6b7280;">GSTR-1 Filed</span>
+                                <span style="font-size:0.88rem;font-weight:700;color:#1f2937;" id="health-sales-return">Not uploaded</span>
+                            </div>
+                            <div id="health-sales-status" style="font-size:0.68rem;font-weight:600;padding:0.2rem 0.5rem;border-radius:6px;background:#f3f4f6;color:#6b7280;text-align:center;">
+                                Upload GSTR-1 to compare
+                            </div>
+                        </div>
+
+                        <!-- ITC Comparison -->
+                        <div style="background:rgba(255,255,255,0.85);backdrop-filter:blur(8px);border-radius:12px;padding:1rem;border:1px solid rgba(245,158,11,0.2);">
+                            <div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:#92400e;margin-bottom:0.65rem;">ITC Availed</div>
+                            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:0.3rem;">
+                                <span style="font-size:0.7rem;color:#6b7280;">Tally Books</span>
+                                <span style="font-size:0.88rem;font-weight:700;color:#1f2937;" id="health-itc-books">—</span>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:0.5rem;">
+                                <span style="font-size:0.7rem;color:#6b7280;">GSTR-3B Filed</span>
+                                <span style="font-size:0.88rem;font-weight:700;color:#1f2937;" id="health-itc-return">Not uploaded</span>
+                            </div>
+                            <div id="health-itc-status" style="font-size:0.68rem;font-weight:600;padding:0.2rem 0.5rem;border-radius:6px;background:#f3f4f6;color:#6b7280;text-align:center;">
+                                Upload GSTR-3B to compare
+                            </div>
+                        </div>
+
+                        <!-- Purchases Comparison -->
+                        <div style="background:rgba(255,255,255,0.85);backdrop-filter:blur(8px);border-radius:12px;padding:1rem;border:1px solid rgba(245,158,11,0.2);">
+                            <div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:#92400e;margin-bottom:0.65rem;">Purchases</div>
+                            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:0.3rem;">
+                                <span style="font-size:0.7rem;color:#6b7280;">Tally Books</span>
+                                <span style="font-size:0.88rem;font-weight:700;color:#1f2937;" id="health-purch-books">—</span>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:0.5rem;">
+                                <span style="font-size:0.7rem;color:#6b7280;">GSTR-2B</span>
+                                <span style="font-size:0.88rem;font-weight:700;color:#1f2937;" id="health-purch-return">Not uploaded</span>
+                            </div>
+                            <div id="health-purch-status" style="font-size:0.68rem;font-weight:600;padding:0.2rem 0.5rem;border-radius:6px;background:#f3f4f6;color:#6b7280;text-align:center;">
+                                Upload GSTR-2B to compare
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Upload CTAs -->
+                    <div style="display:flex;gap:0.6rem;flex-wrap:wrap;align-items:center;">
+                        <label style="display:inline-flex;align-items:center;gap:0.3rem;font-size:0.72rem;font-weight:600;color:#92400e;background:rgba(255,255,255,0.7);border:1.5px dashed #d97706;border-radius:8px;padding:0.4rem 0.85rem;cursor:pointer;transition:all .2s;" onmouseover="this.style.background='rgba(255,255,255,0.95)'" onmouseout="this.style.background='rgba(255,255,255,0.7)'">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                            Upload GSTR-3B
+                            <input type="file" accept=".xlsx,.xls,.csv,.json" style="display:none" onchange="handleHealthUpload(event,'3b')">
+                        </label>
+                        <label style="display:inline-flex;align-items:center;gap:0.3rem;font-size:0.72rem;font-weight:600;color:#92400e;background:rgba(255,255,255,0.7);border:1.5px dashed #d97706;border-radius:8px;padding:0.4rem 0.85rem;cursor:pointer;transition:all .2s;" onmouseover="this.style.background='rgba(255,255,255,0.95)'" onmouseout="this.style.background='rgba(255,255,255,0.7)'">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                            Upload GSTR-1
+                            <input type="file" accept=".xlsx,.xls,.csv,.json" style="display:none" onchange="handleHealthUpload(event,'1')">
+                        </label>
+                        <span style="font-size:0.65rem;color:#b45309;margin-left:auto;">Upload returns to see match/gap analysis</span>
+                        <button onclick="navigateTo('reconciliation', document.querySelector('[data-section=reconciliation]'))" style="font-size:0.72rem;font-weight:600;color:#fff;background:linear-gradient(135deg,#d97706,#f59e0b);border:none;border-radius:8px;padding:0.4rem 1rem;cursor:pointer;transition:all .2s;margin-left:0.25rem;">
+                            View Detailed Recon →
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Quick Action Cards -->
                 <h3 style="font-size:0.9rem;font-weight:600;color:#374151;margin:0 0 1rem;">Quick Actions</h3>
                 <div class="cards-grid">
+                    <!-- NEW: Quick Refund Estimate -->
+                    <div class="tool-card" onclick="navigateToTool('refund-calculator.html?mode=tally')" style="border-left:3px solid #059669;">
+                        <div class="card-top">
+                            <div class="card-icon" style="background:#ecfdf5;color:#059669;">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                            </div>
+                            <span style="font-size:0.58rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;padding:0.15rem 0.5rem;border-radius:4px;background:#ecfdf5;color:#059669;border:1px solid #86efac;">Tally</span>
+                        </div>
+                        <h3 class="card-title">Quick Refund Estimate</h3>
+                        <p class="card-desc">Get an instant refund estimate from your Tally books — no file uploads needed.</p>
+                        <a class="card-action" style="background:linear-gradient(135deg,#059669,#10b981);">Estimate Now →</a>
+                    </div>
                     <div class="tool-card" onclick="navigateToTool('tool-statement3.html')">
                         <div class="card-top">
-                            <div class="card-icon">📝</div>
+                            <div class="card-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1e3a8a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
                         </div>
                         <h3 class="card-title">Statement 3</h3>
                         <p class="card-desc">Generate Statement 3 from Shipping Bills and BRC documents automatically.</p>
@@ -980,48 +1112,19 @@
                     </div>
                     <div class="tool-card" onclick="navigateToTool('tool-annexure-b.html')">
                         <div class="card-top">
-                            <div class="card-icon">📑</div>
+                            <div class="card-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1e3a8a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
                         </div>
                         <h3 class="card-title">Annexure B</h3>
                         <p class="card-desc">Streamline GST refund documentation with simplified Annexure-B processing.</p>
                         <a class="card-action">Open Tool →</a>
                     </div>
-                    <div class="tool-card" onclick="navigateToTool('tool-gstin-validator.html')">
+                    <div class="tool-card" onclick="navigateToTool('refund-calculator.html')">
                         <div class="card-top">
-                            <div class="card-icon">🔍</div>
+                            <div class="card-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1e3a8a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="12" y2="14"/></svg></div>
                         </div>
-                        <h3 class="card-title">GSTIN Validator</h3>
-                        <p class="card-desc">Validate GSTINs quickly and accurately with our efficient tool.</p>
+                        <h3 class="card-title">Full Refund Calculator</h3>
+                        <p class="card-desc">Manual entry, file upload, or Tally — all modes with Rule 89(4), 89(5), 96.</p>
                         <a class="card-action">Open Tool →</a>
-                    </div>
-                    <div class="tool-card" onclick="navigateToTool('tool-hsn-locator.html')">
-                        <div class="card-top">
-                            <div class="card-icon">🔎</div>
-                        </div>
-                        <h3 class="card-title">HSN / SAC Locator</h3>
-                        <p class="card-desc">Find HSN/SAC codes by description — single lookup or bulk validation.</p>
-                        <a class="card-action">Open Tool →</a>
-                    </div>
-                </div>
-
-                <!-- Stats Row -->
-                <h3 style="font-size:0.9rem;font-weight:600;color:#374151;margin:2rem 0 1rem;">Refund Overview</h3>
-                <div class="refund-stats">
-                    <div class="stat-card">
-                        <div class="stat-label">Total Claims</div>
-                        <div class="stat-value">—</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Pending</div>
-                        <div class="stat-value orange">—</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Approved</div>
-                        <div class="stat-value green">—</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Rejected</div>
-                        <div class="stat-value" style="color:#ef4444">—</div>
                     </div>
                 </div>
             </div>
@@ -1183,34 +1286,137 @@
             </div>
 
 
-            <!-- ========== REPORTS (ISS-030 Enhanced) ========== -->
+            <!-- ========== REPORTS — COMPREHENSIVE TALLY-POWERED ========== -->
             <div class="content-section" id="sec-reports">
                 <div class="section-header" style="display:flex;align-items:flex-start;justify-content:space-between">
                     <div>
                         <h1>Reports</h1>
-                        <p class="section-subtitle">Generated compliance reports for this client</p>
+                        <p class="section-subtitle">Financial overview from Tally books — <span id="rpt-fy-label">FY 2025-26</span></p>
                     </div>
-                    <div style="position:relative;margin-top:.25rem">
-                        <input type="text" id="reports-search" placeholder="Search reports..." oninput="filterReports(this.value)"
-                            style="padding:.55rem 1rem .55rem 2.2rem;border:1.5px solid #e5e7eb;border-radius:8px;font-size:.82rem;width:240px;font-family:inherit">
-                        <span style="position:absolute;left:.75rem;top:50%;transform:translateY(-50%);color:#9ca3af;font-size:.82rem">🔍</span>
+                    <div style="display:flex;gap:0.5rem;align-items:center;">
+                        <select id="rpt-company" onchange="loadReports()" style="padding:0.4rem 0.6rem;border:1px solid #d1d5db;border-radius:8px;font-size:0.78rem;font-family:inherit;background:#fff;">
+                            <option>Loading...</option>
+                        </select>
+                        <select id="rpt-year" onchange="loadReports()" style="padding:0.4rem 0.6rem;border:1px solid #d1d5db;border-radius:8px;font-size:0.78rem;font-family:inherit;background:#fff;">
+                        </select>
+                        <button id="rpt-refresh-btn" onclick="loadReports()" style="padding:0.4rem 0.75rem;border:none;border-radius:8px;background:linear-gradient(135deg,#1e3a8a,#3b82f6);color:#fff;font-size:0.72rem;font-weight:600;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:0.3rem;">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 11-6.22-8.57"/><polyline points="21 3 21 12 12 12"/></svg>
+                            Refresh
+                        </button>
                     </div>
                 </div>
-                <div id="reports-table-wrap" style="border:1px solid #e5e7eb;border-radius:10px;overflow:hidden">
-                    <table style="width:100%;border-collapse:collapse;font-size:.82rem" id="reports-table">
-                        <thead>
-                            <tr style="background:#f8fafc;border-bottom:2px solid #e5e7eb">
-                                <th style="padding:.65rem .85rem;text-align:left;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#374151;cursor:pointer;white-space:nowrap" onclick="sortReports('type')">Type ↕</th>
-                                <th style="padding:.65rem .85rem;text-align:left;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#374151;cursor:pointer;white-space:nowrap" onclick="sortReports('client')">Client ↕</th>
-                                <th style="padding:.65rem .85rem;text-align:left;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#374151;cursor:pointer;white-space:nowrap" onclick="sortReports('date')">Date ↕</th>
-                                <th style="padding:.65rem .85rem;text-align:left;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#374151;cursor:pointer;white-space:nowrap" onclick="sortReports('status')">Status ↕</th>
-                                <th style="padding:.65rem .85rem;text-align:center;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#374151;width:80px">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="reports-tbody">
-                            <tr><td colspan="5" style="text-align:center;padding:2rem;color:#9ca3af">Loading reports...</td></tr>
-                        </tbody>
-                    </table>
+
+                <!-- FY Summary Cards -->
+                <div id="rpt-summary-cards" style="display:grid;grid-template-columns:repeat(5,1fr);gap:0.75rem;margin-bottom:1.5rem;">
+                    <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:1rem;border-top:3px solid #3b82f6;">
+                        <div style="font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#6b7280;margin-bottom:0.25rem;">Total Sales</div>
+                        <div id="rpt-total-sales" style="font-family:'Outfit',sans-serif;font-size:1.3rem;font-weight:800;color:#1f2937;">—</div>
+                    </div>
+                    <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:1rem;border-top:3px solid #8b5cf6;">
+                        <div style="font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#6b7280;margin-bottom:0.25rem;">Total Purchases</div>
+                        <div id="rpt-total-purchases" style="font-family:'Outfit',sans-serif;font-size:1.3rem;font-weight:800;color:#1f2937;">—</div>
+                    </div>
+                    <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:1rem;border-top:3px solid #059669;">
+                        <div style="font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#6b7280;margin-bottom:0.25rem;">Export Sales</div>
+                        <div id="rpt-total-exports" style="font-family:'Outfit',sans-serif;font-size:1.3rem;font-weight:800;color:#1f2937;">—</div>
+                    </div>
+                    <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:1rem;border-top:3px solid #f59e0b;">
+                        <div style="font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#6b7280;margin-bottom:0.25rem;">Total Tax</div>
+                        <div id="rpt-total-tax" style="font-family:'Outfit',sans-serif;font-size:1.3rem;font-weight:800;color:#1f2937;">—</div>
+                    </div>
+                    <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:1rem;border-top:3px solid #dc2626;">
+                        <div style="font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#6b7280;margin-bottom:0.25rem;">Net Margin</div>
+                        <div id="rpt-net-margin" style="font-family:'Outfit',sans-serif;font-size:1.3rem;font-weight:800;color:#1f2937;">—</div>
+                    </div>
+                </div>
+
+                <!-- Monthly Trend Table -->
+                <div style="background:#fff;border:1px solid #e5e7eb;border-radius:14px;overflow:hidden;margin-bottom:1.5rem;">
+                    <div style="padding:1rem 1.25rem;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;justify-content:space-between;">
+                        <div style="font-size:0.9rem;font-weight:700;color:#111827;">Monthly Book Summary</div>
+                        <span style="font-size:0.65rem;font-weight:600;color:#059669;background:#ecfdf5;padding:0.15rem 0.5rem;border-radius:4px;">From Tally</span>
+                    </div>
+                    <div style="overflow-x:auto;">
+                        <table style="width:100%;border-collapse:collapse;font-size:0.78rem;" id="rpt-monthly-table">
+                            <thead>
+                                <tr style="background:#f8fafc;border-bottom:2px solid #e5e7eb;">
+                                    <th style="padding:0.6rem 0.85rem;text-align:left;font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#6b7280;">Month</th>
+                                    <th style="padding:0.6rem 0.85rem;text-align:right;font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#3b82f6;">Sales</th>
+                                    <th style="padding:0.6rem 0.85rem;text-align:right;font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#8b5cf6;">Purchases</th>
+                                    <th style="padding:0.6rem 0.85rem;text-align:right;font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#059669;">Export</th>
+                                    <th style="padding:0.6rem 0.85rem;text-align:right;font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#6b7280;">CGST</th>
+                                    <th style="padding:0.6rem 0.85rem;text-align:right;font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#6b7280;">SGST</th>
+                                    <th style="padding:0.6rem 0.85rem;text-align:right;font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#6b7280;">IGST</th>
+                                    <th style="padding:0.6rem 0.85rem;text-align:right;font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#f59e0b;">Total Tax</th>
+                                </tr>
+                            </thead>
+                            <tbody id="rpt-monthly-tbody">
+                                <tr><td colspan="8" style="text-align:center;padding:2rem;color:#9ca3af;">Select a company to load reports</td></tr>
+                            </tbody>
+                            <tfoot id="rpt-monthly-tfoot" style="display:none;"></tfoot>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Visual Charts Row -->
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;">
+                    <!-- Sales vs Purchase Bar Chart -->
+                    <div style="background:#fff;border:1px solid #e5e7eb;border-radius:14px;padding:1.25rem;">
+                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+                            <div style="font-size:0.85rem;font-weight:700;color:#111827;">Sales vs Purchases Trend</div>
+                            <div style="display:flex;gap:0.75rem;">
+                                <span style="display:flex;align-items:center;gap:0.25rem;font-size:0.65rem;font-weight:600;color:#6b7280;">
+                                    <span style="width:8px;height:8px;border-radius:2px;background:linear-gradient(135deg,#3b82f6,#6366f1);"></span> Sales
+                                </span>
+                                <span style="display:flex;align-items:center;gap:0.25rem;font-size:0.65rem;font-weight:600;color:#6b7280;">
+                                    <span style="width:8px;height:8px;border-radius:2px;background:linear-gradient(135deg,#8b5cf6,#a78bfa);"></span> Purchases
+                                </span>
+                            </div>
+                        </div>
+                        <div id="rpt-bar-chart" style="display:flex;align-items:flex-end;gap:6px;height:160px;padding:0 0.25rem;"></div>
+                    </div>
+
+                    <!-- Tax Breakup -->
+                    <div style="background:#fff;border:1px solid #e5e7eb;border-radius:14px;padding:1.25rem;">
+                        <div style="font-size:0.85rem;font-weight:700;color:#111827;margin-bottom:1rem;">Tax Component Breakup</div>
+                        <div id="rpt-tax-breakup" style="display:flex;flex-direction:column;gap:0.85rem;"></div>
+                    </div>
+                </div>
+
+                <!-- HSN Summary Table -->
+                <div style="background:#fff;border:1px solid #e5e7eb;border-radius:14px;overflow:hidden;margin-bottom:1.5rem;">
+                    <div style="padding:1rem 1.25rem;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;justify-content:space-between;">
+                        <div style="font-size:0.9rem;font-weight:700;color:#111827;">HSN-wise Tax Summary</div>
+                        <span style="font-size:0.65rem;font-weight:600;color:#059669;background:#ecfdf5;padding:0.15rem 0.5rem;border-radius:4px;">Inventory Data</span>
+                    </div>
+                    <div style="overflow-x:auto;">
+                        <table style="width:100%;border-collapse:collapse;font-size:0.78rem;">
+                            <thead>
+                                <tr style="background:#f8fafc;border-bottom:2px solid #e5e7eb;">
+                                    <th style="padding:0.6rem 0.85rem;text-align:left;font-size:0.65rem;font-weight:700;text-transform:uppercase;color:#6b7280;">HSN Code</th>
+                                    <th style="padding:0.6rem 0.85rem;text-align:left;font-size:0.65rem;font-weight:700;text-transform:uppercase;color:#6b7280;">UOM</th>
+                                    <th style="padding:0.6rem 0.85rem;text-align:right;font-size:0.65rem;font-weight:700;text-transform:uppercase;color:#6b7280;">GST Rate</th>
+                                    <th style="padding:0.6rem 0.85rem;text-align:right;font-size:0.65rem;font-weight:700;text-transform:uppercase;color:#6b7280;">Qty</th>
+                                    <th style="padding:0.6rem 0.85rem;text-align:right;font-size:0.65rem;font-weight:700;text-transform:uppercase;color:#6b7280;">Amount</th>
+                                    <th style="padding:0.6rem 0.85rem;text-align:right;font-size:0.65rem;font-weight:700;text-transform:uppercase;color:#6b7280;">Entries</th>
+                                </tr>
+                            </thead>
+                            <tbody id="rpt-hsn-tbody">
+                                <tr><td colspan="6" style="text-align:center;padding:1.5rem;color:#9ca3af;">Loading HSN data...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Recent Reconciliation Jobs -->
+                <div style="background:#fff;border:1px solid #e5e7eb;border-radius:14px;padding:1.25rem;margin-bottom:1rem;">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;">
+                        <div style="font-size:0.9rem;font-weight:700;color:#111827;">Recent Reconciliation Jobs</div>
+                        <span id="rpt-jobs-count" style="font-size:0.62rem;font-weight:700;background:#dbeafe;color:#1e3a8a;padding:0.15rem 0.45rem;border-radius:6px;">0</span>
+                    </div>
+                    <div id="rpt-jobs-list" style="max-height:250px;overflow-y:auto;">
+                        <div style="text-align:center;padding:1.5rem;color:#9ca3af;font-size:0.78rem;">Loading jobs...</div>
+                    </div>
                 </div>
             </div>
 
@@ -1316,6 +1522,49 @@
                         <h3 class="card-title">GSTR-1 vs GSTR-3B</h3>
                         <p class="card-desc">Outward supply reconciliation between GSTR-1 and 3B for output tax</p>
                         <a class="card-action" onclick="navigateToTool('tool-gstr1-vs-3b.html')">Open Tool →</a>
+                    </div>
+                </div>
+
+                <!-- Tally-Powered Reconciliation (NEW) -->
+                <div class="category-header" style="margin-top:2rem;">
+                    <span class="cat-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></span>
+                    <h2>Tally-Powered Reconciliation</h2>
+                    <span style="font-size:0.58rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;padding:0.15rem 0.5rem;border-radius:4px;background:#ecfdf5;color:#059669;border:1px solid #86efac;margin-left:0.5rem;">No File Upload Needed</span>
+                </div>
+                <p class="category-subtitle">Match your Tally books directly against filed GST returns — no Purchase/Sales Register upload required</p>
+
+                <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:1.25rem;margin-bottom:1rem">
+                    <div class="tool-card" style="border-top:3px solid #059669;border-left:3px solid #059669;" onclick="navigateToTool('tool-einv-vs-sr.html?source=tally')">
+                        <div class="card-top">
+                            <div class="card-icon" style="background:#ecfdf5;color:#059669;">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                            </div>
+                            <span style="font-size:0.58rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;padding:0.15rem 0.5rem;border-radius:4px;background:#ecfdf5;color:#059669;border:1px solid #86efac;">Tally + GSTR-1</span>
+                        </div>
+                        <h3 class="card-title">Tally Sales vs GSTR-1</h3>
+                        <p class="card-desc">Auto-pull sales invoices from Tally and match invoice-by-invoice against filed GSTR-1. No Sales Register upload needed.</p>
+                        <div style="display:flex;gap:0.5rem;align-items:center;margin-bottom:0.5rem;">
+                            <span style="font-size:0.62rem;background:#f0fdf4;color:#065f46;padding:0.12rem 0.4rem;border-radius:4px;font-weight:600;">Invoice Matching</span>
+                            <span style="font-size:0.62rem;background:#f0fdf4;color:#065f46;padding:0.12rem 0.4rem;border-radius:4px;font-weight:600;">GSTIN + Amount</span>
+                            <span style="font-size:0.62rem;background:#f0fdf4;color:#065f46;padding:0.12rem 0.4rem;border-radius:4px;font-weight:600;">Tax Breakup</span>
+                        </div>
+                        <a class="card-action" style="background:linear-gradient(135deg,#059669,#10b981);">Open Tool →</a>
+                    </div>
+                    <div class="tool-card" style="border-top:3px solid #059669;border-left:3px solid #059669;" onclick="navigateToTool('tool-gstr2b-vs-pr.html?source=tally')">
+                        <div class="card-top">
+                            <div class="card-icon" style="background:#ecfdf5;color:#059669;">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                            </div>
+                            <span style="font-size:0.58rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;padding:0.15rem 0.5rem;border-radius:4px;background:#ecfdf5;color:#059669;border:1px solid #86efac;">Tally + GSTR-2B</span>
+                        </div>
+                        <h3 class="card-title">Tally Purchase vs GSTR-2B</h3>
+                        <p class="card-desc">Auto-pull purchase invoices from Tally and match against GSTR-2B. Identify ITC eligible in 2B but missing in books, and vice versa.</p>
+                        <div style="display:flex;gap:0.5rem;align-items:center;margin-bottom:0.5rem;">
+                            <span style="font-size:0.62rem;background:#f0fdf4;color:#065f46;padding:0.12rem 0.4rem;border-radius:4px;font-weight:600;">ITC Validation</span>
+                            <span style="font-size:0.62rem;background:#f0fdf4;color:#065f46;padding:0.12rem 0.4rem;border-radius:4px;font-weight:600;">Supplier GSTIN</span>
+                            <span style="font-size:0.62rem;background:#f0fdf4;color:#065f46;padding:0.12rem 0.4rem;border-radius:4px;font-weight:600;">Missing in Books</span>
+                        </div>
+                        <a class="card-action" style="background:linear-gradient(135deg,#059669,#10b981);">Open Tool →</a>
                     </div>
                 </div>
             </div>
@@ -1503,6 +1752,11 @@
             if (el) {
                 el.classList.add('active');
             }
+
+            // Auto-load reports data when reports tab is activated
+            if (sectionId === 'reports' && typeof loadReports === 'function') {
+                setTimeout(loadReports, 200);
+            }
         }
 
         function toggleSubmenu(linkEl) {
@@ -1532,89 +1786,229 @@
                 if (res.ok) {
                     const jobs = await res.json();
                     activeJobs = jobs;
-                    renderReportList(jobs);
+                    renderReportJobs(jobs);
                 }
             } catch (e) { console.error("Sync error", e); }
         }
 
-        // ISS-030: Enhanced report rendering with client name, timestamp, sort, search, delete
+        // ═══ REPORTS — COMPREHENSIVE DATA-DRIVEN ═══
         let _reportJobs = [];
-        let _reportSortKey = 'date';
-        let _reportSortAsc = false;
 
-        function renderReportList(jobs) {
-            _reportJobs = jobs;
-            const tbody = document.getElementById('reports-tbody');
-            if (!tbody) return;
+        // Helpers
+        const MONTH_NAMES = ['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        function formatMonth(ym) {
+            const y = ym.slice(0,4), m = parseInt(ym.slice(4,6));
+            return `${MONTH_NAMES[m]} ${y}`;
+        }
 
-            // Get client name from topbar or localStorage
-            let clientName = 'Client';
+        // Init reports section
+        async function initReportsSection() {
+            // Populate FY year dropdown
+            const now = new Date();
+            const currentFY = now.getMonth() >= 3 ? now.getFullYear() : now.getFullYear() - 1;
+            const yearSel = document.getElementById('rpt-year');
+            yearSel.innerHTML = '';
+            for (let y = currentFY; y >= currentFY - 4; y--) {
+                yearSel.innerHTML += `<option value="${y}" ${y === currentFY ? 'selected' : ''}>FY ${y}-${(y+1).toString().slice(2)}</option>`;
+            }
+
+            // Populate company dropdown
             try {
-                const sc = JSON.parse(localStorage.getItem('selectedClient') || '{}');
-                clientName = sc.name || 'Client';
-            } catch(_) {}
+                const res = await authFetch('/tally/companies');
+                const companies = await res.json();
+                const sel = document.getElementById('rpt-company');
+                if (companies.length > 0) {
+                    sel.innerHTML = companies.map(c => `<option value="${c}">${c}</option>`).join('');
+                } else {
+                    sel.innerHTML = '<option>No Tally company</option>';
+                }
+            } catch(e) { console.warn('Failed to load companies for reports', e); }
+        }
+        initReportsSection();
 
-            if (jobs.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:2.5rem;color:#9ca3af"><div style="font-size:1.5rem;margin-bottom:.4rem">📄</div>No reports generated yet. Use the Tools section to create your first report.</td></tr>';
+        async function loadReports() {
+            const company = document.getElementById('rpt-company').value;
+            const year = document.getElementById('rpt-year').value;
+            if (!company || company === 'Loading...' || company === 'No Tally company') return;
+
+            document.getElementById('rpt-fy-label').textContent = `FY ${year}-${(parseInt(year)+1).toString().slice(2)}`;
+
+            // Fetch all data in parallel
+            const [monthlyRes, hsnRes, jobsRes] = await Promise.allSettled([
+                authFetch(`/tally/reports/monthly-summary?company_name=${encodeURIComponent(company)}&year=${year}`).then(r => r.json()),
+                authFetch(`/tally/inventory-entries/hsn-summary?company_name=${encodeURIComponent(company)}`).then(r => r.json()),
+                authFetch(`/jobs/?skip=0&limit=20${clientId ? '&client_id=' + clientId : ''}`).then(r => r.json()),
+            ]);
+
+            const monthly = monthlyRes.status === 'fulfilled' ? monthlyRes.value : null;
+            const hsn = hsnRes.status === 'fulfilled' ? hsnRes.value : [];
+            const jobs = jobsRes.status === 'fulfilled' ? jobsRes.value : [];
+
+            if (monthly) renderMonthlyReport(monthly);
+            renderHSNTable(hsn);
+            renderReportJobs(jobs);
+        }
+
+        function renderMonthlyReport(data) {
+            const t = data.totals;
+            const inr = (v) => '₹' + (v || 0).toLocaleString('en-IN', { maximumFractionDigits: 0 });
+
+            // Summary cards
+            document.getElementById('rpt-total-sales').textContent = inr(t.sales);
+            document.getElementById('rpt-total-purchases').textContent = inr(t.purchases);
+            document.getElementById('rpt-total-exports').textContent = inr(t.export_sales);
+            document.getElementById('rpt-total-tax').textContent = inr(t.total_tax);
+
+            const margin = t.sales > 0 ? ((t.sales - t.purchases) / t.sales * 100).toFixed(1) : '0';
+            const marginEl = document.getElementById('rpt-net-margin');
+            marginEl.textContent = margin + '%';
+            marginEl.style.color = parseFloat(margin) >= 0 ? '#059669' : '#dc2626';
+
+            // Monthly table
+            const tbody = document.getElementById('rpt-monthly-tbody');
+            if (data.months.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:2rem;color:#9ca3af;">No data for this period</td></tr>';
+                document.getElementById('rpt-monthly-tfoot').style.display = 'none';
+                document.getElementById('rpt-bar-chart').innerHTML = '<div style="width:100%;text-align:center;color:#9ca3af;font-size:0.78rem;padding:2rem;">No data</div>';
+                document.getElementById('rpt-tax-breakup').innerHTML = '<div style="text-align:center;color:#9ca3af;font-size:0.78rem;padding:1rem;">No tax data</div>';
                 return;
             }
 
-            const query = (document.getElementById('reports-search')?.value || '').toLowerCase();
-            let filtered = jobs.filter(j => {
-                if (!query) return true;
-                const type = (j.job_type || '').toLowerCase().replace('_',' ');
-                const status = (j.status || '').toLowerCase();
-                return type.includes(query) || status.includes(query) || clientName.toLowerCase().includes(query);
-            });
+            tbody.innerHTML = data.months.map(m => {
+                return `<tr style="border-bottom:1px solid #f1f5f9;transition:background .12s" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='#fff'">
+                    <td style="padding:0.55rem 0.85rem;font-weight:600;color:#1e293b;white-space:nowrap">${formatMonth(m.month)}</td>
+                    <td style="padding:0.55rem 0.85rem;text-align:right;color:#3b82f6;font-weight:600">${inr(m.sales)}<span style="color:#9ca3af;font-size:0.65rem;margin-left:0.25rem">(${m.sales_count})</span></td>
+                    <td style="padding:0.55rem 0.85rem;text-align:right;color:#8b5cf6;font-weight:600">${inr(m.purchases)}<span style="color:#9ca3af;font-size:0.65rem;margin-left:0.25rem">(${m.purchase_count})</span></td>
+                    <td style="padding:0.55rem 0.85rem;text-align:right;color:#059669;font-weight:600">${m.export_sales > 0 ? inr(m.export_sales) : '—'}</td>
+                    <td style="padding:0.55rem 0.85rem;text-align:right;color:#374151">${inr(m.cgst)}</td>
+                    <td style="padding:0.55rem 0.85rem;text-align:right;color:#374151">${inr(m.sgst)}</td>
+                    <td style="padding:0.55rem 0.85rem;text-align:right;color:#374151">${inr(m.igst)}</td>
+                    <td style="padding:0.55rem 0.85rem;text-align:right;color:#f59e0b;font-weight:700">${inr(m.total_tax)}</td>
+                </tr>`;
+            }).join('');
 
-            // Sort
-            filtered.sort((a, b) => {
-                let va, vb;
-                if (_reportSortKey === 'type') { va = a.job_type; vb = b.job_type; }
-                else if (_reportSortKey === 'status') { va = a.status; vb = b.status; }
-                else if (_reportSortKey === 'client') { va = clientName; vb = clientName; }
-                else { va = a.created_at; vb = b.created_at; }
-                if (va < vb) return _reportSortAsc ? -1 : 1;
-                if (va > vb) return _reportSortAsc ? 1 : -1;
-                return 0;
-            });
+            // Totals footer
+            const tfoot = document.getElementById('rpt-monthly-tfoot');
+            tfoot.style.display = '';
+            tfoot.innerHTML = `<tr style="background:#f8fafc;border-top:2px solid #e5e7eb;">
+                <td style="padding:0.65rem 0.85rem;font-weight:800;color:#111827;">TOTAL</td>
+                <td style="padding:0.65rem 0.85rem;text-align:right;font-weight:800;color:#3b82f6;">${inr(t.sales)}</td>
+                <td style="padding:0.65rem 0.85rem;text-align:right;font-weight:800;color:#8b5cf6;">${inr(t.purchases)}</td>
+                <td style="padding:0.65rem 0.85rem;text-align:right;font-weight:800;color:#059669;">${inr(t.export_sales)}</td>
+                <td style="padding:0.65rem 0.85rem;text-align:right;font-weight:800;color:#374151;">${inr(t.cgst)}</td>
+                <td style="padding:0.65rem 0.85rem;text-align:right;font-weight:800;color:#374151;">${inr(t.sgst)}</td>
+                <td style="padding:0.65rem 0.85rem;text-align:right;font-weight:800;color:#374151;">${inr(t.igst)}</td>
+                <td style="padding:0.65rem 0.85rem;text-align:right;font-weight:800;color:#f59e0b;">${inr(t.total_tax)}</td>
+            </tr>`;
 
-            tbody.innerHTML = filtered.map(job => {
-                const dt = new Date(job.created_at);
-                const dateStr = dt.toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' });
-                const timeStr = dt.toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit' });
-                const jobName = (job.job_type || '').toUpperCase().replace(/_/g, ' ');
-                const isCompleted = job.status === 'COMPLETED';
-                const statusBg = isCompleted ? '#ecfdf5' : job.status === 'FAILED' ? '#fef2f2' : '#fef3c7';
-                const statusColor = isCompleted ? '#059669' : job.status === 'FAILED' ? '#dc2626' : '#d97706';
+            // Bar chart
+            renderBarChart(data.months);
 
-                return `<tr style="border-bottom:1px solid #f1f5f9;transition:background .1s" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='#fff'">
-                    <td style="padding:.65rem .85rem;font-weight:600;color:#1e293b">${jobName}</td>
-                    <td style="padding:.65rem .85rem;color:#6b7280">${clientName}</td>
-                    <td style="padding:.65rem .85rem;color:#6b7280;white-space:nowrap">${dateStr} <span style="color:#cbd5e1;font-size:.72rem">${timeStr}</span></td>
-                    <td style="padding:.65rem .85rem"><span style="background:${statusBg};color:${statusColor};padding:2px 8px;border-radius:12px;font-size:.68rem;font-weight:700;text-transform:uppercase">${job.status}</span></td>
-                    <td style="padding:.65rem .85rem;text-align:center;display:flex;gap:.25rem;justify-content:center">
-                        ${isCompleted ? `<button onclick="downloadFile('${job.id}')" style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:6px;padding:.3rem .5rem;cursor:pointer;font-size:.72rem;font-weight:600;color:#1e3a8a" title="Download">↓</button>` : ''}
-                        <button onclick="deleteReport('${job.id}')" style="background:#fef2f2;border:1px solid #fecaca;border-radius:6px;padding:.3rem .5rem;cursor:pointer;font-size:.72rem;font-weight:600;color:#dc2626" title="Delete">✕</button>
-                    </td>
+            // Tax breakup
+            renderTaxBreakup(t);
+        }
+
+        function renderBarChart(months) {
+            const chart = document.getElementById('rpt-bar-chart');
+            const maxVal = Math.max(...months.map(m => Math.max(m.sales, m.purchases)), 1);
+
+            chart.innerHTML = months.map(m => {
+                const sh = Math.max((m.sales / maxVal) * 140, 4);
+                const ph = Math.max((m.purchases / maxVal) * 140, 4);
+                const label = MONTH_NAMES[parseInt(m.month.slice(4,6))].slice(0,3);
+                return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;min-width:0;">
+                    <div style="display:flex;gap:2px;align-items:flex-end;height:140px;width:100%;">
+                        <div style="flex:1;height:${sh}px;background:linear-gradient(180deg,#3b82f6,#6366f1);border-radius:4px 4px 0 0;min-width:0;transition:height .4s ease;" title="Sales: ₹${(m.sales||0).toLocaleString('en-IN')}"></div>
+                        <div style="flex:1;height:${ph}px;background:linear-gradient(180deg,#8b5cf6,#a78bfa);border-radius:4px 4px 0 0;min-width:0;transition:height .4s ease;" title="Purchases: ₹${(m.purchases||0).toLocaleString('en-IN')}"></div>
+                    </div>
+                    <div style="font-size:0.58rem;font-weight:600;color:#6b7280;white-space:nowrap;">${label}</div>
+                </div>`;
+            }).join('');
+        }
+
+        function renderTaxBreakup(totals) {
+            const container = document.getElementById('rpt-tax-breakup');
+            const total = totals.total_tax || 1;
+            const items = [
+                { label: 'CGST', value: totals.cgst, color: '#3b82f6' },
+                { label: 'SGST', value: totals.sgst, color: '#8b5cf6' },
+                { label: 'IGST', value: totals.igst, color: '#059669' },
+            ];
+
+            container.innerHTML = items.map(item => {
+                const pct = total > 0 ? ((item.value / total) * 100).toFixed(1) : 0;
+                return `<div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.25rem;">
+                        <span style="font-size:0.72rem;font-weight:700;color:#374151;">${item.label}</span>
+                        <span style="font-size:0.72rem;font-weight:600;color:#6b7280;">₹${(item.value||0).toLocaleString('en-IN')} <span style="font-size:0.62rem;color:#9ca3af;">(${pct}%)</span></span>
+                    </div>
+                    <div style="height:10px;background:#f1f5f9;border-radius:5px;overflow:hidden;">
+                        <div style="height:100%;width:${pct}%;background:${item.color};border-radius:5px;transition:width .5s ease;"></div>
+                    </div>
+                </div>`;
+            }).join('');
+
+            // Total bar
+            container.innerHTML += `<div style="margin-top:0.5rem;padding-top:0.75rem;border-top:1px solid #e5e7eb;">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <span style="font-size:0.78rem;font-weight:800;color:#111827;">Total Tax</span>
+                    <span style="font-size:0.85rem;font-weight:800;color:#f59e0b;">₹${total.toLocaleString('en-IN')}</span>
+                </div>
+            </div>`;
+        }
+
+        function renderHSNTable(hsnData) {
+            const tbody = document.getElementById('rpt-hsn-tbody');
+            if (!hsnData || hsnData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:1.5rem;color:#9ca3af;">No HSN inventory data available</td></tr>';
+                return;
+            }
+            tbody.innerHTML = hsnData.slice(0, 25).map(h => {
+                return `<tr style="border-bottom:1px solid #f1f5f9;transition:background .12s" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='#fff'">
+                    <td style="padding:0.55rem 0.85rem;font-weight:700;color:#1e293b;font-family:monospace;">${h.hsn_code}</td>
+                    <td style="padding:0.55rem 0.85rem;color:#6b7280;">${h.uom || '—'}</td>
+                    <td style="padding:0.55rem 0.85rem;text-align:right;color:#374151;font-weight:600;">${h.gst_rate}%</td>
+                    <td style="padding:0.55rem 0.85rem;text-align:right;color:#374151;">${(h.total_qty || 0).toLocaleString('en-IN')}</td>
+                    <td style="padding:0.55rem 0.85rem;text-align:right;color:#1e293b;font-weight:600;">₹${(h.total_amount || 0).toLocaleString('en-IN', { maximumFractionDigits: 0 })}</td>
+                    <td style="padding:0.55rem 0.85rem;text-align:right;color:#6b7280;">${h.entry_count}</td>
                 </tr>`;
             }).join('');
         }
 
-        function filterReports(query) { renderReportList(_reportJobs); }
-        function sortReports(key) {
-            if (_reportSortKey === key) _reportSortAsc = !_reportSortAsc;
-            else { _reportSortKey = key; _reportSortAsc = true; }
-            renderReportList(_reportJobs);
+        function renderReportJobs(jobs) {
+            _reportJobs = jobs;
+            const container = document.getElementById('rpt-jobs-list');
+            const countEl = document.getElementById('rpt-jobs-count');
+            countEl.textContent = jobs.length;
+
+            if (jobs.length === 0) {
+                container.innerHTML = '<div style="text-align:center;padding:1.5rem;color:#9ca3af;font-size:0.78rem;">No reconciliation jobs yet. Use Tools section to create your first reconciliation.</div>';
+                return;
+            }
+
+            container.innerHTML = jobs.slice(0, 15).map(job => {
+                const dt = new Date(job.created_at);
+                const dateStr = dt.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+                const jobName = (job.job_type || '').replace(/_/g, ' ').toUpperCase();
+                const isCompleted = job.status === 'COMPLETED';
+                const statusBg = isCompleted ? '#ecfdf5' : job.status === 'FAILED' ? '#fef2f2' : '#fef3c7';
+                const statusColor = isCompleted ? '#059669' : job.status === 'FAILED' ? '#dc2626' : '#d97706';
+
+                return `<div style="display:flex;align-items:center;padding:0.6rem 0.75rem;border:1px solid #f1f5f9;border-radius:10px;margin-bottom:0.35rem;transition:all .12s;gap:0.75rem;" onmouseover="this.style.background='#f8fafc';this.style.borderColor='#e5e7eb'" onmouseout="this.style.background='#fff';this.style.borderColor='#f1f5f9'">
+                    <div style="width:32px;height:32px;border-radius:8px;background:#eff6ff;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    </div>
+                    <div style="flex:1;min-width:0;">
+                        <div style="font-size:0.78rem;font-weight:600;color:#111827;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${jobName}</div>
+                        <div style="font-size:0.65rem;color:#9ca3af;">${dateStr}</div>
+                    </div>
+                    <span style="font-size:0.58rem;font-weight:700;padding:0.15rem 0.45rem;border-radius:9999px;background:${statusBg};color:${statusColor};text-transform:uppercase;">${job.status}</span>
+                    ${isCompleted ? `<button onclick="downloadFile('${job.id}')" style="background:linear-gradient(135deg,#1e3a8a,#3b82f6);color:#fff;border:none;border-radius:6px;padding:0.25rem 0.55rem;font-size:0.65rem;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;">Download</button>` : ''}
+                </div>`;
+            }).join('');
         }
-        async function deleteReport(jobId) {
-            if (!confirm('Delete this report? This cannot be undone.')) return;
-            try {
-                const r = await authFetch(`/jobs/${jobId}`, { method: 'DELETE' });
-                if (r.ok) loadFiles();
-                else alert('Failed to delete report');
-            } catch(e) { alert('Error: ' + e.message); }
-        }
+
+
 
         async function triggerJob(jobType) {
             if (!clientId) return alert("Client ID missing");
@@ -1947,6 +2341,160 @@
                 card.style.display = (name.includes(q) || title.includes(q)) ? '' : 'none';
             });
         }
+
+        // ═══════════════════════════════════════════════════════
+        //  DASHBOARD — TALLY LIVE STATS
+        // ═══════════════════════════════════════════════════════
+        const fmtINR = (v) => {
+            if (!v || v === 0) return '—';
+            const abs = Math.abs(v);
+            if (abs >= 10000000) return '₹' + (v / 10000000).toFixed(2) + ' Cr';
+            if (abs >= 100000) return '₹' + (v / 100000).toFixed(2) + 'L';
+            if (abs >= 1000) return '₹' + (v / 1000).toFixed(1) + 'K';
+            return '₹' + v.toLocaleString('en-IN');
+        };
+
+        let _dashPeriod = null;
+
+        async function loadDashboardStats(period) {
+            _dashPeriod = period;
+            try {
+                // 1. Get first available Tally company
+                const compRes = await authFetch('/tally/companies');
+                const companies = await compRes.json();
+                if (!companies || companies.length === 0) return;
+
+                const companyName = companies[0].company_name || companies[0];
+
+                // 2. Build date range from period
+                let dateFrom, dateTo;
+                if (period && period.year && period.month !== undefined) {
+                    const y = period.year;
+                    const m = period.month; // 0-indexed
+                    dateFrom = `${y}${String(m + 1).padStart(2, '0')}01`;
+                    const lastDay = new Date(y, m + 1, 0).getDate();
+                    dateTo = `${y}${String(m + 1).padStart(2, '0')}${lastDay}`;
+                } else {
+                    // Default: current month
+                    const now = new Date();
+                    dateFrom = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}01`;
+                    const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+                    dateTo = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${lastDay}`;
+                }
+
+                // 3. Fetch refund data (export_goods_lut gives us turnover + ITC + export)
+                const params = new URLSearchParams({
+                    company_name: companyName,
+                    refund_type: 'export_goods_lut',
+                    date_from: dateFrom,
+                    date_to: dateTo
+                });
+                const res = await authFetch(`/tally/refund-data?${params.toString()}`);
+                const data = await res.json();
+
+                if (data.error) {
+                    console.warn('Dashboard stats error:', data.error);
+                    return;
+                }
+
+                // 4. Extract values
+                const fields = data.fields || {};
+                const meta = data.metadata || {};
+                const totalTurnover = fields.total_turnover || 0;
+                const exportTurnover = fields.turnover_zero_rated_goods || 0;
+                const itcAvailed = fields.itc_availed || 0;
+
+                // Estimate refund using Rule 89(4) formula
+                const adjustedTurnover = totalTurnover - (fields.exempt_turnover || 0);
+                const netITC = itcAvailed - (fields.itc_capital_goods || 0) - (fields.blocked_credit || 0) - (fields.itc_input_services || 0);
+                const estRefund = adjustedTurnover > 0 ? Math.max(0, Math.round((exportTurnover / adjustedTurnover) * netITC)) : 0;
+
+                // 5. Populate UI
+                document.getElementById('dash-total-turnover').textContent = fmtINR(totalTurnover);
+                document.getElementById('dash-export-sales').textContent = fmtINR(exportTurnover);
+                document.getElementById('dash-itc').textContent = fmtINR(itcAvailed);
+                document.getElementById('dash-est-refund').textContent = fmtINR(estRefund);
+
+                // Sub-labels
+                document.getElementById('dash-turnover-sub').textContent = `${meta.sales_voucher_count || 0} sales vouchers`;
+                document.getElementById('dash-export-sub').textContent = `${(meta.export_ledgers_matched || []).length} export ledgers`;
+                document.getElementById('dash-itc-sub').textContent = `${meta.purchase_voucher_count || 0} purchase vouchers`;
+
+                // Period label
+                const periodLabel = period ? new Date(period.year, period.month).toLocaleDateString('en-IN', { month: 'long', year: 'numeric' }) : '';
+                document.getElementById('dash-tally-period').textContent = periodLabel ? `— ${periodLabel}` : '';
+
+                // Show note if data exists
+                if (totalTurnover > 0 || itcAvailed > 0) {
+                    document.getElementById('dash-tally-note').style.display = 'block';
+                }
+
+                // ── 6. Populate Health Check Card (book-side) ──
+                document.getElementById('health-sales-books').textContent = fmtINR(totalTurnover);
+                document.getElementById('health-itc-books').textContent = fmtINR(itcAvailed);
+                document.getElementById('health-purch-books').textContent = fmtINR(meta.total_purchases || 0);
+                if (periodLabel) {
+                    document.getElementById('health-period-label').textContent = periodLabel;
+                }
+
+            } catch (e) {
+                console.warn('Dashboard stats load failed:', e);
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════
+        //  HEALTH CHECK — FILE UPLOAD HANDLER
+        // ═══════════════════════════════════════════════════════
+        function handleHealthUpload(event, returnType) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const label = event.target.closest('label');
+            const origText = label.textContent.trim();
+            label.querySelector('svg').style.display = 'none';
+            label.childNodes[label.childNodes.length - 1].textContent = ` ${file.name}`;
+            label.style.borderStyle = 'solid';
+            label.style.borderColor = '#059669';
+            label.style.color = '#065f46';
+            label.style.background = '#ecfdf5';
+
+            // Show "processing" state on the relevant status indicator
+            if (returnType === '3b') {
+                document.getElementById('health-itc-return').textContent = 'Processing...';
+                document.getElementById('health-itc-return').style.color = '#d97706';
+                document.getElementById('health-itc-status').textContent = 'Parsing file...';
+                document.getElementById('health-itc-status').style.background = '#fef3c7';
+                document.getElementById('health-itc-status').style.color = '#92400e';
+
+                // Simulate parsed result (in production, this would call a parse API)
+                setTimeout(() => {
+                    document.getElementById('health-itc-return').textContent = 'Uploaded';
+                    document.getElementById('health-itc-return').style.color = '#059669';
+                    document.getElementById('health-itc-status').innerHTML = 'Use <strong>GST Reconciliation</strong> for detailed match';
+                    document.getElementById('health-itc-status').style.background = '#ecfdf5';
+                    document.getElementById('health-itc-status').style.color = '#065f46';
+                }, 1200);
+            } else if (returnType === '1') {
+                document.getElementById('health-sales-return').textContent = 'Processing...';
+                document.getElementById('health-sales-return').style.color = '#d97706';
+                document.getElementById('health-sales-status').textContent = 'Parsing file...';
+                document.getElementById('health-sales-status').style.background = '#fef3c7';
+                document.getElementById('health-sales-status').style.color = '#92400e';
+
+                setTimeout(() => {
+                    document.getElementById('health-sales-return').textContent = 'Uploaded';
+                    document.getElementById('health-sales-return').style.color = '#059669';
+                    document.getElementById('health-sales-status').innerHTML = 'Use <strong>GST Reconciliation</strong> for detailed match';
+                    document.getElementById('health-sales-status').style.background = '#ecfdf5';
+                    document.getElementById('health-sales-status').style.color = '#065f46';
+                }, 1200);
+            }
+        }
+
+        // Auto-load on page ready
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => loadDashboardStats(null), 500);
+        });
     </script>
     <script src="fy-utils.js"></script>
     <script>
@@ -1955,6 +2503,7 @@
             label: 'Tax Period',
             onChange: (period) => {
                 console.log('GST period changed:', period);
+                loadDashboardStats(period);
             }
         });
     </script>

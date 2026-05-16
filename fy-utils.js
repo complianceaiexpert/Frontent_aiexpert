@@ -197,39 +197,11 @@ const FYPeriod = (() => {
     // ═══════════════════════════════════════════════════════
 
     function _getPresets() {
-        const now = new Date();
-        const curMonth = now.getMonth();
-        const curYear = now.getFullYear();
         const curFY = getCurrentFY();
         const curFYStart = _fyStartYear(curFY);
-        const prevMonth = curMonth === 0 ? 11 : curMonth - 1;
-        const prevMonthYear = curMonth === 0 ? curYear - 1 : curYear;
 
         const _icon = (d) => `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${d}</svg>`;
         const presets = [];
-
-        if (_config.type === 'monthly' || _config.type === 'quarterly' || _config.type === 'half-yearly') {
-            presets.push({
-                id: 'this-month', icon: _icon('<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>'), label: 'This Month',
-                value: `${curYear}-${String(curMonth + 1).padStart(2, '0')}`,
-                sub: `${MONTHS_SHORT[curMonth]} ${curYear}`
-            });
-            presets.push({
-                id: 'last-month', icon: _icon('<polyline points="15 18 9 12 15 6"/>'), label: 'Last Month',
-                value: `${prevMonthYear}-${String(prevMonth + 1).padStart(2, '0')}`,
-                sub: `${MONTHS_SHORT[prevMonth]} ${prevMonthYear}`
-            });
-        }
-
-        if (_config.type === 'quarterly' || _config.type === 'monthly') {
-            const qMap = { 3: 'Q1', 4: 'Q1', 5: 'Q1', 6: 'Q2', 7: 'Q2', 8: 'Q2', 9: 'Q3', 10: 'Q3', 11: 'Q3', 0: 'Q4', 1: 'Q4', 2: 'Q4' };
-            const qYear = curMonth >= 3 ? curYear : curYear;
-            presets.push({
-                id: 'this-quarter', icon: _icon('<path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/>'), label: 'This Quarter',
-                value: `${qYear}-${qMap[curMonth]}`,
-                sub: qMap[curMonth]
-            });
-        }
 
         if (_config.format === 'AY') {
             presets.push({
@@ -255,7 +227,6 @@ const FYPeriod = (() => {
             });
         }
 
-        // Always add Custom Range
         presets.push({
             id: 'custom-range', icon: _icon('<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M16 14h.01"/><path d="M8 18h.01"/><path d="M12 18h.01"/>'), label: 'Custom Range',
             value: '__custom__',
@@ -358,111 +329,6 @@ const FYPeriod = (() => {
         });
         panel.appendChild(presetsBar);
 
-        // ── Divider ──
-        const divider = document.createElement('div');
-        divider.className = 'fyp-divider';
-        panel.appendChild(divider);
-
-        // ── Grid Area ──
-        const gridArea = document.createElement('div');
-        gridArea.className = 'fyp-grid-area';
-        gridArea.id = _config.selectId + '-grid';
-
-        const fyOptions = getFYOptions(pastYears, showNext);
-
-        if (type === 'yearly') {
-            // FY/AY tile grid
-            const grid = document.createElement('div');
-            grid.className = 'fyp-fy-grid';
-            fyOptions.forEach(opt => {
-                const tile = document.createElement('button');
-                tile.type = 'button';
-                tile.className = 'fyp-fy-tile' + (opt.isCurrent ? ' current' : '');
-                tile.dataset.value = format === 'AY' ? getAY(opt.value) : opt.value;
-                const displayLabel = format === 'AY' ? `AY ${getAY(opt.value)}` : `FY ${opt.value}`;
-                const range = opt.dateRange;
-                tile.innerHTML = `<span class="fyp-fy-label">${displayLabel}</span><span class="fyp-fy-range">${_fmtDate(range.from)} – ${_fmtDate(range.to)}</span>${opt.isCurrent ? '<span class="fyp-current-dot">●</span>' : ''}`;
-                tile.addEventListener('click', () => _selectValue(tile.dataset.value));
-                grid.appendChild(tile);
-            });
-            gridArea.appendChild(grid);
-        } else if (type === 'monthly') {
-            // Month grids grouped by FY
-            fyOptions.forEach(fyOpt => {
-                const fyBlock = document.createElement('div');
-                fyBlock.className = 'fyp-fy-block';
-                const fyHeader = document.createElement('div');
-                fyHeader.className = 'fyp-fy-block-header';
-                fyHeader.innerHTML = `<span>FY ${fyOpt.value}</span>${fyOpt.isCurrent ? '<span class="fyp-fy-current-badge">Current</span>' : ''}`;
-                fyBlock.appendChild(fyHeader);
-
-                const monthGrid = document.createElement('div');
-                monthGrid.className = 'fyp-month-grid';
-                const periods = getMonthlyPeriods(fyOpt.value);
-                periods.forEach(p => {
-                    const cell = document.createElement('button');
-                    cell.type = 'button';
-                    cell.className = 'fyp-month-cell';
-                    cell.dataset.value = p.value;
-                    const monthName = MONTHS_SHORT[parseInt(p.value.split('-')[1]) - 1];
-                    const yr = p.value.split('-')[0].slice(-2);
-                    cell.innerHTML = `<span class="fyp-month-name">${monthName}</span><span class="fyp-month-year">'${yr}</span>`;
-                    cell.addEventListener('click', () => _selectValue(p.value));
-                    monthGrid.appendChild(cell);
-                });
-                fyBlock.appendChild(monthGrid);
-                gridArea.appendChild(fyBlock);
-            });
-        } else if (type === 'quarterly') {
-            fyOptions.forEach(fyOpt => {
-                const fyBlock = document.createElement('div');
-                fyBlock.className = 'fyp-fy-block';
-                const fyHeader = document.createElement('div');
-                fyHeader.className = 'fyp-fy-block-header';
-                fyHeader.innerHTML = `<span>FY ${fyOpt.value}</span>${fyOpt.isCurrent ? '<span class="fyp-fy-current-badge">Current</span>' : ''}`;
-                fyBlock.appendChild(fyHeader);
-                const qGrid = document.createElement('div');
-                qGrid.className = 'fyp-quarter-grid';
-                const periods = getQuarterlyPeriods(fyOpt.value);
-                periods.forEach(p => {
-                    const cell = document.createElement('button');
-                    cell.type = 'button';
-                    cell.className = 'fyp-quarter-cell';
-                    cell.dataset.value = p.value;
-                    cell.innerHTML = `<span class="fyp-q-label">${p.shortLabel}</span><span class="fyp-q-range">${_fmtDate(p.dateRange.from)} – ${_fmtDate(p.dateRange.to)}</span>`;
-                    cell.addEventListener('click', () => _selectValue(p.value));
-                    qGrid.appendChild(cell);
-                });
-                fyBlock.appendChild(qGrid);
-                gridArea.appendChild(fyBlock);
-            });
-        } else if (type === 'half-yearly') {
-            fyOptions.forEach(fyOpt => {
-                const fyBlock = document.createElement('div');
-                fyBlock.className = 'fyp-fy-block';
-                const fyHeader = document.createElement('div');
-                fyHeader.className = 'fyp-fy-block-header';
-                fyHeader.innerHTML = `<span>FY ${fyOpt.value}</span>${fyOpt.isCurrent ? '<span class="fyp-fy-current-badge">Current</span>' : ''}`;
-                fyBlock.appendChild(fyHeader);
-                const hGrid = document.createElement('div');
-                hGrid.className = 'fyp-quarter-grid';
-                const periods = getHalfYearlyPeriods(fyOpt.value);
-                periods.forEach(p => {
-                    const cell = document.createElement('button');
-                    cell.type = 'button';
-                    cell.className = 'fyp-quarter-cell';
-                    cell.dataset.value = p.value;
-                    cell.innerHTML = `<span class="fyp-q-label">${p.shortLabel}</span><span class="fyp-q-range">${_fmtDate(p.dateRange.from)} – ${_fmtDate(p.dateRange.to)}</span>`;
-                    cell.addEventListener('click', () => _selectValue(p.value));
-                    hGrid.appendChild(cell);
-                });
-                fyBlock.appendChild(hGrid);
-                gridArea.appendChild(fyBlock);
-            });
-        }
-
-        panel.appendChild(gridArea);
-
         // ── Custom Date Range Section (hidden by default) ──
         const customSection = document.createElement('div');
         customSection.className = 'fyp-custom-section';
@@ -474,7 +340,6 @@ const FYPeriod = (() => {
         customSection.innerHTML = `
             <div class="fyp-custom-header">
                 <span class="fyp-custom-title">Custom Date Range</span>
-                <button type="button" class="fyp-custom-back" id="${_config.selectId}-custom-back">← Back</button>
             </div>
             <div class="fyp-custom-inputs">
                 <div class="fyp-custom-field">
@@ -491,9 +356,7 @@ const FYPeriod = (() => {
 
         // Wire custom range events after DOM insertion
         setTimeout(() => {
-            const backBtn = document.getElementById(_config.selectId + '-custom-back');
             const applyBtn = document.getElementById(_config.selectId + '-cust-apply');
-            if (backBtn) backBtn.addEventListener('click', () => _hideCustomRange());
             if (applyBtn) applyBtn.addEventListener('click', () => _applyCustomRange());
         }, 0);
 
@@ -717,10 +580,8 @@ const FYPeriod = (() => {
     // ═══════════════════════════════════════════════════════
 
     function _showCustomRange() {
-        const grid = document.getElementById(_config.selectId + '-grid');
         const custom = document.getElementById(_config.selectId + '-custom');
         const presets = document.getElementById(_config.selectId + '-panel')?.querySelector('.fyp-presets');
-        if (grid) grid.style.display = 'none';
         if (custom) custom.style.display = 'block';
         // Highlight custom preset button
         if (presets) presets.querySelectorAll('.fyp-preset-btn').forEach(btn => {
@@ -729,9 +590,7 @@ const FYPeriod = (() => {
     }
 
     function _hideCustomRange() {
-        const grid = document.getElementById(_config.selectId + '-grid');
         const custom = document.getElementById(_config.selectId + '-custom');
-        if (grid) grid.style.display = '';
         if (custom) custom.style.display = 'none';
     }
 
@@ -1202,22 +1061,7 @@ const FYPeriod = (() => {
     font-weight: 700;
     color: #1e293b;
 }
-.fyp-custom-back {
-    font-size: 0.68rem;
-    font-weight: 600;
-    color: #3b82f6;
-    background: #eff6ff;
-    border: 1px solid #bfdbfe;
-    border-radius: 6px;
-    padding: 0.25rem 0.55rem;
-    cursor: pointer;
-    transition: all 0.15s;
-    font-family: inherit;
-}
-.fyp-custom-back:hover {
-    background: #dbeafe;
-    border-color: #93c5fd;
-}
+
 .fyp-custom-inputs {
     display: flex;
     gap: 0.65rem;
