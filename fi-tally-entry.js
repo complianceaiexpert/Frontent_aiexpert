@@ -4,9 +4,19 @@
 // ══════════════════════════════════════════════
 
 const urlParams = new URLSearchParams(window.location.search);
-const clientId = urlParams.get('clientId');
+const clientId = urlParams.get('clientId') || localStorage.getItem('selectedClientId');
+const isDemoMode = !clientId;
+
 const _backLink = document.getElementById('fi-back-link');
-if (_backLink) _backLink.href = `services-dashboard.html?clientId=${clientId}`;
+if (_backLink) _backLink.href = `services-dashboard.html?clientId=${clientId || ''}`;
+
+// Show nudge banner if in demo mode
+document.addEventListener('DOMContentLoaded', () => {
+    if (isDemoMode) {
+        const banner = document.getElementById('demo-nudge-banner');
+        if (banner) banner.style.display = 'flex';
+    }
+});
 
 let fiVouchers = [];
 let entryRowCounter = 0;
@@ -55,7 +65,7 @@ function fiNav(sectionId, el) {
     if (sectionId === 'dashboard') { u.searchParams.delete('section'); } else { u.searchParams.set('section', sectionId); }
     window.history.replaceState({}, '', u);
     if (sectionId === 'statements') loadStatements();
-    if (sectionId === 'journal-entries') loadAllJournalEntries();
+    if (sectionId === 'journal-entries' && typeof loadTallyDaybook === 'function') loadTallyDaybook();
     if (sectionId === 'pending') loadPendingEntries();
     if (sectionId === 'stock-register' && typeof loadStockRegister === 'function') loadStockRegister();
     if (sectionId === 'capital-gains' && typeof loadCapitalGains === 'function') loadCapitalGains();
@@ -161,7 +171,7 @@ function populateAllocDropdowns(config) {
 async function handleFIUpload(input, instrumentType) {
     const files = input.files;
     if (!files || files.length === 0) return;
-    if (!clientId) { fiToast('No client selected', 'error'); return; }
+    if (isDemoMode) { fiToast('Please select a client to upload statements.', 'warning'); return; }
 
     const file = files[0];
     if (file.size > 25 * 1024 * 1024) { fiToast(`File too large (${(file.size / 1024 / 1024).toFixed(1)} MB). Max 25 MB.`, 'error'); return; }
@@ -291,7 +301,7 @@ function classifyDematFile(file) {
 function handleDematMultiSelect(input) {
     const files = input.files;
     if (!files || files.length === 0) return;
-    if (!clientId) { fiToast('No client selected', 'error'); return; }
+    if (isDemoMode) { fiToast('Please select a client to upload statements.', 'warning'); return; }
 
     dematSelectedFiles = {};
     const unmatched = [];
@@ -359,7 +369,7 @@ function clearDematFiles() {
 let _dematUploading = false;
 async function processDematMultiUpload() {
     if (_dematUploading) return; // prevent double-submit
-    if (!clientId) { fiToast('No client selected', 'error'); return; }
+    if (isDemoMode) { fiToast('Please select a client to upload statements.', 'warning'); return; }
 
     const missing = DEMAT_FILE_TYPES.filter(t => !dematSelectedFiles[t.key]);
     if (missing.length > 0) {
@@ -489,7 +499,7 @@ function addRowWith(name, group, dr, cr, removable) {
     const tbody = document.getElementById('fi-preview-body');
     const id = ++entryRowCounter;
     const row = document.createElement('tr'); row.id = 'fi-row-' + id;
-    row.innerHTML = `<td><input type="text" value="${name}" placeholder="Ledger name" oninput="recalc()"></td><td><input type="text" value="${group}" placeholder="Group" style="color:#64748b;font-size:.75rem"></td><td class="right"><input type="number" value="${dr}" placeholder="—" step="0.01" style="text-align:right;font-weight:600;color:#dc2626" oninput="recalc()"></td><td class="right"><input type="number" value="${cr}" placeholder="—" step="0.01" style="text-align:right;font-weight:600;color:#059669" oninput="recalc()"></td><td class="center">${removable ? `<button class="fi-remove-row" onclick="delRow(${id})">✕</button>` : ''}</td>`;
+    row.innerHTML = `<td><input type="text" value="${name}" placeholder="Ledger name" oninput="recalc()"></td><td><input type="text" value="${group}" placeholder="Group" style="color:#64748b;font-size:.75rem"></td><td class="right"><input type="number" value="${dr}" placeholder="—" step="0.01" style="text-align:right;font-weight:600;color:#dc2626" oninput="recalc()"></td><td class="right"><input type="number" value="${cr}" placeholder="—" step="0.01" style="text-align:right;font-weight:600;color:#059669" oninput="recalc()"></td><td class="center">${removable ? `<button class="fi-remove-row" onclick="delRow(${id})" title="Delete"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>` : ''}</td>`;
     tbody.appendChild(row);
 }
 function addRow() { addRowWith('', '', '', '', true); }
@@ -672,34 +682,149 @@ async function approveAllPending() {
     loadAllJournalEntries();
 }
 async function syncAllPending() {
+    // 1. Check Tally Connector is running & match correct company
+    let tallyConnected = false;
+    let tallyCompany = '';
+    try {
+        const res = await fetch('http://127.0.0.1:17890/tally/companies', { signal: AbortSignal.timeout(3000) });
+        if (res.ok) {
+            const data = await res.json();
+            if (data.companies && data.companies.length > 0) {
+                tallyConnected = true;
+                // Try to match client name to a Tally company
+                let matchedCompany = '';
+                try {
+                    const cRes = await authFetch(`/clients/${clientId}`);
+                    if (cRes && cRes.ok) {
+                        const cData = await cRes.json();
+                        const cName = (cData.name || '').toUpperCase();
+                        matchedCompany = data.companies.find(c => c.toUpperCase().includes(cName) || cName.includes(c.toUpperCase())) || '';
+                    }
+                } catch (e) { /* ignore */ }
+                tallyCompany = matchedCompany || data.companies[0];
+            }
+        }
+    } catch (e) { /* connector not running */ }
+
+    if (!tallyConnected) {
+        fiToast('⚠️ Tally is not connected. Please connect Tally first.', 'error');
+        return;
+    }
+
+    // 2. Gather approved entries
+    const pending = _pendingEntriesData.filter(v => v.status === 'approved');
+    if (pending.length === 0) {
+        fiToast('No approved entries to write to Tally', 'warning');
+        return;
+    }
+
+    fiToast(`⏳ Writing ${pending.length} entries to Tally...`, 'info');
+    let successCount = 0;
+    let failCount = 0;
     const promises = [];
-    fiVouchers.forEach(v => {
-        if (v.status === 'approved' || v.status === 'draft') {
-            v.status = 'synced';
-            promises.push(authFetch(`/financial-instruments/manual-entry/${v.id}/status`, {
-                method: 'PATCH', body: JSON.stringify({ status: 'synced' }),
-            }).catch(e => console.warn('Sync persist failed:', e)));
+
+    for (const je of pending) {
+        // Convert date to YYYYMMDD format
+        let dateVal = '';
+        if (je.date) {
+            const d = new Date(je.date);
+            if (!isNaN(d.getTime())) {
+                const yyyy = d.getFullYear();
+                const mm = String(d.getMonth() + 1).padStart(2, '0');
+                const dd = String(d.getDate()).padStart(2, '0');
+                dateVal = `${yyyy}${mm}${dd}`;
+            }
         }
-    });
-    const uploadIds = new Set();
-    (window._autoEntries || []).forEach(e => {
-        if (e.status === 'approved' || e.status === 'draft') {
-            e.status = 'synced';
-            if (e.uploadId) uploadIds.add(e.uploadId);
+        if (!dateVal) {
+            const now = new Date();
+            const fyYear = now.getMonth() >= 3 ? now.getFullYear() - 1 : now.getFullYear() - 2;
+            dateVal = `${fyYear}0401`;
         }
-    });
-    uploadIds.forEach(uid => {
-        promises.push(authFetch(`/financial-instruments/${uid}/je-status`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ je_status: 'synced' }),
-        }).catch(e => console.warn('Upload sync persist failed:', e)));
-    });
+
+        const ledger_entries = (je.entries || []).map(le => {
+            const name = (le.ledger_name || '').toLowerCase();
+            let parent_group = '';
+            if (name.includes('investment') || name.includes('shares of') || name.includes('equity -')) {
+                parent_group = 'Investments';
+            } else if (name.includes('capital') || name.includes('opening balance')) {
+                parent_group = 'Capital Account';
+            } else if (name.includes('dividend') || name.includes('interest income')) {
+                parent_group = 'Indirect Incomes';
+            } else if (name.includes('brokerage') || name.includes('stt') || name.includes('stamp duty')) {
+                parent_group = 'Indirect Expenses';
+            }
+            return {
+                ledger_name: le.ledger_name || '',
+                amount: Number(le.amount) || 0,
+                is_debit: (le.side || '').includes('Dr'),
+                parent_group,
+            };
+        });
+
+        const payload = {
+            company: tallyCompany,
+            voucher_type: je.voucher_type || 'Journal',
+            date: dateVal,
+            narration: je.narration || '',
+            ledger_entries,
+            auto_create_ledgers: true,
+        };
+
+        try {
+            const res = await fetch('http://127.0.0.1:17890/tally/push-voucher', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+            });
+            const result = await res.json();
+            if (result.ok) {
+                successCount++;
+                je.status = 'synced';
+                if (je.source === 'manual') {
+                    promises.push(authFetch(`/financial-instruments/manual-entry/${je.id}/status`, {
+                        method: 'PATCH', body: JSON.stringify({ status: 'synced' }),
+                    }));
+                } else {
+                    promises.push(authFetch(`/financial-instruments/journal-entry/${je.id}/status`, {
+                        method: 'PATCH', body: JSON.stringify({ status: 'synced' }),
+                    }));
+                }
+            } else {
+                failCount++;
+            }
+        } catch (err) {
+            failCount++;
+        }
+    }
+
     await Promise.all(promises);
     loadPendingEntries();
-    fiToast('All entries synced to Tally', 'success');
     loadDashboardStats();
     loadAllJournalEntries();
+    
+    if (failCount === 0) {
+        fiToast(`✅ All ${successCount} vouchers written to Tally!`, 'success');
+    } else {
+        fiToast(`Written ${successCount} vouchers. ${failCount} failed.`, 'warning');
+    }
+}
+
+function normalizeDate(dateStr) {
+    if (!dateStr) return '';
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return dateStr;
+    const parts = dateStr.split('-');
+    if (parts.length === 3) {
+        const day = parts[0];
+        const mon = parts[1];
+        const year = parts[2];
+        const months = {
+            'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'May': '05', 'Jun': '06',
+            'Jul': '07', 'Aug': '08', 'Sep': '09', 'Oct': '10', 'Nov': '11', 'Dec': '12'
+        };
+        const monNum = months[mon] || '01';
+        return `${year}-${monNum}-${day.padStart(2, '0')}`;
+    }
+    return dateStr;
 }
 
 // ═══ AUTO JOURNAL GENERATOR ═══
@@ -715,188 +840,22 @@ async function generateAutoEntries() {
         const completed = uploads.filter(u => u.status === 'completed');
 
         for (const u of completed) {
-            let d = null;
             try {
-                const dr = await authFetch(`/financial-instruments/data/${u.id}`);
-                if (dr.ok) d = (await dr.json()).structured_data;
-            } catch (e) { }
-            if (!d) continue;
-
-            const fname = u.filename || u.instrument_type;
-            const uType = u.instrument_type;
-
-            // ── Tax P&L → Sell trades grouped by scrip ──
-            if (uType === 'demat_taxpnl' && d.transactions?.length) {
-                const byScript = {};
-                d.transactions.forEach(t => {
-                    const name = t.scrip_name || t.security_name || t.symbol || 'Unknown';
-                    if (!byScript[name]) byScript[name] = { buys: 0, sells: 0, gain: 0, count: 0, type: 'STCG', dates: [] };
-                    const buyVal = Number(t.buy_value || t.purchase_value || 0);
-                    const sellVal = Number(t.sell_value || t.sale_value || 0);
-                    const pnl = Number(t.realized_pnl || t.pnl || t.profit || (sellVal - buyVal) || 0);
-                    byScript[name].buys += buyVal;
-                    byScript[name].sells += sellVal;
-                    byScript[name].gain += pnl;
-                    byScript[name].count++;
-                    // Determine CG type
-                    const tt = String(t.trade_type || t.type || '').toLowerCase();
-                    if (tt.includes('long') || tt === 'ltcg') byScript[name].type = 'LTCG';
-                    else if (tt.includes('intraday') || tt.includes('speculative')) byScript[name].type = 'Intraday';
-                    if (t.sell_date) byScript[name].dates.push(t.sell_date);
-                });
-
-                Object.entries(byScript).forEach(([scrip, data]) => {
-                    const isProfit = data.gain >= 0;
-                    const gainLabel = data.type === 'LTCG' ? 'Long Term Capital Gain'
-                        : data.type === 'Intraday' ? 'Speculative Business Income'
-                            : 'Short Term Capital Gain';
-                    const ledgers = [];
-                    if (isProfit) {
-                        ledgers.push({ ledger_name: 'Bank A/c', amount: Math.abs(data.sells), side: 'Dr' });
-                        ledgers.push({ ledger_name: 'Investment A/c', amount: Math.abs(data.buys), side: 'Cr' });
-                        ledgers.push({ ledger_name: gainLabel, amount: Math.abs(data.gain), side: 'Cr' });
-                    } else {
-                        ledgers.push({ ledger_name: 'Bank A/c', amount: Math.abs(data.sells), side: 'Dr' });
-                        ledgers.push({ ledger_name: gainLabel, amount: Math.abs(data.gain), side: 'Dr' });
-                        ledgers.push({ ledger_name: 'Investment A/c', amount: Math.abs(data.buys), side: 'Cr' });
-                    }
-                    const lastDate = data.dates.sort().pop() || '';
-                    entries.push({
-                        id: `AUTO-${u.id}-${scrip.replace(/\s/g, '_')}`,
-                        source: 'auto', sourceFile: fname, uploadId: u.id,
-                        sourceType: uType,
-                        date: lastDate,
-                        narration: `${scrip} — ${data.count} sell trade${data.count > 1 ? 's' : ''} (${data.type})`,
-                        scrip, tradeCount: data.count, cgType: data.type,
-                        voucher_type: 'Journal', status: 'draft',
-                        entries: ledgers,
-                        total_amount: Math.abs(data.sells),
-                    });
-                });
-
-                // Capital gains summary voucher
-                const cg = d.capital_gains_summary;
-                if (cg) {
-                    const spec = Number(cg.intraday_profit || cg.speculative_profit || 0);
-                    if (spec !== 0) {
+                const jr = await authFetch(`/financial-instruments/journal-entries/${u.id}`);
+                if (jr.ok) {
+                    const data = await jr.json();
+                    const jes = data.journal_entries || [];
+                    jes.forEach(je => {
                         entries.push({
-                            id: `AUTO-${u.id}-SPEC-SUMMARY`,
-                            source: 'auto', sourceFile: fname, uploadId: u.id, sourceType: uType,
-                            date: '', narration: `Speculative Income — Intraday Trading Summary`,
-                            voucher_type: 'Journal', status: 'draft',
-                            entries: spec >= 0
-                                ? [{ ledger_name: 'Bank A/c', amount: Math.abs(spec), side: 'Dr' },
-                                { ledger_name: 'Speculative Business Income', amount: Math.abs(spec), side: 'Cr' }]
-                                : [{ ledger_name: 'Speculative Business Loss', amount: Math.abs(spec), side: 'Dr' },
-                                { ledger_name: 'Bank A/c', amount: Math.abs(spec), side: 'Cr' }],
-                            total_amount: Math.abs(spec),
+                            ...je,
+                            id: je.id || `AUTO-${u.id}-${Math.random().toString(36).substr(2, 9)}`,
+                            source: 'auto', sourceFile: u.filename || u.instrument_type, uploadId: u.id,
+                            sourceType: u.instrument_type,
+                            date: normalizeDate(je.date)
                         });
-                    }
+                    });
                 }
-            }
-
-            // ── Dividends ──
-            if (d.dividends?.length) {
-                d.dividends.forEach((dv, i) => {
-                    const gross = Number(dv.amount || 0);
-                    const tds = Number(dv.tds_deducted || dv.tds || 0);
-                    const net = gross - tds;
-                    if (gross === 0) return;
-                    entries.push({
-                        id: `AUTO-${u.id}-DIV-${i}`,
-                        source: 'auto', sourceFile: fname, uploadId: u.id, sourceType: uType,
-                        date: dv.date || dv.record_date || '',
-                        narration: `Dividend — ${dv.scrip_name || dv.company || 'Unknown'}`,
-                        voucher_type: 'Receipt', status: 'draft',
-                        entries: [
-                            { ledger_name: 'Bank A/c', amount: net, side: 'Dr' },
-                            ...(tds > 0 ? [{ ledger_name: 'TDS Receivable (Sec 194)', amount: tds, side: 'Dr' }] : []),
-                            { ledger_name: 'Dividend Income', amount: gross, side: 'Cr' },
-                        ],
-                        total_amount: gross,
-                    });
-                });
-            }
-
-            // ── PMS Transactions (Buy/Sell from structured_data) ──
-            if (uType?.startsWith('pms') && d.transactions?.length) {
-                const sells = {};
-                const buys = {};
-                d.transactions.forEach(t => {
-                    const name = t.security_name || t.scrip_name || t.symbol || 'Unknown';
-                    const ttype = String(t.transaction_type || t.type || '').toLowerCase();
-                    const qty = Number(t.quantity || t.qty || 0);
-                    const amount = Number(t.amount || t.value || t.total || 0);
-                    const date = t.date || t.trade_date || '';
-
-                    if (ttype.includes('sell') || ttype.includes('redemption')) {
-                        if (!sells[name]) sells[name] = { amount: 0, count: 0, dates: [] };
-                        sells[name].amount += Math.abs(amount);
-                        sells[name].count++;
-                        if (date) sells[name].dates.push(date);
-                    } else if (ttype.includes('buy') || ttype.includes('purchase')) {
-                        if (!buys[name]) buys[name] = { amount: 0, count: 0, dates: [] };
-                        buys[name].amount += Math.abs(amount);
-                        buys[name].count++;
-                        if (date) buys[name].dates.push(date);
-                    }
-                });
-
-                // PMS Sell entries
-                Object.entries(sells).forEach(([scrip, data]) => {
-                    entries.push({
-                        id: `AUTO-${u.id}-PMS-SELL-${scrip.replace(/\s/g, '_')}`,
-                        source: 'auto', sourceFile: fname, uploadId: u.id, sourceType: uType,
-                        date: data.dates.sort().pop() || '',
-                        narration: `${scrip} — ${data.count} PMS sell${data.count > 1 ? 's' : ''}`,
-                        scrip, tradeCount: data.count, cgType: 'STCG',
-                        voucher_type: 'Journal', status: 'draft',
-                        entries: [
-                            { ledger_name: 'Bank A/c', amount: data.amount, side: 'Dr' },
-                            { ledger_name: 'Investment A/c', amount: data.amount, side: 'Cr' },
-                        ],
-                        total_amount: data.amount,
-                    });
-                });
-
-                // PMS Buy entries
-                Object.entries(buys).forEach(([scrip, data]) => {
-                    entries.push({
-                        id: `AUTO-${u.id}-PMS-BUY-${scrip.replace(/\s/g, '_')}`,
-                        source: 'auto', sourceFile: fname, uploadId: u.id, sourceType: uType,
-                        date: data.dates.sort().pop() || '',
-                        narration: `${scrip} — ${data.count} PMS purchase${data.count > 1 ? 's' : ''}`,
-                        scrip, tradeCount: data.count,
-                        voucher_type: 'Journal', status: 'draft',
-                        entries: [
-                            { ledger_name: 'Investment A/c', amount: data.amount, side: 'Dr' },
-                            { ledger_name: 'Bank A/c', amount: data.amount, side: 'Cr' },
-                        ],
-                        total_amount: data.amount,
-                    });
-                });
-            }
-
-            // ── PMS Expenses (Management Fee, Advisory Fee, etc.) ──
-            if (uType?.startsWith('pms') && d.expenses?.length) {
-                d.expenses.forEach((exp, i) => {
-                    const amt = Number(exp.amount || exp.value || 0);
-                    if (amt === 0) return;
-                    const label = exp.description || exp.type || exp.name || 'PMS Charges';
-                    entries.push({
-                        id: `AUTO-${u.id}-EXP-${i}`,
-                        source: 'auto', sourceFile: fname, uploadId: u.id, sourceType: uType,
-                        date: exp.date || '',
-                        narration: `PMS Expense — ${label}`,
-                        voucher_type: 'Journal', status: 'draft',
-                        entries: [
-                            { ledger_name: 'PMS Management Fee', amount: Math.abs(amt), side: 'Dr' },
-                            { ledger_name: 'Bank A/c', amount: Math.abs(amt), side: 'Cr' },
-                        ],
-                        total_amount: Math.abs(amt),
-                    });
-                });
-            }
+            } catch (e) { console.error('Fetch entries failed for upload', u.id, e); }
         }
 
         // ── PMS Capital Gains from FIFO Engine ──
@@ -971,36 +930,62 @@ async function generateAutoEntries() {
 }
 
 // ═══ PENDING ENTRIES — File-Grouped Accordion ═══
-async function loadPendingEntries() {
+let _pendingEntriesData = [];
+let _pendingFilter = 'all';
+
+function setPendingFilter(f) {
+    _pendingFilter = f;
+    document.querySelectorAll('[data-pending-filter]').forEach(b => b.classList.toggle('active', b.dataset.pendingFilter === f));
+    filterPendingEntries();
+}
+
+function filterPendingEntries() {
+    const search = (document.getElementById('fi-pending-search')?.value || '').toLowerCase();
+    const dateFrom = document.getElementById('fi-pending-date-from')?.value || '';
+    const dateTo = document.getElementById('fi-pending-date-to')?.value || '';
+    
+    let filtered = _pendingEntriesData;
+    
+    // Date filter
+    if (dateFrom) filtered = filtered.filter(e => !e.date || e.date >= dateFrom);
+    if (dateTo) filtered = filtered.filter(e => !e.date || e.date <= dateTo);
+    
+    // Status filter
+    if (_pendingFilter !== 'all') {
+        filtered = filtered.filter(e => e.status === _pendingFilter);
+    }
+    
+    // Search filter
+    if (search) {
+        filtered = filtered.filter(e => {
+            const hay = `${e.sourceFile} ${e.scrip} ${e.narration} ${e.voucher_type}`.toLowerCase();
+            return hay.includes(search);
+        });
+    }
+    
+    renderPendingEntries(filtered);
+}
+
+function renderPendingEntries(cards) {
     const c = document.getElementById('fi-pending-list');
     if (!c) return;
-
-    c.innerHTML = '<div style="text-align:center;padding:2rem;color:#94a3b8;font-size:.78rem">Generating journal entries from parsed data...</div>';
-
-    // Gather all entries
-    const autoEntries = await generateAutoEntries();
-    const manualEntries = fiVouchers.filter(v => v.status === 'draft').map(v => ({
-        ...v, source: 'manual', sourceFile: 'Manual Entries', sourceType: 'manual',
-    }));
-
-    const allCards = [...autoEntries.filter(e => e.status === 'draft'), ...manualEntries];
-
-    // Update badges
-    const badge = document.getElementById('fi-sb-pending-count');
+    
     const total = document.getElementById('fi-pending-total');
-    const draftCount = allCards.filter(e => e.status === 'draft').length;
-    const approvedCount = allCards.filter(e => e.status === 'approved').length;
-    if (badge) { badge.textContent = allCards.length; badge.style.display = allCards.length > 0 ? '' : 'none'; }
-    if (total) total.textContent = allCards.length;
+    if (total) total.textContent = cards.length;
 
-    if (allCards.length === 0) {
-        c.innerHTML = '<div class="fi-empty-mini"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><p>No pending entries — upload statements to auto-generate</p></div>';
+    // Update global badge for sidebar if exists
+    const badge = document.getElementById('fi-sb-pending-count');
+    const draftCount = _pendingEntriesData.filter(e => e.status === 'draft').length;
+    if (badge) { badge.textContent = draftCount; badge.style.display = draftCount > 0 ? '' : 'none'; }
+
+    if (cards.length === 0) {
+        c.innerHTML = '<div class="fi-empty-mini"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><p>No matching entries found</p></div>';
         return;
     }
 
     // Group by source file
     const groups = {};
-    allCards.forEach(card => {
+    cards.forEach(card => {
         const key = card.sourceFile || 'Other';
         if (!groups[key]) groups[key] = { file: key, type: card.sourceType || '', source: card.source, entries: [] };
         groups[key].entries.push(card);
@@ -1008,7 +993,15 @@ async function loadPendingEntries() {
 
     const fmt = v => '₹' + Math.abs(v).toLocaleString('en-IN', { maximumFractionDigits: 0 });
 
-    c.innerHTML = Object.values(groups).map((grp, gIdx) => {
+    const defaults = ["Investment A/c", "Bank A/c", "Capital Account", "Opening Balance"];
+    const allLedgers = [...defaults, ...(window._tallyLedgers || []).map(l => l.name || l)];
+    const uniqueLedgers = [...new Set(allLedgers)];
+
+    const datalist = `<datalist id="ledger-list">
+        ${uniqueLedgers.map(l => `<option value="${l}">`).join('')}
+    </datalist>`;
+
+    c.innerHTML = datalist + Object.values(groups).map((grp, gIdx) => {
         const draftCt = grp.entries.filter(e => e.status === 'draft').length;
         const approvedCt = grp.entries.filter(e => e.status === 'approved').length;
         const totalAmt = grp.entries.reduce((s, e) => s + (e.total_amount || 0), 0);
@@ -1029,15 +1022,25 @@ async function loadPendingEntries() {
             const cgBadge = v.cgType ? `<span class="fi-cg-badge fi-cg-${v.cgType.toLowerCase()}">${v.cgType}</span>` : '';
             const tradeBadge = v.tradeCount ? `<span style="font-size:.58rem;color:#94a3b8;font-weight:500">${v.tradeCount} trades</span>` : '';
 
-            const drEntries = (v.entries || []).filter(e => e.side === 'Dr');
-            const crEntries = (v.entries || []).filter(e => e.side === 'Cr');
-
             let rows = '';
-            drEntries.forEach(e => {
-                rows += `<tr><td style="padding:2px 8px;font-size:.72rem;font-weight:500;color:#1e293b">${e.ledger_name}</td><td style="padding:2px 8px;font-size:.72rem;font-weight:700;font-family:'Outfit',sans-serif;text-align:right;color:#0f172a">${fmt(e.amount)}</td><td style="padding:2px 8px;text-align:right;color:#94a3b8;font-size:.72rem">—</td></tr>`;
-            });
-            crEntries.forEach(e => {
-                rows += `<tr><td style="padding:2px 8px 2px 24px;font-size:.72rem;font-weight:500;color:#64748b"><span style="color:#94a3b8;font-size:.6rem">To </span>${e.ledger_name}</td><td style="padding:2px 8px;text-align:right;color:#94a3b8;font-size:.72rem">—</td><td style="padding:2px 8px;font-size:.72rem;font-weight:700;font-family:'Outfit',sans-serif;text-align:right;color:#0f172a">${fmt(e.amount)}</td></tr>`;
+            (v.entries || []).forEach((e, idx) => {
+                const isDr = e.side === 'Dr';
+                const amountInput = `<input type="number" value="${e.amount}" style="font-size:.72rem;font-weight:700;font-family:'Outfit',sans-serif;text-align:right;color:#0f172a;border:1px solid #e2e8f0;border-radius:4px;width:100%;padding:2px 4px" onchange="updateVoucherAmountIdx('${v.id}', ${idx}, this.value)">`;
+                const ledgerInput = `<input type="text" value="${e.ledger_name}" list="ledger-list" style="font-size:.72rem;font-weight:500;color:${isDr?'#1e293b':'#64748b'};border:1px solid #e2e8f0;border-radius:4px;width:${isDr?'100%':'calc(100% - 20px)'};padding:2px 4px" onchange="updateVoucherLedgerIdx('${v.id}', ${idx}, this.value)">`;
+
+                if (isDr) {
+                    rows += `<tr>
+                        <td style="padding:2px 8px;">${ledgerInput}</td>
+                        <td style="padding:2px 8px;">${amountInput}</td>
+                        <td style="padding:2px 8px;text-align:right;color:#94a3b8;font-size:.72rem">—</td>
+                    </tr>`;
+                } else {
+                    rows += `<tr>
+                        <td style="padding:2px 8px 2px 24px;"><span style="color:#94a3b8;font-size:.6rem">To </span>${ledgerInput}</td>
+                        <td style="padding:2px 8px;text-align:right;color:#94a3b8;font-size:.72rem">—</td>
+                        <td style="padding:2px 8px;">${amountInput}</td>
+                    </tr>`;
+                }
             });
 
             return `<div class="fi-voucher-card" style="border-left:3px solid ${borderColor}">
@@ -1070,7 +1073,42 @@ async function loadPendingEntries() {
         </div>`;
     }).join('');
 
-    window._pendingCards = allCards;
+    window._pendingCards = cards;
+}
+
+async function loadPendingEntries() {
+    const c = document.getElementById('fi-pending-list');
+    if (!c) return;
+
+    c.innerHTML = '<div style="text-align:center;padding:2rem;color:#94a3b8;font-size:.78rem">Generating journal entries from parsed data...</div>';
+
+    // Gather all entries
+    const autoEntries = await generateAutoEntries();
+    const manualEntries = fiVouchers.filter(v => v.status === 'draft').map(v => ({
+        ...v, source: 'manual', sourceFile: 'Manual Entries', sourceType: 'manual',
+    }));
+
+    // Combine ALL entries (not just draft) to support viewing status
+    _pendingEntriesData = [...autoEntries, ...manualEntries];
+    
+    // Set default dates if empty
+    const df = document.getElementById('fi-pending-date-from');
+    const dt = document.getElementById('fi-pending-date-to');
+    const now = new Date();
+    const curYear = now.getFullYear();
+    const curMonth = now.getMonth();
+    let fyStart, fyEnd;
+    if (curMonth >= 3) {
+        fyStart = `${curYear}-04-01`;
+        fyEnd = `${curYear + 1}-03-31`;
+    } else {
+        fyStart = `${curYear - 1}-04-01`;
+        fyEnd = `${curYear}-03-31`;
+    }
+    if (df && !df.value) df.value = fyStart;
+    if (dt && !dt.value) dt.value = fyEnd;
+
+    filterPendingEntries();
 }
 
 function toggleFileGroup(idx) {
@@ -1086,7 +1124,16 @@ function toggleFileGroup(idx) {
 
 async function approveEntry(id) {
     const auto = (window._autoEntries || []).find(e => e.id === id);
-    if (auto) { auto.status = 'approved'; }
+    if (auto) {
+        auto.status = 'approved';
+        try {
+            await authFetch(`/financial-instruments/journal-entry/${id}/status`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status: 'approved' }),
+            });
+        } catch (e) { console.warn('Failed to persist approval:', e); }
+    }
     const manual = fiVouchers.find(v => v.id === id);
     if (manual) {
         manual.status = 'approved';
@@ -1100,6 +1147,22 @@ async function approveEntry(id) {
     }
     loadPendingEntries();
     loadDashboardStats();
+}
+
+function updateVoucherLedgerIdx(voucherId, entryIdx, newLedgerName) {
+    const entry = _pendingEntriesData.find(e => e.id === voucherId);
+    if (!entry) return;
+    if (entry.entries && entry.entries[entryIdx]) {
+        entry.entries[entryIdx].ledger_name = newLedgerName;
+    }
+}
+
+function updateVoucherAmountIdx(voucherId, entryIdx, newAmount) {
+    const entry = _pendingEntriesData.find(e => e.id === voucherId);
+    if (!entry) return;
+    if (entry.entries && entry.entries[entryIdx]) {
+        entry.entries[entryIdx].amount = Number(newAmount) || 0;
+    }
 }
 
 function approveFileGroup(fileName) {
@@ -1441,6 +1504,25 @@ async function loadDashboardStats() {
                 const fiRes = await authFetch(fiWithDateRange(`/fi-tally/classify?company_name=${encodeURIComponent(clientCompanyName)}`));
                 if (fiRes && fiRes.ok) {
                     const fiData = await fiRes.json();
+                    
+                    // Update last sync status
+                    const syncEl = document.getElementById('fi-last-sync-status');
+                    if (syncEl) {
+                        if (fiData.last_sync) {
+                            const date = new Date(fiData.last_sync);
+                            syncEl.textContent = `(Last sync: ${date.toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })})`;
+                        } else {
+                            syncEl.textContent = `(No sync data)`;
+                        }
+                    }
+                    window._tallyLedgers = fiData.fi_ledgers || [];
+                    const dl = document.getElementById('ledger-list');
+                    if (dl) {
+                        const defaults = ["Investment A/c", "Bank A/c", "Capital Account", "Opening Balance"];
+                        const allLedgers = [...defaults, ...window._tallyLedgers.map(l => l.name || l)];
+                        const uniqueLedgers = [...new Set(allLedgers)];
+                        dl.innerHTML = uniqueLedgers.map(l => `<option value="${l}">`).join('');
+                    }
 
                     // ── Holdings → AUM + allocation ──
                     const holdings = fiData.holdings || [];
@@ -1509,6 +1591,29 @@ async function loadDashboardStats() {
         // ── Populate AUM ──
         setEl('fi-stat-total-amt', formatINR(totalAUM));
 
+        // ── Populate Portfolio Overview Fields ──
+        const summary = fiData.summary || {};
+        const amountInvested = summary.total_invested || 0;
+        const realizedGain = summary.total_capital_gains || 0;
+        const unrealizedGain = totalAUM - amountInvested;
+        const totalGain = unrealizedGain + realizedGain;
+        const roi = amountInvested > 0 ? (totalGain / amountInvested) * 100 : 0;
+
+        setEl('fi-stat-total-cost', formatINR(amountInvested));
+        setEl('fi-stat-unrealized', formatINR(unrealizedGain));
+        setEl('fi-stat-realized', formatINR(realizedGain));
+        setEl('fi-stat-roi', roi.toFixed(2) + '%');
+
+        // Update colors based on positive/negative
+        const urEl = document.getElementById('fi-stat-unrealized');
+        if (urEl) urEl.style.color = unrealizedGain >= 0 ? '#4ade80' : '#f87171';
+        
+        const rEl = document.getElementById('fi-stat-realized');
+        if (rEl) rEl.style.color = realizedGain >= 0 ? '#4ade80' : '#f87171';
+
+        const roiEl = document.getElementById('fi-stat-roi');
+        if (roiEl) roiEl.style.color = roi >= 0 ? '#60a5fa' : '#f87171';
+
         // ── Set FY consistently across all cards ──
         let displayFY;
         // Priority: 1. FYPeriod picker selection, 2. detected from data, 3. current date
@@ -1568,11 +1673,16 @@ async function loadDashboardStats() {
             }).join('');
         }
         const specTip = document.getElementById('fi-cg-spec-tip');
-        if (specTip) specTip.innerHTML = `<div style="font-weight:700;margin-bottom:4px;color:#d97706">Speculative Income Sources</div>` + buildCGTooltip('spec');
+        if (specTip) specTip.innerHTML = `<div style="font-weight:700;margin-bottom:4px;color:#d97706">Speculative Income</div>`
+            + `<div style="font-size:.65rem;color:#94a3b8;line-height:1.2">Calculated on intraday equity trades and derivatives. Profits are added to business income; losses can only be set off against speculative profits.</div>`;
+            
         const stcgTip = document.getElementById('fi-cg-stcg-tip');
-        if (stcgTip) stcgTip.innerHTML = `<div style="font-weight:700;margin-bottom:4px;color:#059669">STCG Sources</div>` + buildCGTooltip('stcg');
+        if (stcgTip) stcgTip.innerHTML = `<div style="font-weight:700;margin-bottom:4px;color:#059669">Short Term Capital Gain (STCG)</div>`
+            + `<div style="font-size:.65rem;color:#94a3b8;line-height:1.2">Calculated as: Sale Proceeds - Cost of Acquisition. Applicable on equity shares held for less than 12 months. Taxed at 20% (Sec 111A).</div>`;
+            
         const ltcgTip = document.getElementById('fi-cg-ltcg-tip');
-        if (ltcgTip) ltcgTip.innerHTML = `<div style="font-weight:700;margin-bottom:4px;color:#6366f1">LTCG Sources</div>` + buildCGTooltip('ltcg');
+        if (ltcgTip) ltcgTip.innerHTML = `<div style="font-weight:700;margin-bottom:4px;color:#6366f1">Long Term Capital Gain (LTCG)</div>`
+            + `<div style="font-size:.65rem;color:#94a3b8;line-height:1.2">Calculated as: Sale Proceeds - Cost of Acquisition. Applicable on equity shares held for more than 12 months. Taxed at 12.5% on gains exceeding ₹1.25 Lakhs (Sec 112A).</div>`;
 
         // ── Populate Instrument Allocation ──
         const totalAlloc = totalAUM || 1;
@@ -2214,7 +2324,7 @@ function buildStmtRow(u, showType) {
     const isProcessing = u.status !== 'completed' && u.status !== 'failed';
     const isCompleted = u.status === 'completed';
     const jeStatus = u.je_status || 'pending';
-    const delBtn = `<button class="fi-btn" style="font-size:.62rem;padding:.2rem .4rem;color:#dc2626;border-color:#fecaca" onclick="deleteUpload('${u.id}','${u.filename}')" title="Delete">✕</button>`;
+    const delBtn = `<button class="fi-btn" style="font-size:.62rem;padding:.2rem .4rem;color:#dc2626;border-color:#fecaca;display:inline-flex;align-items:center;justify-content:center" onclick="deleteUpload('${u.id}','${u.filename}')" title="Delete"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>`;
 
     // Action buttons — Review + Delete only (no Tally sync here)
     let actionBtns;
@@ -2525,8 +2635,7 @@ async function handle26ASUpload(input) {
     if (!file) return;
     input.value = '';
 
-    const clientId = new URLSearchParams(location.search).get('clientId') || localStorage.getItem('selectedClientId');
-    if (!clientId) { fiToast('No client selected', 'error'); return; }
+    if (isDemoMode) { fiToast('Please select a client to perform this action.', 'warning'); return; }
 
     const label = document.getElementById('fi-26as-upload-label');
     const badge = document.getElementById('fi-26as-status-badge');
@@ -2597,8 +2706,7 @@ async function handle26ASUpload(input) {
 }
 
 async function load26ASMatch() {
-    const clientId = new URLSearchParams(location.search).get('clientId') || localStorage.getItem('selectedClientId');
-    if (!clientId) return;
+    if (isDemoMode) return;
 
     try {
         const res = await authFetch(`/financial-instruments/26as-match?client_id=${clientId}`);

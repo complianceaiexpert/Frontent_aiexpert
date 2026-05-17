@@ -508,3 +508,11 @@ body{background:#f4f6fb;margin:0;overflow:hidden;min-height:100vh;font-family:'I
 .fi-cg-stcg{background:#dcfce7;color:#059669}
 .fi-cg-ltcg{background:#ede9fe;color:#6366f1}
 .fi-cg-intraday{background:#fff7ed;color:#d97706}
+
+/* ══════════════════════════════════════
+   FY Period Picker — Overflow Fix
+   Ensure dropdown panel renders above all
+   parent containers with overflow clipping
+   ══════════════════════════════════════ */
+.fyp-root{position:relative;z-index:100}
+.fyp-panel{position:fixed!important;z-index:99999!important}

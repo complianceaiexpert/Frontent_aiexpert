@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Services — Suvidha AI</title>
+    <meta name="description" content="Explore the AI-powered compliance and accounting services offered by Suvidha AI for Chartered Accountants and tax professionals in India.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            background: #f8fafc;
+            font-family: 'Inter', sans-serif;
+            color: #1e293b;
+        }
+        .services-hero {
+            background: linear-gradient(135deg, #07080d 0%, #0f172a 100%);
+            color: #fff;
+            padding: 4rem 2rem 2rem;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center;
+        }
+        .services-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at center, rgba(30,58,138,.3) 0%, transparent 70%);
+        }
+        .services-hero h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+        .services-hero h1 span {
+            background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .services-hero p {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.7);
+            max-width: 600px;
+            margin: 0 0;
+            line-height: 1.6;
+            position: relative;
+            z-index: 1;
+        }
+        .core-svc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 1.5rem;
+            max-width: 1200px;
+            margin: -2rem auto 4rem;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .core-svc-card {
+            background: #fff;
+            border: 1px solid #eef0f5;
+            border-radius: 14px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            transition: all .3s cubic-bezier(.4,0,.2,1);
+            text-decoration: none;
+            color: inherit;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .core-svc-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 4px;
+            transition: opacity .3s
+        }
+
+        .core-svc-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            border-color: transparent
+        }
+
+        .core-svc-card.cs-blue::before { background: linear-gradient(90deg, #1e3a8a, #3b82f6) }
+        .core-svc-card.cs-purple::before { background: linear-gradient(90deg, #1e3a8a, #2563eb) }
+        .core-svc-card.cs-orange::before { background: linear-gradient(90deg, #1e3a8a, #2563eb) }
+        .core-svc-card.cs-green::before { background: linear-gradient(90deg, #059669, #10b981) }
+        .core-svc-card.cs-teal::before { background: linear-gradient(90deg, #0d9488, #14b8a6) }
+        .core-svc-card.cs-amber::before { background: linear-gradient(90deg, #d97706, #f59e0b) }
+
+        .core-svc-card .cs-icon-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem
+        }
+
+        .core-svc-card .cs-icon {
+            width: 44px; height: 44px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            flex-shrink: 0
+        }
+
+        .core-svc-card .cs-tag {
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 10px;
+            text-transform: uppercase;
+            letter-spacing: .04em
+        }
+
+        .core-svc-card .cs-name {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: #111827;
+            margin-bottom: 0.5rem
+        }
+
+        .core-svc-card .cs-desc {
+            font-size: 0.85rem;
+            color: #6b7280;
+            line-height: 1.5;
+            margin-bottom: 1rem
+        }
+
+        .core-svc-card .cs-features {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            flex: 1
+        }
+
+        .core-svc-card .cs-features li {
+            font-size: 0.8rem;
+            color: #4b5563;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+        }
+
+        .core-svc-card .cs-features li svg {
+            width: 16px; height: 16px;
+            color: #10b981;
+            flex-shrink: 0
+        }
+
+        .core-svc-card .cs-cta {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            transition: all .2s;
+            color: #fff;
+            text-decoration: none;
+            margin-top: auto
+        }
+
+        .core-svc-card .cs-cta svg {
+            width: 16px; height: 16px;
+            transition: transform .2s
+        }
+
+        .core-svc-card:hover .cs-cta svg { transform: translateX(3px) }
+
+        .cs-cta-blue, .cs-cta-purple, .cs-cta-orange { background: #1e3a8a }
+        .cs-cta-blue:hover, .cs-cta-purple:hover, .cs-cta-orange:hover { background: #1e40af }
+        .cs-cta-green { background: #059669 }
+        .cs-cta-green:hover { background: #047857 }
+        .cs-cta-teal { background: #0d9488 }
+        .cs-cta-teal:hover { background: #0f766e }
+        .cs-cta-amber { background: #d97706 }
+        .cs-cta-amber:hover { background: #b45309 }
+    </style>
+</head>
+<body>
+    <script src="site-topbar.js?v=2"></script>
+
+    <section class="services-hero">
+        <div class="container">
+            <h1><span>AI-Powered</span> Services</h1>
+            <p>Comprehensive solutions designed for modern Chartered Accountants and financial professionals in India. Automate your practice with cutting-edge AI agents that handle GST filing, data entry, financial instrument processing, and statutory reporting with bank-grade accuracy and speed.</p>
+        </div>
+    </section>
+
+    <div class="core-svc-grid">
+        <!-- Data Entry -->
+        <div class="core-svc-card cs-orange">
+            <div class="cs-icon-row">
+                <div class="cs-icon" style="background:#fffbeb">⌨️</div>
+                <span class="cs-tag" style="background:#fffbeb;color:#92400e">Tally Sync</span>
+            </div>
+            <div class="cs-name">Data Entry & Accounting</div>
+            <p class="cs-desc">Quick-entry workspace for vouchers. Sync directly with Tally for seamless accounting.</p>
+            <ul class="cs-features">
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Bank, Sales, Purchase entry</li>
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>One-click Tally company sync</li>
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>OCR document scanning</li>
+            </ul>
+            <a href="how-it-works.html" class="cs-cta cs-cta-orange">Learn More <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg></a>
+        </div>
+        <!-- GST Filing -->
+        <div class="core-svc-card cs-blue">
+            <div class="cs-icon-row">
+                <div class="cs-icon" style="background:#eff6ff">🧾</div>
+                <span class="cs-tag" style="background:#eff6ff;color:#1e3a8a">Most Used</span>
+            </div>
+            <div class="cs-name">GST Filing & Reconciliation</div>
+            <p class="cs-desc">Complete GST compliance — automated reconciliation, ITC optimization, error detection.</p>
+            <ul class="cs-features">
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>GSTR-1 vs 3B / 2B vs 3B recon</li>
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>ITC summary & block credit</li>
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Refund tracking with ARN</li>
+            </ul>
+            <a href="how-it-works.html" class="cs-cta cs-cta-blue">Learn More <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg></a>
+        </div>
+        <!-- Financial Instruments -->
+        <div class="core-svc-card cs-teal">
+            <div class="cs-icon-row">
+                <div class="cs-icon" style="background:#f0fdfa">📈</div>
+                <span class="cs-tag" style="background:#f0fdfa;color:#0d9488">New</span>
+            </div>
+            <div class="cs-name">Financial Instruments</div>
+            <p class="cs-desc">Process Demat, Mutual Fund, and PMS statements with AI extraction.</p>
+            <ul class="cs-features">
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>AI-powered statement parsing</li>
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Auto journal entry generation</li>
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Demat, MF, PMS support</li>
+            </ul>
+            <a href="how-it-works.html" class="cs-cta cs-cta-teal">Learn More <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg></a>
+        </div>
+        <!-- Statutory & Financial Reporting -->
+        <div class="core-svc-card cs-amber">
+            <div class="cs-icon-row">
+                <div class="cs-icon" style="background:#fef3c7">📑</div>
+                <span class="cs-tag" style="background:#fef3c7;color:#92400e">New</span>
+            </div>
+            <div class="cs-name">Statutory & Financial Reporting</div>
+            <p class="cs-desc">Form 3CD, CARO report, Rule 42 ITC reversal workings & depreciation comparison.</p>
+            <ul class="cs-features">
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Form 3CD auto-population</li>
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>CARO 2020 report generation</li>
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>IT Act vs Co. Act depreciation</li>
+            </ul>
+            <a href="how-it-works.html" class="cs-cta cs-cta-amber">Learn More <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg></a>
+        </div>
+        <!-- Financial Statements -->
+        <div class="core-svc-card cs-green">
+            <div class="cs-icon-row">
+                <div class="cs-icon" style="background:#ecfdf5">📊</div>
+                <span class="cs-tag" style="background:#ecfdf5;color:#059669">New</span>
+            </div>
+            <div class="cs-name">Financial Statements</div>
+            <p class="cs-desc">Schedule III Balance Sheet, P&L from Tally ledgers or uploaded Trial Balance.</p>
+            <ul class="cs-features">
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Auto-pull TB from Tally</li>
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>AI account grouping & mapping</li>
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Comparative BS with schedules</li>
+            </ul>
+            <a href="how-it-works.html" class="cs-cta cs-cta-green">Learn More <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg></a>
+        </div>
+        <!-- CA Certificates -->
+        <div class="core-svc-card cs-purple">
+            <div class="cs-icon-row">
+                <div class="cs-icon" style="background:#f5f3ff">📃</div>
+                <span class="cs-tag" style="background:#f5f3ff;color:#7c3aed">Templates</span>
+            </div>
+            <div class="cs-name">CA Certificates</div>
+            <p class="cs-desc">Generate legally compliant certificates from standardized templates instantly.</p>
+            <ul class="cs-features">
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>GST, Net Worth, FEMA certs</li>
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Auto-populated from client data</li>
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Download as Word/PDF</li>
+            </ul>
+            <a href="how-it-works.html" class="cs-cta cs-cta-purple">Learn More <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg></a>
+        </div>
+    </div>
+
+    <section class="cta-section">
+        <h2>Ready to transform your practice?</h2>
+        <p>Join hundreds of CAs who are saving hours every week with Suvidha AI.</p>
+        <a href="sign-up.html" class="cta-btn">Start Free Trial →</a>
+    </section>
+
+    <!-- Footer included via app logic or hardcoded if needed, but site-topbar.js doesn't handle footer. Let's add a simple footer or use site-topbar's style if any. Actually, I should add a footer here. -->
+    <footer class="site-footer" style="background: #07080d; color: rgba(255,255,255,.5); padding: 3rem 2rem; text-align: center; font-size: 0.85rem;">
+        <div style="max-width: 1200px; margin: 0 auto;">
+            <p>&copy; 2026 Suvidha AI. All rights reserved. Built with ❤️ for CAs in India.</p>
+            <div style="margin-top: 1rem; display: flex; justify-content: center; gap: 1.5rem;">
+                <a href="index.html" style="color: inherit; text-decoration: none;">Home</a>
+                <a href="features.html" style="color: inherit; text-decoration: none;">Features</a>
+                <a href="pricing.html" style="color: inherit; text-decoration: none;">Pricing</a>
+                <a href="contact-us.html" style="color: inherit; text-decoration: none;">Contact</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

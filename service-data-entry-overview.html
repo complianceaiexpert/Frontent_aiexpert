@@ -17,325 +17,113 @@
             display: flex;
             min-height: 100vh;
             padding-top: 56px;
-            background: #f4f6fb
+            background: #f8fafc
         }
 
         .sdo-sidebar {
             width: 240px;
-            background: linear-gradient(180deg, #fafbfe 0%, #f5f7fc 100%);
-            border-right: 1px solid #eaecf3;
-            padding: 0.85rem 0.65rem;
+            background: #fff;
+            border-right: 1px solid #f1f5f9;
+            padding: 1.25rem 0.85rem;
             position: fixed;
             top: 56px;
             bottom: 0;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 0.1rem;
-            z-index: 50;
-            scrollbar-width: thin;
-            scrollbar-color: #dde0e9 transparent;
+            gap: 0.15rem;
+            z-index: 50
         }
-        .sdo-sidebar::-webkit-scrollbar { width: 4px }
-        .sdo-sidebar::-webkit-scrollbar-thumb { background: #dde0e9; border-radius: 4px }
 
         .sdo-main {
             margin-left: 240px;
             flex: 1;
-            padding: 0 2rem 3rem;
+            padding: 1.75rem 2rem;
             max-width: 100%
         }
 
         /* ── Sidebar items ── */
-        .sb-section { margin-bottom: 0.25rem }
+        .sb-section { margin-bottom: 0.5rem }
         .sb-section-label {
-            font-size: 0.56rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: #b0b5c3;
-            padding: 0.45rem 0.65rem 0.25rem;
-            user-select: none;
-            display: flex;
-            align-items: center;
-            gap: 0.35rem;
+            font-size: 0.6rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.08em; color: #9ca3af; padding: 0.5rem 0.75rem 0.3rem; user-select: none
         }
         .sb-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.4rem 0.65rem;
-            font-size: 0.74rem;
-            font-weight: 500;
-            color: #5b6478;
-            border-radius: 7px;
-            text-decoration: none;
-            transition: all .2s;
-            cursor: pointer;
-            position: relative
+            display: flex; align-items: center; gap: 0.55rem; padding: 0.5rem 0.75rem;
+            font-size: 0.8rem; font-weight: 500; color: #4b5563; border-radius: 8px;
+            text-decoration: none; transition: all .15s; cursor: pointer; position: relative
         }
-        .sb-item:hover { background: rgba(30,58,138,.04); color: #1e3a8a }
-        .sb-item.active {
-            background: linear-gradient(135deg, rgba(30,58,138,.07), rgba(59,130,246,.06));
-            color: #1e3a8a;
-            font-weight: 600
-        }
-        .sb-item.active::before {
-            content: '';
-            position: absolute;
-            left: 0; top: 4px; bottom: 4px;
-            width: 2.5px;
-            border-radius: 0 3px 3px 0;
-            background: linear-gradient(180deg, #1e3a8a, #3b82f6);
-        }
-        .sb-item svg { width: 14px; height: 14px; flex-shrink: 0; opacity: 0.7 }
-        .sb-item.active svg, .sb-item:hover svg { opacity: 1 }
+        .sb-item:hover { background: #f1f5f9; color: #1e293b }
+        .sb-item.active { background: #eff6ff; color: #1e3a8a; font-weight: 600 }
+        .sb-item svg { width: 16px; height: 16px; flex-shrink: 0 }
         .sb-badge {
-            font-size: 0.55rem;
-            font-weight: 700;
-            padding: 1px 6px;
-            border-radius: 10px;
-            margin-left: auto
+            font-size: 0.58rem; font-weight: 700; padding: 1px 7px; border-radius: 10px; margin-left: auto
         }
-        .sb-divider { height: 1px; background: linear-gradient(90deg, transparent, #e5e8f0, transparent); margin: 0.3rem 0.85rem }
+        .sb-divider { height: 1px; background: #f1f5f9; margin: 0.6rem 0 }
 
-        /* ── Hero Header ── */
-        .sdo-header {
-            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 60%, #2563eb 100%);
-            margin: 0 -2rem;
-            padding: 2.5rem 2rem 3rem;
-            position: relative;
-            overflow: hidden;
-            margin-bottom: 0;
-        }
-        .sdo-header::before {
-            content: '';
-            position: absolute;
-            top: -50%; right: -5%;
-            width: 280px; height: 280px;
-            background: radial-gradient(circle, rgba(255,255,255,.06) 0%, transparent 70%);
-            border-radius: 50%;
-            pointer-events: none;
-        }
-        .sdo-header::after {
-            content: '';
-            position: absolute;
-            bottom: -40%; left: 30%;
-            width: 200px; height: 200px;
-            background: radial-gradient(circle, rgba(59,130,246,.15) 0%, transparent 70%);
-            border-radius: 50%;
-            pointer-events: none;
-        }
-
-        .sdo-back {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.35rem;
-            font-size: 0.72rem;
-            font-weight: 600;
-            color: rgba(255,255,255,.55);
-            text-decoration: none;
-            margin-bottom: 0.85rem;
-            transition: color .15s;
-            position: relative;
-            z-index: 1;
-        }
-        .sdo-back:hover { color: #fff }
-        .sdo-back svg { width: 14px; height: 14px }
-
-        .sdo-header-row {
-            display: flex;
-            align-items: center;
-            gap: 0.85rem;
-            margin-bottom: 0.25rem;
-            position: relative;
-            z-index: 1;
-        }
+        /* ── Page header ── */
+        .sdo-header { margin-bottom: 1.5rem }
+        .sdo-header-row { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.25rem }
         .sdo-icon {
-            width: 44px; height: 44px;
-            border-radius: 12px;
-            background: rgba(255,255,255,.1);
-            border: 1px solid rgba(255,255,255,.15);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.3rem;
-            flex-shrink: 0;
-            backdrop-filter: blur(4px);
+            width: 40px; height: 40px; border-radius: 10px; background: #eff6ff;
+            display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0
         }
         .sdo-title {
-            font-family: 'Outfit', sans-serif;
-            font-size: 1.3rem;
-            font-weight: 800;
-            color: #fff;
-            margin: 0
+            font-family: 'Outfit', sans-serif; font-size: 1.2rem; font-weight: 800; color: #0f172a; margin: 0
         }
         .sdo-subtitle {
-            font-size: 0.78rem;
-            color: rgba(255,255,255,.55);
-            margin: 0.15rem 0 0;
-            max-width: 600px;
-            line-height: 1.5
+            font-size: 0.78rem; color: #64748b; margin: 0.15rem 0 0; max-width: 600px; line-height: 1.5
         }
 
         /* ── Features strip ── */
-        .sdo-features {
-            display: flex;
-            gap: 0.4rem;
-            margin-top: 0.85rem;
-            flex-wrap: wrap;
-            position: relative;
-            z-index: 1;
-        }
+        .sdo-features { display: flex; gap: 0.5rem; margin-top: 0.85rem; flex-wrap: wrap }
         .sdo-feat {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.3rem;
-            padding: 0.25rem 0.6rem;
-            background: rgba(255,255,255,.08);
-            border: 1px solid rgba(255,255,255,.12);
-            border-radius: 6px;
-            font-size: 0.65rem;
-            font-weight: 600;
-            color: rgba(255,255,255,.7);
-            backdrop-filter: blur(4px);
+            display: inline-flex; align-items: center; gap: 0.3rem;
+            padding: 0.3rem 0.65rem; background: #fff; border: 1px solid #e8ecf1;
+            border-radius: 6px; font-size: 0.68rem; font-weight: 600; color: #475569
         }
-        .sdo-feat svg {
-            width: 10px; height: 10px;
-            color: rgba(255,255,255,.45)
-        }
+        .sdo-feat svg { width: 11px; height: 11px; color: #3b82f6 }
 
         /* ── Toolbar ── */
-        .sdo-toolbar {
-            display: flex;
-            align-items: center;
-            gap: 0.65rem;
-            margin: -1.5rem 0 1rem;
-            flex-wrap: wrap;
-            position: relative;
-            z-index: 2;
-        }
-        .sdo-search {
-            position: relative;
-            flex: 1;
-            min-width: 200px;
-            max-width: 380px
-        }
+        .sdo-toolbar { display: flex; align-items: center; gap: 0.65rem; margin-bottom: 0.85rem; flex-wrap: wrap }
+        .sdo-search { position: relative; flex: 1; min-width: 200px; max-width: 340px }
         .sdo-search input {
-            width: 100%;
-            padding: 0.55rem 0.9rem 0.55rem 2.3rem;
-            border: 1.5px solid #e5e7eb;
-            border-radius: 10px;
-            background: #fff;
-            font-size: 0.8rem;
-            font-family: inherit;
-            transition: all .25s;
-            color: #1e293b;
-            box-shadow: 0 2px 8px rgba(0,0,0,.04);
+            width: 100%; padding: 0.5rem 0.85rem 0.5rem 2.25rem; border: 1px solid #e2e8f0;
+            border-radius: 8px; background: #fff; font-size: 0.8rem; font-family: inherit;
+            transition: all .2s; color: #1e293b
         }
         .sdo-search input::placeholder { color: #94a3b8 }
         .sdo-search input:focus {
-            outline: none;
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 4px rgba(59,130,246,.08), 0 2px 8px rgba(59,130,246,.06)
+            outline: none; border-color: #1e3a8a; box-shadow: 0 0 0 3px rgba(30,58,138,.06)
         }
         .sdo-search .s-icon {
-            position: absolute;
-            left: 0.7rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #94a3b8;
-            pointer-events: none
+            position: absolute; left: 0.65rem; top: 50%; transform: translateY(-50%);
+            color: #94a3b8; pointer-events: none
         }
-        .sdo-count {
-            font-size: 0.72rem;
-            color: #64748b;
-            font-weight: 600;
-            background: #fff;
-            padding: 0.4rem 0.85rem;
-            border-radius: 8px;
-            border: 1px solid #eef0f5;
-            box-shadow: 0 1px 4px rgba(0,0,0,.03);
-        }
+        .sdo-count { font-size: 0.75rem; color: #64748b; font-weight: 600 }
         .sdo-btn-add {
-            display: flex;
-            align-items: center;
-            gap: 0.35rem;
-            padding: 0.5rem 1rem;
-            background: linear-gradient(135deg, #EB6711, #f5841a);
-            color: #fff;
-            border: none;
-            border-radius: 9px;
-            font-weight: 700;
-            font-size: 0.78rem;
-            cursor: pointer;
-            transition: all .25s;
-            font-family: inherit;
-            margin-left: auto;
-            box-shadow: 0 3px 12px rgba(235,103,17,.2);
+            display: flex; align-items: center; gap: 0.35rem; padding: 0.45rem 0.9rem;
+            background: #1e3a8a; color: #fff; border: none; border-radius: 8px;
+            font-weight: 600; font-size: 0.78rem; cursor: pointer; transition: all .2s;
+            font-family: inherit; margin-left: auto
         }
-        .sdo-btn-add:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 5px 18px rgba(235,103,17,.3)
-        }
+        .sdo-btn-add:hover { background: #1e40af; box-shadow: 0 2px 8px rgba(30,58,138,.15) }
 
-        /* ── Client list — Tally ledger style ── */
-        .sdo-list-wrapper {
-            background: #fff;
-            border-radius: 14px;
-            border: 1px solid #eef0f5;
-            box-shadow: 0 2px 10px rgba(0,0,0,.03);
-            overflow: hidden;
-        }
-        .sdo-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0
-        }
-        .sdo-list-header {
-            display: grid;
-            grid-template-columns: 42px 1fr 170px 110px 90px;
-            gap: 0.5rem;
-            padding: 0.55rem 1rem;
-            background: linear-gradient(180deg, #f8fafc, #f1f5f9);
-            border-bottom: 1px solid #e5e7eb;
-            font-size: 0.62rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: #94a3b8;
-            align-items: center;
-        }
+        /* ── Client list ── */
+        .sdo-list { display: flex; flex-direction: column; gap: 0.4rem }
         .sdo-row {
-            display: grid;
-            grid-template-columns: 42px 1fr 170px 110px 90px;
-            gap: 0.5rem;
-            align-items: center;
-            background: #fff;
-            border-bottom: 1px solid #f4f6f8;
-            padding: 0.6rem 1rem;
-            cursor: pointer;
-            transition: all .2s cubic-bezier(.4,0,.2,1)
+            display: flex; align-items: center; gap: 0.85rem; background: #fff;
+            border: 1px solid #e8ecf1; border-radius: 10px; padding: 0.75rem 1rem;
+            cursor: pointer; transition: all .2s cubic-bezier(.4,0,.2,1)
         }
-        .sdo-row:last-child { border-bottom: none }
         .sdo-row:hover {
-            background: #eef4ff;
-            box-shadow: inset 3px 0 0 #3b82f6;
+            border-color: #c7d2fe; box-shadow: 0 4px 16px -4px rgba(30,58,138,.06); background: #fafbff
         }
-        .sdo-row:nth-child(even) { background: #fafbfd }
-        .sdo-row:nth-child(even):hover { background: #eef4ff }
-
         .sdo-av {
-            width: 32px; height: 32px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.78rem;
-            font-weight: 700;
-            font-family: 'Outfit', sans-serif;
-            color: #fff;
-            flex-shrink: 0;
+            width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center;
+            justify-content: center; font-size: 0.85rem; font-weight: 700;
+            font-family: 'Outfit', sans-serif; color: #fff; flex-shrink: 0;
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6)
         }
         .sdo-av.av-1 { background: linear-gradient(135deg, #1e3a8a, #2563eb) }
         .sdo-av.av-2 { background: linear-gradient(135deg, #1e40af, #3b82f6) }
@@ -344,120 +132,64 @@
         .sdo-av.av-5 { background: linear-gradient(135deg, #172554, #1e40af) }
         .sdo-av.av-6 { background: linear-gradient(135deg, #1e3a8a, #4f6ec4) }
 
-        .sdo-info {
-            min-width: 0;
-            display: flex;
-            flex-direction: column;
-            gap: 1px
-        }
+        .sdo-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.1rem }
         .sdo-name {
-            font-size: 0.82rem;
-            font-weight: 700;
-            color: #0f172a;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis
+            font-size: 0.85rem; font-weight: 700; color: #0f172a;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis
         }
         .sdo-id-line {
-            font-size: 0.64rem;
-            color: #94a3b8;
-            font-weight: 500;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis
-        }
-        .sdo-gstin-cell {
-            font-size: 0.7rem;
-            color: #475569;
+            font-size: 0.68rem; color: #64748b;
             font-family: 'SF Mono','Consolas','Monaco',monospace;
-            background: #f8fafc;
-            padding: 3px 8px;
-            border-radius: 5px;
-            border: 1px solid #f1f5f9;
-            text-align: center;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis
         }
-        .sdo-pan-cell {
-            font-size: 0.7rem;
-            color: #475569;
-            font-family: 'SF Mono','Consolas','Monaco',monospace;
-            font-weight: 500;
-            text-align: center;
+        .sdo-chips { display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0 }
+        .sdo-chip {
+            display: inline-flex; align-items: center; gap: 0.2rem;
+            font-size: 0.6rem; font-weight: 600; color: #64748b;
+            padding: 0.15rem 0.45rem; background: #f8fafc; border-radius: 4px;
+            border: 1px solid #f1f5f9; text-transform: uppercase; letter-spacing: 0.03em
         }
         .sdo-open-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.25rem;
-            padding: 0.3rem 0.7rem;
-            background: linear-gradient(135deg, #1e3a8a, #2563eb);
-            color: #fff;
-            border: none;
-            border-radius: 7px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all .2s;
-            font-family: inherit;
-            box-shadow: 0 2px 6px rgba(30,58,138,.15);
+            display: flex; align-items: center; gap: 0.3rem; padding: 0.35rem 0.75rem;
+            background: #1e3a8a; color: #fff; border: none; border-radius: 7px;
+            font-size: 0.72rem; font-weight: 600; cursor: pointer; transition: all .15s;
+            font-family: inherit; flex-shrink: 0
         }
-        .sdo-open-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(30,58,138,.2) }
-        .sdo-open-btn svg { width: 11px; height: 11px }
+        .sdo-open-btn:hover { background: #1e40af }
+        .sdo-open-btn svg { width: 12px; height: 12px }
 
         /* ── Empty state ── */
         .sdo-empty {
-            text-align: center;
-            padding: 3.5rem 1.5rem;
+            text-align: center; padding: 3.5rem 1.5rem; background: #fff;
+            border: 1px dashed #e2e8f0; border-radius: 12px
         }
         .sdo-empty-icon { font-size: 2rem; opacity: .35; margin-bottom: 0.65rem }
-        .sdo-empty h3 { font-family: 'Outfit', sans-serif; font-size: 0.95rem; font-weight: 700; color: #1e293b; margin: 0 0 0.25rem }
-        .sdo-empty p { font-size: 0.78rem; color: #94a3b8; margin: 0 0 1rem; max-width: 400px; margin-left: auto; margin-right: auto; line-height: 1.5 }
+        .sdo-empty h3 {
+            font-family: 'Outfit', sans-serif; font-size: 0.95rem; font-weight: 700;
+            color: #1e293b; margin: 0 0 0.25rem
+        }
+        .sdo-empty p {
+            font-size: 0.78rem; color: #94a3b8; margin: 0 0 1rem;
+            max-width: 400px; margin-left: auto; margin-right: auto; line-height: 1.5
+        }
         .sdo-empty-btn {
             display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.5rem 1.1rem;
-            background: linear-gradient(135deg, #1e3a8a, #2563eb); color: #fff; border: none;
-            border-radius: 8px; font-weight: 600; font-size: 0.8rem; cursor: pointer; font-family: inherit;
-            box-shadow: 0 2px 8px rgba(30,58,138,.15); transition: all .15s;
+            background: #1e3a8a; color: #fff; border: none; border-radius: 8px;
+            font-weight: 600; font-size: 0.8rem; cursor: pointer; transition: all .15s; font-family: inherit
         }
-        .sdo-empty-btn:hover { transform: translateY(-1px) }
+        .sdo-empty-btn:hover { background: #1e40af }
 
-        /* ── Modal ── */
-        .sdo-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(15,23,42,.35); backdrop-filter: blur(4px); z-index: 10000; align-items: center; justify-content: center }
-        .sdo-modal-overlay.open { display: flex }
-        .sdo-modal { background: #fff; border-radius: 16px; width: 440px; max-height: 85vh; overflow-y: auto; box-shadow: 0 24px 48px rgba(0,0,0,.12); border: 1px solid #eef0f5 }
-        .sdo-modal-head { padding: 1.15rem 1.35rem; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; justify-content: space-between; background: linear-gradient(180deg, #fafbfd, #fff) }
-        .sdo-modal-head h3 { font-family: 'Outfit', sans-serif; font-size: 1rem; font-weight: 800; color: #0f172a; margin: 0 }
-        .sdo-modal-close { background: none; border: none; font-size: 1.1rem; cursor: pointer; color: #94a3b8; padding: 0.2rem; transition: color .15s }
-        .sdo-modal-close:hover { color: #374151 }
-        .sdo-modal-body { padding: 1.25rem 1.35rem }
-        .sdo-field { margin-bottom: 0.85rem }
-        .sdo-field label { display: block; font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #64748b; margin-bottom: 0.3rem }
-        .sdo-field input { width: 100%; padding: 0.5rem 0.75rem; border: 1.5px solid #e2e8f0; border-radius: 9px; font-size: 0.82rem; font-family: inherit; color: #1e293b; transition: all .2s }
-        .sdo-field input:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,.08) }
-        .sdo-modal-foot { padding: 0.85rem 1.35rem; border-top: 1px solid #f1f5f9; display: flex; justify-content: flex-end; gap: 0.5rem; background: #fafbfd }
-        .sdo-btn-cancel { padding: 0.45rem 0.85rem; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 0.78rem; font-weight: 600; cursor: pointer; font-family: inherit; color: #475569 }
-        .sdo-btn-save { padding: 0.45rem 1rem; background: linear-gradient(135deg, #1e3a8a, #2563eb); color: #fff; border: none; border-radius: 8px; font-size: 0.78rem; font-weight: 600; cursor: pointer; font-family: inherit; transition: all .2s; box-shadow: 0 2px 8px rgba(30,58,138,.15) }
-        .sdo-btn-save:hover { transform: translateY(-1px) }
-
-        /* GSTIN verify */
-        .sdo-gstin-row { display: flex; gap: 0.4rem; align-items: center }
-        .sdo-gstin-row input { flex: 1 }
-        .sdo-btn-verify { padding: 0.5rem 0.7rem; background: linear-gradient(135deg,#059669,#10b981); color: #fff; border: none; border-radius: 8px; font-size: 0.72rem; font-weight: 700; cursor: pointer; white-space: nowrap; font-family: inherit; transition: all .2s }
-        .sdo-btn-verify:hover { background: linear-gradient(135deg,#047857,#059669) }
-        .sdo-btn-verify:disabled { opacity: .6; cursor: not-allowed }
-        .sdo-gstin-result { margin-top: 0.35rem; font-size: 0.72rem; padding: 0.25rem 0.6rem; border-radius: 6px; display: none; font-weight: 600 }
-        .sdo-gstin-result.valid { display: block; background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0 }
-        .sdo-gstin-result.invalid { display: block; background: #fef2f2; color: #dc2626; border: 1px solid #fecaca }
-        .sdo-gstin-result.checking { display: block; background: #eff6ff; color: #3b82f6; border: 1px solid #bfdbfe }
+        .sdo-back {
+            display: inline-flex; align-items: center; gap: 0.35rem;
+            font-size: 0.72rem; font-weight: 600; color: #64748b;
+            text-decoration: none; margin-bottom: 1rem; transition: color .15s
+        }
+        .sdo-back:hover { color: #1e3a8a }
+        .sdo-back svg { width: 14px; height: 14px }
 
         @media(max-width:900px) {
             .sdo-sidebar { display: none }
             .sdo-main { margin-left: 0 }
-            .sdo-header { margin: 0 }
-            .sdo-list-header { display: none }
-            .sdo-row { grid-template-columns: 36px 1fr auto; }
-            .sdo-gstin-cell, .sdo-pan-cell { display: none }
         }
     </style>
 </head>
@@ -470,89 +202,49 @@
     <div class="sdo-layout">
         <!-- ══ LEFT SIDEBAR ══ -->
         <aside class="sdo-sidebar">
-            <!-- Shared Main Navigation -->
-            <div id="app-sidebar-main" data-active="home"></div>
-            <script src="app-sidebar.js"></script>
-
-            <!-- Services Section -->
-            <div class="sb-section">
-                <div class="sb-section-label">Services</div>
-                <a href="service-gst-overview.html" class="sb-item">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <line x1="12" y1="1" x2="12" y2="23"/>
-                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-                    </svg>
-                    GST Filing
-                </a>
-                <a href="service-data-entry-overview.html" class="sb-item active">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-                    </svg>
-                    Data Entry
-                    <span class="sb-badge" style="background:rgba(30,58,138,.08);color:#1e3a8a">Live</span>
-                </a>
-                <a href="ca-certificates.html" class="sb-item">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="8" r="6"/>
-                        <path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/>
-                    </svg>
-                    CA Certificates
-                </a>
-            </div>
-            <div class="sb-divider"></div>
-
-            <!-- Quick Links -->
-            <div class="sb-section">
-                <div class="sb-section-label">Quick Links</div>
-                <a href="clients.html" class="sb-item">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-                        <polyline points="9 22 9 12 15 12 15 22"/>
-                    </svg>
-                    Back to Dashboard
-                </a>
-            </div>
+            <div id="app-sidebar-overview" data-active="data-entry"></div>
+            <script src="app-sidebar-overview.js"></script>
         </aside>
 
         <!-- ══ MAIN CONTENT ══ -->
         <main class="sdo-main">
+            <a class="sdo-back" href="Home.html">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <line x1="19" y1="12" x2="5" y2="12"/>
+                    <polyline points="12 19 5 12 12 5"/>
+                </svg>
+                Back to Dashboard
+            </a>
+
             <!-- Header -->
             <div class="sdo-header">
-                <a class="sdo-back" href="clients.html">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                        <line x1="19" y1="12" x2="5" y2="12"/>
-                        <polyline points="12 19 5 12 12 5"/>
-                    </svg>
-                    Back to Dashboard
-                </a>
                 <div class="sdo-header-row">
                     <div class="sdo-icon">⌨️</div>
                     <div>
                         <h1 class="sdo-title">Data Entry & Accounting</h1>
-                        <p class="sdo-subtitle">Quick-entry workspace for banking, sales, purchase, and journal transactions. Sync directly with Tally for seamless accounting.</p>
+                        <p class="sdo-subtitle">Manage vouchers, ledgers, and sync with Tally for all your clients.</p>
                     </div>
                 </div>
                 <div class="sdo-features">
                     <span class="sdo-feat">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                        Voucher Entry
+                        Auto-push Vouchers to Tally
                     </span>
                     <span class="sdo-feat">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                        Ledger Management
+                        AI Bank Statement Parser
                     </span>
                     <span class="sdo-feat">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                        Tally Sync
+                        Smart Ledger Mapping
                     </span>
                     <span class="sdo-feat">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                        OCR Scanning
+                        Multi-Currency Support
                     </span>
                     <span class="sdo-feat">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                        Reports & Analysis
+                        Real-time Sync
                     </span>
                 </div>
             </div>
@@ -569,71 +261,23 @@
                     <input type="text" id="sdo-search-input" placeholder="Search clients by name, GSTIN, PAN…">
                 </div>
                 <span class="sdo-count" id="sdo-client-count">0 clients</span>
-                <button class="sdo-btn-add" onclick="openAddModal()">
+                <button class="sdo-btn-add" onclick="window.location.href='Add_client.html?redirect=service-data-entry-overview.html'">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                        <path d="M12 5v14"/>
-                        <path d="M5 12h14"/>
+                        <path d="M12 5v14"/><path d="M5 12h14"/>
                     </svg>
                     Add Client
                 </button>
             </div>
 
             <!-- Client List -->
-            <div class="sdo-list-wrapper">
-                <div class="sdo-list-header">
-                    <span></span>
-                    <span>Client Name</span>
-                    <span style="text-align:center">GSTIN</span>
-                    <span style="text-align:center">PAN</span>
-                    <span style="text-align:center">Action</span>
-                </div>
-                <div class="sdo-list" id="sdo-client-list">
-                    <div style="text-align:center;padding:2rem;color:#94a3b8;font-size:0.8rem">Loading clients…</div>
-                </div>
+            <div class="sdo-list" id="sdo-client-list">
+                <div style="text-align:center;padding:2rem;color:#94a3b8;font-size:0.8rem">Loading clients…</div>
             </div>
         </main>
     </div>
 
-    <!-- ══ ADD CLIENT MODAL ══ -->
-    <div class="sdo-modal-overlay" id="add-modal-overlay" onclick="if(event.target===this)closeAddModal()">
-        <div class="sdo-modal">
-            <div class="sdo-modal-head">
-                <h3>Add New Client</h3>
-                <button class="sdo-modal-close" onclick="closeAddModal()">✕</button>
-            </div>
-            <div class="sdo-modal-body">
-                <div class="sdo-field">
-                    <label>Client / Company Name *</label>
-                    <input type="text" id="add-name" placeholder="e.g. Acme Corp Pvt Ltd">
-                </div>
-                <div class="sdo-field">
-                    <label>PAN</label>
-                    <input type="text" id="add-pan" placeholder="e.g. ABCDE1234F" maxlength="10" style="text-transform:uppercase">
-                </div>
-                <div class="sdo-field">
-                    <label>GSTIN (optional)</label>
-                    <div class="sdo-gstin-row">
-                        <input type="text" id="add-gstin" placeholder="e.g. 27ABCDE1234F1Z5" maxlength="15" style="text-transform:uppercase">
-                        <button type="button" class="sdo-btn-verify" onclick="verifyGSTIN()">🔍 Verify</button>
-                    </div>
-                    <div class="sdo-gstin-result" id="gstin-result"></div>
-                </div>
-                <div class="sdo-field">
-                    <label>Email (optional)</label>
-                    <input type="email" id="add-email" placeholder="e.g. client@example.com">
-                </div>
-            </div>
-            <div class="sdo-modal-foot">
-                <button class="sdo-btn-cancel" onclick="closeAddModal()">Cancel</button>
-                <button class="sdo-btn-save" id="add-save-btn" onclick="saveClient()">Add Client</button>
-            </div>
-        </div>
-    </div>
-
     <script src="api_config.js"></script>
-    <script src="app-confirm.js"></script>
     <script>
-        // ══ AUTH ══
         const user = JSON.parse(localStorage.getItem('user'));
         if (!user) window.location.href = 'index.html';
 
@@ -645,7 +289,6 @@
             return avColors[Math.abs(h) % avColors.length];
         }
 
-        // ══ LOAD CLIENTS ══
         async function loadClients() {
             try {
                 const r = await authFetch('/clients/');
@@ -655,11 +298,10 @@
             } catch (e) {
                 console.error('Load clients error:', e);
                 document.getElementById('sdo-client-list').innerHTML =
-                    '<div style="text-align:center;padding:2rem;color:#dc2626;font-size:0.8rem">Failed to load clients. Check server connection.</div>';
+                    '<div style="text-align:center;padding:2rem;color:#dc2626;font-size:0.8rem">Failed to load clients.</div>';
             }
         }
 
-        // ══ RENDER — Tally ledger-style grid ══
         function renderClients(clients) {
             const list = document.getElementById('sdo-client-list');
             document.getElementById('sdo-client-count').textContent = `${clients.length} client${clients.length !== 1 ? 's' : ''}`;
@@ -670,7 +312,7 @@
                         <div class="sdo-empty-icon">⌨️</div>
                         <h3>No clients yet</h3>
                         <p>Add your first client to start using Data Entry & Accounting — manage vouchers, ledgers, and sync with Tally.</p>
-                        <button class="sdo-empty-btn" onclick="openAddModal()">
+                        <button class="sdo-empty-btn" onclick="window.location.href='Add_client.html?redirect=service-data-entry-overview.html'">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                                 <path d="M12 5v14"/><path d="M5 12h14"/>
                             </svg>
@@ -685,20 +327,20 @@
                 const avClass = getAvColor(client.name);
                 const gstin = (client.gstins && client.gstins[0]) || '';
                 const pan = client.pan || '';
+                let idLine = gstin || (pan ? `PAN: ${pan}` : 'No GSTIN');
                 const gstinCount = (client.gstins && client.gstins.length) || 0;
-                const gstinDisplay = gstin || '—';
-                const panDisplay = pan || '—';
-                const subtitle = gstinCount > 1 ? `${gstinCount} GSTINs` : (gstin ? '' : (pan ? `PAN: ${pan}` : 'No GSTIN'));
 
                 return `
                 <div class="sdo-row" onclick="openDataEntry('${client.id}')">
                     <div class="sdo-av ${avClass}">${initial}</div>
                     <div class="sdo-info">
                         <div class="sdo-name">${client.name}</div>
-                        <div class="sdo-id-line">${subtitle}</div>
+                        <div class="sdo-id-line">${idLine}</div>
                     </div>
-                    <div class="sdo-gstin-cell">${gstinDisplay}</div>
-                    <div class="sdo-pan-cell">${panDisplay}</div>
+                    <div class="sdo-chips">
+                        ${gstinCount ? `<span class="sdo-chip">${gstinCount} GSTIN${gstinCount > 1 ? 's' : ''}</span>` : ''}
+                        ${pan ? `<span class="sdo-chip">${pan}</span>` : ''}
+                    </div>
                     <button class="sdo-open-btn" onclick="event.stopPropagation();openDataEntry('${client.id}')">
                         Open
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg>
@@ -711,7 +353,7 @@
             window.location.href = `service-data-entry.html?clientId=${clientId}&service=Data Entry`;
         }
 
-        // ══ SEARCH ══
+        // Search
         document.getElementById('sdo-search-input').addEventListener('input', function () {
             const q = this.value.toLowerCase().trim();
             if (!q) { renderClients(allClients); return; }
@@ -724,86 +366,6 @@
             renderClients(filtered);
         });
 
-        // ══ ADD CLIENT MODAL ══
-        function openAddModal() {
-            document.getElementById('add-modal-overlay').classList.add('open');
-            document.getElementById('add-name').focus();
-        }
-        function closeAddModal() {
-            document.getElementById('add-modal-overlay').classList.remove('open');
-            document.getElementById('add-name').value = '';
-            document.getElementById('add-pan').value = '';
-            document.getElementById('add-gstin').value = '';
-            document.getElementById('add-email').value = '';
-        }
-        // GSTIN verification
-        let gstinVerified = null;
-        function isValidGSTINFmt(g) { return /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[0-9A-Z]{1}Z[0-9A-Z]{1}$/.test(g); }
-        async function verifyGSTIN() {
-            const gstin = document.getElementById('add-gstin').value.trim().toUpperCase();
-            const el = document.getElementById('gstin-result');
-            if (!gstin) { el.className = 'sdo-gstin-result'; gstinVerified = null; return; }
-            if (!isValidGSTINFmt(gstin)) {
-                const msg = gstin.length !== 15 ? `Must be 15 characters (entered ${gstin.length})` : 'Invalid pattern — format: 22AAAAA0000A1Z5';
-                el.className = 'sdo-gstin-result invalid'; el.textContent = `❌ ${msg}`; gstinVerified = false; return;
-            }
-            el.className = 'sdo-gstin-result checking'; el.textContent = '⏳ Verifying...';
-            try {
-                const token = localStorage.getItem('access_token');
-                const res = await fetch(`${API_BASE_URL}/tools/gstin-validate?gstin=${gstin}`, { headers: { 'Authorization': `Bearer ${token}` } });
-                const data = await res.json();
-                if (res.ok && data.status === 'Active') {
-                    el.className = 'sdo-gstin-result valid'; el.textContent = `✅ ${data.legal_name || data.trade_name || 'Active'}`; gstinVerified = true;
-                } else {
-                    el.className = 'sdo-gstin-result invalid'; el.textContent = `❌ ${data.detail || data.status || 'Not found on GST Portal'}`; gstinVerified = false;
-                }
-            } catch (e) { el.className = 'sdo-gstin-result invalid'; el.textContent = '⚠️ Network error'; gstinVerified = false; }
-        }
-        async function saveClient() {
-            const name = document.getElementById('add-name').value.trim();
-            if (!name) { showAlert({ title: 'Name Required', message: 'Please enter the client/company name.', type: 'warning', icon: '✏️' }); return; }
-            const pan = document.getElementById('add-pan').value.trim().toUpperCase();
-            const gstin = document.getElementById('add-gstin').value.trim().toUpperCase();
-            const email = document.getElementById('add-email').value.trim();
-
-            if (gstin && gstinVerified === null) { await verifyGSTIN(); }
-            if (gstin && gstinVerified === false) { showAlert({ title: 'GSTIN Verification Failed', message: 'The GSTIN could not be verified. Please correct or remove it before saving.', type: 'warning', icon: '⚠️' }); return; }
-
-            const btn = document.getElementById('add-save-btn');
-            btn.textContent = 'Saving…';
-            btn.disabled = true;
-
-            try {
-                const body = { name };
-                if (pan) body.pan = pan;
-                if (gstin) body.gstins = [gstin];
-                if (email) body.email = email;
-
-                const r = await authFetch('/clients/', {
-                    method: 'POST',
-                    body: JSON.stringify(body)
-                });
-                if (!r.ok) {
-                    const err = await r.json().catch(() => ({}));
-                    const detail = err.detail;
-                    let msg = 'Failed to add client';
-                    if (typeof detail === 'string') msg = detail;
-                    else if (Array.isArray(detail)) msg = detail.map(d => d.msg || JSON.stringify(d)).join(', ');
-                    else if (detail && typeof detail === 'object') msg = JSON.stringify(detail);
-                    throw new Error(msg);
-                }
-                closeAddModal();
-                gstinVerified = null;
-                await loadClients();
-            } catch (e) {
-                showAlert({ title: 'Could Not Save', message: e.message, type: 'danger', icon: '❌' });
-            } finally {
-                btn.textContent = 'Add Client';
-                btn.disabled = false;
-            }
-        }
-
-        // ══ INIT ══
         loadClients();
     </script>
 </body>

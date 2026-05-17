@@ -634,7 +634,7 @@
             <!-- Page Header -->
             <div class="page-header">
                 <div class="page-header-left">
-                    <a href="clients.html" class="back-btn">
+                    <a href="Home.html" class="back-btn">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m15 18-6-6 6-6"/></svg>
                         Back
                     </a>
@@ -646,7 +646,7 @@
                         <p class="page-subtitle">Your complete client directory — click Open to enter a client's workspace.</p>
                     </div>
                 </div>
-                <button class="btn-add" id="btn-add-client" onclick="openDrawer()">
+                <button class="btn-add" id="btn-add-client" onclick="window.location.href='Add_client.html'">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
                     Add Client
                 </button>
@@ -908,8 +908,10 @@
                     <td style="font-size:0.78rem;color:#6b7280">${c.email || '—'}</td>
                     <td><span class="cl-row-svc-count">${svcCount}</span></td>
                     <td>
-                        <div class="cl-row-action">
-                            <a href="services-dashboard.html?clientId=${c.id}" class="cl-row-btn primary">Open</a>
+                        <div class="cl-row-action" style="display:flex;gap:0.35rem">
+                            <a href="services-dashboard.html?clientId=${c.id}" class="cl-row-btn primary" style="font-size:0.75rem;padding:0.25rem 0.5rem">Open</a>
+                            <button class="cl-row-btn" style="font-size:0.75rem;padding:0.25rem 0.5rem;background:#f1f5f9;color:#475569;border:1px solid #cbd5e1;border-radius:6px;cursor:pointer;font-weight:600;" onclick="editClient('${c.id}')">Edit</button>
+                            <button class="cl-row-btn" style="font-size:0.75rem;padding:0.25rem 0.5rem;background:#fee2e2;color:#dc2626;border:1px solid #fecaca;border-radius:6px;cursor:pointer;font-weight:600;" onclick="deleteClient('${c.id}')">Delete</button>
                         </div>
                     </td>
                 </tr>`;
@@ -1051,14 +1053,36 @@
             }
         }
 
+        function editClient(id) {
+            window.location.href = `Add_client.html?clientId=${id}`;
+        }
+
+        async function deleteClient(id) {
+            const client = allClients.find(c => c.id === id);
+            if (client && client.services && client.services.length > 0) {
+                showToast('Cannot delete client with active services.', 'warning');
+                return;
+            }
+            if (!confirm('Are you sure you want to delete this client? This action cannot be undone.')) return;
+            try {
+                const r = await authFetch(`/clients/${id}`, { method: 'DELETE' });
+                if (r.ok) {
+                    showToast('Client deleted successfully', 'success');
+                    await loadClients();
+                } else {
+                    const err = await r.json();
+                    showToast('Error: ' + (err.detail || 'Failed to delete client'), 'error');
+                }
+            } catch (e) {
+                showToast('Connection error', 'error');
+            }
+        }
+
         // ── Boot ──
         loadClients();
 
-        // Auto-open Add Client drawer if URL has #add-client
         if (window.location.hash === '#add-client') {
-            openDrawer();
-            // Clean the hash so refreshing doesn't reopen
-            history.replaceState(null, '', window.location.pathname + window.location.search);
+            window.location.href = 'Add_client.html';
         }
     </script>
     <script src="session-manager.js?v=2"></script>

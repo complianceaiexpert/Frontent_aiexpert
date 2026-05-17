@@ -43,23 +43,7 @@
         }
 
         /* ── Sidebar items ── */
-        .sb-section { margin-bottom: 0.5rem }
-        .sb-section-label {
-            font-size: 0.6rem; font-weight: 700; text-transform: uppercase;
-            letter-spacing: 0.08em; color: #9ca3af; padding: 0.5rem 0.75rem 0.3rem; user-select: none
-        }
-        .sb-item {
-            display: flex; align-items: center; gap: 0.55rem; padding: 0.5rem 0.75rem;
-            font-size: 0.8rem; font-weight: 500; color: #4b5563; border-radius: 8px;
-            text-decoration: none; transition: all .15s; cursor: pointer; position: relative
-        }
-        .sb-item:hover { background: #f1f5f9; color: #1e293b }
-        .sb-item.active { background: #f0fdfa; color: #0d9488; font-weight: 600 }
-        .sb-item svg { width: 16px; height: 16px; flex-shrink: 0 }
-        .sb-badge {
-            font-size: 0.58rem; font-weight: 700; padding: 1px 7px; border-radius: 10px; margin-left: auto
-        }
-        .sb-divider { height: 1px; background: #f1f5f9; margin: 0.6rem 0 }
+        /* Sidebar styles removed to use app-sidebar.js */
 
         /* ── Page header ── */
         .sdo-header { margin-bottom: 1.5rem }
@@ -260,65 +244,48 @@
     <div class="sdo-layout">
         <!-- ══ LEFT SIDEBAR ══ -->
         <aside class="sdo-sidebar">
-            <div id="app-sidebar-main" data-active="home"></div>
+            <div id="app-sidebar-main" data-active="financial-instruments"></div>
             <script src="app-sidebar.js"></script>
 
-            <div class="sb-section">
-                <div class="sb-section-label">Services</div>
-                <a href="service-gst-overview.html" class="sb-item">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <line x1="12" y1="1" x2="12" y2="23"/>
-                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-                    </svg>
-                    GST Filing
-                </a>
-                <a href="service-data-entry-overview.html" class="sb-item">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-                    </svg>
-                    Data Entry
-                </a>
-                <a href="ca-certificates.html" class="sb-item">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="8" r="6"/>
-                        <path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/>
-                    </svg>
-                    CA Certificates
-                </a>
-                <a href="service-financial-statements-overview.html" class="sb-item">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="3" y="3" width="18" height="18" rx="2"/>
-                        <path d="M3 12h18"/><path d="M12 3v18"/>
-                    </svg>
-                    Financial Stmt.
-                    <span class="sb-badge" style="background:#ecfdf5;color:#059669">New</span>
-                </a>
-                <a href="service-financial-instruments-overview.html" class="sb-item active">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/>
-                    </svg>
-                    Financial Instr.
-                    <span class="sb-badge" style="background:#f0fdfa;color:#0d9488">New</span>
-                </a>
-            </div>
-            <div class="sb-divider"></div>
+            <!-- ═══ Active Workspace: Financial Instruments ═══ -->
+            <div class="sb-section" style="margin-top: 1rem;">
+                <div class="sb-section-label" style="display:flex;align-items:center;gap:0.35rem;">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/></svg>
+                    Active Workspace
+                </div>
 
-            <div class="sb-section">
-                <div class="sb-section-label">Quick Links</div>
-                <a href="clients.html" class="sb-item">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-                        <polyline points="9 22 9 12 15 12 15 22"/>
-                    </svg>
-                    Back to Dashboard
-                </a>
+                <div class="sb-item" onclick="goToSection('dashboard')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                    Dashboard
+                </div>
+                <div class="sb-item" onclick="goToSection('stock-register')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                    Holdings
+                </div>
+                <div class="sb-item" onclick="goToSection('capital-gains')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                    Capital Gains
+                </div>
+                <div class="sb-item" onclick="goToSection('statements')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                    Upload Statements
+                    <span class="sb-badge">AI</span>
+                </div>
+                <div class="sb-item" onclick="goToSection('pending')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                    Write to Tally
+                    <span class="sb-badge" id="fi-sb-pending-count" style="display:none">0</span>
+                </div>
+                <div class="sb-item" onclick="goToSection('journal-entries')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+                    FI Data
+                </div>
             </div>
         </aside>
 
         <!-- ══ MAIN CONTENT ══ -->
         <main class="sdo-main">
-            <a class="sdo-back" href="clients.html">
+            <a class="sdo-back" href="Home.html">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                     <line x1="19" y1="12" x2="5" y2="12"/>
                     <polyline points="12 19 5 12 12 5"/>
@@ -371,7 +338,7 @@
                     <input type="text" id="sdo-search-input" placeholder="Search clients by name, GSTIN, PAN…">
                 </div>
                 <span class="sdo-count" id="sdo-client-count">0 clients</span>
-                <button class="sdo-btn-add" onclick="openAddModal()">
+                <button class="sdo-btn-add" onclick="window.location.href='Add_client.html?redirect=service-financial-instruments-overview.html'">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                         <path d="M12 5v14"/><path d="M5 12h14"/>
                     </svg>
@@ -425,6 +392,27 @@
     <script src="api_config.js"></script>
     <script src="app-confirm.js"></script>
     <script>
+        function goToSection(section) {
+            const urlParams = new URLSearchParams(window.location.search);
+            const clientId = urlParams.get('clientId');
+            
+            if (section === 'dashboard' || !section) {
+                let url = 'service-financial-instruments-overview.html';
+                const params = [];
+                if (clientId) params.push(`clientId=${clientId}`);
+                if (params.length > 0) url += '?' + params.join('&');
+                window.location.href = url;
+                return;
+            }
+            
+            let url = 'service-financial-instruments.html';
+            const params = [];
+            if (clientId) params.push(`clientId=${clientId}`);
+            if (section) params.push(`section=${section}`);
+            if (params.length > 0) url += '?' + params.join('&');
+            window.location.href = url;
+        }
+
         const user = JSON.parse(localStorage.getItem('user'));
         if (!user) window.location.href = 'index.html';
 
@@ -459,7 +447,7 @@
                         <div class="sdo-empty-icon">📈</div>
                         <h3>No clients yet</h3>
                         <p>Add your first client to start processing Financial Instruments — AI-powered Demat, MF, and PMS statement reading with automated journal entries.</p>
-                        <button class="sdo-empty-btn" onclick="openAddModal()">
+                        <button class="sdo-empty-btn" onclick="window.location.href='Add_client.html?redirect=service-financial-instruments-overview.html'">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                                 <path d="M12 5v14"/><path d="M5 12h14"/>
                             </svg>

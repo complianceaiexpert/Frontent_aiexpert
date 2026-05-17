@@ -296,6 +296,9 @@ const FYPeriod = (() => {
 
         // Close on outside click
         document.addEventListener('click', () => { if (_panelOpen) _closePanel(); });
+        // Close on scroll (panel is position:fixed, so it won't follow content)
+        const scrollParent = container.closest('.fi-main') || container.closest('main') || window;
+        (scrollParent === window ? window : scrollParent).addEventListener('scroll', () => { if (_panelOpen) _closePanel(); }, { passive: true });
 
         // Restore or set default selection
         const savedValue = _config.persist ? _getSavedValue() : null;
@@ -558,6 +561,17 @@ const FYPeriod = (() => {
         panel.style.display = 'block';
         trigger?.classList.add('fyp-trigger-open');
         _panelOpen = true;
+        // Position panel below trigger using fixed positioning (escapes overflow:auto)
+        if (trigger) {
+            const rect = trigger.getBoundingClientRect();
+            panel.style.top = (rect.bottom + 6) + 'px';
+            panel.style.left = rect.left + 'px';
+            // Prevent going off-screen right
+            const panelWidth = panel.offsetWidth || 340;
+            if (rect.left + panelWidth > window.innerWidth - 16) {
+                panel.style.left = Math.max(8, window.innerWidth - panelWidth - 16) + 'px';
+            }
+        }
         // Scroll active into view
         setTimeout(() => {
             const active = panel.querySelector('.fyp-active');

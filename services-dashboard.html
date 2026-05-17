@@ -900,7 +900,7 @@
                 <!-- Breadcrumb (inside hero) -->
                 <div style="position:absolute;top:1rem;left:2rem;z-index:1">
                     <div class="ws-breadcrumb">
-                        <a href="clients.html">Firm</a>
+                        <a href="Home.html">Firm</a>
                         <span class="sep">›</span>
                         <a href="client-list.html">Clients</a>
                         <span class="sep">›</span>
@@ -1069,7 +1069,7 @@
                 }
             } catch(_) {}
         }
-        if (!clientId) window.location.href = 'clients.html';
+        if (!clientId) window.location.href = 'Home.html';
 
         // ====== SERVICE METADATA ======
         const serviceData = {
@@ -1132,7 +1132,7 @@
             } catch (err) {
                 console.error('Client Load Error:', err);
                 if (err.message.includes('401')) { alert('Session expired.'); window.location.href = 'index.html' }
-                else if (err.message.includes('404')) { alert('Client not found.'); window.location.href = 'clients.html' }
+                else if (err.message.includes('404')) { alert('Client not found.'); window.location.href = 'Home.html' }
                 else { alert('Error: ' + err.message) }
             }
         }
@@ -1182,7 +1182,7 @@
                 icon: '📊',
                 color: 'green',
                 desc: 'Schedule III Balance Sheet, P&L from Tally ledgers or uploaded Trial Balance with AI grouping.',
-                page: 'service-financial-statements.html',
+                page: 'service-financial-statements-overview.html',
                 tag: 'New'
             },
             {
@@ -1190,7 +1190,7 @@
                 icon: '📈',
                 color: 'teal',
                 desc: 'Process Demat, Mutual Fund, and PMS statements with AI extraction and journal entry generation.',
-                page: 'service-financial-instruments.html',
+                page: 'service-financial-instruments-overview.html',
                 tag: 'New'
             },
             {

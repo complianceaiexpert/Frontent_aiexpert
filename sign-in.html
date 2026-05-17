@@ -248,7 +248,7 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            padding-top: 2rem;
             max-width: 400px;
             margin: 0 auto;
             width: 100%;
@@ -867,10 +867,10 @@
                 if (u.account_type === 'corporate') {
                     window.location.href = 'services-dashboard.html';
                 } else {
-                    window.location.href = 'clients.html';
+                    window.location.href = 'Home.html';
                 }
             } catch(e) {
-                window.location.href = 'clients.html';
+                window.location.href = 'Home.html';
             }
         }
 
@@ -965,7 +965,7 @@
                         } catch(e) { /* ignore */ }
                         setTimeout(() => { window.location.href = 'services-dashboard.html'; }, 400);
                     } else {
-                        setTimeout(() => { window.location.href = 'clients.html'; }, 400);
+                        setTimeout(() => { window.location.href = 'Home.html'; }, 400);
                     }
                 }
             }

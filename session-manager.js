@@ -33,7 +33,7 @@ function logout() {
 
 function redirectIfLoggedIn() {
     if (isLoggedIn() && !isSessionExpired()) {
-        window.location.href = 'clients.html';
+        window.location.href = 'Home.html';
     }
 }
 

@@ -81,7 +81,7 @@
             width: 38px;
             height: 38px;
             border-radius: 9px;
-            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            background: #94a3b8;
             color: #fff;
             display: flex;
             align-items: center;
@@ -89,7 +89,21 @@
             font-weight: 800;
             font-size: 1rem;
             font-family: 'Outfit', sans-serif;
-            flex-shrink: 0
+            flex-shrink: 0;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .status-icon:hover {
+            transform: scale(1.05);
+        }
+
+        .status-icon.connected {
+            background: #10b981;
+        }
+
+        .status-icon.connecting {
+            background: #f59e0b;
         }
 
         .status-info {
@@ -118,7 +132,13 @@
             font-size: 0.68rem;
             font-weight: 700;
             background: #f3f4f6;
-            color: #6b7280
+            color: #6b7280;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .status-pill:hover {
+            background: #e5e7eb;
         }
 
         .status-dot {
@@ -366,7 +386,7 @@
     <script src="app-topbar.js?v=3"></script>
 
     <div class="page-wrap">
-        <a class="back-link" href="clients.html">
+        <a class="back-link" href="Home.html">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                 <line x1="19" y1="12" x2="5" y2="12" />
                 <polyline points="12 19 5 12 12 5" />
@@ -380,12 +400,12 @@
 
         <!-- Status Bar -->
         <div class="status-bar">
-            <div class="status-icon">T</div>
+            <div class="status-icon" id="tally-status-icon" title="Click to check connection" onclick="checkTallyConnection()">T</div>
             <div class="status-info">
                 <p class="status-name">Tally Prime / ERP 9</p>
                 <p class="status-detail">Sync ledgers, vouchers & trial balances</p>
             </div>
-            <div class="status-pill" id="tally-status-pill">
+            <div class="status-pill" id="tally-status-pill" title="Click to see last sync time" onclick="showLastSync()">
                 <span class="status-dot" id="tally-status-dot"></span>
                 <span id="tally-status-text">Not Connected</span>
             </div>
@@ -598,13 +618,13 @@
             el.closest('.faq-item').classList.toggle('open');
         }
 
-        async function syncTally() {
-            const btn = document.getElementById("sync-btn");
+        async function checkTallyConnection() {
+            const icon = document.getElementById("tally-status-icon");
             const statusText = document.getElementById("tally-status-text");
             const pill = document.getElementById("tally-status-pill");
             const dot = document.getElementById("tally-status-dot");
 
-            btn.disabled = true;
+            icon.classList.add("connecting");
             statusText.textContent = "Connecting…";
             pill.style.background = "#FEF3C7"; pill.style.color = "#B45309";
             dot.style.background = "#F59E0B";
@@ -626,11 +646,14 @@
 
                 const text = await res.text();
                 const connected = res.ok && /<ENVELOPE[\s>]/i.test(text);
+                
+                icon.classList.remove("connecting");
+                
                 if (!connected) {
+                    icon.classList.remove("connected");
                     statusText.textContent = "Not Connected";
                     pill.style.background = "#FEE2E2"; pill.style.color = "#991B1B";
                     dot.style.background = "#EF4444";
-                    showAlert({ title: 'Connection Failed', message: 'Could not connect to Tally. Ensure Tally is running on <strong>port 9000</strong>.', type: 'danger', icon: '❌' });
                     return;
                 }
 
@@ -641,25 +664,40 @@
                     if (m && m[1].trim()) { companyName = m[1].trim(); break; }
                 }
 
+                icon.classList.add("connected");
                 pill.style.background = "#DCFCE7"; pill.style.color = "#166534";
                 dot.style.background = "#166534";
 
+                const now = new Date().toLocaleString();
+                localStorage.setItem('tally_last_sync', now);
+
                 if (companyName) {
                     statusText.textContent = `Connected: ${companyName}`;
-                    showAlert({ title: 'Connected to Tally ✅', message: `Company: <strong>${companyName}</strong>`, type: 'success', icon: '✅' });
                 } else {
-                    statusText.textContent = "Connected (no company name)";
-                    showAlert({ title: 'Connected to Tally ✅', message: 'Connection successful but no company name was found. Make sure a company is loaded in Tally.', type: 'warning', icon: '✅' });
+                    statusText.textContent = "Connected";
                 }
             } catch (e) {
+                console.error("Tally check error:", e);
+                icon.classList.remove("connecting");
+                icon.classList.remove("connected");
                 statusText.textContent = "Not Connected";
                 pill.style.background = "#FEE2E2"; pill.style.color = "#991B1B";
                 dot.style.background = "#EF4444";
-                showAlert({ title: 'Bridge Not Running', message: 'The Tally Connector is not running. Ensure <strong>Tally is open</strong> and the <strong>Connector app</strong> is running.', type: 'danger', icon: '🔗' });
-            } finally {
-                btn.disabled = false;
             }
         }
+
+        function showLastSync() {
+            const lastSync = localStorage.getItem('tally_last_sync') || 'Never';
+            showAlert({ 
+                title: 'Tally Connection Status', 
+                message: `Last synchronized: <strong>${lastSync}</strong>`, 
+                type: 'info', 
+                icon: 'ℹ️' 
+            });
+        }
+
+        // Check connection on load
+        checkTallyConnection();
     </script>
 </body>
 

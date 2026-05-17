@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Client — Suvidha AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* ══ LAYOUT (From client-list.html) ══ */
+        .page-layout { display: flex; min-height: 100vh; padding-top: 64px; }
+        .page-sidebar { width: 240px; background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%); border-right: 1px solid #f0f1f3; position: fixed; top: 64px; bottom: 0; left: 0; display: flex; flex-direction: column; z-index: 90; overflow-y: auto; }
+        .page-main { margin-left: 240px; flex: 1; padding: 0 2rem 3rem; display: flex; flex-direction: column; background: #f4f6fb; }
+
+        /* ── Page Header — Hero Style ── */
+        .page-header { background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 60%, #2563eb 100%); margin: 0 -2rem; padding: 1.75rem 2rem 3rem; display: flex; align-items: center; justify-content: space-between; position: relative; overflow: hidden; }
+        .page-header::before { content: ''; position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 70%); border-radius: 50%; }
+        .page-header-left { display: flex; align-items: center; gap: 1.5rem; position: relative; z-index: 2; }
+        .back-btn { display: flex; align-items: center; gap: 0.4rem; padding: 0.4rem 0.85rem; border: 1px solid rgba(255,255,255,.2); border-radius: 8px; background: rgba(255,255,255,.08); color: rgba(255,255,255,.75); font-size: 0.78rem; font-weight: 600; cursor: pointer; text-decoration: none; transition: all .2s; font-family: inherit; backdrop-filter: blur(4px); }
+        .back-btn:hover { border-color: rgba(255,255,255,.4); color: #fff; background: rgba(255,255,255,.12) }
+        .back-btn svg { width: 14px; height: 14px }
+        .page-title { font-family: 'Outfit', sans-serif; font-size: 1.5rem; font-weight: 800; color: #fff; margin: 0; display: flex; align-items: center; gap: 0.6rem; }
+        .page-subtitle { font-size: 0.85rem; color: rgba(255,255,255,0.7); margin-top: 0.25rem; }
+
+        /* Form Card Style */
+        .form-card { max-width: 600px; width: 100%; background: #fff; border-radius: 12px; box-shadow: 0 4px 20px rgba(0, 0, 0, .05); display: flex; flex-direction: column; border: 1px solid #e8ecf1; overflow: hidden; margin: -1.5rem auto 0; position: relative; z-index: 5; }
+        
+        /* ── Step Indicator ── */
+        .step-indicator { display: flex; justify-content: space-between; padding: 1.5rem 2rem 1rem; background: #fafbfd; border-bottom: 1px solid #f1f5f9; }
+        .step-item { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; flex: 1; position: relative; }
+        .step-item::after { content: ''; position: absolute; top: 14px; left: 50%; width: 100%; height: 2px; background: #e2e8f0; z-index: 1; }
+        .step-item:last-child::after { display: none; }
+        .step-number { width: 30px; height: 30px; border-radius: 50%; background: #fff; border: 2px solid #e2e8f0; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 700; color: #94a3b8; z-index: 2; position: relative; transition: all 0.3s; }
+        .step-label { font-size: 0.72rem; font-weight: 600; color: #94a3b8; transition: all 0.3s; }
+        
+        .step-item.active .step-number { border-color: #2563eb; background: #2563eb; color: #fff; box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1); }
+        .step-item.active .step-label { color: #1e293b; }
+        .step-item.completed .step-number { border-color: #10b981; background: #10b981; color: #fff; }
+        .step-item.completed .step-label { color: #10b981; }
+        .step-item.completed::after { background: #10b981; }
+
+        .form-body { padding: 1.5rem; flex: 1; display: flex; flex-direction: column; gap: 1rem; }
+        
+        /* Step Content Visibility */
+        .step-content { display: none; }
+        .step-content.active { display: flex; flex-direction: column; gap: 1rem; }
+
+        .form-group { display: flex; flex-direction: column; gap: 0.35rem; }
+        .form-group label { font-size: 0.78rem; font-weight: 600; color: #374151; }
+        .form-group input, .form-group select { padding: 0.55rem 0.85rem; border: 1.5px solid #e5e7eb; border-radius: 9px; font-size: 0.82rem; font-family: inherit; color: #1e293b; transition: all .2s; }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,.08); }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; }
+        .gstin-input-row { display: flex; gap: 0.5rem; align-items: center }
+        .gstin-input-row input { flex: 1 }
+        .btn-verify-gstin { padding: 0.55rem 0.85rem; background: linear-gradient(135deg, #059669, #10b981); color: #fff; border: none; border-radius: 8px; font-size: 0.75rem; font-weight: 700; cursor: pointer; white-space: nowrap; font-family: inherit; transition: all .2s; letter-spacing: 0.02em; }
+        .btn-verify-gstin:hover { background: linear-gradient(135deg, #047857, #059669); box-shadow: 0 2px 8px rgba(5,150,105,.25) }
+        .btn-verify-gstin:disabled { opacity: .6; cursor: not-allowed }
+        .gstin-validation { margin-top: 0.4rem; font-size: 0.75rem; display: flex; flex-direction: column; gap: 0.3rem }
+        .gstin-tag { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.25rem 0.6rem; border-radius: 6px; font-size: 0.72rem; font-weight: 600 }
+        .gstin-tag.valid { background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0 }
+        .gstin-tag.invalid { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca }
+        .gstin-tag.checking { background: #eff6ff; color: #3b82f6; border: 1px solid #bfdbfe }
+        .gstin-tag .gstin-name { font-weight: 400; color: #6b7280; margin-left: 0.25rem }
+        
+        .form-footer { padding: 1rem 1.5rem; border-top: 1px solid #f1f5f9; display: flex; gap: 0.75rem; justify-content: flex-end; background: #fafbfd; }
+        .form-footer .btn-cancel, .form-footer .btn-back { padding: 0.55rem 1.1rem; border: 1px solid #e5e7eb; background: #fff; color: #374151; border-radius: 8px; font-size: 0.82rem; font-weight: 600; cursor: pointer; font-family: inherit; transition: all .15s; text-decoration: none; display: inline-flex; align-items: center; }
+        .form-footer .btn-cancel:hover, .form-footer .btn-back:hover { border-color: #9ca3af; background: #f9fafb }
+        .form-footer .btn-submit, .form-footer .btn-next { padding: 0.55rem 1.4rem; background: linear-gradient(135deg, #1e3a8a, #2563eb); color: #fff; border: none; border-radius: 8px; font-size: 0.82rem; font-weight: 700; cursor: pointer; font-family: inherit; transition: all .2s; box-shadow: 0 2px 8px rgba(30,58,138,.15); }
+        .form-footer .btn-submit:hover, .form-footer .btn-next:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(30,58,138,.2) }
+        .form-footer .btn-submit:disabled, .form-footer .btn-next:disabled { opacity: .6; cursor: not-allowed }
+
+        @media(max-width:768px) {
+            .page-sidebar { display: none }
+            .page-main { margin-left: 0 }
+            .form-card { width: 100%; margin-top: 1rem; }
+            .page-header { margin: 0; padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Shared App Topbar -->
+    <div id="app-topbar" data-active="dashboard"></div>
+    <script src="app-topbar.js"></script>
+
+    <div class="page-layout">
+        <!-- ══ LEFT SIDEBAR ══ -->
+        <aside class="page-sidebar">
+            <div id="app-sidebar-main" data-active="clients"></div>
+            <script src="app-sidebar.js"></script>
+        </aside>
+
+        <!-- ══ MAIN CONTENT ══ -->
+        <main class="page-main">
+            <!-- Page Header -->
+            <div class="page-header">
+                <div class="page-header-left">
+                    <a href="client-list.html" class="back-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m15 18-6-6 6-6"/></svg>
+                        Back
+                    </a>
+                    <div>
+                        <h1 class="page-title">👥 Onboard New Client</h1>
+                        <p class="page-subtitle">Complete the steps to create a new client profile.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-card">
+                <!-- Step Indicator -->
+                <div class="step-indicator">
+                    <div class="step-item active" id="step-1-indicator">
+                        <div class="step-number">1</div>
+                        <div class="step-label">Basic Info</div>
+                    </div>
+                    <div class="step-item" id="step-2-indicator">
+                        <div class="step-number">2</div>
+                        <div class="step-label">Tax Details</div>
+                    </div>
+                    <div class="step-item" id="step-3-indicator">
+                        <div class="step-number">3</div>
+                        <div class="step-label">Integrations</div>
+                    </div>
+                </div>
+
+                <form id="add-client-form" onsubmit="handleAddClient(event)">
+                    <div class="form-body">
+                        <!-- ══ STEP 1: Basic Info ══ -->
+                        <div class="step-content active" id="step-1-content">
+                            <div class="form-group">
+                                <label>Legal Entity Name *</label>
+                                <input type="text" id="client-name" required placeholder="e.g. Acme Solutions Pvt Ltd">
+                            </div>
+                            <div class="form-group">
+                                <label>Primary Contact Email *</label>
+                                <input type="email" id="client-email" required placeholder="e.g. director@acmesolutions.com">
+                            </div>
+                            <div class="form-group">
+                                <label>Phone / WhatsApp</label>
+                                <input type="tel" id="client-phone" placeholder="+91 98765 43210">
+                            </div>
+                            <div class="form-group">
+                                <label>Business Type</label>
+                                <select id="client-type">
+                                    <option value="">Select type…</option>
+                                    <option value="pvt_ltd">Private Limited</option>
+                                    <option value="llp">LLP</option>
+                                    <option value="proprietorship">Proprietorship</option>
+                                    <option value="partnership">Partnership</option>
+                                    <option value="public_ltd">Public Limited</option>
+                                    <option value="trust">Trust / NGO</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- ══ STEP 2: Tax Details ══ -->
+                        <div class="step-content" id="step-2-content">
+                            <div class="form-group">
+                                <label>GSTINs (Comma separated)</label>
+                                <div class="gstin-input-row">
+                                    <input type="text" id="client-gstins" placeholder="e.g. 27AAAAA0000A1Z5">
+                                    <button type="button" class="btn-verify-gstin" onclick="validateGSTINsField()">🔍 Verify</button>
+                                </div>
+                                <div class="gstin-validation" id="gstin-validation"></div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>PAN</label>
+                                    <input type="text" id="client-pan" maxlength="10" placeholder="ABCDE1234F" style="text-transform:uppercase">
+                                </div>
+                                <div class="form-group">
+                                    <label>CIN</label>
+                                    <input type="text" id="client-cin" placeholder="L12345KA2024PLC…">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>TAN No.</label>
+                                    <input type="text" id="client-tan" placeholder="MUMW12345A">
+                                </div>
+                                <div class="form-group">
+                                    <label>IEC No.</label>
+                                    <input type="text" id="client-iec" placeholder="0123456789">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ══ STEP 3: Integrations ══ -->
+                        <div class="step-content" id="step-3-content">
+                            <div class="form-group">
+                                <label>Tally Integration Guide</label>
+                                <ul style="font-size:0.78rem; color:#4b5563; margin:0.25rem 0 0.75rem 1.25rem; line-height:1.4; list-style-type: disc;">
+                                    <li>Download and install the Suvidha AI Tally Connector on your PC.</li>
+                                    <li>Open Tally and ensure the target company is loaded.</li>
+                                    <li>Click the <strong>Connect</strong> button below to automatically link the company.</li>
+                                </ul>
+                                <button type="button" class="btn-verify-gstin" style="width:fit-content; background:#10b981; margin-bottom:0.5rem;" onclick="window.location.href='assets/downloads/ComplianceAI-Connector-setup.exe'">📥 Download Connector</button>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Connect to Tally</label>
+                                <div class="gstin-input-row">
+                                    <input type="text" id="tally-company" placeholder="Not connected" readonly style="background: #f1f5f9; cursor: not-allowed;">
+                                    <button type="button" class="btn-verify-gstin" style="background: #2563eb;" id="btn-tally-connect" onclick="connectTally()">🔗 Connect</button>
+                                </div>
+                                <div class="gstin-validation" id="tally-validation"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Form Footer -->
+                    <div class="form-footer">
+                        <a href="client-list.html" class="btn-cancel" id="btn-cancel">Cancel</a>
+                        <button type="button" class="btn-back" id="btn-back" style="display:none;" onclick="prevStep()">Back</button>
+                        <button type="button" class="btn-next" id="btn-next" onclick="nextStep()">Next</button>
+                        <button type="submit" class="btn-submit" id="btn-submit" style="display:none;">Create Client Profile</button>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <script src="api_config.js"></script>
+    <script src="session-manager.js"></script>
+    <script src="app-toast.js"></script>
+    <script>
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (!user) window.location.href = 'index.html';
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const clientId = urlParams.get('clientId');
+        let isEdit = !!clientId;
+
+        if (isEdit) {
+            document.title = "Edit Client — Suvidha AI";
+            setTimeout(() => {
+                const titleEl = document.querySelector('.page-title');
+                const subtitleEl = document.querySelector('.page-subtitle');
+                const submitBtn = document.getElementById('btn-submit');
+                if (titleEl) titleEl.innerHTML = "👥 Edit Client";
+                if (subtitleEl) subtitleEl.innerHTML = "Modify the client details.";
+                if (submitBtn) submitBtn.textContent = "Save Changes";
+                loadClientData(clientId);
+            }, 100);
+        }
+
+        async function loadClientData(id) {
+            try {
+                const res = await authFetch('/clients/' + id);
+                if (!res.ok) throw new Error('Failed to load client data');
+                const data = await res.json();
+                document.getElementById('client-name').value = data.name || '';
+                document.getElementById('client-email').value = data.email || '';
+                document.getElementById('client-phone').value = data.phone || '';
+                document.getElementById('client-type').value = data.business_type || '';
+                document.getElementById('client-gstins').value = data.gstins ? data.gstins.join(', ') : '';
+                document.getElementById('client-pan').value = data.pan || '';
+                document.getElementById('client-cin').value = data.cin || '';
+                document.getElementById('client-tan').value = data.tan || '';
+                document.getElementById('client-iec').value = data.iec || '';
+                if (data.tally_company) {
+                    document.getElementById('tally-company').value = data.tally_company;
+                    connectedTallyCompany = data.tally_company;
+                    const valEl = document.getElementById('tally-validation');
+                    if (valEl) valEl.innerHTML = `<span class="gstin-tag valid">✅ Connected to Tally — ${data.tally_company}</span>`;
+                }
+            } catch (e) {
+                showToast('Error loading client data', 'error');
+            }
+        }
+
+        let currentStep = 1;
+        const totalSteps = 3;
+
+        function updateStepUI() {
+            for (let i = 1; i <= totalSteps; i++) {
+                const indicator = document.getElementById(`step-${i}-indicator`);
+                const content = document.getElementById(`step-${i}-content`);
+                
+                if (i < currentStep) {
+                    indicator.className = 'step-item completed';
+                    content.className = 'step-content';
+                } else if (i === currentStep) {
+                    indicator.className = 'step-item active';
+                    content.className = 'step-content active';
+                } else {
+                    indicator.className = 'step-item';
+                    content.className = 'step-content';
+                }
+            }
+
+            // Update Buttons
+            const btnCancel = document.getElementById('btn-cancel');
+            const btnBack = document.getElementById('btn-back');
+            const btnNext = document.getElementById('btn-next');
+            const btnSubmit = document.getElementById('btn-submit');
+
+            if (currentStep === 1) {
+                btnCancel.style.display = 'inline-flex';
+                btnBack.style.display = 'none';
+                btnNext.style.display = 'inline-flex';
+                btnSubmit.style.display = 'none';
+            } else if (currentStep === totalSteps) {
+                btnCancel.style.display = 'none';
+                btnBack.style.display = 'inline-flex';
+                btnNext.style.display = 'none';
+                btnSubmit.style.display = 'inline-flex';
+            } else {
+                btnCancel.style.display = 'none';
+                btnBack.style.display = 'inline-flex';
+                btnNext.style.display = 'inline-flex';
+                btnSubmit.style.display = 'none';
+            }
+        }
+
+        function nextStep() {
+            if (currentStep === 1) {
+                // Validate Step 1
+                const name = document.getElementById('client-name').value.trim();
+                const email = document.getElementById('client-email').value.trim();
+                if (!name || !email) {
+                    showToast('Please fill in all required fields.', 'warning');
+                    return;
+                }
+            }
+            if (currentStep < totalSteps) {
+                currentStep++;
+                updateStepUI();
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                updateStepUI();
+            }
+        }
+
+        let gstinValidationResults = {};
+        function isValidGSTINFormat(g) { return /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[0-9A-Z]{1}Z[0-9A-Z]{1}$/.test(g); }
+        
+        async function validateGSTINsField() {
+            const raw = document.getElementById('client-gstins').value.trim();
+            const ct = document.getElementById('gstin-validation');
+            if (!raw) { ct.innerHTML = ''; gstinValidationResults = {}; return; }
+            const gstins = raw.split(',').map(g => g.trim().toUpperCase()).filter(Boolean);
+            ct.innerHTML = gstins.map(g => `<span class="gstin-tag checking" data-gstin="${g}">⏳ ${g} — verifying...</span>`).join('');
+            const token = localStorage.getItem('access_token');
+            gstinValidationResults = {};
+            
+            for (const gstin of gstins) {
+                const tag = ct.querySelector(`[data-gstin="${gstin}"]`);
+                if (!isValidGSTINFormat(gstin)) {
+                    gstinValidationResults[gstin] = { valid: false, name: 'Invalid GSTIN format' };
+                    const msg = gstin.length !== 15 ? `Must be exactly 15 characters (entered ${gstin.length})` : 'Invalid pattern — expected format: 22AAAAA0000A1Z5';
+                    if (tag) { tag.className = 'gstin-tag invalid'; tag.innerHTML = `❌ ${gstin} <span class="gstin-name">— ${msg}</span>`; }
+                    continue;
+                }
+                try {
+                    const res = await fetch(`${API_BASE_URL}/tools/gstin-validate?gstin=${gstin}`, { headers: { 'Authorization': `Bearer ${token}` } });
+                    const data = await res.json();
+                    if (res.ok && data.status === 'Active') {
+                        gstinValidationResults[gstin] = { valid: true, name: data.legal_name || data.trade_name || '' };
+                        if (tag) { tag.className = 'gstin-tag valid'; tag.innerHTML = `✅ ${gstin} <span class="gstin-name">— ${data.legal_name || data.trade_name || 'Active'}</span>`; }
+                    } else if (res.ok && data.status) {
+                        gstinValidationResults[gstin] = { valid: false, name: `Status: ${data.status}` };
+                        if (tag) { tag.className = 'gstin-tag invalid'; tag.innerHTML = `⚠️ ${gstin} <span class="gstin-name">— ${data.status}</span>`; }
+                    } else {
+                        gstinValidationResults[gstin] = { valid: false, name: data.detail || 'Not found on GST Portal' };
+                        if (tag) { tag.className = 'gstin-tag invalid'; tag.innerHTML = `❌ ${gstin} <span class="gstin-name">— ${data.detail || 'Not found'}</span>`; }
+                    }
+                } catch (e) {
+                    gstinValidationResults[gstin] = { valid: false, name: 'Verification failed' };
+                    if (tag) { tag.className = 'gstin-tag invalid'; tag.innerHTML = `⚠️ ${gstin} <span class="gstin-name">— Network error</span>`; }
+                }
+            }
+        }
+
+        let connectedTallyCompany = null;
+
+        async function connectTally() {
+            const btn = document.getElementById('btn-tally-connect');
+            const ct = document.getElementById('tally-validation');
+            const field = document.getElementById('tally-company');
+            
+            btn.disabled = true;
+            btn.textContent = '⏳ Connecting…';
+            ct.innerHTML = '<span class="gstin-tag checking">⏳ Attempting to connect to Tally...</span>';
+            
+            try {
+                const res = await fetch("http://127.0.0.1:9000/tally", {
+                    method: "POST",
+                    headers: { "Content-Type": "text/xml" },
+                    body: `<ENVELOPE>
+                    <HEADER>
+                        <VERSION>1</VERSION>
+                        <TALLYREQUEST>Export Data</TALLYREQUEST>
+                        <TYPE>Data</TYPE>
+                        <ID>List of Companies</ID>
+                    </HEADER>
+                    <BODY><DESC /></BODY>
+                    </ENVELOPE>`,
+                });
+
+                const text = await res.text();
+                const connected = res.ok && /<ENVELOPE[\s>]/i.test(text);
+                if (!connected) {
+                    ct.innerHTML = '<span class="gstin-tag invalid">❌ Connection Failed. Ensure Tally is running on port 9000.</span>';
+                    field.value = 'Not connected';
+                    connectedTallyCompany = null;
+                    return;
+                }
+
+                const tags = ["COMPANYNAME", "CMPNAME", "NAME"];
+                let companyName = null;
+                for (const t of tags) {
+                    const m = text.match(new RegExp(`<${t}>([\\s\\S]*?)<\\/${t}>`, "i"));
+                    if (m && m[1].trim()) { companyName = m[1].trim(); break; }
+                }
+
+                if (companyName) {
+                    ct.innerHTML = `<span class="gstin-tag valid">✅ Connected to Tally — ${companyName}</span>`;
+                    field.value = companyName;
+                    connectedTallyCompany = companyName;
+                    showToast('✅ Connected to Tally successfully!', 'success');
+                } else {
+                    ct.innerHTML = '<span class="gstin-tag valid">✅ Connected to Tally (No company loaded)</span>';
+                    field.value = 'Connected (No company)';
+                    connectedTallyCompany = null;
+                    showToast('⚠️ Connected to Tally, but no company is loaded.', 'warning');
+                }
+            } catch (e) {
+                ct.innerHTML = '<span class="gstin-tag invalid">🔗 Bridge Not Running. Ensure Tally is open and the Connector app is running.</span>';
+                field.value = 'Not connected';
+                connectedTallyCompany = null;
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '🔗 Connect';
+            }
+        }
+
+        async function handleAddClient(event) {
+            event.preventDefault(); 
+            const btn = document.getElementById('btn-submit');
+            const gstinsStr = document.getElementById('client-gstins').value.trim();
+            
+            if (gstinsStr) {
+                const gstins = gstinsStr.split(',').map(g => g.trim().toUpperCase()).filter(Boolean);
+                if (gstins.some(g => !(g in gstinValidationResults))) await validateGSTINsField();
+                const invalid = gstins.filter(g => gstinValidationResults[g] && !gstinValidationResults[g].valid);
+                if (invalid.length > 0) {
+                    showToast(`Cannot save: ${invalid.length} GSTIN(s) failed validation.`, 'error', 6000);
+                    return;
+                }
+            }
+            
+            btn.disabled = true; 
+            btn.textContent = isEdit ? 'Saving…' : 'Creating…';
+            
+            const name = document.getElementById('client-name').value; 
+            const email = document.getElementById('client-email').value;
+            const gstins = gstinsStr ? gstinsStr.split(',').map(g => g.trim()).filter(g => g) : [];
+            const pan = document.getElementById('client-pan').value; 
+            const cin = document.getElementById('client-cin').value;
+            const tan = document.getElementById('client-tan').value; 
+            const iec = document.getElementById('client-iec').value;
+            const phone = document.getElementById('client-phone') ? document.getElementById('client-phone').value : null;
+            const business_type = document.getElementById('client-type') ? document.getElementById('client-type').value : null;
+            
+            try {
+                const method = isEdit ? 'PUT' : 'POST';
+                const url = isEdit ? `/clients/${clientId}` : '/clients/';
+                const r = await authFetch(url, { 
+                    method: method, 
+                    body: JSON.stringify({ name, email, gstins, pan, cin, tan, iec, phone, business_type, tally_company: connectedTallyCompany }) 
+                });
+                
+                if (r.ok) { 
+                    let newClientId = null;
+                    try {
+                        const data = await r.json();
+                        newClientId = data.id;
+                    } catch(e) {}
+                    
+                    showToast(isEdit ? 'Client updated successfully!' : 'Client created successfully!', 'success');
+                    
+                    const redirect = urlParams.get('redirect');
+                    let targetUrl = redirect || 'client-list.html';
+                    
+                    if (redirect && newClientId) {
+                        try {
+                            const url = new URL(redirect, window.location.origin);
+                            url.searchParams.set('clientId', newClientId);
+                            targetUrl = url.pathname + url.search;
+                        } catch(e) {
+                            // If redirect is just a filename like 'service.html'
+                            targetUrl = redirect + (redirect.includes('?') ? '&' : '?') + 'clientId=' + newClientId;
+                        }
+                    }
+                    
+                    setTimeout(() => { window.location.href = targetUrl; }, 1000);
+                } else {
+                    const e = await r.json();
+                    showToast('Error: ' + (typeof e.detail === 'string' ? e.detail : JSON.stringify(e.detail)), 'error', 6000);
+                }
+            } catch (e) { 
+                showToast('Connection error. Please try again.', 'error');
+            } finally { 
+                btn.disabled = false; 
+                btn.textContent = 'Create Client Profile';
+            }
+        }
+    </script>
+</body>
+</html>

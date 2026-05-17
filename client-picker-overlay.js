@@ -213,7 +213,7 @@ function initClientPicker(options = {}) {
         </div>
 
         <div style="text-align:center">
-            <a href="clients.html" class="cp-back">
+            <a href="Home.html" class="cp-back">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
                 </svg>
@@ -261,7 +261,7 @@ function initClientPicker(options = {}) {
                 <div class="cp-empty" style="grid-column:1/-1">
                     <div class="cp-empty-icon">👥</div>
                     <h3>No clients found</h3>
-                    <p>Add clients from the <a href="clients.html" style="color:#6366f1">Clients page</a> first.</p>
+                    <p>Add clients from the <a href="Home.html" style="color:#6366f1">Clients page</a> first.</p>
                 </div>`;
             return;
         }

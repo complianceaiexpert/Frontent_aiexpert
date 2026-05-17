@@ -110,12 +110,16 @@
 
         /* Hero — matches index.html dark scheme */
         .hiw-hero {
-            padding: 8rem 2rem 4rem;
-            text-align: center;
+            padding: 4rem 2rem 2rem;
+            text-align: left;
             background: #07080d;
             position: relative;
             overflow: hidden;
             color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center;
         }
         /* Radial gradient mesh */
         .hiw-hero::before {
@@ -174,7 +178,7 @@
             font-size: 1.05rem;
             color: rgba(255,255,255,.6);
             max-width: 680px;
-            margin: 0 auto 1.5rem;
+            margin: 0 0 1.5rem;
             line-height: 1.65;
             position: relative; z-index: 1;
         }
@@ -739,35 +743,15 @@
 
 <body>
     <!-- Nav -->
-    <nav class="navbar">
-        <div class="navbar-container">
-            <a href="index.html" class="logo" style="text-decoration:none">
-                <div class="logo-icon">SA</div>
-                <span style="font-weight:700;font-size:1.15rem;color:var(--primary-blue)">Suvidha<span
-                        style="color:var(--primary-orange)">AI</span></span>
-            </a>
-            <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="features.html">Features</a></li>
-                <li><a href="how-it-works.html" style="color:var(--primary-blue);font-weight:600">How It Works</a></li>
-                <li><a href="pricing.html">Pricing</a></li>
-                <li><a href="sign-in.html" class="btn btn-primary btn-small">Sign In</a></li>
-            </ul>
-        </div>
-    </nav>
+    <script src="site-topbar.js?v=2"></script>
 
     <!-- Hero -->
     <section class="hiw-hero">
-        <div class="hiw-hero-tag">⚡ AI-Powered Compliance Automation</div>
-        <h1>How <span>Suvidha AI</span> Works</h1>
-        <p>The most advanced agentic AI platform for Chartered Accountants, tax professionals, and lawyers in India.
-            Automate GST, income tax, audit, certificates, and more — in minutes, not hours.</p>
-        <div class="hiw-hero-badges">
-            <div class="hiw-hero-badge">🏛️ Built for CAs</div>
-            <div class="hiw-hero-badge">⚖️ Lawyers & Legal</div>
-            <div class="hiw-hero-badge">📊 Tax Professionals</div>
-            <div class="hiw-hero-badge">🏢 CA Firms</div>
-            <div class="hiw-hero-badge">🇮🇳 Made for India</div>
+        <div class="container">
+            <div class="hiw-hero-tag">⚡ AI-Powered Compliance Automation</div>
+            <h1>How <span>Suvidha AI</span> Works</h1>
+            <p>The most advanced agentic AI platform for Chartered Accountants, tax professionals, and lawyers in India.
+                Automate GST, income tax, audit, certificates, and more — in minutes, not hours.</p>
         </div>
     </section>
 

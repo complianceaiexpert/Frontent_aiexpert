@@ -10,6 +10,47 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .demo-banner {
+            background: linear-gradient(135deg, #fef08a 0%, #fde047 100%);
+            border: 1px solid #facc15;
+            border-radius: 12px;
+            padding: 0.75rem 1.25rem;
+            margin: 1rem 1.5rem 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            animation: slideDown 0.3s ease-out;
+        }
+        .demo-banner span {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #713f12;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .demo-banner .btn-select-client {
+            background: #1e293b;
+            color: #ffffff;
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .demo-banner .btn-select-client:hover {
+            background: #0f172a;
+            transform: translateY(-1px);
+        }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
 </head>
 <body>
     <div id="app-topbar" data-active="dashboard"></div>
@@ -31,11 +72,6 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
                     Dashboard
                 </div>
-                <div class="sb-item" onclick="fiNav('statements',this)">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                    Upload Statements
-                    <span class="sb-badge">AI</span>
-                </div>
                 <div class="sb-item" onclick="fiNav('stock-register',this)">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
                     Holdings
@@ -44,14 +80,19 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
                     Capital Gains
                 </div>
+                <div class="sb-item" onclick="fiNav('statements',this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                    Upload Statements
+                    <span class="sb-badge">AI</span>
+                </div>
                 <div class="sb-item" onclick="fiNav('pending',this)">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-                    Review Entries
+                    Write to Tally
                     <span class="sb-badge" id="fi-sb-pending-count" style="display:none">0</span>
                 </div>
                 <div class="sb-item" onclick="fiNav('journal-entries',this)">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
-                    Tally Entries
+                    FI Data
                 </div>
             </div>
         </aside>
@@ -59,36 +100,79 @@
         <!-- ══ MAIN ══ -->
         <main class="fi-main">
 
+            <!-- Demo Mode Nudge Banner -->
+            <div id="demo-nudge-banner" class="demo-banner" style="display:none;">
+                <span>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                    You are viewing the dashboard in Preview Mode. Select a client to see actual numbers.
+                </span>
+                <button class="btn-select-client" onclick="window.location.href='service-financial-instruments-overview.html'">Select Client</button>
+            </div>
+
             <!-- ━━━ DASHBOARD ━━━ -->
             <div class="fi-section active" id="sec-dashboard">
-                <!-- FY Period Picker -->
-                <div style="display:flex;align-items:center;justify-content:flex-end;margin-bottom:.75rem">
+                <!-- FY Period Picker + Download -->
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;gap:.75rem">
                     <div id="fi-period-container" style="min-width:200px"></div>
-                </div>
-                <!-- Row 1: AUM + Capital Gains + Tally Pipeline -->
-                <div class="fi-dash-grid-3" id="fi-row-overview">
-                    <!-- AUM Overview -->
-                    <div class="fi-dash-card fi-aum-card">
-                        <div class="fi-dc-header"><span class="fi-dc-label">PORTFOLIO OVERVIEW</span><span class="fi-dc-ay" id="fi-ay">—</span></div>
-                        <div class="fi-aum-main">
-                            <div class="fi-aum-val" id="fi-stat-total-amt">₹ 0</div>
-                            <div class="fi-aum-sublabel">Assets Under Management</div>
-                        </div>
-                        <div class="fi-aum-row">
-                            <div class="fi-aum-item"><div class="fi-aum-dot" style="background:#6366f1"></div><div><div class="fi-aum-item-val" id="fi-stat-uploads">0</div><div class="fi-aum-item-label">Statements</div></div></div>
-                            <div class="fi-aum-item"><div class="fi-aum-dot" style="background:#8b5cf6"></div><div><div class="fi-aum-item-val" id="fi-stat-vouchers">0</div><div class="fi-aum-item-label">Vouchers</div></div></div>
-                            <div class="fi-aum-item"><div class="fi-aum-dot" style="background:#d97706"></div><div><div class="fi-aum-item-val" id="fi-stat-pending">0</div><div class="fi-aum-item-label">Pending</div></div></div>
-                            <div class="fi-aum-item"><div class="fi-aum-dot" style="background:#059669"></div><div><div class="fi-aum-item-val" id="fi-stat-synced">0</div><div class="fi-aum-item-label">Synced</div></div></div>
-                        </div>
-                        <button class="fi-hero-btn" style="width:100%;justify-content:center;margin-top:.75rem" onclick="fiNav('statements',document.querySelector('[onclick*=statements]'))">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                            Upload New Statement
+                    
+                    <!-- Nudge to upload Tally data -->
+                    <div id="fi-tally-nudge" style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border: 1px solid #bfdbfe; border-radius: 8px; padding: 0.4rem 0.75rem; display: flex; align-items: center; gap: 0.5rem; font-size: 0.7rem; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-left: auto; margin-right: auto;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                        <span style="color: #1e3a8a; font-weight: 600;">Download connector to upload Tally Data</span>
+                        <span id="fi-last-sync-status" style="font-size: 0.65rem; color: #64748b; margin-left: auto;">(Last sync: checking...)</span>
+                        <button class="fi-btn" style="background: #2563eb; color: white; border: none; font-size: 0.65rem; padding: 0.2rem 0.5rem; height: auto;" onclick="window.location.href='http://localhost:3000/integrations.html'">Connect Tally Data</button>
+                    </div>
+
+                    <div style="display:flex;gap:.4rem;align-items:center">
+                        <button class="fi-btn" style="font-size:.65rem;padding:.3rem .6rem;display:flex;align-items:center;gap:.3rem" onclick="downloadFIDashboard('excel')" title="Download Dashboard as Excel">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                            Excel
                         </button>
+                        <button class="fi-btn" style="font-size:.65rem;padding:.3rem .6rem;display:flex;align-items:center;gap:.3rem" onclick="downloadFIDashboard('pdf')" title="Download Dashboard as PDF">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                            PDF
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Row 1: AUM + Capital Gains -->
+                <div class="fi-dash-grid-2" id="fi-row-overview">
+                    <!-- AUM Overview -->
+                    <div class="fi-dash-card" style="background: #0f172a; color: #ffffff;">
+                        <div class="fi-dc-header"><span class="fi-dc-label" style="color: #94a3b8;">PORTFOLIO OVERVIEW</span><span class="fi-dc-ay" id="fi-ay" style="color: #64748b;">—</span></div>
+                        <div class="fi-aum-main">
+                            <div class="fi-aum-val" id="fi-stat-total-amt" style="color: #ffffff;">₹ 0</div>
+                            <div class="fi-aum-sublabel" style="color: #94a3b8;">Total Current Value (AUM)</div>
+                        </div>
+                        <div class="fi-aum-row" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; margin-top: 0.75rem;">
+                            <div style="background: rgba(255, 255, 255, 0.05); padding: 0.4rem 0.5rem; border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.1);">
+                                <div style="font-size: 0.6rem; color: #94a3b8; text-transform: uppercase;">Amount Invested</div>
+                                <div style="font-size: 0.8rem; font-weight: 600; color: #ffffff;" id="fi-stat-total-cost">₹ 0</div>
+                            </div>
+                            <div style="background: rgba(255, 255, 255, 0.05); padding: 0.4rem 0.5rem; border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.1);">
+                                <div style="font-size: 0.6rem; color: #94a3b8; text-transform: uppercase;">Unrealized Gain</div>
+                                <div style="font-size: 0.8rem; font-weight: 600; color: #4ade80;" id="fi-stat-unrealized">₹ 0</div>
+                            </div>
+                            <div style="background: rgba(255, 255, 255, 0.05); padding: 0.4rem 0.5rem; border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.1);">
+                                <div style="font-size: 0.6rem; color: #94a3b8; text-transform: uppercase;">Realized Gain (FY)</div>
+                                <div style="font-size: 0.8rem; font-weight: 600; color: #4ade80;" id="fi-stat-realized">₹ 0</div>
+                            </div>
+                            <div style="background: rgba(255, 255, 255, 0.05); padding: 0.4rem 0.5rem; border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.1);">
+                                <div style="font-size: 0.6rem; color: #94a3b8; text-transform: uppercase;">Yield / ROI</div>
+                                <div style="font-size: 0.8rem; font-weight: 600; color: #60a5fa;" id="fi-stat-roi">0%</div>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Capital Gains Tracker -->
                     <div class="fi-dash-card">
-                        <div class="fi-dc-header"><span class="fi-dc-label">CAPITAL GAINS TRACKER</span><span class="fi-dc-ay" id="fi-fy-cg">—</span></div>
+                        <div class="fi-dc-header" style="cursor:pointer;" onclick="fiNav('capital-gains')" title="Go to Capital Gains Report">
+                            <span class="fi-dc-label" style="font-size: 0.9rem; font-weight: 700; display: flex; align-items: center; gap: 0.35rem; color: #1e293b;">
+                                CAPITAL GAINS TRACKER
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                            </span>
+                            <span class="fi-dc-ay" id="fi-fy-cg">—</span>
+                        </div>
                         <div class="fi-cg-grid">
                             <div class="fi-cg-item" id="fi-cg-spec-row" style="display:none">
                                 <div class="fi-cg-val orange" id="fi-cg-spec">₹ 0</div>
@@ -119,34 +203,6 @@
                             <span class="fi-cg-tax" id="fi-cg-tax-stcg">₹ 0</span>
                             <span style="margin-left:.75rem">Tax @ 12.5% LTCG</span>
                             <span class="fi-cg-tax" id="fi-cg-tax-ltcg">₹ 0</span>
-                        </div>
-                    </div>
-
-                    <!-- Tally Sync Pipeline -->
-                    <div class="fi-dash-card">
-                        <div class="fi-dc-header"><span class="fi-dc-label">TALLY SYNC PIPELINE</span><span id="fi-dash-status" class="fi-dc-live">● Live</span></div>
-                        <div class="fi-pipe-list">
-                            <div class="fi-pipe-item">
-                                <div class="fi-pipe-dot draft"></div>
-                                <div class="fi-pipe-info"><div class="fi-pipe-label">Draft</div><div class="fi-pipe-desc">Awaiting review</div></div>
-                                <div class="fi-pipe-num" id="fi-pipe-draft">0</div>
-                            </div>
-                            <div class="fi-pipe-line"></div>
-                            <div class="fi-pipe-item">
-                                <div class="fi-pipe-dot approved"></div>
-                                <div class="fi-pipe-info"><div class="fi-pipe-label">Approved</div><div class="fi-pipe-desc">Ready to sync</div></div>
-                                <div class="fi-pipe-num" id="fi-pipe-approved">0</div>
-                            </div>
-                            <div class="fi-pipe-line"></div>
-                            <div class="fi-pipe-item">
-                                <div class="fi-pipe-dot synced"></div>
-                                <div class="fi-pipe-info"><div class="fi-pipe-label">Synced to Tally</div><div class="fi-pipe-desc">In company books</div></div>
-                                <div class="fi-pipe-num" id="fi-pipe-synced">0</div>
-                            </div>
-                        </div>
-                        <div style="display:flex;gap:.5rem;margin-top:.75rem">
-                            <button class="fi-btn success" style="flex:1;justify-content:center" onclick="fiNav('pending',document.querySelector('[onclick*=pending]'))">Review Pending</button>
-                            <button class="fi-btn tally" style="flex:1;justify-content:center" onclick="syncAllPending()">↻ Sync All</button>
                         </div>
                     </div>
                 </div>
@@ -523,7 +579,7 @@
 
             <!-- ━━━ STATEMENTS (Tabbed: Demat / MF / PMS) ━━━ -->
             <div class="fi-section" id="sec-statements">
-                <div class="fi-sh"><h1>Statements</h1><p>Upload Demat, MF, or PMS statements — AI reads, parses, and generates Tally entries</p></div>
+                <div class="fi-sh"><h1>Statements</h1><p>Now you can upload long bank or investment related files — our AI reads, parses, and automatically generates Tally entries</p></div>
 
                 <!-- ── 3 Tab Cards ── -->
                 <div class="fi-stmt-tabs" style="display:flex;gap:.75rem;margin-bottom:0">
@@ -661,8 +717,21 @@
 
             <!-- ━━━ STOCK REGISTER ━━━ -->
             <div class="fi-section" id="sec-stock-register">
-                <div class="fi-sh"><h1>Stock Register</h1><p>Unified holdings across Demat, PMS & Mutual Funds</p></div>
-                <div class="fi-filter-bar">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;gap:.75rem">
+                    <div class="fi-sh" style="margin-bottom:0"><h1 style="margin:0">Stock Register</h1><p style="margin:0">Unified holdings across Demat, PMS & Mutual Funds</p></div>
+                    <div style="display:flex;gap:.4rem;align-items:center;flex-shrink:0">
+                        <button class="fi-btn" style="font-size:.65rem;padding:.3rem .6rem;display:flex;align-items:center;gap:.3rem" onclick="downloadStockRegister('excel')" title="Download Holdings as Excel">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                            Excel
+                        </button>
+                        <button class="fi-btn" style="font-size:.65rem;padding:.3rem .6rem;display:flex;align-items:center;gap:.3rem" onclick="downloadStockRegister('pdf')" title="Download Holdings as PDF">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                            PDF
+                        </button>
+                    </div>
+                </div>
+                <div class="fi-filter-bar" style="display:flex;align-items:center;gap:.75rem">
+                    <div id="fi-sr-period-container" style="min-width:180px"></div>
                     <div class="fi-pill-group">
                         <button class="fi-pill active" data-sr-source="all" onclick="setSRSource('all')">All</button>
                         <button class="fi-pill" data-sr-source="demat" onclick="setSRSource('demat')"><span class="fi-pill-dot" style="background:#4338ca"></span>Demat</button>
@@ -671,15 +740,11 @@
                     </div>
                     <select class="fi-form-select fi-inline-select" id="fi-sr-pms-select" onchange="loadStockRegister()" style="display:none"><option value="">— PMS Account —</option></select>
                     <div style="flex:1"></div>
-                    <div class="fi-pill-group">
-                        <button class="fi-pill fi-pill-s" data-fy="2024" onclick="setFY(2024)">FY 24-25</button>
-                        <button class="fi-pill fi-pill-s active" data-fy="2025" onclick="setFY(2025)">FY 25-26</button>
-                        <button class="fi-pill fi-pill-s" data-fy="all" onclick="setFY('all')">All</button>
-                    </div>
+
                     <button class="fi-btn" onclick="recomputeFIFO()" id="fi-sr-fifo-btn" style="display:none;font-size:.68rem;padding:.25rem .6rem">🔄 FIFO</button>
                     <button class="fi-btn" onclick="showOpeningBalanceModal()" id="fi-sr-ob-btn" style="display:none;font-size:.68rem;padding:.25rem .6rem;border-color:#6366f1;color:#6366f1">📋 Opening Balance</button>
                 </div>
-                <select id="fi-sr-source-select" style="display:none"><option value="all">All</option><option value="demat">Demat</option><option value="pms">PMS</option><option value="mf">MF</option></select>
+                <select id="fi-sr-source-select" style="display:none"><option value="all">All</option><option value="demat">Demat</option><option value="pms">PMS</option><option value="mf">MF</option><option value="tally">Tally</option></select>
                 <div class="fi-dash-grid-3" style="margin-bottom:1rem" id="fi-sr-summary">
                     <div class="fi-dash-card" style="padding:.75rem 1rem">
                         <div class="fi-dc-label" style="font-size:.6rem">TOTAL HOLDINGS</div>
@@ -702,8 +767,21 @@
             </div>
 
             <div class="fi-section" id="sec-capital-gains">
-                <div class="fi-sh"><h1>Capital Gains Report</h1><p>Unified exits from all sources — Demat tradewise + PMS FIFO matching</p></div>
-                <div class="fi-filter-bar">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;gap:.75rem">
+                    <div class="fi-sh" style="margin-bottom:0"><h1 style="margin:0">Capital Gains Report</h1><p style="margin:0">Unified exits from all sources — Demat tradewise + PMS FIFO matching</p></div>
+                    <div style="display:flex;gap:.4rem;align-items:center;flex-shrink:0">
+                        <button class="fi-btn" style="font-size:.65rem;padding:.3rem .6rem;display:flex;align-items:center;gap:.3rem" onclick="downloadCapitalGains('excel')" title="Download Capital Gains as Excel">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                            Excel
+                        </button>
+                        <button class="fi-btn" style="font-size:.65rem;padding:.3rem .6rem;display:flex;align-items:center;gap:.3rem" onclick="downloadCapitalGains('pdf')" title="Download Capital Gains as PDF">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                            PDF
+                        </button>
+                    </div>
+                </div>
+                <div class="fi-filter-bar" style="display:flex;align-items:center;gap:.75rem">
+                    <div id="fi-cg-period-container" style="min-width:180px"></div>
                     <div class="fi-pill-group">
                         <button class="fi-pill active" data-cg-source="all" onclick="setCGSource('all')">All</button>
                         <button class="fi-pill" data-cg-source="demat" onclick="setCGSource('demat')"><span class="fi-pill-dot" style="background:#4338ca"></span>Demat</button>
@@ -719,7 +797,7 @@
                         <button class="fi-pill" data-cg-cat="ltcg" onclick="setCGCat('ltcg')"><span class="fi-pill-dot" style="background:#6366f1"></span>LTCG</button>
                     </div>
                 </div>
-                <select id="fi-cg-source-select" style="display:none"><option value="all">All</option><option value="demat">Demat</option><option value="pms">PMS</option><option value="mf">MF</option></select>
+                <select id="fi-cg-source-select" style="display:none"><option value="all">All</option><option value="demat">Demat</option><option value="pms">PMS</option><option value="mf">MF</option><option value="tally">Tally</option></select>
                 <select id="fi-cg-category" style="display:none"><option value="all">All</option></select>
                 <!-- CG Summary -->
                 <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-bottom:1rem" id="fi-cg-summary">
@@ -768,16 +846,27 @@
 
             <!-- ━━━ PENDING ENTRIES (staging before Tally sync) ━━━ -->
             <div class="fi-section" id="sec-pending">
-                <div class="fi-sh"><h1>Pending Entries</h1><p>Auto-generated journal entries from parsed files — review, approve & sync to Tally</p></div>
+                <div class="fi-sh"><h1>Write to Tally</h1><p>Push auto-generated journal entries from parsed statements directly into your connected Tally company.</p></div>
                 <div class="fi-panel" style="padding:0">
-                    <div class="fi-toolbar">
-                        <div style="display:flex;align-items:center;gap:.5rem">
-                            <span style="font-size:.72rem;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:.05em">Entries</span>
-                            <span class="fi-sb-badge" id="fi-pending-total" style="background:#d97706;min-width:20px;text-align:center">0</span>
+                    <div class="fi-toolbar" style="flex-wrap:wrap;gap:.5rem;border-bottom:1px solid #e2e8f0">
+                        <div style="display:flex;align-items:center;gap:.35rem">
+                            <span style="font-size:.68rem;color:#64748b;font-weight:600">From</span>
+                            <input type="date" id="fi-pending-date-from" class="fi-form-input" style="font-size:.72rem;padding:.3rem .5rem;width:130px" onchange="loadPendingEntries()">
+                            <span style="font-size:.68rem;color:#64748b;font-weight:600">To</span>
+                            <input type="date" id="fi-pending-date-to" class="fi-form-input" style="font-size:.72rem;padding:.3rem .5rem;width:130px" onchange="loadPendingEntries()">
                         </div>
-                        <div style="margin-left:auto;display:flex;gap:.5rem">
+                        <input type="text" id="fi-pending-search" class="fi-form-input" placeholder="Search by file, scrip, narration..." style="min-width:180px;max-width:250px;font-size:.72rem;padding:.3rem .6rem" oninput="filterPendingEntries()">
+                        
+                        <div class="fi-pill-group">
+                            <button class="fi-pill active" data-pending-filter="all" onclick="setPendingFilter('all')">All</button>
+                            <button class="fi-pill" data-pending-filter="draft" onclick="setPendingFilter('draft')">Draft</button>
+                            <button class="fi-pill" data-pending-filter="approved" onclick="setPendingFilter('approved')">Approved</button>
+                            <button class="fi-pill" data-pending-filter="synced" onclick="setPendingFilter('synced')">Synced</button>
+                        </div>
+                        
+                        <div style="display:flex;gap:.35rem;margin-left:auto">
                             <button class="fi-btn success" onclick="approveAllPending()" style="font-size:.68rem">✓ Approve All</button>
-                            <button class="fi-btn tally" onclick="syncAllPending()" style="font-size:.68rem">↻ Sync All to Tally</button>
+                            <button class="fi-btn tally" onclick="syncAllPending()" style="font-size:.68rem">↻ Write to Tally</button>
                         </div>
                     </div>
                     <div id="fi-pending-list" style="padding:.5rem"></div>
@@ -786,20 +875,46 @@
 
             <!-- ━━━ TALLY ENTRIES (Approved, ready for Tally sync) ━━━ -->
             <div class="fi-section" id="sec-journal-entries">
-                <div class="fi-sh"><h1>Tally Entries</h1><p>Approved journal vouchers ready to be synced to Tally</p></div>
+                <div class="fi-sh" style="display:flex;align-items:flex-start;justify-content:space-between">
+                    <div><h1>Investment Day Book</h1><p>View all your investment related data</p></div>
+                </div>
                 <div class="fi-panel" style="padding:0">
-                    <div class="fi-toolbar">
-                        <div style="display:flex;align-items:center;gap:.5rem">
-                            <span style="font-size:.72rem;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:.05em">Ready to Sync</span>
-                            <span class="fi-sb-badge" id="fi-journal-total" style="background:#d97706;min-width:20px;text-align:center">0</span>
+                    <!-- Toolbar row 1: FY picker + date range + search + totals -->
+                    <div class="fi-toolbar" style="flex-wrap:wrap;gap:.5rem;border-bottom:1px solid #e2e8f0">
+                        <div style="display:flex;align-items:center;gap:.35rem">
+                            <span style="font-size:.68rem;color:#64748b;font-weight:600">From</span>
+                            <input type="date" id="fi-db-date-from" class="fi-form-input" style="font-size:.72rem;padding:.3rem .5rem;width:130px" onchange="loadTallyDaybook()">
+                            <span style="font-size:.68rem;color:#64748b;font-weight:600">To</span>
+                            <input type="date" id="fi-db-date-to" class="fi-form-input" style="font-size:.72rem;padding:.3rem .5rem;width:130px" onchange="loadTallyDaybook()">
+                            <button class="fi-btn" onclick="document.getElementById('fi-db-date-from').value='';document.getElementById('fi-db-date-to').value='';loadTallyDaybook()" style="font-size:.65rem;padding:.2rem .5rem;color:#94a3b8">✕ Clear</button>
                         </div>
-                        <div class="fi-pill-group" style="margin-left:auto">
-                            <button class="fi-pill" data-jl-filter="all" onclick="filterJournal('all')">All</button>
-                            <button class="fi-pill" data-jl-filter="synced" onclick="filterJournal('synced')"><span class="fi-pill-dot" style="background:#059669"></span>Synced</button>
-                            <button class="fi-pill active" data-jl-filter="approved" onclick="filterJournal('approved')"><span class="fi-pill-dot" style="background:#d97706"></span>Ready</button>
+                        <input type="text" id="fi-daybook-search" class="fi-form-input" placeholder="Search by party name, voucher..." style="min-width:200px;max-width:280px;font-size:.72rem;padding:.3rem .6rem" oninput="filterDaybook()">
+                        <span style="font-size:.68rem;font-weight:700;color:#64748b;white-space:nowrap" id="fi-daybook-count">0 entries</span>
+                        <span style="font-size:.72rem;font-weight:700;color:#059669;font-family:'Outfit',sans-serif;white-space:nowrap" id="fi-daybook-dr-total">Dr: ₹ 0</span>
+                        <span style="font-size:.72rem;font-weight:700;color:#dc2626;font-family:'Outfit',sans-serif;white-space:nowrap" id="fi-daybook-cr-total">Cr: ₹ 0</span>
+                        <div style="display:flex;gap:.35rem;margin-left:auto">
+                            <button class="fi-btn" onclick="downloadTallyDaybook('excel')" style="font-size:.68rem;padding:.25rem .6rem;background:#dcfce7;color:#059669;border-color:#a7f3d0">↓ Excel</button>
+                            <button class="fi-btn" onclick="downloadTallyDaybook('pdf')" style="font-size:.68rem;padding:.25rem .6rem;background:#fef2f2;color:#dc2626;border-color:#fecaca">↓ PDF</button>
                         </div>
                     </div>
-                    <div id="fi-journal-list" style="padding:.5rem"></div>
+                    <!-- Table -->
+                    <div style="max-height:650px;overflow-y:auto">
+                        <table class="fi-table" id="fi-daybook-table" style="font-size:.78rem">
+                            <thead style="position:sticky;top:0;z-index:2"><tr style="background:#f8fafc">
+                                <th style="width:30px;text-align:center;padding:.5rem .3rem">#</th>
+                                <th style="width:90px;padding:.5rem .5rem">DATE</th>
+                                <th style="width:65px">TYPE</th>
+                                <th style="width:60px">VCH NO.</th>
+                                <th>PARTY / PARTICULARS</th>
+                                <th style="width:120px;text-align:right;padding-right:.75rem">DEBIT (DR)</th>
+                                <th style="width:120px;text-align:right;padding-right:.75rem">CREDIT (CR)</th>
+                                <th style="width:30px"></th>
+                            </tr></thead>
+                            <tbody id="fi-daybook-tbody">
+                                <tr><td colspan="8" style="text-align:center;padding:2.5rem;color:#94a3b8">Select a client to load investment daybook</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
@@ -823,7 +938,453 @@
             pagePath: 'service-financial-instruments.html',
         });
     </script>
+    <script src="download-utils.js"></script>
     <script src="fi-pms.js?v=20260406j"></script>
     <script src="fi-tally-entry.js?v=20260418b"></script>
+    <script>
+    // ── FY Period Pickers for Holdings & Capital Gains ──
+    document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+            // Stock Register period picker
+            if (typeof FYPeriod !== 'undefined') {
+                const srContainer = document.getElementById('fi-sr-period-container');
+                if (srContainer) {
+                    FYPeriod.mount(srContainer, {
+                        onChange: (range) => {
+                            if (range && range.from && range.to) {
+                                const yr = new Date(range.from).getFullYear();
+                                setFY(yr);
+                            } else {
+                                setFY('all');
+                            }
+                        }
+                    });
+                }
+                // Capital Gains period picker
+                const cgContainer = document.getElementById('fi-cg-period-container');
+                if (cgContainer) {
+                    FYPeriod.mount(cgContainer, {
+                        onChange: (range) => {
+                            if (typeof loadCapitalGains === 'function') loadCapitalGains();
+                        }
+                    });
+                }
+            // Trigger load if current section is active
+            const section = new URLSearchParams(window.location.search).get('section');
+            if (section === 'journal-entries' && typeof loadTallyDaybook === 'function') {
+                loadTallyDaybook();
+            }
+            if (section === 'pending' && typeof loadPendingEntries === 'function') {
+                loadPendingEntries();
+            }
+        }, 800);
+    });
+
+    // ── Read from Tally ──
+    async function readFromTally() {
+        if (typeof showToast === 'function') showToast('Reading Financial Instruments from Tally...', 'info');
+        try {
+            // Resolve client name for Tally company lookup
+            const cId = new URLSearchParams(location.search).get('clientId') || localStorage.getItem('selectedClientId');
+            if (!cId) { showToast('No client selected', 'error'); return; }
+            const clientRes = await authFetch('/clients/' + cId);
+            if (!clientRes || !clientRes.ok) { showToast('Could not load client info', 'error'); return; }
+            const clientData = await clientRes.json();
+            const companyName = clientData.name || '';
+            if (!companyName) { showToast('Client has no company name for Tally lookup', 'error'); return; }
+
+            // Call the FI-Tally classify endpoint
+            const url = fiWithDateRange('/fi-tally/classify?company_name=' + encodeURIComponent(companyName));
+            const res = await authFetch(url);
+            if (res && res.ok) {
+                const fiData = await res.json();
+                const count = (fiData.fi_ledger_count || 0) + (fiData.fi_voucher_count || 0);
+                showToast(`Tally FI data loaded: ${fiData.fi_ledger_count || 0} ledgers, ${fiData.fi_voucher_count || 0} vouchers`, 'success');
+                // Update last-sync timestamp
+                const el = document.getElementById('fi-tally-last-sync');
+                if (el) el.textContent = 'Last synced: ' + new Date().toLocaleString('en-IN', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' });
+                // Refresh all views
+                if (typeof loadDashboardStats === 'function') loadDashboardStats();
+                if (typeof loadStockRegister === 'function') loadStockRegister();
+                if (typeof loadCapitalGains === 'function') loadCapitalGains();
+            } else if (res && res.status === 404) {
+                showToast('No Tally data found for this company. Ensure data is synced from Tally.', 'warning');
+            } else {
+                showToast('Could not fetch Tally FI data. Check backend connection.', 'error');
+            }
+        } catch (e) {
+            console.error('readFromTally error:', e);
+            if (typeof showToast === 'function') showToast('Failed to read from Tally: ' + e.message, 'error');
+        }
+    }
+
+    // ── Dashboard Download ──
+    function _getClientLabel() {
+        try {
+            const c = JSON.parse(localStorage.getItem('selectedClient') || '{}');
+            return c.name || c.company_name || 'Client';
+        } catch { return 'Client'; }
+    }
+
+    function downloadFIDashboard(format) {
+        const client = _getClientLabel();
+        const fyEl = document.getElementById('fi-ay');
+        const fy = fyEl ? fyEl.textContent : '';
+        const headers = ['Metric', 'Value'];
+        const rows = [
+            ['--- PORTFOLIO OVERVIEW ---', ''],
+            ['Total Current Value (AUM)', document.getElementById('fi-stat-total-amt')?.textContent || '₹ 0'],
+            ['Amount Invested', document.getElementById('fi-stat-total-cost')?.textContent || '₹ 0'],
+            ['Unrealized Gain', document.getElementById('fi-stat-unrealized')?.textContent || '₹ 0'],
+            ['Realized Gain (FY)', document.getElementById('fi-stat-realized')?.textContent || '₹ 0'],
+            ['Yield / ROI', document.getElementById('fi-stat-roi')?.textContent || '0%'],
+            ['', ''],
+            ['--- CAPITAL GAINS TRACKER ---', ''],
+            ['STCG', document.getElementById('fi-cg-stcg')?.textContent || '₹ 0'],
+            ['LTCG', document.getElementById('fi-cg-ltcg')?.textContent || '₹ 0'],
+            ['Net Gain/Loss', document.getElementById('fi-cg-net')?.textContent || '₹ 0'],
+            ['', ''],
+            ['--- INSTRUMENT ALLOCATION ---', ''],
+            ['Equity / Demat', `${document.getElementById('fi-alloc-eq-val')?.textContent || '₹ 0'} (${document.getElementById('fi-alloc-eq-pct')?.textContent || '0%'})`],
+            ['Mutual Funds', `${document.getElementById('fi-alloc-mf-val')?.textContent || '₹ 0'} (${document.getElementById('fi-alloc-mf-pct')?.textContent || '0%'})`],
+            ['PMS / AIF', `${document.getElementById('fi-alloc-pms-val')?.textContent || '₹ 0'} (${document.getElementById('fi-alloc-pms-pct')?.textContent || '0%'})`],
+            ['Bonds / NCDs / FDs', `${document.getElementById('fi-alloc-bond-val')?.textContent || '₹ 0'} (${document.getElementById('fi-alloc-bond-pct')?.textContent || '0%'})`],
+        ];
+        const config = {
+            filename: `FI_Dashboard_${client}_${fy}`.replace(/\s+/g,'_'),
+            sheetName: 'Dashboard',
+            title: 'Financial Instruments Dashboard',
+            subtitle: `${client} · ${fy}`,
+            headers, rows,
+            summary: { 'Client': client, 'Period': fy },
+        };
+        
+        if (format === 'excel') {
+            DownloadUtils.excel(config);
+        } else {
+            // PDF: Capture the whole visible dashboard section!
+            const element = document.getElementById('sec-dashboard');
+            if (element && typeof DownloadUtils !== 'undefined') {
+                DownloadUtils.ensureHTML2PDF().then(() => {
+                    const opt = {
+                        margin:       [10, 10],
+                        filename:     `FI_Dashboard_${client}_${fy}`.replace(/\s+/g,'_') + '.pdf',
+                        image:        { type: 'jpeg', quality: 1.0 },
+                        html2canvas:  { 
+                            scale: 3,
+                            useCORS: true,
+                            scrollX: 0,
+                            scrollY: 0,
+                            letterRendering: true
+                        },
+                        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' },
+                        pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
+                    };
+                    // Hide non-report elements temporarily so they don't appear in the PDF
+                    const downloadBtnGroup = element.querySelector('div[style*="gap:.4rem"]');
+                    const periodContainer = document.getElementById('fi-period-container');
+                    const tallyNudge = document.getElementById('fi-tally-nudge');
+                    
+                    if (downloadBtnGroup) downloadBtnGroup.style.opacity = '0';
+                    if (periodContainer) periodContainer.style.opacity = '0';
+                    if (tallyNudge) tallyNudge.style.opacity = '0';
+                    
+                    html2pdf().set(opt).from(element).save().then(() => {
+                        if (downloadBtnGroup) downloadBtnGroup.style.opacity = '1';
+                        if (periodContainer) periodContainer.style.opacity = '1';
+                        if (tallyNudge) tallyNudge.style.opacity = '1';
+                    });
+                }).catch(err => {
+                    console.error('Failed to load html2pdf:', err);
+                    DownloadUtils.pdf(config); // Fallback to table
+                });
+            } else {
+                DownloadUtils.pdf(config);
+            }
+        }
+    }
+
+    // ── Holdings Download ──
+    function downloadStockRegister(format) {
+        const client = _getClientLabel();
+        const table = document.getElementById('fi-sr-table');
+        if (!table) return;
+        const thEls = table.querySelectorAll('thead th');
+        const headers = Array.from(thEls).map(th => th.textContent.trim());
+        const rows = [];
+        table.querySelectorAll('tbody tr').forEach(tr => {
+            const cells = tr.querySelectorAll('td');
+            if (cells.length >= headers.length) {
+                rows.push(Array.from(cells).map(td => td.textContent.trim()));
+            }
+        });
+        const config = {
+            filename: `Holdings_${client}`.replace(/\s+/g,'_'),
+            sheetName: 'Holdings',
+            title: 'Stock Register — Holdings',
+            subtitle: client,
+            headers, rows,
+            summary: { 'Client': client, 'Total Holdings': document.getElementById('fi-sr-total-count')?.textContent || '0' },
+        };
+        if (format === 'excel') DownloadUtils.excel(config);
+        else DownloadUtils.pdf(config);
+    }
+
+    // ── Capital Gains Download ──
+    function downloadCapitalGains(format) {
+        const client = _getClientLabel();
+        const table = document.querySelector('#sec-capital-gains .fi-table');
+        if (!table) return;
+        const thEls = table.querySelectorAll('thead th');
+        const headers = Array.from(thEls).map(th => th.textContent.trim());
+        const rows = [];
+        table.querySelectorAll('tbody tr').forEach(tr => {
+            const cells = tr.querySelectorAll('td');
+            if (cells.length >= headers.length) {
+                rows.push(Array.from(cells).map(td => td.textContent.trim()));
+            }
+        });
+        const stcg = document.getElementById('fi-cg-summary-stcg')?.textContent || '₹ 0';
+        const ltcg = document.getElementById('fi-cg-summary-ltcg')?.textContent || '₹ 0';
+        const net = document.getElementById('fi-cg-summary-net')?.textContent || '₹ 0';
+        const config = {
+            filename: `Capital_Gains_${client}`.replace(/\s+/g,'_'),
+            sheetName: 'Capital Gains',
+            title: 'Capital Gains Report',
+            subtitle: client,
+            headers, rows,
+            summary: { 'Client': client, 'STCG': stcg, 'LTCG': ltcg, 'Net': net },
+        };
+        if (format === 'excel') DownloadUtils.excel(config);
+        else DownloadUtils.pdf(config);
+    }
+
+    // ══════════════════════════════════════════════════
+    // INVESTMENT DAY BOOK — Tally FI classified vouchers
+    // ══════════════════════════════════════════════════
+    let _daybookData = [];   // full fetched data
+
+    function filterDaybook() {
+        const search = (document.getElementById('fi-daybook-search')?.value || '').toLowerCase();
+        const tbody = document.getElementById('fi-daybook-tbody');
+        if (!tbody) return;
+        const fmt = v => '₹ ' + Math.abs(v).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+        let rows = _daybookData;
+        if (search) {
+            rows = rows.filter(r => {
+                const hay = `${r.party_name} ${r.narration} ${r.voucher_number} ${r.voucher_type} ${r.fi_txn_type}`.toLowerCase();
+                return hay.includes(search);
+            });
+        }
+
+        // Totals
+        let totalDr = 0, totalCr = 0;
+        rows.forEach(r => {
+            const a = Math.abs(Number(r.amount) || 0);
+            if ((r.amount || 0) >= 0) totalDr += a; else totalCr += a;
+        });
+        document.getElementById('fi-daybook-count').textContent = rows.length + ' entries';
+        document.getElementById('fi-daybook-dr-total').textContent = 'Dr: ' + fmt(totalDr);
+        document.getElementById('fi-daybook-cr-total').textContent = 'Cr: ' + fmt(totalCr);
+
+        if (!rows.length) {
+            tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:2.5rem;color:#94a3b8">No investment entries found for this period</td></tr>';
+            return;
+        }
+
+        const typeBadge = (vt) => {
+            const t = (vt||'').toLowerCase();
+            const colors = { sales:'#059669', purchase:'#4338ca', receipt:'#d97706', payment:'#dc2626', journal:'#6366f1', contra:'#0891b2' };
+            const c = colors[t] || '#64748b';
+            return `<span style="background:${c}12;color:${c};padding:1px 8px;border-radius:4px;font-size:.62rem;font-weight:700">${vt||'—'}</span>`;
+        };
+        const fmtDate = d => {
+            if (!d || d.length < 8) return '—';
+            // YYYYMMDD → DD-MM-YYYY
+            return d.replace(/(\d{4})(\d{2})(\d{2})/, '$3-$2-$1');
+        };
+
+        const displayRows = rows.slice(0, 300);
+        tbody.innerHTML = displayRows.map((r, i) => {
+            const amt = Math.abs(Number(r.amount) || 0);
+            const isDr = (r.amount || 0) >= 0;
+            const hasGuid = r.guid ? 'true' : '';
+            return `<tr class="fi-db-row" data-guid="${r.guid||''}" onclick="toggleDaybookExpand(this)" style="cursor:pointer;border-bottom:1px solid #f1f5f9;transition:background .15s">
+                <td style="text-align:center;color:#94a3b8;font-weight:600;font-size:.72rem;padding:.55rem .3rem">${i+1}</td>
+                <td style="font-weight:600;font-family:'Outfit',sans-serif;font-size:.78rem;padding:.55rem .5rem">${fmtDate(r.date)}</td>
+                <td>${typeBadge(r.voucher_type)}</td>
+                <td style="font-weight:600;color:#4338ca;font-size:.75rem">${r.voucher_number || '—'}</td>
+                <td style="font-weight:600;font-size:.78rem"><strong>${r.party_name || '—'}</strong></td>
+                <td style="text-align:right;font-weight:700;font-family:'Outfit',sans-serif;padding-right:.75rem">${isDr ? fmt(amt) : '<span style="color:#94a3b8">—</span>'}</td>
+                <td style="text-align:right;font-weight:700;font-family:'Outfit',sans-serif;padding-right:.75rem">${!isDr ? fmt(amt) : '<span style="color:#94a3b8">—</span>'}</td>
+                <td style="text-align:center;padding:.3rem">${hasGuid ? '<span style="color:#4338ca;font-size:.7rem;cursor:pointer" title="Expand">▶</span>' : ''}</td>
+            </tr>`;
+        }).join('');
+
+        if (rows.length > 300) {
+            tbody.innerHTML += `<tr><td colspan="8" style="text-align:center;padding:.6rem;color:#94a3b8;font-size:.68rem">Showing 300 of ${rows.length} entries</td></tr>`;
+        }
+    }
+
+    // Expand a row to show ledger entries (like Tally daybook)
+    async function toggleDaybookExpand(tr) {
+        const guid = tr.dataset.guid;
+        if (!guid) return;
+
+        // If already expanded, collapse
+        const next = tr.nextElementSibling;
+        if (next && next.classList.contains('fi-db-detail')) {
+            next.remove();
+            tr.querySelector('td:last-child span').textContent = '▶';
+            tr.style.background = '';
+            return;
+        }
+
+        // Collapse any other open detail
+        document.querySelectorAll('.fi-db-detail').forEach(d => d.remove());
+        document.querySelectorAll('.fi-db-row').forEach(r => {
+            r.style.background = '';
+            const arrow = r.querySelector('td:last-child span');
+            if (arrow) arrow.textContent = '▶';
+        });
+
+        tr.style.background = '#f0f9ff';
+        tr.querySelector('td:last-child span').textContent = '▼';
+
+        // Insert loading row
+        const loadRow = document.createElement('tr');
+        loadRow.className = 'fi-db-detail';
+        loadRow.innerHTML = '<td colspan="8" style="padding:.75rem 2rem;background:#fafbfc;color:#94a3b8;font-size:.72rem">Loading entries...</td>';
+        tr.after(loadRow);
+
+        // Fetch voucher detail
+        try {
+            const res = await authFetch('/tally/vouchers/' + guid);
+            if (!res || !res.ok) { loadRow.innerHTML = '<td colspan="8" style="padding:.75rem 2rem;background:#fafbfc;color:#dc2626;font-size:.72rem">Failed to load entries</td>'; return; }
+            const data = await res.json();
+            const entries = data.ledger_entries || [];
+            const fmt = v => '₹ ' + Math.abs(v).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+            if (!entries.length) {
+                loadRow.innerHTML = '<td colspan="8" style="padding:.75rem 2rem;background:#fafbfc;color:#94a3b8;font-size:.72rem">No ledger entries</td>';
+                return;
+            }
+
+            // Build ledger entry sub-table
+            let drTotal = 0, crTotal = 0;
+            const entryRows = entries.map(e => {
+                const a = Math.abs(e.amount || 0);
+                if (e.is_debit) drTotal += a; else crTotal += a;
+                return `<tr style="border-bottom:1px solid #f1f5f9">
+                    <td style="padding:.35rem .75rem;padding-left:3rem;font-size:.75rem;font-weight:600;color:#374151">${e.ledger_name}</td>
+                    <td style="text-align:right;padding:.35rem .75rem;font-family:'Outfit',sans-serif;font-weight:600;color:${e.is_debit?'#0f172a':'#94a3b8'}">${e.is_debit ? fmt(a) : ''}</td>
+                    <td style="text-align:right;padding:.35rem .75rem;font-family:'Outfit',sans-serif;font-weight:600;color:${!e.is_debit?'#0f172a':'#94a3b8'}">${!e.is_debit ? fmt(a) : ''}</td>
+                </tr>`;
+            }).join('');
+
+            // Narration
+            const narration = data.voucher?.narration || '';
+            const narrHtml = narration ? `<tr><td colspan="3" style="padding:.35rem .75rem;padding-left:3rem;font-size:.68rem;color:#64748b;font-style:italic">${narration}</td></tr>` : '';
+
+            loadRow.innerHTML = `<td colspan="8" style="padding:0;background:#fafbfc">
+                <table style="width:100%;border-collapse:collapse">
+                    <thead><tr style="background:#f1f5f9">
+                        <td style="padding:.35rem .75rem;padding-left:3rem;font-size:.65rem;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em">PARTICULARS (LEDGER)</td>
+                        <td style="text-align:right;padding:.35rem .75rem;font-size:.65rem;font-weight:700;color:#64748b;text-transform:uppercase">DEBIT (DR)</td>
+                        <td style="text-align:right;padding:.35rem .75rem;font-size:.65rem;font-weight:700;color:#64748b;text-transform:uppercase">CREDIT (CR)</td>
+                    </tr></thead>
+                    <tbody>${entryRows}</tbody>
+                    <tfoot><tr style="background:#e8f5e9;border-top:2px solid #c8e6c9">
+                        <td style="padding:.45rem .75rem;padding-left:3rem;font-weight:800;font-size:.75rem;color:#1b5e20">TOTAL</td>
+                        <td style="text-align:right;padding:.45rem .75rem;font-weight:800;font-family:'Outfit',sans-serif;font-size:.78rem;color:#1b5e20">${fmt(drTotal)}</td>
+                        <td style="text-align:right;padding:.45rem .75rem;font-weight:800;font-family:'Outfit',sans-serif;font-size:.78rem;color:#1b5e20">${fmt(crTotal)}</td>
+                    </tr></tfoot>
+                </table>
+                ${narrHtml ? `<div style="padding:.3rem .75rem;padding-left:3rem;font-size:.68rem;color:#64748b;font-style:italic;border-top:1px solid #e2e8f0">${narration}</div>` : ''}
+            </td>`;
+        } catch (e) {
+            loadRow.innerHTML = '<td colspan="8" style="padding:.75rem 2rem;background:#fafbfc;color:#dc2626;font-size:.72rem">Error: ' + e.message + '</td>';
+        }
+    }
+
+    async function loadTallyDaybook() {
+        const tbody = document.getElementById('fi-daybook-tbody');
+        if (!tbody) return;
+        const cId = new URLSearchParams(location.search).get('clientId') || localStorage.getItem('selectedClientId');
+        if (!cId) { tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:2.5rem;color:#94a3b8">No client selected</td></tr>'; return; }
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:2.5rem;color:#94a3b8">Loading investment daybook...</td></tr>';
+
+        try {
+            // Resolve client → company name
+            const clientRes = await authFetch('/clients/' + cId);
+            if (!clientRes || !clientRes.ok) return;
+            const cd = await clientRes.json();
+            const companyName = cd.name || '';
+            if (!companyName) { tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:2.5rem;color:#94a3b8">No Tally company name</td></tr>'; return; }
+
+            // Set defaults if inputs are empty
+            const df = document.getElementById('fi-db-date-from');
+            const dt = document.getElementById('fi-db-date-to');
+            const now = new Date();
+            const curYear = now.getFullYear();
+            const curMonth = now.getMonth();
+            let fyStart, fyEnd;
+            if (curMonth >= 3) {
+                fyStart = `${curYear}-04-01`;
+                fyEnd = `${curYear + 1}-03-31`;
+            } else {
+                fyStart = `${curYear - 1}-04-01`;
+                fyEnd = `${curYear}-03-31`;
+            }
+            if (df && !df.value) df.value = fyStart;
+            if (dt && !dt.value) dt.value = fyEnd;
+
+            // Build date params from inputs or FY picker
+            let dateFrom = df?.value || '';
+            let dateTo = dt?.value || '';
+            let url = '/fi-tally/classify?company_name=' + encodeURIComponent(companyName);
+            if (dateFrom) url += '&date_from=' + dateFrom.replace(/-/g, '');
+            if (dateTo) url += '&date_to=' + dateTo.replace(/-/g, '');
+            // Fallback to global FY range
+            if (!dateFrom && !dateTo) url = fiWithDateRange(url);
+
+            const res = await authFetch(url);
+            if (!res || !res.ok) {
+                _daybookData = [];
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:2.5rem;color:#94a3b8">No investment entries found in Tally for this company</td></tr>';
+                document.getElementById('fi-daybook-count').textContent = '0 entries';
+                document.getElementById('fi-daybook-dr-total').textContent = 'Dr: ₹ 0';
+                document.getElementById('fi-daybook-cr-total').textContent = 'Cr: ₹ 0';
+                return;
+            }
+            const fiData = await res.json();
+            _daybookData = (fiData.fi_vouchers || []).sort((a,b) => (a.date||'').localeCompare(b.date||''));
+            filterDaybook();
+        } catch (e) {
+            console.error('loadTallyDaybook error:', e);
+            tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:2.5rem;color:#dc2626">Error loading daybook: ' + e.message + '</td></tr>';
+        }
+    }
+
+    function downloadTallyDaybook(format) {
+        const client = _getClientLabel();
+        const headers = ['#','Date','Type','Vch No','Party','Debit (Dr)','Credit (Cr)'];
+        const rows = [];
+        document.querySelectorAll('#fi-daybook-tbody tr.fi-db-row').forEach(tr => {
+            const cells = tr.querySelectorAll('td');
+            if (cells.length >= 7) rows.push(Array.from(cells).slice(0,7).map(td => td.textContent.trim()));
+        });
+        const config = {
+            filename: `Investment_DayBook_${client}`.replace(/\s+/g,'_'),
+            sheetName: 'Day Book', title: 'Investment Day Book', subtitle: client,
+            headers, rows,
+        };
+        if (typeof DownloadUtils !== 'undefined') {
+            if (format === 'pdf') DownloadUtils.pdf(config);
+            else DownloadUtils.excel(config);
+        }
+    }
+    </script>
 </body>
 </html>

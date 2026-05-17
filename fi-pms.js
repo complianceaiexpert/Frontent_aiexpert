@@ -367,6 +367,11 @@ function _fyParams() {
     const end = `${Number(srSelectedFY) + 1}-03-31`;
     return `&fy_start=${start}&fy_end=${end}`;
 }
+// Tally FI classify uses date_from/date_to in YYYYMMDD format
+function _tallyDateParams() {
+    if (srSelectedFY === 'all') return '';
+    return `&date_from=${srSelectedFY}0401&date_to=${Number(srSelectedFY) + 1}0331`;
+}
 
 // Helper: fetch all completed FI uploads with structured_data for given type
 async function _fetchFIData(typePrefix) {
@@ -502,6 +507,45 @@ async function loadStockRegister() {
         });
     }
 
+    // ── Tally FI Holdings ──
+    if (source === 'all' || source === 'tally') {
+        try {
+            const cId = new URLSearchParams(location.search).get('clientId') || '';
+            if (cId) {
+                const clientRes = await authFetch('/clients/' + cId);
+                if (clientRes && clientRes.ok) {
+                    const cd = await clientRes.json();
+                    const companyName = cd.name || '';
+                    if (companyName) {
+                        const fyQ = _tallyDateParams();
+                        const fiRes = await authFetch('/fi-tally/classify?company_name=' + encodeURIComponent(companyName) + fyQ);
+                        if (fiRes && fiRes.ok) {
+                            const fiData = await fiRes.json();
+                            (fiData.holdings || []).forEach(cat => {
+                                (cat.top_holdings || []).forEach(ldg => {
+                                    const cb = Math.abs(Number(ldg.closing_balance) || 0);
+                                    const ob = Math.abs(Number(ldg.opening_balance) || 0);
+                                    if (cb <= 0) return;
+                                    allRows.push({
+                                        name: ldg.name,
+                                        source: 'Tally',
+                                        sourceType: 'tally',
+                                        qty: 0,
+                                        avgCost: 0,
+                                        marketPrice: 0,
+                                        invested: ob,
+                                        current: cb,
+                                        pnl: cb - ob,
+                                    });
+                                });
+                            });
+                        }
+                    }
+                }
+            }
+        } catch (e) { console.warn('Tally holdings fetch error:', e); }
+    }
+
     // Sort by current value descending
     allRows.sort((a, b) => b.current - a.current);
 
@@ -511,8 +555,8 @@ async function loadStockRegister() {
     }
 
     const sourceBadge = (type) => {
-        const colors = { pms: '#d97706', demat: '#4338ca', mf: '#059669' };
-        const labels = { pms: 'PMS', demat: 'Demat', mf: 'MF' };
+        const colors = { pms: '#d97706', demat: '#4338ca', mf: '#059669', tally: '#7c3aed' };
+        const labels = { pms: 'PMS', demat: 'Demat', mf: 'MF', tally: 'Tally' };
         return `<span style="background:${colors[type] || '#94a3b8'}15;color:${colors[type] || '#94a3b8'};padding:1px 6px;border-radius:4px;font-size:.6rem;font-weight:600">${labels[type] || type}</span>`;
     };
 
@@ -692,6 +736,76 @@ async function loadCapitalGains() {
         });
     }
 
+    // ── Tally Capital Gains ──
+    if (source === 'all' || source === 'tally') {
+        try {
+            const cId = new URLSearchParams(location.search).get('clientId') || '';
+            if (cId) {
+                const clientRes = await authFetch('/clients/' + cId);
+                if (clientRes && clientRes.ok) {
+                    const cd = await clientRes.json();
+                    const companyName = cd.name || '';
+                    if (companyName) {
+                        const fyQ = _tallyDateParams();
+                        const fiRes = await authFetch('/fi-tally/classify?company_name=' + encodeURIComponent(companyName) + fyQ);
+                        if (fiRes && fiRes.ok) {
+                            const fiData = await fiRes.json();
+                            const fiVouchers = fiData.fi_vouchers || [];
+                            fiVouchers.forEach(v => {
+                                const txnType = v.fi_txn_type || '';
+                                const amt = Math.abs(Number(v.amount) || 0);
+                                // Include capital gain/loss and share sale/purchase txns
+                                if (txnType === 'Capital Gain/Loss' || txnType === 'Share Sale') {
+                                    let type = 'STCG';
+                                    const narr = (v.narration || '').toLowerCase();
+                                    if (narr.includes('long term') || narr.includes('ltcg')) type = 'LTCG';
+                                    else if (narr.includes('intraday') || narr.includes('speculative')) type = 'Intraday';
+                                    allEntries.push({
+                                        name: v.scrip || v.party_name || v.narration?.slice(0, 50) || 'Tally CG',
+                                        source: companyName.length > 20 ? companyName.slice(0, 20) + '…' : companyName,
+                                        sourceType: 'tally',
+                                        buyDate: '—',
+                                        sellDate: v.date ? v.date.replace(/(\d{4})(\d{2})(\d{2})/, '$3/$2/$1') : '—',
+                                        qty: v.quantity || 0,
+                                        buyValue: 0,
+                                        sellValue: amt,
+                                        gain: txnType === 'Share Sale' ? 0 : (v.amount >= 0 ? amt : -amt),
+                                        type,
+                                        days: 0,
+                                        isGrandfathered: false,
+                                    });
+                                }
+                            });
+
+                            // Also add from FI ledgers (Capital Gains ledgers with net_movement)
+                            (fiData.fi_ledgers || []).forEach(l => {
+                                if (l.fi_category === 'Capital Gains' && Math.abs(l.closing_balance) > 0) {
+                                    let type = 'STCG';
+                                    const n = l.name.toLowerCase();
+                                    if (n.includes('long') || n.includes('ltcg')) type = 'LTCG';
+                                    allEntries.push({
+                                        name: l.name,
+                                        source: 'Tally',
+                                        sourceType: 'tally',
+                                        buyDate: '—',
+                                        sellDate: '—',
+                                        qty: 0,
+                                        buyValue: Math.abs(l.opening_balance || 0),
+                                        sellValue: Math.abs(l.closing_balance || 0),
+                                        gain: l.closing_balance || 0,
+                                        type,
+                                        days: 0,
+                                        isGrandfathered: false,
+                                    });
+                                }
+                            });
+                        }
+                    }
+                }
+            }
+        } catch (e) { console.warn('Tally capital gains fetch error:', e); }
+    }
+
     // ── Apply Category Filter ──
     if (category !== 'all') {
         allEntries = allEntries.filter(e => {
@@ -736,8 +850,8 @@ async function loadCapitalGains() {
     }
 
     const sourceBadge = (type) => {
-        const colors = { pms: '#d97706', demat: '#4338ca', mf: '#059669' };
-        const labels = { pms: 'PMS', demat: 'Demat', mf: 'MF' };
+        const colors = { pms: '#d97706', demat: '#4338ca', mf: '#059669', tally: '#7c3aed' };
+        const labels = { pms: 'PMS', demat: 'Demat', mf: 'MF', tally: 'Tally' };
         return `<span style="background:${colors[type] || '#94a3b8'}15;color:${colors[type] || '#94a3b8'};padding:1px 6px;border-radius:4px;font-size:.6rem;font-weight:600">${labels[type] || type}</span>`;
     };
 

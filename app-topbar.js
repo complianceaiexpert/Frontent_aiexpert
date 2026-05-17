@@ -35,6 +35,15 @@
     return active === id ? 'app-nav-link app-nav-active' : 'app-nav-link';
   }
 
+  const curPage = window.location.pathname.split('/').pop() || 'client-list.html';
+  let targetOverview = 'client-list.html';
+  
+  if (curPage.startsWith('service-gst')) targetOverview = 'service-gst-overview.html';
+  else if (curPage.startsWith('service-data-entry')) targetOverview = 'service-data-entry-overview.html';
+  else if (curPage.startsWith('service-financial-statements')) targetOverview = 'service-financial-statements-overview.html';
+  else if (curPage.startsWith('service-financial-instruments')) targetOverview = 'service-financial-instruments-overview.html';
+  else if (curPage.startsWith('service-statutory-reporting')) targetOverview = 'service-statutory-reporting-overview.html';
+
   container.innerHTML = `
   <nav class="app-navbar" id="app-navbar">
     <div class="app-navbar-inner">
@@ -135,7 +144,7 @@
                 </svg>
                 View All Clients
               </a>
-              <a href="client-list.html#add-client" class="app-client-dd-footer app-client-dd-add" style="flex:1">
+              <a href="Add_client.html?redirect=${targetOverview}" class="app-client-dd-footer app-client-dd-add" style="flex:1">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                   <circle cx="12" cy="12" r="10"/><path d="M12 8v8"/><path d="M8 12h8"/>
                 </svg>
@@ -148,11 +157,9 @@
 
         <div class="app-nav-divider"></div>
 
-        <a href="integrations.html" class="app-icon-btn ${active === 'settings' ? 'app-icon-active' : ''}" title="Integrations">
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="3"/>
-            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
-          </svg>
+        <a href="integrations.html" id="app-topbar-tally-status" class="app-topbar-tally-status ${active === 'settings' ? 'active' : ''}" data-tooltip="Tally Sync Last connected: Never">
+          <span class="tally-status-dot" id="topbar-tally-dot"></span>
+          <span class="tally-status-text" id="topbar-tally-text">Tally: Off</span>
         </a>
 
         <div class="app-nav-divider"></div>
@@ -382,6 +389,82 @@
     .app-svc-dd-icon svg { width: 15px; height: 15px; }
     .app-svc-dd-label { font-size: 0.82rem; font-weight: 600; }
     .app-svc-dd-item.svc-active .app-svc-dd-label { color: #4338CA; }
+
+    /* Tally Status Pill */
+    .app-topbar-tally-status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      background: #f1f5f9;
+      color: #475569;
+      text-decoration: none;
+      font-size: 0.75rem;
+      font-weight: 600;
+      transition: all 0.2s;
+      border: 1px solid transparent;
+    }
+    .app-topbar-tally-status:hover {
+      background: #e2e8f0;
+      color: #1e293b;
+    }
+    .app-topbar-tally-status.active {
+      border-color: #cbd5e1;
+    }
+    .tally-status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #94a3b8;
+      display: inline-block;
+    }
+    .tally-status-dot.connected {
+      background: #10b981;
+      box-shadow: 0 0 6px rgba(16,185,129,0.4);
+    }
+    .tally-status-dot.connecting {
+      background: #f59e0b;
+    }
+
+    /* Custom Tooltip */
+    .app-topbar-tally-status {
+      position: relative;
+    }
+    .app-topbar-tally-status:hover::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      top: 100%;
+      right: 0;
+      margin-top: 8px;
+      padding: 6px 12px;
+      background: #1e293b;
+      color: #fff;
+      font-size: 0.8rem;
+      font-weight: 500;
+      border-radius: 6px;
+      white-space: nowrap;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 10000;
+      pointer-events: none;
+      animation: fadeIn 0.15s ease;
+    }
+    .app-topbar-tally-status:hover::before {
+      content: '';
+      position: absolute;
+      top: 100%;
+      right: 12px;
+      margin-top: 3px;
+      border: 5px solid transparent;
+      border-bottom-color: #1e293b;
+      z-index: 10000;
+      pointer-events: none;
+      animation: fadeIn 0.15s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-2px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
   </style>
   `;
 
@@ -463,6 +546,17 @@
         _cachedClients = clients || [];
         // Cache to sessionStorage for instant load on next page
         try { sessionStorage.setItem('__topbar_clients', JSON.stringify(_cachedClients)); } catch (_) { }
+        
+        // Override localStorage if clientId is in URL
+        if (_clientId) {
+          const matchedClient = _cachedClients.find(c => c.id === _clientId);
+          if (matchedClient) {
+            localStorage.setItem('selectedClient', JSON.stringify(matchedClient));
+            const labelEl = document.getElementById('app-client-btn-name');
+            if (labelEl) labelEl.textContent = matchedClient.name;
+          }
+        }
+        
         window.__renderClientList(_cachedClients);
       }).catch(() => {
         if (!_cachedClients || _cachedClients.length === 0) {
@@ -502,7 +596,21 @@
       return;
     }
 
-    listEl.innerHTML = filtered.map(c => {
+    let deselectHtml = '';
+    if (currentId) {
+      deselectHtml = `
+        <div class="app-client-dd-item" onclick="window.__clearGlobalClient()">
+          <div class="app-client-dd-item-avatar" style="background:#f1f5f9;color:#64748b">×</div>
+          <div class="app-client-dd-item-info">
+            <div class="app-client-dd-item-name" style="color:#64748b; font-weight:600;">Deselect Client</div>
+            <div class="app-client-dd-item-detail">Clear current selection</div>
+          </div>
+        </div>
+        <div style="height:1px;background:#f1f5f9;margin:4px 8px"></div>
+      `;
+    }
+
+    listEl.innerHTML = deselectHtml + filtered.map(c => {
       const initial = (c.name || 'C').charAt(0).toUpperCase();
       const detail = (c.gstins && c.gstins.length > 0) ? c.gstins[0] : (c.pan || '—');
       const isSelected = c.id === currentId;
@@ -551,6 +659,22 @@
       // Re-render the dropdown to show new selection
       window.__renderClientList(_cachedClients);
     }
+  };
+
+  // ── Clear Global Client ──
+  window.__clearGlobalClient = function () {
+    localStorage.removeItem('selectedClient');
+    
+    const nameEl = document.getElementById('app-client-btn-name');
+    if (nameEl) nameEl.textContent = 'Select Client';
+    
+    const sel = document.getElementById('app-client-selector');
+    if (sel) sel.classList.remove('open');
+    
+    // Remove clientId from URL and reload
+    const url = new URL(window.location.href);
+    url.searchParams.delete('clientId');
+    window.location.href = url.toString();
   };
 
   // ── Search Handler (only for CA firm) ──
@@ -602,9 +726,9 @@
       icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>' },
     { id: 'ca-certificates', label: 'CA Certificates', page: 'ca-certificates.html', color: '#8b5cf6', bg: '#f5f3ff',
       icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>' },
-    { id: 'financial-statements', label: 'Financial Statements', page: 'service-financial-statements.html', color: '#059669', bg: '#ecfdf5',
+    { id: 'financial-statements', label: 'Financial Statements', page: 'service-financial-statements-overview.html', color: '#059669', bg: '#ecfdf5',
       icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 12h18"/><path d="M12 3v18"/></svg>' },
-    { id: 'financial-instruments', label: 'Financial Instruments', page: 'service-financial-instruments.html', color: '#0d9488', bg: '#f0fdfa',
+    { id: 'financial-instruments', label: 'Financial Instruments', page: 'service-financial-instruments-overview.html', color: '#0d9488', bg: '#f0fdfa',
       icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>' },
     { id: 'statutory-reporting', label: 'Statutory Reporting', page: 'service-statutory-reporting.html', color: '#d97706', bg: '#fef3c7',
       icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>' },
@@ -638,5 +762,64 @@
     const clientSel = document.getElementById('app-client-selector');
     if (clientSel) clientSel.classList.remove('open');
   };
+
+  // ── Tally Status Check ──
+  async function checkTallyStatus() {
+    const dot = document.getElementById('topbar-tally-dot');
+    const text = document.getElementById('topbar-tally-text');
+    if (!dot || !text) return;
+
+    dot.classList.add('connecting');
+    text.textContent = 'Tally: ...';
+
+    try {
+      const res = await fetch("http://127.0.0.1:9000/tally", {
+        method: "POST",
+        headers: { "Content-Type": "text/xml" },
+        body: `<ENVELOPE>
+        <HEADER>
+            <VERSION>1</VERSION>
+            <TALLYREQUEST>Export Data</TALLYREQUEST>
+            <TYPE>Data</TYPE>
+            <ID>List of Companies</ID>
+        </HEADER>
+        <BODY><DESC /></BODY>
+        </ENVELOPE>`,
+      });
+
+      const resText = await res.text();
+      const connected = res.ok && /<ENVELOPE[\s>]/i.test(resText);
+
+      dot.classList.remove('connecting');
+
+      if (connected) {
+        dot.classList.add('connected');
+        text.textContent = 'Tally: Connected';
+        
+        const now = new Date().toLocaleString();
+        localStorage.setItem('tally_last_sync', now);
+        const linkEl = document.getElementById('app-topbar-tally-status');
+        if (linkEl) linkEl.setAttribute('data-tooltip', `Tally Sync Last connected: ${now}`);
+      } else {
+        dot.classList.remove('connected');
+        text.textContent = 'Tally: Off';
+        
+        const lastSync = localStorage.getItem('tally_last_sync') || 'Never';
+        const linkEl = document.getElementById('app-topbar-tally-status');
+        if (linkEl) linkEl.setAttribute('data-tooltip', `Tally Sync Last connected: ${lastSync}`);
+      }
+    } catch (e) {
+      dot.classList.remove('connecting');
+      dot.classList.remove('connected');
+      text.textContent = 'Tally: Off';
+      
+      const lastSync = localStorage.getItem('tally_last_sync') || 'Never';
+      const linkEl = document.getElementById('app-topbar-tally-status');
+      if (linkEl) linkEl.setAttribute('data-tooltip', `Tally Sync Last connected: ${lastSync}`);
+    }
+  }
+
+  // Check on load
+  checkTallyStatus();
 })();
 
